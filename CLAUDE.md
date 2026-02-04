@@ -78,6 +78,37 @@
 2. 在文稿末尾添加发布信息（日期、平台）
 3. 提醒记录数据
 
+### 「生成小红书图文」
+当用户说「生成小红书图文」或「制作小红书卡片」时：
+1. **创建渲染用 Markdown**
+   - 添加 YAML 头部（emoji、title、subtitle）
+   - 将正文内容转换为适合渲染的格式
+   - 每个段落控制在 200 字左右
+   - 可使用 `---` 分隔不同卡片
+2. **选择渲染方式**
+   - 方式一（推荐）：使用 agent-browser 版本
+     ```bash
+     bash tools/auto-redbook/scripts/render_simple.sh [文件名] [输出目录]
+     ```
+   - 方式二：使用 playwright 版本
+     ```bash
+     python tools/auto-redbook/scripts/render_xhs.py [文件名] -t [主题] -m [模式]
+     ```
+3. **生成结果**
+   - 封面（cover.png）
+   - 正文卡片（card_1.png, card_2.png...）
+
+### 「发布到小红书」
+当用户说「发布到小红书」时：
+1. **确认图片已生成**：检查是否有 cover.png 和卡片图片
+2. **发布笔记**（使用 agent-browser）
+   - 使用命令：`bash tools/auto-redbook/scripts/publish_xhs.sh "标题" "描述" cover.png card_1.png`
+   - 脚本会自动加载登录状态并打开创作页面
+   - 需要手动上传图片和点击发布
+3. **记录数据**：发布后提醒用户记录数据到统计表
+
+**注意**：首次使用需要先获取登录 cookies（已完成）
+
 ## 写作风格指南
 
 ### 核心原则
@@ -96,3 +127,25 @@
 1. **先检索，再创作**：每次写新内容前，先搜索素材库
 2. **数据驱动**：发布后记录数据，反哺方法论
 3. **持续沉淀**：好的内容、框架、表达，都要存入素材库
+
+## 工具配置
+
+### 小红书自动发布工具
+位置：`tools/auto-redbook/`
+
+**首次使用需要配置**：
+1. 安装 Python 依赖：`pip install -r tools/auto-redbook/requirements.txt`
+2. 安装 Playwright：`playwright install chromium`
+3. 配置小红书 Cookie（可选，仅发布功能需要）：
+   - 在 `tools/auto-redbook/` 目录创建 `.env` 文件
+   - 添加：`XHS_COOKIE=your_cookie_here`
+   - Cookie 获取：登录小红书网页版，F12 查看请求头
+
+**常用命令**：
+```bash
+# 生成图文卡片
+python tools/auto-redbook/scripts/render_xhs.py content.md -t default -m auto-split
+
+# 发布到小红书
+python tools/auto-redbook/scripts/publish_xhs.py --title "标题" --desc "描述" --images cover.png card_1.png
+```
