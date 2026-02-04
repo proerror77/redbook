@@ -1,0 +1,45 @@
+# Claude Code 系统目录
+.agents/
+.claude/
+.codex/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# 测试文件和输出
+test_output/
+test_*.md
+
+# 小红书工具相关
+tools/auto-redbook/.auth/
+tools/auto-redbook/venv/
+
+# 操作系统
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 临时文件
+*.log
+*.tmp
+/tmp/
