@@ -121,9 +121,10 @@
 
 ### 「生成小红书图文」
 当用户说「生成小红书图文」或「制作小红书卡片」时：
-1. **使用本地渲染**
-   - agent-browser: `bash tools/auto-redbook/scripts/render_simple.sh [文件名] [输出目录]`
-   - playwright: `python tools/auto-redbook/scripts/render_xhs.py [文件名] -t [主题] -m [模式]`
+1. **使用 agent-browser 本地渲染**
+   ```bash
+   bash tools/auto-redbook/scripts/render_simple.sh [文件名] [输出目录]
+   ```
 2. **生成结果**：封面（cover.png）+ 正文卡片（card_1.png, card_2.png...）
 
 ### 「发布到小红书」
@@ -133,6 +134,8 @@
    - 命令：`bash tools/auto-redbook/scripts/publish_xhs.sh "标题" "描述" cover.png card_1.png`
    - 需要手动上传图片和点击发布
 3. **记录数据**：发布后提醒用户记录数据到统计表
+
+**注意**：首次使用需要先获取登录 cookies
 
 ### 「发布到 X.com」
 当用户说「发布到 X.com」或「发布推文」时：
@@ -155,6 +158,8 @@
    - 按互动量排序，生成 Top 10 热门推文
    - 识别用户痛点，生成结构化 Markdown 报告
 4. **转化为选题**：如果发现有价值的话题，使用「记录选题」保存
+
+**详细说明**：参考 `tools/auto-x/README.md`
 
 ### 「抓取 X 关注列表」
 当用户说「抓取 X 关注列表」时：
@@ -239,4 +244,25 @@ agent-browser connect 9222
 - 更改的具体内容
 - 更改的原因
 - 相关的技术细节
+```
+
+## 工具配置
+
+### 小红书自动发布工具
+位置：`tools/auto-redbook/`
+
+**首次使用需要配置**：
+1. 安装 Python 依赖：`pip install -r tools/auto-redbook/requirements.txt`
+2. 启动 Chrome 调试模式并连接 agent-browser（参考上方前置条件）
+3. 配置小红书 Cookie（可选，仅发布功能需要）：
+   - 在 `tools/auto-redbook/` 目录创建 `.env` 文件
+   - 添加：`XHS_COOKIE=your_cookie_here`
+
+**常用命令**：
+```bash
+# 生成图文卡片（agent-browser 方式）
+bash tools/auto-redbook/scripts/render_simple.sh content.md output/
+
+# 发布到小红书
+python tools/auto-redbook/scripts/publish_xhs.py --title "标题" --desc "描述" --images cover.png card_1.png
 ```

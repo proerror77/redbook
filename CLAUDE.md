@@ -101,9 +101,10 @@
 1. **推荐方式**：调用 `/baoyu-xhs-images` skill
    - 支持 10 种视觉风格 x 8 种布局
    - 自动分析内容、生成大纲、渲染图片
-2. **备选方式**：使用本地渲染
-   - agent-browser: `bash tools/auto-redbook/scripts/render_simple.sh [文件名] [输出目录]`
-   - playwright: `python tools/auto-redbook/scripts/render_xhs.py [文件名] -t [主题] -m [模式]`
+2. **备选方式**：使用 agent-browser 本地渲染
+   ```bash
+   bash tools/auto-redbook/scripts/render_simple.sh [文件名] [输出目录]
+   ```
 
 ### 「发布到小红书」
 当用户说「发布到小红书」时：
@@ -214,7 +215,7 @@ agent-browser connect 9222
 
 **首次使用需要配置**：
 1. 安装 Python 依赖：`pip install -r tools/auto-redbook/requirements.txt`
-2. 安装 Playwright：`playwright install chromium`
+2. 启动 Chrome 调试模式并连接 agent-browser（参考上方前置条件）
 3. 配置小红书 Cookie（可选，仅发布功能需要）：
    - 在 `tools/auto-redbook/` 目录创建 `.env` 文件
    - 添加：`XHS_COOKIE=your_cookie_here`
@@ -222,8 +223,8 @@ agent-browser connect 9222
 
 **常用命令**：
 ```bash
-# 生成图文卡片
-python tools/auto-redbook/scripts/render_xhs.py content.md -t default -m auto-split
+# 生成图文卡片（agent-browser 方式）
+bash tools/auto-redbook/scripts/render_simple.sh content.md output/
 
 # 发布到小红书
 python tools/auto-redbook/scripts/publish_xhs.py --title "标题" --desc "描述" --images cover.png card_1.png
