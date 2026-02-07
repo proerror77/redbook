@@ -23,11 +23,7 @@
 06-业务运营/          # 商业数据
 ```
 
-## 内容领域
-- AI 商业应用与工具分享
-- 个人成长与效率提升
-- 技术教程与编程
-- 商业思维与创业
+<!-- 内容领域见 .rules -->
 
 ## AI 工作流指令
 
@@ -102,23 +98,12 @@
 
 ### 「生成小红书图文」
 当用户说「生成小红书图文」或「制作小红书卡片」时：
-1. **创建渲染用 Markdown**
-   - 添加 YAML 头部（emoji、title、subtitle）
-   - 将正文内容转换为适合渲染的格式
-   - 每个段落控制在 200 字左右
-   - 可使用 `---` 分隔不同卡片
-2. **选择渲染方式**
-   - 方式一（推荐）：使用 agent-browser 版本
-     ```bash
-     bash tools/auto-redbook/scripts/render_simple.sh [文件名] [输出目录]
-     ```
-   - 方式二：使用 playwright 版本
-     ```bash
-     python tools/auto-redbook/scripts/render_xhs.py [文件名] -t [主题] -m [模式]
-     ```
-3. **生成结果**
-   - 封面（cover.png）
-   - 正文卡片（card_1.png, card_2.png...）
+1. **推荐方式**：调用 `/baoyu-xhs-images` skill
+   - 支持 10 种视觉风格 x 8 种布局
+   - 自动分析内容、生成大纲、渲染图片
+2. **备选方式**：使用本地渲染
+   - agent-browser: `bash tools/auto-redbook/scripts/render_simple.sh [文件名] [输出目录]`
+   - playwright: `python tools/auto-redbook/scripts/render_xhs.py [文件名] -t [主题] -m [模式]`
 
 ### 「发布到小红书」
 当用户说「发布到小红书」时：
@@ -131,51 +116,96 @@
 
 **注意**：首次使用需要先获取登录 cookies（已完成）
 
-## 写作风格指南
+### 「发布到 X.com」
+当用户说「发布到 X.com」或「发布推文」时：
+1. **准备内容**：确认推文文本和图片（如有）
+2. **使用 skill 发布**：调用 `/baoyu-post-to-x` skill
+   - 支持文本、图片、视频、长文章
+   - 自动通过 Chrome CDP 发布，无需手动操作
+3. **记录数据**：发布后提醒用户记录数据到统计表
 
-### 核心原则
-- **简洁有力**：一句话能说清的，不用两句
-- **口语化**：像跟朋友聊天，不要书面语
-- **有观点**：敢于表达立场，不要模棱两可
-- **有价值**：每条内容都要让读者有收获
+### 「搜索 X 话题」
+当用户说「搜索 X 话题」或「研究 X 讨论」时：
+1. **确定搜索关键词**：根据内容领域选择相关话题
+2. **运行搜索脚本**
+   ```bash
+   python tools/auto-x/scripts/search_x.py "关键词" [输出文件]
+   ```
+3. **自动分析**
+   - 脚本会自动提取推文数据（作者、内容、点赞、转发）
+   - 按互动量排序，生成 Top 10 热门推文
+   - 识别用户痛点（基于关键词匹配）
+   - 生成结构化 Markdown 报告
+4. **转化为选题**：如果发现有价值的话题，使用「记录选题」保存
 
-### 平台差异
-- **小红书**：标题要有情绪，内容要有干货
-- **抖音**：前3秒定生死，节奏要快
-- **X.com**：观点要锐利，表达要精炼
-- **公众号**：可以深度，但要有结构
+**详细说明**：参考 `tools/auto-x/README.md`
 
-## 核心提醒
-1. **先检索，再创作**：每次写新内容前，先搜索素材库
-2. **数据驱动**：发布后记录数据，反哺方法论
-3. **持续沉淀**：好的内容、框架、表达，都要存入素材库
+### 「抓取 X 关注列表」
+当用户说「抓取 X 关注列表」时：
+1. **运行抓取脚本**
+   ```bash
+   python tools/auto-x/scripts/scrape_following.py [用户名] [滚动次数]
+   ```
+   - 默认用户名: 0xcybersmile
+   - 默认滚动 5 次
+2. **输出结果**
+   - JSON 数据: `tools/auto-x/data/following.json`
+   - Markdown 报告: `05-选题研究/X-关注列表-{用户名}-{日期}.md`
+3. **后续操作**：可使用「分析 X 关注者」进一步分析
 
-## Git 提交规范
+### 「分析 X 关注者」
+当用户说「分析 X 关注者」时：
+1. **运行分析脚本**
+   ```bash
+   python tools/auto-x/scripts/analyze_following.py [采样数量] [following.json路径]
+   ```
+   - 默认采样 10 个账号
+   - 需要先运行「抓取 X 关注列表」生成 following.json
+2. **分析内容**
+   - 抓取每个关注者的最近推文
+   - 关键词频率分析（AI、Crypto、创业、效率、编程）
+   - 话题分类统计
+3. **输出报告**: `05-选题研究/X-关注者话题分析-{日期}.md`
 
-### Atomic Commit 原则
-每个提交应该是一个逻辑上完整、独立的更改单元。
+### 「X 热门趋势」
+当用户说「X 热门趋势」时：
+1. **运行趋势抓取脚本**
+   ```bash
+   python tools/auto-x/scripts/trending_topics.py [Top N]
+   ```
+   - 默认获取 Top 5 趋势话题的讨论
+2. **分析内容**
+   - 抓取 X.com Explore/Trending 页面
+   - 提取趋势话题名称、分类、讨论量
+   - 对 Top N 话题获取代表性推文
+3. **输出报告**: `05-选题研究/X-每日热点-{日期}.md`
 
-**核心要求**：
-1. **单一职责**：一个提交只做一件事
-2. **可独立回滚**：提交可以安全地被撤销而不影响其他功能
-3. **完整功能**：提交后代码应该是可运行的状态
-4. **清晰描述**：提交消息准确描述更改内容和原因
+### 「X 每日研究」
+当用户说「X 每日研究」时：
+1. **运行每日研究主流程**
+   ```bash
+   python tools/auto-x/scripts/daily_research.py [--skip-trending] [--skip-search] [--skip-following] [--keywords KW1 KW2]
+   ```
+   - 默认搜索关键词: AI tools, solopreneur, crypto alpha
+2. **执行步骤**
+   - Step 1: 抓取热门趋势
+   - Step 2: 搜索领域关键词
+   - Step 3: 分析关注者动态（需要 following.json）
+3. **输出结果**
+   - 综合报告: `05-选题研究/X-每日研究-{日期}.md`
+   - 存档: `tools/auto-x/data/daily/{日期}.md`
+   - 自动追加选题到 `01-内容生产/选题管理/00-选题记录.md`
 
-**示例**：
-- ✓ 好的提交：「添加小红书图文渲染功能」
-- ✗ 不好的提交：「修复bug、添加功能、更新文档」（混合了多个更改）
-
-**提交消息格式**：
+**前置条件**：需要启动 Chrome 调试模式并连接 agent-browser：
+```bash
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+  --remote-debugging-port=9222 \
+  --user-data-dir="$HOME/.local/share/chrome-debug-profile" \
+  --no-first-run &
+agent-browser connect 9222
 ```
-简短描述（不超过50字）
 
-详细说明（可选）：
-- 更改的具体内容
-- 更改的原因
-- 相关的技术细节
-
-Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
-```
+<!-- 写作风格、核心提醒、Git 规范、可用 Skills 见 .rules -->
 
 ## 工具配置
 
