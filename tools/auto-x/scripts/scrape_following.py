@@ -16,7 +16,7 @@ from x_utils import (
 
 
 DEFAULT_USERNAME = "0xcybersmile"
-DEFAULT_SCROLL_TIMES = 5
+DEFAULT_SCROLL_TIMES = 100
 
 
 def scrape_following(username: str, scroll_times: int = DEFAULT_SCROLL_TIMES) -> list:

@@ -73,8 +73,8 @@ def ensure_browser() -> bool:
     Returns:
         True 如果连接正常
     """
-    output = run_ab("status", timeout=10)
-    if not output or "error" in output.lower():
+    output = run_ab("snapshot", timeout=10)
+    if not output or "unknown" in output.lower() or "error: no" in output.lower():
         print_colored("agent-browser 未连接，请先启动 Chrome 并连接:", 'red')
         print_colored('  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" '
                       '--remote-debugging-port=9222 '
