@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 X/Twitter 自动化工具 - 共享工具模块
-提供 agent-browser 交互封装、数据解析、报告生成等通用功能
+提供 actionbook 浏览器交互封装、数据解析、报告生成等通用功能
 """
 
 import subprocess
@@ -12,6 +12,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import List, Dict, Optional
 
+import os
 
 # 项目根目录
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
@@ -37,16 +38,17 @@ def print_colored(text: str, color: str = 'nc'):
 
 def run_ab(command: str, timeout: int = 30) -> str:
     """
-    执行 agent-browser 命令并返回输出
+    执行 actionbook browser 命令并返回输出
 
     Args:
-        command: agent-browser 子命令（如 'open "url"', 'snapshot', 'scroll down 800'）
+        command: 浏览器子命令（如 'open "url"', 'snapshot', 'eval "window.scrollBy(0,800)"'）
         timeout: 超时时间（秒）
 
     Returns:
         命令的 stdout 输出
     """
-    full_cmd = f"agent-browser {command}"
+    full_cmd = f"actionbook browser {command}"
+    env = {**os.environ, 'PATH': f"{Path.home()}/.local/bin:{os.environ.get('PATH', '')}"}
     try:
         result = subprocess.run(
             full_cmd,
@@ -54,35 +56,36 @@ def run_ab(command: str, timeout: int = 30) -> str:
             capture_output=True,
             text=True,
             timeout=timeout,
+            env=env,
         )
         if result.returncode != 0 and result.stderr:
-            print_colored(f"agent-browser 警告: {result.stderr.strip()}", 'yellow')
+            print_colored(f"actionbook 警告: {result.stderr.strip()}", 'yellow')
         return result.stdout.strip()
     except subprocess.TimeoutExpired:
-        print_colored(f"agent-browser 命令超时 ({timeout}s): {command}", 'red')
+        print_colored(f"actionbook 命令超时 ({timeout}s): {command}", 'red')
         return ""
     except FileNotFoundError:
-        print_colored("错误: 未找到 agent-browser，请确认已安装", 'red')
+        print_colored("错误: 未找到 actionbook，请确认已安装", 'red')
         return ""
 
 
 def ensure_browser() -> bool:
     """
-    检查 agent-browser 连接状态
+    检查 actionbook 浏览器连接状态
 
     Returns:
         True 如果连接正常
     """
     output = run_ab("snapshot", timeout=10)
-    if not output or "unknown" in output.lower() or "error: no" in output.lower():
-        print_colored("agent-browser 未连接，请先启动 Chrome 并连接:", 'red')
+    if not output or "error" in output.lower():
+        print_colored("actionbook 未连接，请先启动 Chrome 并连接:", 'red')
         print_colored('  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" '
                       '--remote-debugging-port=9222 '
                       '--user-data-dir="$HOME/.local/share/chrome-debug-profile" '
                       '--no-first-run &', 'yellow')
-        print_colored('  agent-browser connect 9222', 'yellow')
+        print_colored('  actionbook browser connect 9222', 'yellow')
         return False
-    print_colored("✓ agent-browser 已连接", 'green')
+    print_colored("✓ actionbook 已连接", 'green')
     return True
 
 
@@ -124,7 +127,7 @@ def scroll_and_collect(times: int = 3, wait: float = 2.0) -> List[str]:
         snapshot = get_snapshot()
         if snapshot:
             snapshots.append(snapshot)
-        run_ab("scroll down 800")
+        run_ab('eval "window.scrollBy(0, 800)"')
         time.sleep(wait)
     # 最后一次滚动后再取一次
     final = get_snapshot()
