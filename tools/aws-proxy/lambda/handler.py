@@ -39,11 +39,27 @@ def handler(event, context):
     raw_path = event.get("rawPath", "")
 
     if not token:
-        return _response(400, "Missing token")
+        return _response(404, "Not found")
 
     token_record = _get_token(token)
     if not token_record:
-        return _response(403, "Invalid or expired token")
+        # Return 404 instead of 403 to avoid token existence probing
+        return _response(404, "Not found")
+
+    # Track access: count, timestamp, source IP
+    source_ip = ""
+    try:
+        source_ip = event.get("requestContext", {}).get("http", {}).get("sourceIp", "")
+    except Exception:
+        pass
+    _track_token_access(token, source_ip)
+
+    # Optional: daily request limit (100/day)
+    daily_count = token_record.get("daily_count", 0)
+    daily_date = token_record.get("daily_date", "")
+    today = time.strftime("%Y-%m-%d", time.gmtime())
+    if daily_date == today and int(daily_count) > 100:
+        return _response(429, "Rate limit exceeded")
 
     nodes = _get_active_nodes()
     if not nodes:
@@ -100,6 +116,51 @@ def _get_token(token):
     if expires_at and int(expires_at) < int(time.time()):
         return None
     return item
+
+
+def _track_token_access(token, source_ip=""):
+    """Atomically increment access_count, update last_access and daily counters."""
+    table = dynamodb.Table(TOKENS_TABLE)
+    today = time.strftime("%Y-%m-%d", time.gmtime())
+    now = int(time.time())
+    try:
+        # Reset daily counter if date changed
+        table.update_item(
+            Key={"token": token},
+            UpdateExpression=(
+                "SET access_count = if_not_exists(access_count, :zero) + :one, "
+                "last_access = :now, last_ip = :ip, "
+                "daily_count = if_not_exists(daily_count, :zero) + :one, "
+                "daily_date = :today"
+            ),
+            ConditionExpression="daily_date = :today OR attribute_not_exists(daily_date)",
+            ExpressionAttributeValues={
+                ":zero": 0,
+                ":one": 1,
+                ":now": now,
+                ":ip": source_ip,
+                ":today": today,
+            },
+        )
+    except table.meta.client.exceptions.ConditionalCheckFailedException:
+        # Date changed — reset daily counter
+        table.update_item(
+            Key={"token": token},
+            UpdateExpression=(
+                "SET access_count = if_not_exists(access_count, :zero) + :one, "
+                "last_access = :now, last_ip = :ip, "
+                "daily_count = :one, daily_date = :today"
+            ),
+            ExpressionAttributeValues={
+                ":zero": 0,
+                ":one": 1,
+                ":now": now,
+                ":ip": source_ip,
+                ":today": today,
+            },
+        )
+    except Exception:
+        pass  # Non-critical — don't fail the request
 
 
 def _get_active_nodes():

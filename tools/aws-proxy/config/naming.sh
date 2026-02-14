@@ -39,6 +39,7 @@ S3_BUCKET_PREFIX="proxy-config"
 
 # --- Lambda / API Gateway ---
 LAMBDA_NAME="proxy-sub-prod"
+HEALTH_LAMBDA_NAME="proxy-health-check"
 API_NAME="proxy-sub-api-prod"
 
 # --- IAM ---
@@ -53,7 +54,10 @@ NODES_TABLE="proxy-nodes"
 # --- Secrets Manager ---
 SECRET_NAME="proxy/sing-box-credentials"
 
-export S3_BUCKET_PREFIX LAMBDA_NAME API_NAME
+# --- SNS ---
+SNS_TOPIC_NAME="proxy-alerts"
+
+export S3_BUCKET_PREFIX LAMBDA_NAME HEALTH_LAMBDA_NAME API_NAME
 export EC2_ROLE LAMBDA_ROLE INSTANCE_PROFILE
 export TOKENS_TABLE NODES_TABLE
-export SECRET_NAME
+export SECRET_NAME SNS_TOPIC_NAME
