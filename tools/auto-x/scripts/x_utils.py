@@ -77,7 +77,8 @@ def ensure_browser() -> bool:
         True 如果连接正常
     """
     output = run_ab("snapshot", timeout=10)
-    if not output or "error" in output.lower():
+    # 检查是否有有效的 accessibility tree 输出（而不是简单查找 "error"）
+    if not output or len(output) < 100 or "- generic:" not in output:
         print_colored("actionbook 未连接，请先启动 Chrome 并连接:", 'red')
         print_colored('  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" '
                       '--remote-debugging-port=9222 '
@@ -138,15 +139,16 @@ def scroll_and_collect(times: int = 3, wait: float = 2.0) -> List[str]:
 
 def extract_tweets(snapshot: str) -> List[Dict]:
     """
-    从 agent-browser snapshot 文本中解析推文数据
+    从 actionbook snapshot 文本中解析推文数据
 
-    snapshot 的 accessibility tree 通常包含类似结构：
-    - 用户名/显示名
-    - 推文正文
-    - 互动数据（回复、转发、点赞）
+    actionbook 的 accessibility tree 结构：
+    - article:
+      - @handle 和显示名
+      - text: 推文内容
+      - 互动数据（X 回复、Y 次转帖、Z 喜欢）
 
     Args:
-        snapshot: agent-browser snapshot 输出文本
+        snapshot: actionbook snapshot 输出文本
 
     Returns:
         推文字典列表 [{author, handle, content, likes, retweets, replies}]
@@ -155,68 +157,96 @@ def extract_tweets(snapshot: str) -> List[Dict]:
     if not snapshot:
         return tweets
 
-    lines = snapshot.split('\n')
-    current_tweet = {}
-    content_lines = []
+    # 按 article 分割（每条推文是一个 article）
+    articles = re.split(r'^\s*-\s*article:', snapshot, flags=re.MULTILINE)
 
-    for line in lines:
-        line = line.strip()
-        if not line:
-            continue
+    for article in articles[1:]:  # 跳过第一个空分割
+        tweet = {
+            'author': '',
+            'handle': '',
+            'content': '',
+            'likes': 0,
+            'retweets': 0,
+            'replies': 0,
+        }
 
-        # 匹配 @handle 格式（推文作者）
-        handle_match = re.search(r'@(\w{1,15})', line)
+        lines = article.split('\n')
+        text_lines = []
+        found_handle = False
+        in_content = False
 
-        # 匹配互动数据：数字 + replies/reposts/likes
-        likes_match = re.search(r'(\d[\d,.]*)\s*(?:likes?|Likes?)', line)
-        retweets_match = re.search(r'(\d[\d,.]*)\s*(?:reposts?|Reposts?|retweets?)', line)
-        replies_match = re.search(r'(\d[\d,.]*)\s*(?:replies?|Replies?)', line)
+        for i, line in enumerate(lines):
+            stripped = line.strip()
 
-        # 检测推文边界：当遇到新的 handle 且已有内容时，保存上一条
-        if handle_match and content_lines and current_tweet.get('handle'):
-            current_tweet['content'] = ' '.join(content_lines).strip()
-            if current_tweet['content']:
-                tweets.append(current_tweet)
-            current_tweet = {}
-            content_lines = []
+            # 1. 提取 @handle
+            if not found_handle:
+                handle_match = re.search(r'@(\w{1,15})', stripped)
+                if handle_match:
+                    tweet['handle'] = handle_match.group(1)
+                    found_handle = True
+                    # 向上查找显示名（通常在 handle 上方的 text: 行）
+                    for j in range(i-1, max(0, i-10), -1):
+                        prev_line = lines[j].strip()
+                        if prev_line.startswith('- text:'):
+                            author_text = prev_line.replace('- text:', '').strip()
+                            if author_text and not author_text.startswith('@'):
+                                tweet['author'] = author_text
+                                break
+                    continue
 
-        if handle_match and not current_tweet.get('handle'):
-            current_tweet['handle'] = handle_match.group(1)
-            # 尝试从同一行提取显示名（handle 前面的文本）
-            before_handle = line[:handle_match.start()].strip()
-            if before_handle:
-                current_tweet['author'] = before_handle
-            else:
-                current_tweet['author'] = handle_match.group(1)
+            # 2. 提取推文内容（handle 之后的 text: 行）
+            if found_handle and not in_content:
+                if stripped.startswith('- text:'):
+                    content_text = stripped.replace('- text:', '').strip()
+                    # 排除 UI 元素和作者名
+                    if (content_text
+                        and not content_text.startswith('@')
+                        and not content_text in ['主页', '探索', '通知', '聊天', '书签']
+                        and len(content_text) > 10):  # 推文至少 10 字符
+                        in_content = True
+                        text_lines.append(content_text)
+                        # 继续收集多行内容（直到遇到互动数据）
+                        for k in range(i+1, len(lines)):
+                            next_line = lines[k].strip()
+                            if next_line.startswith('- text:'):
+                                next_text = next_line.replace('- text:', '').strip()
+                                # 检查是否是互动数据的开始
+                                if '回复' in next_text or '转帖' in next_text or '喜欢' in next_text:
+                                    break
+                                if next_text and len(next_text) > 5:
+                                    text_lines.append(next_text)
+                            elif '回复' in next_line or '转帖' in next_line:
+                                break
 
-        if likes_match:
-            current_tweet['likes'] = _parse_number(likes_match.group(1))
-        if retweets_match:
-            current_tweet['retweets'] = _parse_number(retweets_match.group(1))
-        if replies_match:
-            current_tweet['replies'] = _parse_number(replies_match.group(1))
+            # 3. 提取互动数据
+            # 格式：X 回复、Y 次转帖、Z 喜欢
+            if '次转帖' in stripped or '喜欢' in stripped or '回复' in stripped:
+                # 提取回复数
+                replies_match = re.search(r'(\d[\d,]*)\s*回复', stripped)
+                if replies_match:
+                    tweet['replies'] = _parse_number(replies_match.group(1))
 
-        # 收集内容行（排除明显的 UI 元素）
-        if (current_tweet.get('handle')
-                and not handle_match
-                and not likes_match
-                and not retweets_match
-                and not _is_ui_element(line)):
-            content_lines.append(line)
+                # 提取转发数
+                retweets_match = re.search(r'(\d[\d,]*)\s*次转帖', stripped)
+                if retweets_match:
+                    tweet['retweets'] = _parse_number(retweets_match.group(1))
 
-    # 保存最后一条推文
-    if current_tweet.get('handle') and content_lines:
-        current_tweet['content'] = ' '.join(content_lines).strip()
-        if current_tweet['content']:
-            tweets.append(current_tweet)
+                # 提取点赞数
+                likes_match = re.search(r'(\d[\d,]*)\s*喜欢', stripped)
+                if likes_match:
+                    tweet['likes'] = _parse_number(likes_match.group(1))
 
-    # 填充默认值
-    for tweet in tweets:
-        tweet.setdefault('author', tweet.get('handle', ''))
-        tweet.setdefault('likes', 0)
-        tweet.setdefault('retweets', 0)
-        tweet.setdefault('replies', 0)
-        tweet.setdefault('content', '')
+        # 组装推文内容
+        if text_lines:
+            tweet['content'] = ' '.join(text_lines).strip()
+
+        # 只保存有效推文（有 handle 和内容）
+        if tweet['handle'] and tweet['content']:
+            if not tweet['author']:
+                tweet['author'] = tweet['handle']
+            tweets.append(tweet)
+
+    return tweets
 
     return tweets
 

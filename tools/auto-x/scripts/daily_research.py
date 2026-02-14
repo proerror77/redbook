@@ -18,6 +18,68 @@ from x_utils import (
 DEFAULT_KEYWORDS = ['AI tools', 'solopreneur', 'crypto alpha']
 
 
+def run_timeline() -> str:
+    """运行 X Pro 多列分析，返回报告文本"""
+    print_colored("\n" + "=" * 50, 'green')
+    print_colored("📊 Priority 1: X Pro 多列分析（最高优先级）", 'green')
+    print_colored("=" * 50, 'green')
+    try:
+        from scrape_xpro_columns import (
+            identify_columns,
+            scroll_column,
+            merge_and_deduplicate,
+            analyze_xpro_topics,
+            generate_xpro_report
+        )
+        from x_utils import navigate, run_ab, extract_tweets
+
+        # 打开 X Pro AI Deck
+        print_colored("\n打开 X Pro AI Deck...", 'yellow')
+        navigate("https://pro.x.com/i/decks/2022466575597736041", wait=3.0)
+
+        # 识别列配置
+        print_colored("\n识别 Deck 列配置...", 'yellow')
+        initial_snapshot = run_ab('snapshot', timeout=30)
+        columns = identify_columns(initial_snapshot)
+
+        if columns:
+            print_colored(f"✓ 发现 {len(columns)} 列", 'green')
+        else:
+            print_colored("未识别到任何列，使用默认配置", 'yellow')
+            columns = [{"name": "AI Deck", "type": "mixed"}]
+
+        # 滚动收集推文
+        print_colored(f"\n滚动收集数据（30 次）...", 'yellow')
+        snapshots = scroll_column("all", times=30, wait=2.5)
+
+        # 解析推文
+        print_colored("\n解析推文数据...", 'yellow')
+        all_tweets = []
+        for snapshot in snapshots:
+            tweets = extract_tweets(snapshot)
+            all_tweets.extend(tweets)
+
+        # 去重
+        unique_tweets = merge_and_deduplicate(all_tweets)
+        print_colored(f"✓ 共提取 {len(unique_tweets)} 条推文", 'green')
+
+        # 分析跨列话题
+        print_colored("\n分析跨列热门话题...", 'yellow')
+        analysis = analyze_xpro_topics(unique_tweets, columns)
+
+        print_colored(f"✓ 识别 {len(analysis['topics'])} 个热门话题", 'green')
+        print_colored(f"✓ 发现 {len(analysis['hot_tweets'])} 条高互动推文", 'green')
+
+        # 生成报告（不保存到单独文件，只返回文本）
+        return generate_xpro_report(unique_tweets, columns, analysis, output_file=None)
+
+    except Exception as e:
+        print_colored(f"X Pro 多列分析失败: {e}", 'red')
+        import traceback
+        traceback.print_exc()
+        return f"（X Pro 多列分析失败: {e}）\n"
+
+
 def run_trending() -> str:
     """运行热门趋势抓取，返回报告文本"""
     print_colored("\n" + "=" * 50, 'green')
@@ -109,6 +171,7 @@ def append_topics_to_record(report: str):
 
 def main():
     parser = argparse.ArgumentParser(description='X.com 每日研究')
+    parser.add_argument('--skip-timeline', action='store_true', help='跳过 Timeline 分析')
     parser.add_argument('--skip-trending', action='store_true', help='跳过热门趋势')
     parser.add_argument('--skip-search', action='store_true', help='跳过关键词搜索')
     parser.add_argument('--skip-following', action='store_true', help='跳过关注者分析')
@@ -123,6 +186,10 @@ def main():
 
     ensure_dirs()
     sections = []
+
+    # Priority 1: X Pro 多列分析（最高优先级）
+    if not args.skip_timeline:
+        sections.append(run_timeline())
 
     # Step 1: 热门趋势
     if not args.skip_trending:
