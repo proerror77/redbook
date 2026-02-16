@@ -309,6 +309,17 @@ def _generate_clash_yaml(nodes, creds):
         "    - 'RULE-SET,Apple,Apple'",
         "    - 'DOMAIN-SUFFIX,weixin.qq.com,DIRECT'",
         "    - 'DOMAIN-SUFFIX,wechat.com,DIRECT'",
+        "    - 'DOMAIN-SUFFIX,qpic.cn,DIRECT'",
+        "    - 'DOMAIN-SUFFIX,gtimg.com,DIRECT'",
+        "    - 'DOMAIN-SUFFIX,qlogo.cn,DIRECT'",
+        "    - 'DOMAIN-SUFFIX,servicewechat.com,DIRECT'",
+        "    - 'DOMAIN-SUFFIX,wx.qq.com,DIRECT'",
+        "    - 'DOMAIN-SUFFIX,wxs.qq.com,DIRECT'",
+        "    - 'DOMAIN-SUFFIX,v.qq.com,DIRECT'",
+        "    - 'DOMAIN-SUFFIX,vweixinf.tc.qq.com,DIRECT'",
+        "    - 'DOMAIN-SUFFIX,video.weixin.qq.com,DIRECT'",
+        "    - 'DOMAIN-SUFFIX,szshort.weixin.qq.com,DIRECT'",
+        "    - 'DOMAIN-SUFFIX,szsupport.weixin.qq.com,DIRECT'",
         "    - 'DOMAIN-SUFFIX,qq.com,Domestic'",
         "    - 'DOMAIN-SUFFIX,tencent.com,Domestic'",
         "    - 'RULE-SET,PROXY,Proxy'",
@@ -385,6 +396,10 @@ _CDN_GEOIP = "https://testingcf.jsdelivr.net/gh/lyc8503/sing-box-rules@rule-set-
 
 # Rule sets — lyc8503/sing-box-rules (enhanced, daily updated)
 _SB_RULE_SETS = [
+    # China rule sets (daily updated, more accurate than built-in)
+    ("geoip-cn",          f"{_CDN_GEOIP}/geoip-cn.srs"),
+    ("geosite-cn",        f"{_CDN_GEOSITE}/geosite-cn.srs"),
+    # Streaming services
     ("geoip-netflix",     f"{_CDN_GEOIP}/geoip-netflix.srs"),
     ("geosite-netflix",   f"{_CDN_GEOSITE}/geosite-netflix.srs"),
     ("geosite-disney",    f"{_CDN_GEOSITE}/geosite-disney.srs"),
@@ -431,9 +446,10 @@ def _generate_singbox_json(nodes, creds):
             all_tags.append(ob["tag"])
 
     groups = _sb_build_groups(all_tags)
+    # Keep special outbounds for SFI 1.10.5 compatibility (will show deprecation warnings)
     direct = {"type": "direct", "tag": "direct"}
-    block = {"type": "block", "tag": "block"}
-    dns_out = {"type": "dns", "tag": "dns-out"}
+    dns_out = {"type": "dns", "tag": "dns-out"}  # SFI 1.10.5 needs this
+    block = {"type": "block", "tag": "block"}    # SFI 1.10.5 needs this
 
     result = {
         "log": {"level": "info"},
@@ -450,7 +466,7 @@ def _generate_singbox_json(nodes, creds):
                 "sniff": True,
             },
         ],
-        "outbounds": groups + outbounds + [direct, block, dns_out],
+        "outbounds": groups + outbounds + [direct, dns_out, block],
         "route": _sb_route_config(),
     }
     return json.dumps(result, indent=2, ensure_ascii=False)
@@ -474,9 +490,44 @@ def _sb_build_groups(all_tags):
 def _sb_route_config():
     """Route configuration — compatible old format."""
     rules = [
-        {"protocol": "dns", "outbound": "dns-out"},
-        {"network": "udp", "port": 443, "outbound": "block"},
+        {"protocol": "dns", "outbound": "dns-out"},  # SFI 1.10.5 needs dns-out (not built-in dns)
         {"geoip": "private", "outbound": "direct"},
+        # WeChat + Tencent CDN direct rules (critical for moments, articles, images, videos)
+        {"domain_suffix": [
+            # WeChat core domains
+            "weixin.qq.com", "wechat.com", "weixin.com", "weixinbridge.com",
+            "wx.qq.com", "wxs.qq.com", "servicewechat.com",
+            # WeChat CDN subdomains (critical for moments/videos)
+            "cdn.wechat.com", "c2c.cdn.wechat.com", "sns.cdn.wechat.com",
+            "snsqpic.cdn.wechat.com", "novac2c.cdn.wechat.com",
+            # Official Account images (NEW domain)
+            "qpic.cn", "mmbiz.qpic.cn", "mmecoa.qpic.cn",
+            "mmsns.qpic.cn", "cmmsns.qpic.cn", "channel.qpic.cn",
+            "media.qpic.cn", "gif.media.qpic.cn",
+            # Logos and avatars
+            "qlogo.cn", "wx.qlogo.cn", "mmbiz.qlogo.cn", "shp.qlogo.cn",
+            # WeChat resources
+            "res.wx.qq.com",
+            # WeChat video services
+            "v.qq.com", "video.weixin.qq.com", "video.qq.com",
+            "finder.qq.com", "szshort.weixin.qq.com", "szsupport.weixin.qq.com",
+            # Tencent CDN (tc.qq.com subdomains)
+            "tc.qq.com", "vweixinf.tc.qq.com", "weixinc2c.tc.qq.com",
+            "wxsnsad.tc.qq.com", "vcloud1023.tc.qq.com",
+            # Tencent Cloud CDN
+            "gtimg.com", "gtimg.cn",
+            "myqcloud.com", "qcloud.com", "tencentcs.com",
+            # QQ services (used by Official Accounts)
+            "url.cn", "qqmail.com"
+        ], "outbound": "direct"},
+        # X.com (Twitter) CDN must go through proxy (before China rules to prevent misrouting)
+        {"domain_suffix": [
+            "x.com", "twitter.com", "t.co",
+            "twimg.com", "video.twimg.com", "pbs.twimg.com",
+            "video-ft.twimg.com", "cdn.syndication.twimg.com",
+            "abs.twimg.com", "ton.twimg.com"
+        ], "outbound": "Proxy"},
+        # Streaming services MUST come before China rules to prevent misrouting
         {"rule_set": ["geoip-netflix", "geosite-netflix"], "outbound": "Netflix"},
         {"rule_set": "geosite-disney", "outbound": "Disney Plus"},
         {"rule_set": "geosite-youtube", "outbound": "YouTube"},
@@ -486,8 +537,10 @@ def _sb_route_config():
         {"rule_set": "geosite-openai", "outbound": "AI Suite"},
         {"rule_set": "geosite-microsoft", "outbound": "Microsoft"},
         {"rule_set": "geosite-tiktok", "outbound": "TikTok"},
-        {"geoip": "cn", "outbound": "direct"},
-        {"geosite": "cn", "outbound": "direct"},
+        # China geoip/geosite must go direct (using daily-updated rule sets, not built-in data)
+        {"rule_set": ["geoip-cn", "geosite-cn"], "outbound": "direct"},
+        # Block UDP 443 (QUIC) for non-China traffic to force TCP through proxy
+        {"network": "udp", "port": 443, "outbound": "block"},
     ]
 
     rule_set_defs = [
@@ -507,12 +560,13 @@ def _sb_dns_config():
     """DNS configuration — simple, compatible format."""
     return {
         "servers": [
-            {"tag": "google", "address": "tls://8.8.8.8"},
-            {"tag": "local", "address": "223.5.5.5", "detour": "direct"},
+            {"tag": "ali", "address": "tls://223.5.5.5"},  # For non-CN domains (via proxy)
+            {"tag": "local", "address": "223.6.6.6", "detour": "direct"},  # For CN domains (direct)
         ],
         "rules": [
-            {"geosite": "cn", "server": "local"},
+            {"rule_set": "geosite-cn", "server": "local"},  # China domains use local DNS
         ],
+        "final": "ali",  # Default: non-CN domains use Aliyun DNS via proxy
         "strategy": "ipv4_only",
     }
 
