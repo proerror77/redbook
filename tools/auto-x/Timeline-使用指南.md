@@ -34,17 +34,17 @@ python3 tools/auto-x/scripts/scrape_timeline.py --output "test-timeline.md"
 
 ### 方式 2：每日研究（推荐）
 
-Timeline 分析已集成到 `daily_research.py`，每天 7:00 AM 自动运行。
+Timeline 分析已集成到每日自动化（`bash tools/daily.sh`），每天 7:00 AM 自动运行。
 
 ```bash
 # 完整运行（包含 Timeline）
-python3 tools/auto-x/scripts/daily_research.py
+bash tools/daily.sh
 
 # 只运行 Timeline 分析
-python3 tools/auto-x/scripts/daily_research.py --skip-trending --skip-search --skip-following
+bash tools/daily.sh --skip-trending --skip-search --skip-following --skip-hn --skip-reddit
 
 # 跳过 Timeline（如果需要）
-python3 tools/auto-x/scripts/daily_research.py --skip-timeline
+bash tools/daily.sh --skip-timeline
 ```
 
 ---
@@ -187,12 +187,12 @@ Priority 4: 关键词补充         # 按需，深挖特定领域
 
 ### 输出
 
-- **每日报告**：`05-选题研究/X-每日研究-{日期}.md`
+- **每日报告**：`05-选题研究/X-每日日程-{日期}.md`
   - 包含所有 4 个优先级的分析
   - Timeline 热点在最前面
   - 综合选题建议在最后
 
-- **存档**：`tools/auto-x/data/daily/{日期}.md`
+- **存档（可选）**：`tools/auto-x/data/daily/{日期}.md`（仅 `daily_research.py` 会生成）
 
 ---
 
@@ -248,6 +248,6 @@ actionbook browser connect 9222
 
 1. **测试运行**：`python3 tools/auto-x/scripts/scrape_timeline.py`
 2. **查看报告**：`05-选题研究/X-Timeline-{日期}.md`
-3. **明天早上查看每日研究**：`05-选题研究/X-每日研究-{日期}.md`
+3. **明天早上查看每日日程**：`05-选题研究/X-每日日程-{日期}.md`
 
 **如有问题**，参考故障排查部分或联系开发者。

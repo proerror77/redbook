@@ -79,12 +79,12 @@ def ensure_browser() -> bool:
     output = run_ab("snapshot", timeout=10)
     # 检查是否有有效的 accessibility tree 输出（而不是简单查找 "error"）
     if not output or len(output) < 100 or "- generic:" not in output:
-        print_colored("actionbook 未连接，请先启动 Chrome 并连接:", 'red')
-        print_colored('  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" '
-                      '--remote-debugging-port=9222 '
-                      '--user-data-dir="$HOME/.local/share/chrome-debug-profile" '
-                      '--no-first-run &', 'yellow')
-        print_colored('  actionbook browser connect 9222', 'yellow')
+        print_colored("actionbook 未连接。推荐直接运行每日入口（会自动处理 Chrome + 连接）：", 'red')
+        print_colored("  bash tools/daily.sh", 'yellow')
+        print_colored("", 'nc')
+        print_colored("或手动连接（按你当前模式二选一）：", 'yellow')
+        print_colored('  actionbook browser connect 9222  # headed Chrome', 'yellow')
+        print_colored('  actionbook browser connect 9223  # headless Chrome（run_daily.sh）', 'yellow')
         return False
     print_colored("✓ actionbook 已连接", 'green')
     return True

@@ -86,6 +86,8 @@ fi
 # 运行每日日程
 log "运行每日日程脚本..."
 cd "$SCRIPT_DIR"
-python3 daily_schedule.py "$@" 2>&1 | tee -a "$LOG_FILE"
+# NOTE: stdout is piped into tee, so Python will block-buffer by default.
+# Use unbuffered mode so users can see real-time progress in terminal/log.
+PYTHONUNBUFFERED=1 python3 -u daily_schedule.py "$@" 2>&1 | tee -a "$LOG_FILE"
 
 log "========== 每日日程结束 =========="

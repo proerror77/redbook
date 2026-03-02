@@ -5,17 +5,19 @@
 ## 初始化状态
 
 ```yaml
-initialized: false
+initialized: true
 ```
 
 ## 账号定位
 
 ```yaml
 account:
-  domains: []           # 领域：AI/科技, 创业/商业, 个人成长, 投资理财
-  target_audience: ""   # 目标受众：中文用户, 英文用户, 双语用户
-  persona_style: ""     # 人设风格：专业严肃, 轻松幽默, 犀利观点, 温暖亲和
-  language: "zh-CN"     # 创作语言
+  domains:
+    - AI/科技
+    - 创业/商业
+  target_audience: "双语用户"
+  persona_style: "专业严肃"
+  language: "zh-CN"
 ```
 
 ## 打分权重（可自定义）

@@ -6,7 +6,7 @@
 
 | 功能 | 推荐方式 | 备选方式 | 状态 |
 |------|---------|---------|------|
-| **X.com 研究** | `/x-collect` skill | `auto-x/daily_research.py` (自动化) | ✅ 主推 |
+| **X.com 研究** | `/x-collect` skill | `bash tools/daily.sh` (自动化) | ✅ 主推 |
 | **X.com 创作** | `/x-create` skill | 手动写作 | ✅ 主推 |
 | **X.com 发布** | `/baoyu-post-to-x` skill | ❌ ~~`auto-x/publish_x.sh`~~ | ✅ 唯一 |
 | **小红书图文** | `/baoyu-xhs-images` skill | ❌ ~~`auto-redbook/render_simple.sh`~~ | ✅ 唯一 |
@@ -26,7 +26,8 @@ tools/
 │
 ├── auto-x/               # X.com 自动化工具
 │   ├── scripts/
-│   │   ├── daily_research.py     ✅ 每日定时任务（主要）
+│   │   ├── daily_schedule.py     ✅ 每日自动化报告（主要）
+│   │   ├── daily_research.py     ✅ 研究模块（被 daily_schedule 复用）
 │   │   ├── search_x.py           ⚠️ 已集成到 daily_research
 │   │   ├── trending_topics.py    ⚠️ 已集成到 daily_research
 │   │   ├── scrape_following.py   ⚠️ 已集成到 daily_research
@@ -77,19 +78,18 @@ tools/
 
 #### ✅ **推荐：自动化方式**（定时任务）
 
-**`daily_research.py`** - 每日研究编排器
+**`tools/daily.sh`** - 每日自动化唯一入口
 - **运行时间**：每日 7:00 AM（launchd 自动）
 - **执行内容**：
-  1. 抓取 X.com 热门趋势
-  2. 搜索领域关键词（AI tools, solopreneur, crypto alpha）
-  3. 分析关注者动态
+  1. 生成发布提醒（扫描待深化/制作中）
+  2. 回顾最近发布数据（从数据统计表提取）
+  3. 生成每日研究（X.com + HN/Reddit）
 - **输出位置**：
-  - 综合报告：`05-选题研究/X-每日研究-{日期}.md`
-  - 存档：`tools/auto-x/data/daily/{日期}.md`
+  - 综合报告：`05-选题研究/X-每日日程-{日期}.md`
   - 自动追加到：`01-内容生产/选题管理/00-选题记录.md`
 - **手动运行**：
   ```bash
-  python3 tools/auto-x/scripts/daily_research.py
+  bash tools/daily.sh
   ```
 
 **launchd 定时任务管理**：
@@ -106,11 +106,11 @@ launchctl start com.redbook.daily-x
 
 #### ⚠️ **已集成/弃用**（仅用于调试）
 
-以下脚本已集成到 `daily_research.py`，**不建议单独使用**：
-- `search_x.py` - 话题搜索（已集成）
-- `trending_topics.py` - 热门趋势（已集成）
-- `scrape_following.py` - 关注列表抓取（已集成）
-- `analyze_following.py` - 关注者分析（已集成）
+以下脚本已集成到每日自动化中，**不建议单独使用**：
+- `search_x.py` - 话题搜索（内部模块）
+- `trending_topics.py` - 热门趋势（内部模块）
+- `scrape_following.py` - 关注列表抓取（内部模块）
+- `analyze_following.py` - 关注者分析（内部模块）
 - `publish_x.sh` - 发布脚本（已被 `/baoyu-post-to-x` 替代）
 
 ---
@@ -179,7 +179,7 @@ python3 tools/reddit_hack.py \
 ```
 需要做什么？
 ├─ 研究 X.com 话题
-│  ├─ 定时自动化 → ✅ daily_research.py（已配置）
+│  ├─ 定时自动化 → ✅ bash tools/daily.sh（已配置）
 │  └─ 手动深挖 → ✅ /x-collect skill
 │
 ├─ 创作 X 推文
@@ -240,7 +240,7 @@ python3 tools/reddit_hack.py \
 
 ## 🛠 故障排查
 
-### daily_research.py 未运行
+### 每日自动化未运行（tools/daily.sh）
 
 **检查定时任务状态**：
 ```bash
@@ -249,14 +249,14 @@ launchctl list | grep daily-x
 
 **查看日志**：
 ```bash
-cat ~/Library/Logs/redbook-daily-x.log
-cat ~/Library/Logs/redbook-daily-x.err
+cat /Users/proerror/Documents/redbook/tools/auto-x/data/logs/launchd-stdout.log
+cat /Users/proerror/Documents/redbook/tools/auto-x/data/logs/launchd-stderr.log
 ```
 
 **手动运行测试**：
 ```bash
 cd /Users/proerror/Documents/redbook
-python3 tools/auto-x/scripts/daily_research.py
+bash tools/daily.sh --skip-research
 ```
 
 ### actionbook 连接失败
@@ -272,7 +272,7 @@ lsof -i :9223
 
 **手动启动 Chrome**（headless）：
 ```bash
-bash tools/auto-x/scripts/run_daily.sh
+bash tools/daily.sh
 ```
 
 ---
@@ -283,7 +283,7 @@ bash tools/auto-x/scripts/run_daily.sh
 - ✅ 采用方案 A：Skills 为主，脚本为辅
 - ✅ 弃用 `auto-redbook` 渲染/发布脚本
 - ✅ 弃用 `auto-x/publish_x.sh`
-- ✅ 明确 `daily_research.py` 为自动化主工具
+- ✅ 明确 `tools/daily.sh` 为自动化唯一入口
 - ✅ 确立 `/baoyu-*` skills 为发布唯一方式
 
 **2026-02-10**：

@@ -1,6 +1,18 @@
 # X/Twitter 自动化工具
 
-基于 agent-browser 的 X/Twitter 内容发布、研究和数据分析工具集。
+基于 actionbook（Chrome CDP）的 X/Twitter 研究与数据分析工具集。
+
+## 推荐入口（唯一正确路径）
+
+定时/手动都使用同一个入口：
+```bash
+bash tools/daily.sh
+```
+
+- 输出：`05-选题研究/X-每日日程-{日期}.md`
+- 自动把选题线索追加到：`01-内容生产/选题管理/00-选题记录.md`
+
+其余脚本主要作为内部模块或调试工具，不建议作为日常入口。
 
 ## 功能
 
@@ -24,13 +36,13 @@
 
 ## 安装
 
-确保已安装 agent-browser：
+确保已安装 actionbook：
 ```bash
 # 检查是否已安装
-agent-browser --version
+actionbook --version
 ```
 
-**前置条件**：使用前需要启动 Chrome 调试模式并连接 agent-browser：
+**前置条件**：使用前需要启动 Chrome 调试模式并连接 actionbook：
 ```bash
 # 1. 启动 Chrome
 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
@@ -38,8 +50,8 @@ agent-browser --version
   --user-data-dir="$HOME/.local/share/chrome-debug-profile" \
   --no-first-run &
 
-# 2. 连接 agent-browser
-agent-browser connect 9222
+# 2. 连接 actionbook
+actionbook browser connect 9222
 ```
 
 ## 使用方法
@@ -169,18 +181,18 @@ python tools/auto-x/scripts/daily_research.py --keywords "AI agent" "web3"
 4. 记录数据到统计表
 
 ### 内容研究流程
-1. 运行每日研究: `python tools/auto-x/scripts/daily_research.py`
-2. 查看生成的报告: `05-选题研究/X-每日研究-{日期}.md`
+1. 运行每日自动化入口: `bash tools/daily.sh`
+2. 查看生成的报告: `05-选题研究/X-每日日程-{日期}.md`
 3. 筛选有价值的选题
 4. 使用「记录选题」保存灵感
 
 ## 注意事项
 
 - 首次使用需要在浏览器中登录 X.com
-- agent-browser 会保存登录状态
+- actionbook 会复用本地 Chrome profile 保存登录状态
 - 推文内容会自动复制到剪贴板（macOS）
 - 图片需要手动上传
-- 所有研究脚本的数据提取依赖 agent-browser snapshot 的 accessibility tree 解析，实际效果可能因页面结构变化而需要调整
+- 所有研究脚本的数据提取依赖 actionbook snapshot 的 accessibility tree 解析，实际效果可能因页面结构变化而需要调整
 
 ## 与其他工具对比
 

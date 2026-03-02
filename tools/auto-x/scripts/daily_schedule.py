@@ -167,34 +167,77 @@ def _extract_table_rows(content: str, section_marker: str) -> list:
 
 # ── 主流程 ────────────────────────────────────────────────
 
-def run_daily_research(keywords: list, skip_trending=False,
-                       skip_search=False, skip_following=False) -> str:
-    """运行每日研究（复用 daily_research.py 的逻辑）"""
-    from daily_research import run_trending, run_search, run_analyze_following
+def run_daily_research(
+    keywords: list,
+    subreddits: list,
+    *,
+    browser_ok: bool,
+    skip_timeline: bool = False,
+    skip_trending: bool = False,
+    skip_search: bool = False,
+    skip_following: bool = False,
+    skip_hn: bool = False,
+    skip_reddit: bool = False,
+    hn_limit: int = 30,
+    reddit_limit: int = 25,
+) -> tuple[str, str]:
+    """
+    运行每日研究，返回 (report, topics_source_for_append)。
 
-    sections = []
+    - X.com 分析依赖浏览器（actionbook + Chrome CDP）
+    - Hacker News / Reddit 分析不依赖浏览器
+    - 追加到选题池时，只使用 X.com 相关部分，避免外部内容噪音
+    """
+    from daily_research import (
+        run_timeline,
+        run_trending,
+        run_search,
+        run_analyze_following,
+        run_hackernews,
+        run_reddit,
+    )
 
-    if not skip_trending:
-        sections.append(run_trending())
+    x_sections = []
+    if browser_ok:
+        if not skip_timeline:
+            x_sections.append(run_timeline())
+        if not skip_trending:
+            x_sections.append(run_trending())
+        if not skip_search:
+            x_sections.append(run_search(keywords))
+        if not skip_following:
+            x_sections.append(run_analyze_following())
+    else:
+        x_sections.append("（浏览器未连接，已跳过 X.com 分析）\n")
 
-    if not skip_search:
-        sections.append(run_search(keywords))
+    external_sections = []
+    if not skip_hn:
+        external_sections.append(run_hackernews(hn_limit))
+    if not skip_reddit:
+        external_sections.append(run_reddit(subreddits, reddit_limit))
 
-    if not skip_following:
-        sections.append(run_analyze_following())
-
-    return '\n---\n\n'.join(sections)
+    report = '\n---\n\n'.join([s for s in (x_sections + external_sections) if s])
+    topics_source = '\n---\n\n'.join([s for s in x_sections if browser_ok and s]) if browser_ok else ""
+    return report, topics_source
 
 
 def main():
+    from daily_research import DEFAULT_KEYWORDS, DEFAULT_SUBREDDITS
+
     parser = argparse.ArgumentParser(description='X.com 每日日程')
+    parser.add_argument('--skip-timeline', action='store_true', help='跳过 X Pro 多列分析')
     parser.add_argument('--skip-trending', action='store_true')
     parser.add_argument('--skip-search', action='store_true')
     parser.add_argument('--skip-following', action='store_true')
+    parser.add_argument('--skip-hn', action='store_true', help='跳过 Hacker News 分析')
+    parser.add_argument('--skip-reddit', action='store_true', help='跳过 Reddit 监控')
+    parser.add_argument('--hn-limit', type=int, default=30, help='HN 帖子数量（默认 30）')
+    parser.add_argument('--reddit-limit', type=int, default=25, help='每个 subreddit 帖子数量（默认 25）')
+    parser.add_argument('--subreddits', nargs='+', default=DEFAULT_SUBREDDITS, help='监控的 subreddits')
     parser.add_argument('--skip-research', action='store_true',
                         help='跳过研究，只生成提醒和回顾')
     parser.add_argument('--keywords', nargs='+',
-                        default=['AI tools', 'solopreneur', 'crypto alpha'])
+                        default=DEFAULT_KEYWORDS)
     args = parser.parse_args()
 
     print_colored("\n" + "=" * 60, 'green')
@@ -209,6 +252,7 @@ def main():
         f"# X.com 每日日程 - {today_str()}\n\n"
         f"- 生成时间: {now_str()}\n"
         f"- 搜索关键词: {', '.join(args.keywords)}\n\n"
+        f"- 监控 Subreddits: {', '.join(args.subreddits)}\n\n"
         f"---\n\n"
     )
     report_sections.append(header)
@@ -221,24 +265,32 @@ def main():
     report_sections.append(generate_data_review())
     report_sections.append("---\n")
 
-    # Part 3: 每日研究（需要浏览器）
+    # Part 3: 每日研究（X.com 需要浏览器，HN/Reddit 不需要）
     if not args.skip_research:
-        if not ensure_browser():
-            print_colored("⚠️ 浏览器未连接，跳过研究部分", 'yellow')
-            report_sections.append("## 🔍 每日研究\n\n（浏览器未连接，已跳过）\n")
-        else:
-            report_sections.append("## 🔍 每日研究\n\n")
-            research = run_daily_research(
-                args.keywords,
-                skip_trending=args.skip_trending,
-                skip_search=args.skip_search,
-                skip_following=args.skip_following,
-            )
-            report_sections.append(research)
+        browser_ok = ensure_browser()
+        if not browser_ok:
+            print_colored("⚠️ 浏览器未连接：将跳过 X.com 研究，但仍会生成 HN/Reddit 部分", 'yellow')
 
-            # 追加选题到记录
+        report_sections.append("## 🔍 每日研究\n\n")
+        research, topics_source = run_daily_research(
+            args.keywords,
+            args.subreddits,
+            browser_ok=browser_ok,
+            skip_timeline=args.skip_timeline,
+            skip_trending=args.skip_trending,
+            skip_search=args.skip_search,
+            skip_following=args.skip_following,
+            skip_hn=args.skip_hn,
+            skip_reddit=args.skip_reddit,
+            hn_limit=args.hn_limit,
+            reddit_limit=args.reddit_limit,
+        )
+        report_sections.append(research)
+
+        # 追加选题到记录（只使用 X.com 部分，避免噪音）
+        if topics_source:
             from daily_research import append_topics_to_record
-            append_topics_to_record(research)
+            append_topics_to_record(topics_source)
 
     # 保存报告
     full_report = '\n'.join(report_sections)
