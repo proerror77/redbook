@@ -7,8 +7,13 @@
 
     <key>ProgramArguments</key>
     <array>
-        <string>/bin/bash</string>
-        <string>/Users/proerror/Documents/redbook/tools/daily.sh</string>
+        <string>/usr/bin/osascript</string>
+        <string>-e</string>
+        <string>tell application "Terminal"</string>
+        <string>-e</string>
+        <string>do script "bash /Users/proerror/Documents/redbook/tools/daily.sh; exit"</string>
+        <string>-e</string>
+        <string>end tell</string>
     </array>
 
     <key>StartCalendarInterval</key>
@@ -20,10 +25,10 @@
     </dict>
 
     <key>StandardOutPath</key>
-    <string>/Users/proerror/Documents/redbook/tools/auto-x/data/logs/launchd-stdout.log</string>
+    <string>/Users/proerror/Library/Logs/redbook/launchd-stdout.log</string>
 
     <key>StandardErrorPath</key>
-    <string>/Users/proerror/Documents/redbook/tools/auto-x/data/logs/launchd-stderr.log</string>
+    <string>/Users/proerror/Library/Logs/redbook/launchd-stderr.log</string>
 
     <key>EnvironmentVariables</key>
     <dict>

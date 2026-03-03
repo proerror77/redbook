@@ -249,8 +249,8 @@ launchctl list | grep daily-x
 
 **查看日志**：
 ```bash
-cat /Users/proerror/Documents/redbook/tools/auto-x/data/logs/launchd-stdout.log
-cat /Users/proerror/Documents/redbook/tools/auto-x/data/logs/launchd-stderr.log
+cat /Users/proerror/Library/Logs/redbook/launchd-stdout.log
+cat /Users/proerror/Library/Logs/redbook/launchd-stderr.log
 ```
 
 **手动运行测试**：
