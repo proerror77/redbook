@@ -46,9 +46,6 @@ echo "Removing default config ..."
 sb del -f 2>/dev/null || true
 
 # --- Add protocols via sb command ---
-echo "Adding VLESS-REALITY on port 443 ..."
-sb add reality 443 "$VLESS_UUID" dl.google.com || echo "WARN: reality add returned non-zero"
-
 echo "Adding Shadowsocks on port 8388 ..."
 sb add ss 8388 "$SS_PASSWORD" 2022-blake3-aes-128-gcm || echo "WARN: ss add returned non-zero"
 
@@ -57,6 +54,31 @@ sb add trojan 8443 "$TROJAN_PASSWORD" || echo "WARN: trojan add returned non-zer
 
 echo "Adding Hysteria2 on port 8844 ..."
 sb add hy 8844 "$HY2_PASSWORD" || echo "WARN: hy2 add returned non-zero"
+
+# --- Add Cloudflare-friendly VLESS+WebSocket+TLS on 443 ---
+# Cloudflare only proxies HTTP(S) (incl. WebSocket), so Reality is NOT usable behind Cloudflare.
+echo "Adding VLESS+WS+TLS on port 443 (Cloudflare-friendly) ..."
+mkdir -p /etc/sing-box/conf.disabled
+[[ -f /etc/sing-box/conf/VLESS-REALITY-443.json ]] && mv /etc/sing-box/conf/VLESS-REALITY-443.json /etc/sing-box/conf.disabled/ || true
+[[ -f /etc/sing-box/conf/VLESS-WS-8080.json ]] && mv /etc/sing-box/conf/VLESS-WS-8080.json /etc/sing-box/conf.disabled/ || true
+
+jq -n --arg uuid "$VLESS_UUID" '{
+  inbounds: [
+    {
+      type: "vless",
+      tag: "vless-ws-in",
+      listen: "::",
+      listen_port: 443,
+      users: [{uuid: $uuid}],
+      tls: {
+        enabled: true,
+        key_path: "/etc/sing-box/bin/tls.key",
+        certificate_path: "/etc/sing-box/bin/tls.cer"
+      },
+      transport: {type: "ws", path: "/ws"}
+    }
+  ]
+}' > /etc/sing-box/conf/VLESS-WS-443.json
 
 # --- Restart to apply all configs ---
 echo "Restarting sing-box ..."

@@ -8,6 +8,9 @@ check_prerequisites
 
 log_info "=== Phase G: Verification ==="
 
+# Verification should continue even if a single test fails.
+set +e
+
 PASS=0
 FAIL=0
 RESULTS=()
@@ -25,14 +28,16 @@ check() {
   fi
 }
 
-# Load saved infrastructure data
-CF_DOMAIN=$(load_output "cf-domain" 2>/dev/null | jq -r '.domain // empty' || true)
-APIGW_URL=$(load_output "apigw-url" 2>/dev/null | jq -r '.url // empty' || true)
-TOKEN=$(load_output "initial-token" 2>/dev/null | jq -r '.token // empty' || true)
+# Load saved infrastructure data (data/*.json files are JSON strings)
+CLOUDFRONT_DOMAIN=$(load_output "cf-domain" 2>/dev/null | jq -r '. // empty' || true)
+APIGW_URL=$(load_output "api-gateway-url" 2>/dev/null | jq -r '. // empty' || true)
+TOKEN=$(load_output "initial-token" 2>/dev/null | jq -r '. // empty' || true)
+EDGE_DOMAIN="${CF_EDGE_DOMAIN:-}"
+VLESS_WS_PATH="${VLESS_WS_PATH:-/ws}"
 
-if [[ -z "$CF_DOMAIN" ]]; then
+if [[ -z "$CLOUDFRONT_DOMAIN" ]]; then
   log_warn "CloudFront domain not found in data/. Set CF_DOMAIN env var."
-  CF_DOMAIN="${CF_DOMAIN:-}"
+  CLOUDFRONT_DOMAIN="${CF_DOMAIN:-}"
 fi
 if [[ -z "$APIGW_URL" ]]; then
   log_warn "API Gateway URL not found in data/. Set APIGW_URL env var."
@@ -47,9 +52,9 @@ fi
 # Test 1: CloudFront base.yaml
 # ============================================================
 test_cf_base() {
-  [[ -z "$CF_DOMAIN" ]] && { log_warn "Skipping: CF_DOMAIN not set"; return 1; }
+  [[ -z "$CLOUDFRONT_DOMAIN" ]] && { log_warn "Skipping: CLOUDFRONT_DOMAIN not set"; return 1; }
   local code
-  code=$(curl -sf -o /dev/null -w '%{http_code}' "https://${CF_DOMAIN}/base.yaml")
+  code=$(curl -sf -o /dev/null -w '%{http_code}' "https://${CLOUDFRONT_DOMAIN}/base.yaml")
   [[ "$code" == "200" ]]
 }
 
@@ -57,11 +62,11 @@ test_cf_base() {
 # Test 2: CloudFront rule-providers
 # ============================================================
 test_cf_rules() {
-  [[ -z "$CF_DOMAIN" ]] && { log_warn "Skipping: CF_DOMAIN not set"; return 1; }
+  [[ -z "$CLOUDFRONT_DOMAIN" ]] && { log_warn "Skipping: CLOUDFRONT_DOMAIN not set"; return 1; }
   local all_ok=true
   for rule in geosite-cn geosite-category-ads geoip-cn; do
     local code
-    code=$(curl -sf -o /dev/null -w '%{http_code}' "https://${CF_DOMAIN}/rules/${rule}.yaml")
+    code=$(curl -sf -o /dev/null -w '%{http_code}' "https://${CLOUDFRONT_DOMAIN}/rules/${rule}.yaml")
     if [[ "$code" != "200" ]]; then
       log_error "Rule $rule returned $code"
       all_ok=false
@@ -78,6 +83,40 @@ test_apigw() {
   local body
   body=$(curl -sf "${APIGW_URL}/mihomo/proxies/${TOKEN}")
   echo "$body" | grep -q "proxies"
+}
+
+# ============================================================
+# Test 3b: API Gateway sing-box endpoint
+# ============================================================
+test_apigw_singbox() {
+  [[ -z "$APIGW_URL" || -z "$TOKEN" ]] && { log_warn "Skipping: APIGW_URL or TOKEN not set"; return 1; }
+  local body
+  body=$(curl -sf "${APIGW_URL}/singbox/proxies/${TOKEN}")
+  echo "$body" | jq -e '.outbounds | length > 0' >/dev/null 2>&1
+}
+
+# ============================================================
+# Test 3c: Cloudflare edge WebSocket handshake (VLESS-WS)
+# ============================================================
+test_edge_ws() {
+  [[ -z "$EDGE_DOMAIN" ]] && { log_warn "Skipping: CF_EDGE_DOMAIN not set"; return 1; }
+  local all_ok=true
+  for sub in us jp tw; do
+    local key code
+    key=$(openssl rand -base64 16 2>/dev/null || head -c 16 /dev/urandom | base64)
+    # curl will usually timeout after 101 because it waits for WS frames. We only care about the 101.
+    code=$(curl --http1.1 -sS -m 3 -o /dev/null -w '%{http_code}' \
+      "https://${sub}.${EDGE_DOMAIN}${VLESS_WS_PATH}" \
+      -H 'Connection: Upgrade' \
+      -H 'Upgrade: websocket' \
+      -H "Sec-WebSocket-Key: $key" \
+      -H 'Sec-WebSocket-Version: 13' 2>/dev/null || true)
+    if [[ "$code" != "101" ]]; then
+      log_error "Edge WS handshake failed: https://${sub}.${EDGE_DOMAIN}${VLESS_WS_PATH} -> HTTP $code"
+      all_ok=false
+    fi
+  done
+  $all_ok
 }
 
 # ============================================================
@@ -131,13 +170,28 @@ test_provider_format() {
 }
 
 # ============================================================
+# Test 6: Origin SG locked to Cloudflare on tcp/443
+# ============================================================
+test_sg_cloudflare_lockdown() {
+  local script="$PROJECT_ROOT/scripts/harden-cloudflare-origin.sh"
+  if [[ ! -x "$script" ]]; then
+    log_warn "Skipping: $script not found/executable"
+    return 1
+  fi
+  "$script" --verify-only >/dev/null
+}
+
+# ============================================================
 # Run all tests
 # ============================================================
 check "CloudFront base.yaml accessible" test_cf_base
 check "CloudFront rule-providers accessible" test_cf_rules
 check "API Gateway subscription endpoint" test_apigw
+check "API Gateway sing-box endpoint" test_apigw_singbox
+check "Cloudflare edge WebSocket handshake" test_edge_ws
 check "SSM connectivity to all regions" test_ssm
 check "Proxy provider YAML format valid" test_provider_format
+check "Origin SG locked to Cloudflare tcp/443" test_sg_cloudflare_lockdown
 
 # ============================================================
 # Summary

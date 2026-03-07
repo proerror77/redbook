@@ -52,8 +52,8 @@ upload_configs() {
     return 1
   fi
 
-  log_info "Uploading mihomo-base.yaml.tpl to s3://$S3_BUCKET/base.yaml ..."
-  aws s3 cp "$tpl_file" "s3://$S3_BUCKET/base.yaml"
+  # base.yaml is rendered and uploaded after CloudFront is ready (needs __CF_URL__).
+  log_info "Found base template: $tpl_file"
 
   # Upload rules if directory exists
   local rules_dir="$PROJECT_ROOT/rules"
@@ -134,6 +134,8 @@ create_distribution() {
     domain=$(aws cloudfront get-distribution --id "$existing_dist" \
       --query 'Distribution.DomainName' --output text)
     save_output "cf-domain" "\"$domain\""
+    save_output "cf-dist-id" "\"$existing_dist\""
+    echo "$existing_dist"
     return 0
   fi
 
@@ -251,6 +253,61 @@ wait_for_distribution() {
 }
 
 # ============================================================
+# Step 7: Render and upload base.yaml (fill placeholders)
+# ============================================================
+render_and_upload_base_yaml() {
+  local cf_domain="$1"
+  local tpl_file="$PROJECT_ROOT/templates/mihomo-base.yaml.tpl"
+  if [[ ! -f "$tpl_file" ]]; then
+    log_error "Template not found: $tpl_file"
+    return 1
+  fi
+
+  local cf_url="https://${cf_domain}"
+
+  local apigw_url token
+  apigw_url="${APIGW_URL:-}"
+  token="${TOKEN:-}"
+
+  if [[ -z "$apigw_url" ]]; then
+    apigw_url=$(load_output "api-gateway-url" 2>/dev/null | jq -r '. // empty' || true)
+  fi
+  if [[ -z "$token" ]]; then
+    token=$(load_output "initial-token" 2>/dev/null | jq -r '. // empty' || true)
+  fi
+
+  if [[ -z "$apigw_url" ]]; then
+    log_warn "APIGW_URL not set yet; leaving __APIGW_URL__ placeholder in base.yaml."
+    apigw_url="__APIGW_URL__"
+  fi
+
+  render_and_upload() {
+    local token_value="$1"
+    local s3_key="$2"
+    local tmp
+    tmp=$(mktemp)
+    sed \
+      -e "s|__CF_URL__|${cf_url}|g" \
+      -e "s|__APIGW_URL__|${apigw_url}|g" \
+      -e "s|__TOKEN__|${token_value}|g" \
+      "$tpl_file" > "$tmp"
+    log_info "Uploading rendered ${s3_key#s3://$S3_BUCKET/} to $s3_key ..."
+    aws s3 cp "$tmp" "$s3_key"
+    rm -f "$tmp"
+  }
+
+  # Public root file should NOT embed a token.
+  render_and_upload "__TOKEN__" "s3://$S3_BUCKET/base.yaml"
+
+  # Token-specific base config: URL contains the token, same trust model as any subscription URL.
+  if [[ -n "$token" ]]; then
+    render_and_upload "$token" "s3://$S3_BUCKET/base/${token}.yaml"
+  else
+    log_warn "TOKEN not set yet; skipping token-specific base/<token>.yaml upload."
+  fi
+}
+
+# ============================================================
 # Execute all steps
 # ============================================================
 log_info "=== Phase C: Config Plane ==="
@@ -264,6 +321,17 @@ DIST_ID=$(create_distribution "$OAC_ID")
 if [[ -n "$DIST_ID" ]]; then
   update_bucket_policy "$DIST_ID"
   wait_for_distribution "$DIST_ID"
+  dist_domain=$(aws cloudfront get-distribution --id "$DIST_ID" \
+    --query 'Distribution.DomainName' --output text)
+  save_output "cf-domain" "\"$dist_domain\""
+  render_and_upload_base_yaml "$dist_domain"
+
+  # CloudFront caches aggressively; invalidate updated files for immediate use.
+  inv_id=$(aws cloudfront create-invalidation \
+    --distribution-id "$DIST_ID" \
+    --paths '/base.yaml' '/base/*' '/rules/*' \
+    --query 'Invalidation.Id' --output text 2>/dev/null || true)
+  [[ -n "$inv_id" ]] && log_info "Created CloudFront invalidation: $inv_id"
 fi
 
 log_info "=== Phase C complete ==="

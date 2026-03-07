@@ -25,7 +25,7 @@ mkdir -p "$DATA_DIR"
 # --- Colored logging ---
 
 log_info() {
-  printf '\033[0;32m[INFO]\033[0m %s\n' "$*"
+  printf '\033[0;32m[INFO]\033[0m %s\n' "$*" >&2
 }
 
 log_warn() {
@@ -40,7 +40,7 @@ log_error() {
 
 check_prerequisites() {
   local missing=()
-  for cmd in aws jq; do
+  for cmd in aws jq curl; do
     if ! command -v "$cmd" &>/dev/null; then
       missing+=("$cmd")
     fi

@@ -17,6 +17,9 @@ Multi-region proxy node system with decoupled base profile and dynamic node list
 - **Config Plane**: S3 bucket behind CloudFront OAC serves the base profile and rule files
 - **Subscription Plane**: Lambda generates per-token proxy-provider YAML from DynamoDB
 - **Data Plane**: EC2 instances running sing-box with 4 protocols per node
+- **Cloudflare Fronting (recommended)**: `us/jp/tw.<your-domain>` proxied (orange cloud) to hide EC2 IPs.
+  - Client connects to Cloudflare.
+  - Cloudflare connects to EC2 using HTTPS WebSocket on `:443` with path `/ws`.
 
 ## Prerequisites
 
@@ -47,6 +50,17 @@ bash scripts/phase-d-subscription.sh # DynamoDB, Lambda, API GW
 bash scripts/phase-e-data-plane.sh   # EC2 instances (3 regions)
 bash scripts/phase-f-bootstrap.sh    # Install sing-box via SSM
 bash scripts/phase-g-verify.sh       # End-to-end verification
+
+# 4. (Recommended) Setup Cloudflare DNS fronting
+# Ensure CLOUDFLARE_API_TOKEN is exported with Zone.DNS edit permission.
+CF_EDGE_DOMAIN=icered.com bash scripts/setup-cloudflare-dns.sh
+
+# 5. (Recommended) Lock origin SG to Cloudflare IP ranges on :443, close :8080
+bash scripts/harden-cloudflare-origin.sh
+
+# 6. Use configs
+# - mihomo base profile (token-specific): https://<cloudfront-domain>/base/<token>.yaml
+# - sing-box client config (SFI):        https://<api-gateway-url>/singbox/proxies/<token>
 ```
 
 ## Operational Commands
@@ -61,6 +75,9 @@ bash scripts/add-node.sh <node_id> <region> <public_ip> <instance_id>
 # Rotate all credentials and re-bootstrap nodes
 bash scripts/rotate-credentials.sh
 
+# Verify SG lockdown state only (no changes)
+bash scripts/harden-cloudflare-origin.sh --verify-only
+
 # Destroy all resources (with confirmation)
 bash scripts/teardown.sh
 ```
@@ -70,7 +87,7 @@ bash scripts/teardown.sh
 | Protocol | Port | Transport |
 |----------|------|-----------|
 | Shadowsocks AEAD | 8388 | TCP+UDP |
-| VLESS + Reality | 443 | TCP |
+| VLESS + WebSocket + TLS (Cloudflare-friendly) | 443 | WS over TLS (`/ws`) |
 | Trojan | 8443 | TCP |
 | Hysteria2 | 8844 | UDP |
 

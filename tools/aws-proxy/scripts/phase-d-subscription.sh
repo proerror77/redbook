@@ -65,12 +65,6 @@ create_nodes_table() {
 # Step 3: Build and deploy Lambda function
 # ============================================================
 deploy_lambda() {
-  if aws lambda get-function --function-name "$LAMBDA_NAME" \
-    --region "$DEPLOY_REGION" &>/dev/null; then
-    log_info "Lambda $LAMBDA_NAME already exists, skipping."
-    return 0
-  fi
-
   log_info "Building Lambda package ..."
   bash "$PROJECT_ROOT/lambda/build.sh"
 
@@ -82,89 +76,151 @@ deploy_lambda() {
 
   local role_arn="arn:aws:iam::${ACCOUNT_ID}:role/${LAMBDA_ROLE}"
 
-  log_info "Creating Lambda function: $LAMBDA_NAME ..."
-  aws lambda create-function \
-    --function-name "$LAMBDA_NAME" \
-    --runtime python3.12 \
-    --handler handler.lambda_handler \
-    --role "$role_arn" \
-    --zip-file "fileb://$zip_path" \
-    --timeout 10 \
-    --memory-size 128 \
-    --environment "Variables={TOKENS_TABLE=$TOKENS_TABLE,NODES_TABLE=$NODES_TABLE}" \
-    --tags Project=proxy \
-    --region "$DEPLOY_REGION"
+  # Keep config in sync even if the function already exists.
+  local env_vars
+  env_vars="Variables={TOKENS_TABLE=$TOKENS_TABLE,NODES_TABLE=$NODES_TABLE"
+  env_vars+=",CF_EDGE_DOMAIN=${CF_EDGE_DOMAIN:-icered.com}"
+  env_vars+=",VLESS_WS_PATH=${VLESS_WS_PATH:-/ws}"
+  env_vars+=",VLESS_WS_PORT=${VLESS_WS_PORT:-443}"
+  env_vars+="}"
+
+  if aws lambda get-function --function-name "$LAMBDA_NAME" \
+    --region "$DEPLOY_REGION" &>/dev/null; then
+    log_info "Updating Lambda code: $LAMBDA_NAME ..."
+    aws lambda update-function-code \
+      --function-name "$LAMBDA_NAME" \
+      --zip-file "fileb://$zip_path" \
+      --region "$DEPLOY_REGION" >/dev/null
+    aws lambda wait function-updated-v2 \
+      --function-name "$LAMBDA_NAME" \
+      --region "$DEPLOY_REGION"
+
+    log_info "Updating Lambda configuration: $LAMBDA_NAME ..."
+    aws lambda update-function-configuration \
+      --function-name "$LAMBDA_NAME" \
+      --runtime python3.12 \
+      --handler handler.handler \
+      --timeout 10 \
+      --memory-size 128 \
+      --environment "$env_vars" \
+      --region "$DEPLOY_REGION" >/dev/null
+    aws lambda wait function-updated-v2 \
+      --function-name "$LAMBDA_NAME" \
+      --region "$DEPLOY_REGION"
+  else
+    log_info "Creating Lambda function: $LAMBDA_NAME ..."
+    aws lambda create-function \
+      --function-name "$LAMBDA_NAME" \
+      --runtime python3.12 \
+      --handler handler.handler \
+      --role "$role_arn" \
+      --zip-file "fileb://$zip_path" \
+      --timeout 10 \
+      --memory-size 128 \
+      --environment "$env_vars" \
+      --tags Project=proxy \
+      --region "$DEPLOY_REGION" >/dev/null
+  fi
 
   aws lambda wait function-active-v2 \
     --function-name "$LAMBDA_NAME" \
     --region "$DEPLOY_REGION"
-  log_info "Lambda $LAMBDA_NAME deployed and active."
+  log_info "Lambda $LAMBDA_NAME is active."
 }
 
 # ============================================================
 # Step 4: Create API Gateway HTTP API
 # ============================================================
 create_api_gateway() {
-  local existing_api_id
-  existing_api_id=$(aws apigatewayv2 get-apis \
+  local api_id
+  api_id=$(aws apigatewayv2 get-apis \
     --region "$DEPLOY_REGION" \
     --query "Items[?Name=='$API_NAME'].ApiId | [0]" \
     --output text 2>/dev/null)
 
-  if [[ -n "$existing_api_id" && "$existing_api_id" != "None" ]]; then
-    log_info "API Gateway $API_NAME already exists (ID: $existing_api_id), skipping."
-    save_output "api-gateway-id" "\"$existing_api_id\""
-    return 0
+  if [[ -z "$api_id" || "$api_id" == "None" ]]; then
+    log_info "Creating API Gateway HTTP API: $API_NAME ..."
+    api_id=$(aws apigatewayv2 create-api \
+      --name "$API_NAME" \
+      --protocol-type HTTP \
+      --region "$DEPLOY_REGION" \
+      --query 'ApiId' --output text)
+    log_info "API Gateway created: $api_id"
+  else
+    log_info "API Gateway exists: $api_id"
   fi
 
-  log_info "Creating API Gateway HTTP API: $API_NAME ..."
-  local api_id
-  api_id=$(aws apigatewayv2 create-api \
-    --name "$API_NAME" \
-    --protocol-type HTTP \
-    --region "$DEPLOY_REGION" \
-    --query 'ApiId' --output text)
-
   save_output "api-gateway-id" "\"$api_id\""
-  log_info "API Gateway created: $api_id"
 
-  # Create Lambda integration
+  # Ensure Lambda integration exists
   local lambda_arn="arn:aws:lambda:${DEPLOY_REGION}:${ACCOUNT_ID}:function:${LAMBDA_NAME}"
   local integration_id
-  integration_id=$(aws apigatewayv2 create-integration \
+  integration_id=$(aws apigatewayv2 get-integrations \
     --api-id "$api_id" \
-    --integration-type AWS_PROXY \
-    --integration-uri "$lambda_arn" \
-    --payload-format-version "2.0" \
     --region "$DEPLOY_REGION" \
-    --query 'IntegrationId' --output text)
-  log_info "Lambda integration created: $integration_id"
+    --query "Items[?IntegrationUri=='$lambda_arn'].IntegrationId | [0]" \
+    --output text 2>/dev/null)
 
-  # Add route: GET /mihomo/proxies/{token}
-  aws apigatewayv2 create-route \
-    --api-id "$api_id" \
-    --route-key "GET /mihomo/proxies/{token}" \
-    --target "integrations/$integration_id" \
-    --region "$DEPLOY_REGION"
-  log_info "Route GET /mihomo/proxies/{token} created."
+  if [[ -z "$integration_id" || "$integration_id" == "None" ]]; then
+    integration_id=$(aws apigatewayv2 create-integration \
+      --api-id "$api_id" \
+      --integration-type AWS_PROXY \
+      --integration-uri "$lambda_arn" \
+      --payload-format-version "2.0" \
+      --region "$DEPLOY_REGION" \
+      --query 'IntegrationId' --output text)
+    log_info "Lambda integration created: $integration_id"
+  else
+    log_info "Lambda integration exists: $integration_id"
+  fi
 
-  # Create default stage with auto-deploy
-  aws apigatewayv2 create-stage \
+  ensure_route() {
+    local route_key="$1"
+    local existing
+    existing=$(aws apigatewayv2 get-routes \
+      --api-id "$api_id" \
+      --region "$DEPLOY_REGION" \
+      --query "Items[?RouteKey=='$route_key'].RouteId | [0]" \
+      --output text 2>/dev/null)
+    if [[ -n "$existing" && "$existing" != "None" ]]; then
+      log_info "Route exists: $route_key"
+      return 0
+    fi
+    aws apigatewayv2 create-route \
+      --api-id "$api_id" \
+      --route-key "$route_key" \
+      --target "integrations/$integration_id" \
+      --region "$DEPLOY_REGION" >/dev/null
+    log_info "Route created: $route_key"
+  }
+
+  ensure_route "GET /mihomo/proxies/{token}"
+  ensure_route "GET /singbox/proxies/{token}"
+
+  # Ensure default stage exists with auto-deploy
+  if aws apigatewayv2 get-stage \
     --api-id "$api_id" \
     --stage-name '$default' \
-    --auto-deploy \
-    --region "$DEPLOY_REGION"
-  log_info "Default stage created with auto-deploy."
+    --region "$DEPLOY_REGION" &>/dev/null; then
+    log_info "Default stage exists."
+  else
+    aws apigatewayv2 create-stage \
+      --api-id "$api_id" \
+      --stage-name '$default' \
+      --auto-deploy \
+      --region "$DEPLOY_REGION" >/dev/null
+    log_info "Default stage created with auto-deploy."
+  fi
 
-  # Grant API Gateway permission to invoke Lambda
+  # Grant API Gateway permission to invoke Lambda (ignore duplicate statement)
   aws lambda add-permission \
     --function-name "$LAMBDA_NAME" \
     --statement-id "apigateway-invoke" \
     --action "lambda:InvokeFunction" \
     --principal "apigateway.amazonaws.com" \
     --source-arn "arn:aws:execute-api:${DEPLOY_REGION}:${ACCOUNT_ID}:${api_id}/*" \
-    --region "$DEPLOY_REGION"
-  log_info "Lambda invoke permission granted to API Gateway."
+    --region "$DEPLOY_REGION" 2>/dev/null || true
+  log_info "Lambda invoke permission ensured for API Gateway."
 
   local api_url="https://${api_id}.execute-api.${DEPLOY_REGION}.amazonaws.com"
   save_output "api-gateway-url" "\"$api_url\""

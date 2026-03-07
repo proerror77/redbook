@@ -1,7 +1,7 @@
 """
 Health check Lambda for proxy nodes.
 Triggered by EventBridge every 30 minutes.
-- TCP connects to each active node on ports 443 and 8844
+- TCP connects to each active node on ports 443 and 8443
 - Tracks consecutive failures in DynamoDB
 - Sends SNS alert after 3 consecutive failures
 """

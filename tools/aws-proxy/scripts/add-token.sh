@@ -32,7 +32,7 @@ else
   TOKEN=$(python3 -c "import uuid; print(uuid.uuid4())")
 fi
 
-CREATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+NOW=$(date -u +%s)
 
 # Build regions JSON list
 REGIONS_JSON=$(printf '%s\n' "${ALLOWED_REGIONS[@]}" | jq -R . | jq -s '{ L: [.[] | {S: .}] }')
@@ -44,14 +44,14 @@ aws dynamodb put-item \
   --item "$(jq -n \
     --arg token "$TOKEN" \
     --arg user "$USER_NAME" \
-    --arg created "$CREATED_AT" \
+    --argjson created "$NOW" \
     --argjson regions "$REGIONS_JSON" \
     '{
       token: { S: $token },
       user_name: { S: $user },
+      enabled: { BOOL: true },
       allowed_regions: $regions,
-      active: { BOOL: true },
-      created_at: { S: $created }
+      created_at: { N: ($created|tostring) }
     }')"
 
 log_info "Token created successfully."
@@ -59,4 +59,4 @@ echo ""
 echo "  User:    $USER_NAME"
 echo "  Token:   $TOKEN"
 echo "  Regions: ${ALLOWED_REGIONS[*]}"
-echo "  Created: $CREATED_AT"
+echo "  Created: $NOW"
