@@ -1,0 +1,25 @@
+# Source: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt
+# Download: curl -L -o geosite-cn.yaml https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt
+# This is a placeholder. Download the actual rule set before deploying.
+payload:
+  - '+.cn'
+  - '+.gov.cn'
+  - '+.edu.cn'
+  - '+.com.cn'
+  - '+.net.cn'
+  - '+.org.cn'
+  - '+.mil.cn'
+  - '+.baidu.com'
+  - '+.taobao.com'
+  - '+.tmall.com'
+  - '+.jd.com'
+  - '+.qq.com'
+  - '+.weixin.qq.com'
+  - '+.bilibili.com'
+  - '+.163.com'
+  - '+.126.com'
+  - '+.zhihu.com'
+  - '+.douyin.com'
+  - '+.toutiao.com'
+  - '+.alipay.com'
+  - '+.aliyun.com'

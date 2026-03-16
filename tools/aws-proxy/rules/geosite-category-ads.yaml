@@ -1,0 +1,7 @@
+# Source: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt
+# Download: curl -L -o geosite-category-ads.yaml https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt
+# This is a placeholder. Download the actual rule set before deploying.
+payload:
+  - '+.ads.example.com'
+  - '+.analytics.example.com'
+  - '+.tracking.example.com'

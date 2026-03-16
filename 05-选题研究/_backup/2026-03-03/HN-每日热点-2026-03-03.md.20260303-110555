@@ -1,0 +1,277 @@
+# Hacker News 每日热点 - 2026-03-03
+
+- 生成时间: 2026-03-03 04:54:04
+- 分析帖子数: 29 条
+
+---
+
+## 📊 统计摘要
+
+- **总帖子数**: 29 条
+- **高互动帖子**: 10 条（评论 > 50）
+- **Show HN**: 2 条
+- **Ask HN**: 2 条
+- **AI/ML 相关**: 4 条
+
+---
+
+## 🏷 类别分布
+
+- **Other**: 19 条
+- **AI/ML**: 4 条
+- **Show HN**: 2 条
+- **Ask HN**: 2 条
+- **Dev Tools**: 2 条
+
+---
+
+## 🔥 高互动帖子（深度讨论）
+
+### 1. Motorola announces a partnership with GrapheneOS
+
+- **作者**: km
+- **点赞**: 1806 | **评论**: 638
+- **类别**: Other
+- **链接**: [https://motorolanews.com/motorola-three-new-b2b-solutions-at-mwc-2026/](https://motorolanews.com/motorola-three-new-b2b-solutions-at-mwc-2026/)
+- **讨论**: https://news.ycombinator.com/item?id=47214645
+
+**热门评论**:
+
+1. @BatteryMountain: If anyone from Motorola reads this thread; the market is beyond ripe for a good shake up. Going full open source and pushing updates & openness, user control and freedom, you will gobble up a good chu...
+
+2. @silisili: This was figured out a while ago based on the hints given.
+That said, I'm pretty excited.  Motorola of the last decade or so has made really good hardware with basically stock firmware and a terrible ...
+
+---
+
+### 2. How to talk to anyone and why you should
+
+- **作者**: Looky1173
+- **点赞**: 467 | **评论**: 475
+- **类别**: Other
+- **链接**: [https://www.theguardian.com/lifeandstyle/2026/feb/24/stranger-secret-how-to-talk-to-anyone-why-you-should](https://www.theguardian.com/lifeandstyle/2026/feb/24/stranger-secret-how-to-talk-to-anyone-why-you-should)
+- **讨论**: https://news.ycombinator.com/item?id=47214864
+
+**热门评论**:
+
+1. @SequoiaHope: After a bad breakup in 2015, I followed some advice from the socialskills subreddit to “talk to everyone” so that you get better at talking to women you might want to date. The advice was not to only ...
+
+2. @danielodievich: My recently deceased mother had a talent for talking to anyone at any time in any language. She's always been incredibly social and could establish connections with strangers very rapidly. One time sh...
+
+---
+
+### 3. Microsoft bans the word "Microslop" on its Discord, then locks the server
+
+- **作者**: robtherobber
+- **点赞**: 914 | **评论**: 398
+- **类别**: Other
+- **链接**: [https://www.windowslatest.com/2026/03/02/microsoft-gets-tired-of-microslop-bans-the-word-on-its-discord-then-locks-the-server-after-backlash/](https://www.windowslatest.com/2026/03/02/microsoft-gets-tired-of-microslop-bans-the-word-on-its-discord-then-locks-the-server-after-backlash/)
+- **讨论**: https://news.ycombinator.com/item?id=47216047
+
+**热门评论**:
+
+1. @Havoc: Don’t they have better things to do? Maybe vibecode a taskbar that moves when you try to move away the mouse over it or perhaps a windows 12 installation procedure that requires a fecal sample and iri...
+
+2. @natas: I recently had dinner in Bellevue with an individual who holds a relatively senior position within Microsoft’s executive leadership. During our conversation, she emphasized repeatedly that Microsoft d...
+
+---
+
+### 4. New iPad Air, powered by M4
+
+- **作者**: Garbage
+- **点赞**: 236 | **评论**: 380
+- **类别**: AI/ML
+- **链接**: [https://www.apple.com/newsroom/2026/03/apple-introduces-the-new-ipad-air-powered-by-m4/](https://www.apple.com/newsroom/2026/03/apple-introduces-the-new-ipad-air-powered-by-m4/)
+- **讨论**: https://news.ycombinator.com/item?id=47218175
+
+**热门评论**:
+
+1. @moolcool: The iPad would go from a never-buy to a buy-right-away for me, if they added user profiles. It'd be a nice thing to have on your coffee table, where anyone in the household can pick it up and be logge...
+
+2. @spudlyo: I'm about to head to the gym with my 12.9-inch 2017 vintage iPad Pro, which is still going strong. I prop it up on the elliptical trainer every other day or so for entertaining me while I grind out an...
+
+---
+
+### 5. Making Video Games in 2025 (without an engine)
+
+- **作者**: alvivar
+- **点赞**: 372 | **评论**: 177
+- **类别**: Other
+- **链接**: [https://www.noelberry.ca/posts/making_games_in_2025/](https://www.noelberry.ca/posts/making_games_in_2025/)
+- **讨论**: https://news.ycombinator.com/item?id=47176576
+
+**热门评论**:
+
+1. @the__alchemist: 3 anecdotes:
+- For Talos Principle 2, Croteam switched from their own engine to UE5. The description was "It would be like attempting to sprint and catch up with a train that is already far down the t...
+
+2. @wolttam: Hey Noel! There is always Neovim :)
+- A former VS Code enjoyer
+
+---
+
+### 6. Anthropic Cowork feature creates 10GB VM bundle on macOS without warning
+
+- **作者**: mystcb
+- **点赞**: 334 | **评论**: 166
+- **类别**: Other
+- **链接**: [https://github.com/anthropics/claude-code/issues/22543](https://github.com/anthropics/claude-code/issues/22543)
+- **讨论**: https://news.ycombinator.com/item?id=47218288
+
+**热门评论**:
+
+1. @felixrieseberg: Hi, Felix from Anthropic here. I work on Claude Cowork and Claude Code.
+Claude Cowork uses the Claude Code agent harness running inside a Linux VM (with additional sandboxing, network controls, and fi...
+
+2. @MarleTangible: It's incredible how many applications abuse disk access.
+In a similar fashion, Apple Podcasts app decided to download 120GB of podcasts for random reason and never deleted them. It even showed up as "...
+
+---
+
+### 7. Judge finalizes order for Greenpeace to pay $345M in ND oil pipeline case
+
+- **作者**: gmays
+- **点赞**: 150 | **评论**: 155
+- **类别**: Other
+- **链接**: [https://northdakotamonitor.com/2026/02/27/judge-finalizes-order-for-greenpeace-to-pay-345-million-in-north-dakota-oil-pipeline-case/](https://northdakotamonitor.com/2026/02/27/judge-finalizes-order-for-greenpeace-to-pay-345-million-in-north-dakota-oil-pipeline-case/)
+- **讨论**: https://news.ycombinator.com/item?id=47218364
+
+**热门评论**:
+
+1. @ttiurani: For context, a statement from the legal experts who monitored the trial.
+> It is our collective assessment that the jury verdict against Greenpeace in North Dakota reflects a deeply flawed trial with ...
+
+2. @foolfoolz: > Greenpeace maintains it only had six employees visit the protest camps, and that all worked for Greenpeace USA, not Greenpeace Fund or Greenpeace International.
+> The jury found Greenpeace USA liabl...
+
+---
+
+### 8. Ask HN: Who is hiring? (March 2026)
+
+- **作者**: whoishiring
+- **点赞**: 120 | **评论**: 146
+- **类别**: Ask HN
+- **链接**: [https://news.ycombinator.com/item?id=47219668](https://news.ycombinator.com/item?id=47219668)
+- **讨论**: https://news.ycombinator.com/item?id=47219668
+
+**热门评论**:
+
+1. @kaplun: Proton VPN (https://protonvpn.com/) | Senior Performance Engineer | Barcelona, Spain or Geneva, Switzerland | ONSITE
+Proton VPN enables millions of people to connect securely and privately, even in pl...
+
+2. @echinaceous: Quadrillion (quadrillion.io) | Member of Technical Staff | NYC (ONSITE) | Full-time | $175K-$350K + generous equity
+We build agents that companies can deploy for computational research. In particular,...
+
+---
+
+### 9. A case for Go as the best language for AI agents
+
+- **作者**: karakanb
+- **点赞**: 85 | **评论**: 111
+- **类别**: AI/ML
+- **链接**: [https://getbruin.com/blog/go-is-the-best-language-for-agents/](https://getbruin.com/blog/go-is-the-best-language-for-agents/)
+- **讨论**: https://news.ycombinator.com/item?id=47222270
+
+**热门评论**:
+
+1. @jryio: I've been saying this for maybe nine months vis-à-vis my consulting work keeps proving it.
+Go is an excellent language for LLM code generation. There exists a large stable training corpus, one way to ...
+
+2. @0x3f: I think the more you can shift to compile time the better when it comes to agents.  Go is therefore 'ok', but the type system isn't as useful as other options.
+I would say Rust is quite good for just ...
+
+---
+
+### 10. Ask HN: Who wants to be hired? (March 2026)
+
+- **作者**: whoishiring
+- **点赞**: 29 | **评论**: 96
+- **类别**: Ask HN
+- **链接**: [https://news.ycombinator.com/item?id=47219667](https://news.ycombinator.com/item?id=47219667)
+- **讨论**: https://news.ycombinator.com/item?id=47219667
+
+**热门评论**:
+
+1. @asim: Location: London, UK
+Remote: Yes 
+Willing to relocate: No
+Technologies: Go, distributed systems, APIs, etc
+CV: On request 
+Email: asim@mu.xyz
+Most recent work https://mu.xyz 
+Most well known work http...
+
+2. @blakeburch: Location: Austin, TX, USA
+  Remote: Yes, preferred. Open to hybrid in Austin.
+  Willing to relocate: No.
+  Technologies: 
+    - Data Storage: AWS S3, BigQuery, GCS, PostgreSQL, Redshift, Snowflake
+   ...
+
+---
+
+## 🚀 Show HN（创业项目）
+
+### Show HN: Govbase – Follow a bill from source text to news bias to social posts
+
+- 链接: [https://govbase.com](https://govbase.com)
+- 讨论: https://news.ycombinator.com/item?id=47220809
+- 点赞: 87 | 评论: 47
+
+### Show HN: uBlock filter list to blur all Instagram Reels
+
+- 链接: [https://gist.github.com/shraiwi/009c652da6ce8c99a6e1e0c86fe66886](https://gist.github.com/shraiwi/009c652da6ce8c99a6e1e0c86fe66886)
+- 讨论: https://news.ycombinator.com/item?id=47223147
+- 点赞: 37 | 评论: 8
+
+---
+
+## ❓ Ask HN（热门问题）
+
+### Ask HN: Who is hiring? (March 2026)
+
+- 讨论: https://news.ycombinator.com/item?id=47219668
+- 点赞: 120 | 评论: 146
+
+**代表回答**:
+
+> Proton VPN (https://protonvpn.com/) | Senior Performance Engineer | Barcelona, Spain or Geneva, Switzerland | ONSITE
+Proton VPN enables millions of people to connect securely and privately, even in places where the internet is restricted or unreliable. Delivering that experience means our service mu...
+
+### Ask HN: Who wants to be hired? (March 2026)
+
+- 讨论: https://news.ycombinator.com/item?id=47219667
+- 点赞: 29 | 评论: 96
+
+**代表回答**:
+
+> Location: London, UK
+Remote: Yes 
+Willing to relocate: No
+Technologies: Go, distributed systems, APIs, etc
+CV: On request 
+Email: asim@mu.xyz
+Most recent work https://mu.xyz 
+Most well known work https://go-micro.dev
+GitHub profile https://github.com/asim
+
+---
+
+## 🤖 AI/ML 技术趋势
+
+- **New iPad Air, powered by M4** (236 ⬆️ | 380 💬)
+  - https://www.apple.com/newsroom/2026/03/apple-introduces-the-new-ipad-air-powered-by-m4/
+
+- **First in-utero stem cell therapy for fetal spina bifida repair is safe: study** (187 ⬆️ | 19 💬)
+  - https://health.ucdavis.edu/news/headlines/first-ever-in-utero-stem-cell-therapy-for-fetal-spina-bifida-repair-is-safe-study-finds/2026/02
+
+- **A case for Go as the best language for AI agents** (85 ⬆️ | 111 💬)
+  - https://getbruin.com/blog/go-is-the-best-language-for-agents/
+
+- **Language Model Contains Personality Subnetworks** (33 ⬆️ | 15 💬)
+  - https://arxiv.org/abs/2602.07164
+
+---
+
+
+*报告生成时间：2026-03-03 04:54:04*

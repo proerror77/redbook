@@ -1,0 +1,316 @@
+# Reddit 每日监控 - 2026-03-03
+
+- 生成时间: 2026-03-03 04:54:14
+- 监控帖子数: 100 条
+
+---
+
+## 📊 统计摘要
+
+- **总帖子数**: 100 条
+- **高互动帖子**: 10 条
+- **Show/Launch**: 1 条
+- **Question/Help**: 10 条
+- **AI/ML 相关**: 10 条
+
+---
+
+## 🏷 Subreddit 分布
+
+- **r/SaaS**: 25 条
+- **r/Entrepreneur**: 25 条
+- **r/startups**: 25 条
+- **r/webdev**: 25 条
+
+---
+
+## 📂 类别分布
+
+- **SaaS/Startup**: 27 条
+- **Question/Help**: 24 条
+- **Other**: 23 条
+- **AI/ML**: 10 条
+- **Discussion**: 7 条
+- **Development**: 6 条
+- **Marketing/Growth**: 2 条
+- **Show/Launch**: 1 条
+
+---
+
+## 🔥 高互动帖子（深度讨论）
+
+### 1. Built a fake Gmail that secretly shows live cricket. Press Escape to hide it when your boss walks by.
+
+- **来源**: r/webdev
+- **作者**: u/Kind-Bottle-7712
+- **点赞**: 1326 | **评论**: 87
+- **类别**: Show/Launch
+- **标签**: Showoff Saturday
+- **链接**: https://www.reddit.com/r/webdev/comments/1rht8p3/built_a_fake_gmail_that_secretly_shows_live/
+
+**内容摘要**: Here -   [https://cricinfo-mail.vercel.app](https://cricinfo-mail.vercel.app)
+
+Your inbox = live matches. click an email = scorecard. Live matches get reply threads with ball-by-ball commentary - each...
+
+---
+
+### 2. Third exit
+
+- **来源**: r/Entrepreneur
+- **作者**: u/Derp_Animal
+- **点赞**: 367 | **评论**: 158
+- **类别**: Other
+- **标签**: Success Story
+- **链接**: https://www.reddit.com/r/Entrepreneur/comments/1rgln0s/third_exit/
+
+**内容摘要**: Not sure why I want to post this here. I just want to shout it at the rooftops everywhere, I guess.
+  
+First exit 10 years ago, $11M sold to a UK semiconductor company.  
+Second exit 4 years ago, $21M...
+
+---
+
+### 3. Share your startup - quarterly post
+
+- **来源**: r/startups
+- **作者**: u/julian88888888
+- **点赞**: 52 | **评论**: 435
+- **类别**: SaaS/Startup
+- **链接**: https://www.reddit.com/r/startups/comments/1qa653y/share_your_startup_quarterly_post/
+
+**内容摘要**: Share Your Startup - Q4 2023
+
+[**r/startups**](https://www.reddit.com/r/startups/) **wants to hear what you're working on!**
+
+Tell us about your startup in a comment within this submission. Follow thi...
+
+---
+
+### 4. AWS data centre got hit by missiles and this is how they frame it lmaoo
+
+- **来源**: r/webdev
+- **作者**: u/Mountain_Dream_7496
+- **点赞**: 390 | **评论**: 31
+- **类别**: Other
+- **链接**: https://www.reddit.com/r/webdev/comments/1riywuh/aws_data_centre_got_hit_by_missiles_and_this_is/
+
+---
+
+### 5. It's super safe putting an access token as URL paramater ... right?
+
+- **来源**: r/webdev
+- **作者**: u/affablematt
+- **点赞**: 270 | **评论**: 59
+- **类别**: Question/Help
+- **链接**: https://www.reddit.com/r/webdev/comments/1ri4f32/its_super_safe_putting_an_access_token_as_url/
+
+**内容摘要**: My mom uses this certain website to send out birthday cards to her grandkids. She writes a silly poem, puts in a bunch of pictures, the site prints it up and mails it. Nice card. Cheaper than Hallmark...
+
+---
+
+### 6. I planted fake API keys in online code editors and monitored where they went. CodePen sends your code to servers as you type.
+
+- **来源**: r/webdev
+- **作者**: u/Johin_Joh_3706
+- **点赞**: 227 | **评论**: 39
+- **类别**: Development
+- **链接**: https://www.reddit.com/r/webdev/comments/1rj1oac/i_planted_fake_api_keys_in_online_code_editors/
+
+**内容摘要**: I've been auditing the privacy practices of developer tools. This time I tested what happens to your code in online editors.
+
+Test data: const API\_KEY = "sk-secret-test-12345"; const DB\_PASSWORD = "...
+
+---
+
+### 7. 3 months of runway left. Product works. Investors not closing. What would you do? "i will not promote"
+
+- **来源**: r/startups
+- **作者**: u/gol0367
+- **点赞**: 134 | **评论**: 117
+- **类别**: SaaS/Startup
+- **标签**: I will not promote
+- **链接**: https://www.reddit.com/r/startups/comments/1rgzqvn/3_months_of_runway_left_product_works_investors/
+
+**内容摘要**: We have about 3 months of runway left for salaries.
+
+The product is built and live. Customers are using it. Partners are onboarded. The system works end to end.
+
+We’ve had multiple investor conversati...
+
+---
+
+### 8. Given chatgpt is willingly collabing with the department of war, are you moving away?
+
+- **来源**: r/Entrepreneur
+- **作者**: u/datawazo
+- **点赞**: 106 | **评论**: 114
+- **类别**: AI/ML
+- **标签**: Best Practices
+- **链接**: https://www.reddit.com/r/Entrepreneur/comments/1rh0gr3/given_chatgpt_is_willingly_collabing_with_the/
+
+**内容摘要**: We use Claude and chat and while think Claude is better in most scenarios I wouldn't say it's better in all scenarios.
+
+  
+That said, I was already sour on Sam and chats lack of accountability and las...
+
+---
+
+### 9. Successful Entrepreneurs, what is the one change you made that made you successful?
+
+- **来源**: r/Entrepreneur
+- **作者**: u/saasbruh
+- **点赞**: 104 | **评论**: 114
+- **类别**: Question/Help
+- **标签**: Best Practices
+- **链接**: https://www.reddit.com/r/Entrepreneur/comments/1ri1fka/successful_entrepreneurs_what_is_the_one_change/
+
+**内容摘要**: Overnight successes are technically a myth because you are continually working until one day, something clicks, and you become successful. 
+
+For all the successful entrepreneurs, what is something you...
+
+---
+
+### 10. Successful Entrepreneurs, What’s your full AI stack for running your business?
+
+- **来源**: r/Entrepreneur
+- **作者**: u/Sure_Marsupial_4309
+- **点赞**: 117 | **评论**: 79
+- **类别**: AI/ML
+- **标签**: Best Practices
+- **链接**: https://www.reddit.com/r/Entrepreneur/comments/1rioyvj/successful_entrepreneurs_whats_your_full_ai_stack/
+
+**内容摘要**: Hi all- Anthropic CEO Dario Amodei recently predicted all white collar jobs might go away in the next 5 years! I am sure most of these tech CEOs might be exaggerating since they have money in the game...
+
+---
+
+## 🚀 Show/Launch（创业项目）
+
+### Built a fake Gmail that secretly shows live cricket. Press Escape to hide it when your boss walks by.
+
+- **来源**: r/webdev
+- **链接**: https://www.reddit.com/r/webdev/comments/1rht8p3/built_a_fake_gmail_that_secretly_shows_live/
+- **点赞**: 1326 | **评论**: 87
+
+**描述**: Here -   [https://cricinfo-mail.vercel.app](https://cricinfo-mail.vercel.app)
+
+Your inbox = live matches. click an email = scorecard. Live matches get reply threads with ball-by-ball commentary - each...
+
+---
+
+## ❓ Question/Help（用户痛点）
+
+### It's super safe putting an access token as URL paramater ... right? 🔴 痛点
+
+- **来源**: r/webdev
+- **链接**: https://www.reddit.com/r/webdev/comments/1ri4f32/its_super_safe_putting_an_access_token_as_url/
+- **点赞**: 270 | **评论**: 59
+
+**问题描述**: My mom uses this certain website to send out birthday cards to her grandkids. She writes a silly poem, puts in a bunch of pictures, the site prints it up and mails it. Nice card. Cheaper than Hallmark...
+
+### Successful Entrepreneurs, what is the one change you made that made you successful? 
+
+- **来源**: r/Entrepreneur
+- **链接**: https://www.reddit.com/r/Entrepreneur/comments/1ri1fka/successful_entrepreneurs_what_is_the_one_change/
+- **点赞**: 104 | **评论**: 114
+
+**问题描述**: Overnight successes are technically a myth because you are continually working until one day, something clicks, and you become successful. 
+
+For all the successful entrepreneurs, what is something you...
+
+### What's your real intention behind consuming any content? 
+
+- **来源**: r/Entrepreneur
+- **链接**: https://www.reddit.com/r/Entrepreneur/comments/1rgusf5/whats_your_real_intention_behind_consuming_any/
+- **点赞**: 22 | **评论**: 57
+
+**问题描述**: I'm not expecting a case of dead scrolling but some real reason, do you consume to find out something new, or actually understand &amp; get better at something? If both, what's the ratio in general?...
+
+### Honest question- did you actually know what to do first when you started? I will not promote. 🔴 痛点
+
+- **来源**: r/startups
+- **链接**: https://www.reddit.com/r/startups/comments/1rh75j2/honest_question_did_you_actually_know_what_to_do/
+- **点赞**: 19 | **评论**: 98
+
+**问题描述**: Honest question for founders:
+
+When you started working on your idea- did you actually know what to do first? Or did you spend weeks Googling "how to start a startup" and getting overwhelmed by contra...
+
+### what advice do you have for me? when should you pivot? 
+
+- **来源**: r/Entrepreneur
+- **链接**: https://www.reddit.com/r/Entrepreneur/comments/1ri6fxp/what_advice_do_you_have_for_me_when_should_you/
+- **点赞**: 17 | **评论**: 37
+
+**问题描述**: i exited my last company 3 years ago now and have been trying to get back into entrepreneurship for about a year now (although haven't locked in like i'd before) and absolutely struggling.
+
+my first 6...
+
+### How do you stop "Stability" from killing your original ambition? 🔴 痛点
+
+- **来源**: r/Entrepreneur
+- **链接**: https://www.reddit.com/r/Entrepreneur/comments/1rifdpw/how_do_you_stop_stability_from_killing_your/
+- **点赞**: 14 | **评论**: 30
+
+**问题描述**: Usually, the security a job provides trumps the burnout and lack of movement, making it difficult to even plan a way out. I’ve heard a similar security trap happens when someone achieves stability in ...
+
+### What do you think is the best way to find real estate partners? 🔴 痛点
+
+- **来源**: r/Entrepreneur
+- **链接**: https://www.reddit.com/r/Entrepreneur/comments/1rhittn/what_do_you_think_is_the_best_way_to_find_real/
+- **点赞**: 10 | **评论**: 36
+
+**问题描述**: I want to start buying single family homes to rehab, rent, and refinance out of. 
+
+I have a ton of experience finding deals and doing the rehabs (I used to work for 2 big companies that did it), but I...
+
+### Hot take: most “validation” advice is useless. What actually made customers pull out their card for you? 🔴 痛点
+
+- **来源**: r/Entrepreneur
+- **链接**: https://www.reddit.com/r/Entrepreneur/comments/1rhd3ji/hot_take_most_validation_advice_is_useless_what/
+- **点赞**: 10 | **评论**: 79
+
+**问题描述**: I keep seeing the same advice everywhere: “talk to customers,” “build an MVP,” “launch on Product Hunt,” “run some ads,” “get feedback.” It all sounds clean on paper. In real life, people say “cool id...
+
+### when should you consider pivoting? (i will not promote) 
+
+- **来源**: r/startups
+- **链接**: https://www.reddit.com/r/startups/comments/1ri60bn/when_should_you_consider_pivoting_i_will_not/
+- **点赞**: 9 | **评论**: 13
+
+**问题描述**: i exited my last company 3 years ago now and have been trying to get back into entrepreneurship for about a year now (although haven't locked in like i'd before) and absolutely struggling.
+
+my first 6...
+
+### Serious early-stage founders, where do you actually look for execution help? 
+
+- **来源**: r/Entrepreneur
+- **链接**: https://www.reddit.com/r/Entrepreneur/comments/1rhge0v/serious_earlystage_founders_where_do_you_actually/
+- **点赞**: 6 | **评论**: 36
+
+**问题描述**: I work with pre-PMF founders on GTM and execution structure.  
+Not growth hacks. Not “more outreach.”  
+Mostly fixing broken signal loops, messy outbound, unclear tracking, inconsistent follow-up, and...
+
+---
+
+## 🤖 AI/ML 技术趋势
+
+- **How I went from 300 to 2,000 daily visitors in 60 days without touching my product** (23 ⬆️ | 21 💬)
+  - r/SaaS: https://www.reddit.com/r/SaaS/comments/1risv45/how_i_went_from_300_to_2000_daily_visitors_in_60/
+
+- **I’m building a document-first AI workspace because chat tools keep breaking long-form writing — would love thoughts** (2 ⬆️ | 0 💬)
+  - r/SaaS: https://www.reddit.com/r/SaaS/comments/1rj1n2c/im_building_a_documentfirst_ai_workspace_because/
+
+- **Messages like "You've reached your daily outreach limit" offend users** (2 ⬆️ | 3 💬)
+  - r/SaaS: https://www.reddit.com/r/SaaS/comments/1rj0hx1/messages_like_youve_reached_your_daily_outreach/
+
+- **🎙️ Episode 002: AMA Lorenzo Thione (Managing Director Gaingels) ) | /r/Entrepreneur Podcast** (8 ⬆️ | 10 💬)
+  - r/Entrepreneur: https://www.reddit.com/r/Entrepreneur/comments/1r2cj77/episode_002_ama_lorenzo_thione_managing_director/
+
+- **Successful Entrepreneurs, What’s your full AI stack for running your business?** (117 ⬆️ | 79 💬)
+  - r/Entrepreneur: https://www.reddit.com/r/Entrepreneur/comments/1rioyvj/successful_entrepreneurs_whats_your_full_ai_stack/
+
+---
+
+
+*报告生成时间：2026-03-03 04:54:14*

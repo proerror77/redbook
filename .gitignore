@@ -23,6 +23,12 @@ test_*.md
 # 小红书工具相关
 tools/auto-redbook/.auth/
 tools/auto-redbook/venv/
+tools/auto-zhipin/.auth/
+tools/auto-zhipin/data/*.json
+tools/auto-zhipin/data/*.jsonl
+tools/auto-zhipin/data/*.ndjson
+tools/auto-zhipin/data/*.png
+tools/auto-zhipin/data/*.html
 
 # 操作系统
 .DS_Store

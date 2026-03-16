@@ -84,25 +84,35 @@ tools/
   1. 生成发布提醒（扫描待深化/制作中）
   2. 回顾最近发布数据（从数据统计表提取）
   3. 生成每日研究（X.com + HN/Reddit）
+- **运行模式**：
+  - `bash tools/daily.sh`：本机完整模式（需要 Chrome + actionbook + X 登录态）
+  - `bash tools/daily.sh --skip-x`：无浏览器模式（仅 HN/Reddit，适合 GitHub Actions/CI）
 - **输出位置**：
   - 综合报告：`05-选题研究/X-每日日程-{日期}.md`
   - 自动追加到：`01-内容生产/选题管理/00-选题记录.md`
 - **手动运行**：
   ```bash
   bash tools/daily.sh
+  bash tools/daily.sh --skip-x
   ```
 
 **launchd 定时任务管理**：
 ```bash
-# 启用定时任务
-launchctl load ~/Library/LaunchAgents/com.redbook.daily-x.plist
-
-# 停用定时任务
-launchctl unload ~/Library/LaunchAgents/com.redbook.daily-x.plist
-
-# 手动触发一次
-launchctl start com.redbook.daily-x
+# 将仓库里的 plist 同步到 ~/Library/LaunchAgents 并重载
+bash tools/reload_daily_launch_agent.sh
 ```
+
+**GitHub Actions（无浏览器子集）**：
+- workflow：`.github/workflows/daily-browser-free.yml`
+- 调度时间：每天 `23:00 UTC`（北京时间次日 `07:00`）
+- 用途：生成无浏览器日报并自动提交到 `main`
+
+**早晨同步**：
+```bash
+bash tools/morning_sync.sh
+```
+- 只在 worktree 干净时执行 `git pull --ff-only`
+- 同步后列出当天日报路径
 
 #### ⚠️ **已集成/弃用**（仅用于调试）
 
