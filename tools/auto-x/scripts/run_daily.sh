@@ -12,7 +12,7 @@
 #   bash run_daily.sh --skip-research  # 只看提醒和回顾
 #   bash run_daily.sh --keywords "AI agent" "web3"
 
-set -e
+set -euo pipefail
 
 export PATH="$HOME/.local/bin:$PATH"
 
@@ -26,6 +26,15 @@ CHROME_PROFILE="$HOME/.local/share/chrome-debug-profile"
 HEADLESS_PROFILE="$HOME/.local/share/chrome-headless-profile"
 HEADED_PORT=9222
 HEADLESS_PORT=9223
+HEADLESS_PID=""
+SKIP_X=0
+
+for arg in "$@"; do
+    if [ "$arg" = "--skip-x" ]; then
+        SKIP_X=1
+        break
+    fi
+done
 
 log() {
     echo "[$(date '+%H:%M:%S')] $1" | tee -a "$LOG_FILE"
@@ -63,24 +72,28 @@ start_headless() {
 
 log "========== X.com 每日日程启动 =========="
 
-if lsof -i :$HEADED_PORT >/dev/null 2>&1; then
-    # 有头 Chrome 在运行 → 启动独立 headless + 转移 cookies
-    log "检测到有头 Chrome (port $HEADED_PORT)"
-    mkdir -p "$HEADLESS_PROFILE"
-    start_headless "$HEADLESS_PROFILE"
-
-    # 转移 X.com cookies
-    log "转移 cookies..."
-    python3 "$SCRIPT_DIR/transfer_cookies.py" $HEADED_PORT $HEADLESS_PORT 2>&1 | tee -a "$LOG_FILE"
-
-    # 让 actionbook 默认连接 headless
-    actionbook browser connect $HEADLESS_PORT 2>/dev/null || true
-    log "actionbook 已连接 (headless, port $HEADLESS_PORT)"
+if [ "$SKIP_X" -eq 1 ]; then
+    log "检测到 --skip-x，跳过 Chrome/actionbook，使用无浏览器模式"
 else
-    # 没有 Chrome → 用已有 profile 启动 headless（有登录态）
-    log "未检测到 Chrome，使用已有 profile 启动 headless"
-    start_headless "$CHROME_PROFILE"
-    log "actionbook 已连接 (headless, port $HEADLESS_PORT)"
+    if lsof -i :$HEADED_PORT >/dev/null 2>&1; then
+        # 有头 Chrome 在运行 → 启动独立 headless + 转移 cookies
+        log "检测到有头 Chrome (port $HEADED_PORT)"
+        mkdir -p "$HEADLESS_PROFILE"
+        start_headless "$HEADLESS_PROFILE"
+
+        # 转移 X.com cookies
+        log "转移 cookies..."
+        python3 "$SCRIPT_DIR/transfer_cookies.py" $HEADED_PORT $HEADLESS_PORT 2>&1 | tee -a "$LOG_FILE"
+
+        # 让 actionbook 默认连接 headless
+        actionbook browser connect $HEADLESS_PORT 2>/dev/null || true
+        log "actionbook 已连接 (headless, port $HEADLESS_PORT)"
+    else
+        # 没有 Chrome → 用已有 profile 启动 headless（有登录态）
+        log "未检测到 Chrome，使用已有 profile 启动 headless"
+        start_headless "$CHROME_PROFILE"
+        log "actionbook 已连接 (headless, port $HEADLESS_PORT)"
+    fi
 fi
 
 # 运行每日日程

@@ -7,14 +7,12 @@
 
     <key>ProgramArguments</key>
     <array>
-        <string>/usr/bin/osascript</string>
-        <string>-e</string>
-        <string>tell application "Terminal"</string>
-        <string>-e</string>
-        <string>do script "bash /Users/proerror/Documents/redbook/tools/daily.sh; exit"</string>
-        <string>-e</string>
-        <string>end tell</string>
+        <string>/bin/bash</string>
+        <string>/Users/proerror/Documents/redbook/tools/daily.sh</string>
     </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/proerror/Documents/redbook</string>
 
     <key>StartCalendarInterval</key>
     <dict>

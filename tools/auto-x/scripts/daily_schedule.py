@@ -172,6 +172,7 @@ def run_daily_research(
     subreddits: list,
     *,
     browser_ok: bool,
+    skip_x: bool = False,
     skip_timeline: bool = False,
     skip_trending: bool = False,
     skip_search: bool = False,
@@ -208,7 +209,10 @@ def run_daily_research(
         if not skip_following:
             x_sections.append(run_analyze_following())
     else:
-        x_sections.append("（浏览器未连接，已跳过 X.com 分析）\n")
+        if skip_x:
+            x_sections.append("（按 --skip-x 已跳过 X.com 分析）\n")
+        else:
+            x_sections.append("（浏览器未连接，已跳过 X.com 分析）\n")
 
     external_sections = []
     if not skip_hn:
@@ -225,6 +229,7 @@ def main():
     from daily_research import DEFAULT_KEYWORDS, DEFAULT_SUBREDDITS
 
     parser = argparse.ArgumentParser(description='X.com 每日日程')
+    parser.add_argument('--skip-x', action='store_true', help='跳过所有 X.com 浏览器分析，适合 GitHub Actions/CI')
     parser.add_argument('--skip-timeline', action='store_true', help='跳过 X Pro 多列分析')
     parser.add_argument('--skip-trending', action='store_true')
     parser.add_argument('--skip-search', action='store_true')
@@ -267,8 +272,12 @@ def main():
 
     # Part 3: 每日研究（X.com 需要浏览器，HN/Reddit 不需要）
     if not args.skip_research:
-        browser_ok = ensure_browser()
-        if not browser_ok:
+        browser_ok = False
+        if args.skip_x:
+            print_colored("ℹ️ 已启用 --skip-x：跳过 X.com 浏览器分析，仅生成 HN/Reddit 研究", 'cyan')
+        else:
+            browser_ok = ensure_browser()
+        if not args.skip_x and not browser_ok:
             print_colored("⚠️ 浏览器未连接：将跳过 X.com 研究，但仍会生成 HN/Reddit 部分", 'yellow')
 
         report_sections.append("## 🔍 每日研究\n\n")
@@ -276,6 +285,7 @@ def main():
             args.keywords,
             args.subreddits,
             browser_ok=browser_ok,
+            skip_x=args.skip_x,
             skip_timeline=args.skip_timeline,
             skip_trending=args.skip_trending,
             skip_search=args.skip_search,

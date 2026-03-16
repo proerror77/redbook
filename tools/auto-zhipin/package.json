@@ -1,0 +1,32 @@
+{
+  "name": "auto-zhipin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "BOSS直聘消息监看、筛选投递与追踪原型",
+  "main": "scripts/report.js",
+  "scripts": {
+    "bootstrap": "node scripts/bootstrap_auth.js",
+    "chrome:apply": "node scripts/chrome_apply_queue.js",
+    "chrome:collect": "node scripts/chrome_collect_queue.js",
+    "monitor": "node scripts/monitor_messages.js",
+    "pinchtab:apply": "node scripts/pinchtab_apply_queue.js",
+    "pinchtab:monitor": "node scripts/pinchtab_monitor_readonly.js",
+    "pinchtab:probe": "node scripts/pinchtab_probe.js",
+    "pinchtab:reply": "node scripts/reply_worker.js --backend pinchtab",
+    "scan": "node scripts/scan_jobs.js",
+    "reply": "node scripts/reply_worker.js",
+    "report": "node scripts/report.js",
+    "funnel-report": "node scripts/funnel_report.js",
+    "test": "node --test"
+  },
+  "keywords": [
+    "zhipin",
+    "boss",
+    "playwright",
+    "job-automation"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "playwright": "^1.40.0"
+  }
+}

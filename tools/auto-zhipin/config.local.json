@@ -1,0 +1,98 @@
+{
+  "browser": {
+    "channel": "chrome",
+    "headless": true,
+    "slowMoMs": 350,
+    "navigationTimeoutMs": 30000
+  },
+  "pinchtab": {
+    "baseUrl": "http://127.0.0.1:9867",
+    "timeoutMs": 15000,
+    "bin": ""
+  },
+  "chat": {
+    "url": "https://www.zhipin.com/web/geek/chat?ka=header-message",
+    "pollIntervalMs": 25000,
+    "conversationScanLimit": 8,
+    "maxLoops": 0,
+    "draftReplyMode": "template",
+    "autoReplyEnabled": false,
+    "autoReplySend": false,
+    "autoSendResumeButton": false,
+    "autoRejectionFollowup": false,
+    "rejectionFollowupCooldownHours": 72,
+    "maxAutoActionsPerRun": 2,
+    "replyTemplates": {
+      "default": "你好，感谢联系。我对这个岗位有兴趣，方便发我一版更完整的 JD、薪资范围和团队信息吗？",
+      "resume": "你好，我对这个岗位有兴趣。我的简历可以随时补发，也方便的话请同步一下岗位 JD、技术栈和薪资范围。",
+      "cv_request": "你好，我这边可以配合继续沟通；如果站内有发送简历按钮，我会优先通过站内简历发给你。",
+      "interview": "你好，可以安排沟通。我这边工作日晚上和周末都可以，方便的话你给我两个可选时间。",
+      "salary": "你好，我对岗位本身有兴趣。为了避免双方时间成本，方便先同步一下薪资范围、汇报线和团队规模吗？"
+    }
+  },
+  "profile": {
+    "summary": "擅长 AI Agent / RAG / 企业智能化落地",
+    "focusKeywords": [
+      "AI Agent",
+      "RAG",
+      "企业智能化"
+    ]
+  },
+  "jobs": {
+    "searchUrls": [
+      "https://www.zhipin.com/web/geek/job?city=101020100"
+    ],
+    "maxPagesPerUrl": 1,
+    "maxJobsPerRun": 30
+  },
+  "filters": {
+    "includeKeywords": [],
+    "excludeKeywords": [
+      "销售",
+      "外包",
+      "贷款",
+      "保险",
+      "驻外",
+      "驻日本",
+      "马来西亚",
+      "值班长",
+      "IDC机房运维",
+      "暖通",
+      "柴油发电机",
+      "配电室",
+      "高压电工",
+      "低压电工",
+      "精密空调",
+      "冷水机组",
+      "UPS"
+    ],
+    "minMonthlySalaryK": 20,
+    "maxExperienceYears": 8,
+    "allowedDegrees": [
+      "不限",
+      "大专",
+      "本科",
+      "硕士"
+    ],
+    "excludeCompanySizes": [
+      "1000-9999人",
+      "10000人以上"
+    ],
+    "excludeFundingStages": [],
+    "excludeLocations": [],
+    "excludeRecruiterTitles": []
+  },
+  "apply": {
+    "enabled": false,
+    "dryRun": true,
+    "maxAppliesPerRun": 5,
+    "greeting": "你好，我认真看过岗位描述，对这个方向有兴趣，方便继续沟通吗？",
+    "buttonTextCandidates": [
+      "立即沟通",
+      "立即投递",
+      "投递简历",
+      "立即申请",
+      "聊一聊"
+    ]
+  }
+}
