@@ -1,12 +1,24 @@
 const fs = require('node:fs');
-const { chromium } = require('playwright');
 const { PROFILE_DIR } = require('./paths');
+
+let chromium = null;
+try {
+  ({ chromium } = require('playwright'));
+} catch (error) {
+  chromium = null;
+}
 
 function ensureProfileDir() {
   fs.mkdirSync(PROFILE_DIR, { recursive: true });
 }
 
 async function launchContext(config, options = {}) {
+  if (!chromium) {
+    throw new Error(
+      'Legacy Playwright backend is no longer installed. Use chrome_collect_queue.js, '
+      + 'chrome_monitor_queue.js, or opencli boss apply with an already logged-in Google Chrome tab.'
+    );
+  }
   ensureProfileDir();
   const headed = Boolean(options.headed);
   const channel = options.channel || config.browser.channel || 'chrome';

@@ -9,18 +9,16 @@
 
 ## 运行模型
 
-### 1. 第一次必须人工登录
+### 1. 默认后端是「当前前台 Chrome 标签页」
 
-这个站点对 fresh session 很敏感。未登录或新会话常见两种情况：
-- 跳登录页
-- 跳滑块 / 风控验证页，例如“当前 IP 地址可能存在异常访问行为”
+现在这套主路径不再依赖 Playwright 持久化 profile，而是直接复用你已经登录好的前台 Google Chrome：
 
-所以正确路径不是“上来就 headless”，而是：
+1. 手动打开 Google Chrome 并登录 BOSS 直聘
+2. 保持目标标签页在前台
+3. 运行 `chrome:collect` / `chrome:monitor` / `boss:apply`
+4. 所有动作都按单标签页串行执行，避免串写和风控放大
 
-1. 先用 headed 模式跑一次 `bootstrap`
-2. 你手动完成登录 / 滑块 / 短信验证
-3. 工具把持久化 profile 留在 `tools/auto-zhipin/.auth/`
-4. 后续 `monitor` / `scan` 再尽量走 headless
+如果页面出现登录失效、滑块或 `访问受限 / 异常访问行为`，先人工处理，再重新运行脚本。
 
 ### 2. 默认保守，不默认发消息 / 投递
 
@@ -33,14 +31,12 @@
 
 ```text
 tools/auto-zhipin/
-├── .auth/                 # 本地浏览器持久化 profile（gitignore）
 ├── data/                  # ledger / events / runtime artifacts（gitignore runtime files）
 ├── lib/                   # 共享逻辑
 ├── scripts/
-│   ├── bootstrap_auth.js
-│   ├── monitor_messages.js
-│   ├── scan_jobs.js
-│   ├── reply_worker.js
+│   ├── chrome_collect_queue.js
+│   ├── chrome_monitor_queue.js
+│   ├── reply_worker.js     # PinchTab 实验后端
 │   └── report.js
 ├── tests/
 ├── config.example.json
@@ -52,10 +48,9 @@ tools/auto-zhipin/
 ```bash
 cd tools/auto-zhipin
 npm install
-npx playwright install chromium
 ```
 
-如果本机装了 Chrome，默认会优先尝试 `channel: "chrome"`；如果没有，脚本会回退到 Playwright 自带的 Chromium。
+不需要再安装 Playwright 浏览器。主链路直接走当前前台 Google Chrome。
 
 ## 配置
 
@@ -71,17 +66,20 @@ cp config.example.json config.local.json
 - `filters.*`
 - `apply.enabled`
 - `apply.dryRun`
-- `browser.slowMoMs`
 - `chat.autoReplyEnabled`
 - `chat.autoReplySend`
+- `chat.draftReplyMode`
 - `chat.pollIntervalMs`
 - `chat.autoSendResumeButton`
 - `chat.autoRejectionFollowup`
 - `profile.summary`
 - `profile.focusKeywords`
 
+消息自动化说明：
+- 当前版本里，自动草稿和自动发送都走 LLM 生成，不再默认用模板文本直发
+- 需要先配置 `ANTHROPIC_API_KEY`，否则监看脚本会跳过自动草稿/自动动作，只做只读监看
+
 风控建议：
-- `browser.slowMoMs` 不要设成 `0`，默认保守值建议至少 `250-350ms`
 - `chat.pollIntervalMs` 不要过于频繁，建议 `25s+`
 - 连续切搜索词、连续开详情页、连续点投递按钮，比单次扫描本身更容易触发验证
 - 如果页面出现 `访问受限 / 账号异常行为 / 暂时被限制访问`，应立即停止所有自动化，直到页面给出的恢复时间之后再由人工先确认状态
@@ -89,28 +87,32 @@ cp config.example.json config.local.json
 
 ## 使用方法
 
-### 1. 登录引导
+### 1. 手动准备当前标签页
 
 ```bash
-cd tools/auto-zhipin
-node scripts/bootstrap_auth.js
+npm run bootstrap
 ```
 
-你只需要在打开的浏览器里完成一次人工登录。脚本检测到聊天页可用后会退出。
+这条命令现在只会提示你：
+- 手动在前台 Google Chrome 登录 BOSS
+- 打开职位列表页或聊天页
+- 再运行下面的 current-tab 命令
 
 ### 2. 监看消息
 
 ```bash
 cd tools/auto-zhipin
-node scripts/monitor_messages.js --once
-node scripts/monitor_messages.js
+npm run chrome:monitor -- --once
+npm run chrome:monitor
+npm run reply
 ```
 
 默认行为：
-- 打开聊天页
+- 把前台标签切到聊天页
 - 检测是否命中登录失效 / 风控
 - 轮询会话列表和当前会话消息
 - 按保守节奏轮询，避免过于频繁刷新
+- 若未配置 `ANTHROPIC_API_KEY`，则只做消息采集，不会自动生成或发送回复
 - 新消息写入 `data/ledger.json` 和 `data/events.jsonl`
 - 为新入站消息生成回复草稿
 - 如果启用自动动作，会先把动作写入 action queue，再顺序执行
@@ -124,38 +126,35 @@ node scripts/monitor_messages.js
 
 ```bash
 cd tools/auto-zhipin
-node scripts/scan_jobs.js
+npm run chrome:collect
+npm run scan
 ```
 
 默认行为：
-- 打开配置里的搜索页
+- 如果未传 `--url`，按 `config.jobs.searchUrls` 顺序切前台标签页
 - 抽取职位卡片
 - 按规则打标签：`matched` / `skipped`
 - 把理由写入 ledger
 
 ### 4. 自动投递
 
-先确认：
-- `config.local.json` 里 `apply.enabled = true`
-- `apply.dryRun = false`
+旧的 current-tab 投递入口已移除，避免 AppleScript 抢前台焦点。
 
-然后运行：
+现在统一走 `opencli`：
 
 ```bash
 cd tools/auto-zhipin
-node scripts/scan_jobs.js --apply
+npm run boss:apply -- --url https://www.zhipin.com/job_detail/xxx.html
 ```
 
-### 5. 发送回复草稿
+### 5. PinchTab 动作层（实验）
 
 ```bash
 cd tools/auto-zhipin
-node scripts/reply_worker.js --send-all
-node scripts/reply_worker.js --run-actions
-node scripts/reply_worker.js --backend pinchtab --run-actions
+npm run pinchtab:reply -- --run-actions
 ```
 
-不带参数时会打印待发送草稿和 pending actions。
+`reply_worker.js` 现在默认走 `pinchtab`，不再默认假设本地还装着 Playwright。
 
 ### 6. 查看追踪摘要
 
@@ -193,7 +192,7 @@ npm run pinchtab:apply -- --url https://www.zhipin.com/job_detail/xxx.html
 
 说明：
 - 这条后端目前是实验性的
-- 搜索结果页的岗位抽取仍然走 Playwright；PinchTab 目前更适合作为动作执行层
+- 搜索结果页的岗位抽取主路径已经改成 current-tab；PinchTab 目前更适合作为动作执行层
 - `pinchtab eval` 在当前本机版本里表现不稳定，所以动作层直接改用了 PinchTab 的 HTTP API
 - 当前已接：
   - `自动回复管理`
@@ -217,7 +216,7 @@ npm run pinchtab:apply -- --url https://www.zhipin.com/job_detail/xxx.html
 ## 已知限制
 
 - 首登和登录失效恢复仍然要人工参与
-- 站点的滑块 / 风控会影响纯 headless 成功率
+- 这套主链路依赖“当前前台 Chrome 标签页”，因此任何并发运行都会互相踩状态
 - 若已经触发 `访问受限`，继续重试只会放大风险；这类状态必须视为硬停机
 - 原型会把最近一次站点健康状态写入 `ledger.json`；命中过 `restricted` 后会触发本地 circuit breaker
 - DOM 选择器可能变化，所以抽取逻辑用了较多候选选择器和文本兜底
@@ -226,8 +225,8 @@ npm run pinchtab:apply -- --url https://www.zhipin.com/job_detail/xxx.html
 
 ## 建议的真实使用顺序
 
-1. `bootstrap_auth.js`
-2. `scan_jobs.js --once` 先看过滤效果
+1. 手动在前台 Google Chrome 登录 BOSS，并打开职位列表或聊天页
+2. `npm run chrome:collect` 先看过滤效果
 3. 调整 `filters`
-4. 开 `--apply`，但先保留 `dryRun`
-5. 确认日志和台账合理后，再关闭 `dryRun`
+4. 真正投递前，使用 `npm run boss:apply -- --url ...` 指定单条岗位
+5. 需要消息处理时再运行 `npm run chrome:monitor` 或 `npm run reply`
