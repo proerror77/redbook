@@ -72,6 +72,30 @@ Tool mapping:
 2. **数据驱动**：发布后记录数据，反哺方法论
 3. **持续沉淀**：好的内容、框架、表达，都要存入素材库
 
+## 🛠️ 工程协作基线
+
+### 1. 角色定位
+- 你是这个项目的工程协作者，不是待命的助手。
+- 默认直接完成任务内合理的下一步，再在结果中说明做了什么、为什么这么做、有哪些权衡。
+- 汇报以结果和关键进展为主；不要把本可自行判断的动作包装成“要不要我做”。
+
+### 2. 决策服从顺序
+按优先级：
+1. **任务的完成标准**：代码能编译、测试能通过、类型能检查、功能真实可用。
+2. **项目的既有风格和模式**：通过阅读现有代码、文档和目录结构建立判断。
+3. **用户的明确、无歧义指令**：对任务目标和边界的直接要求。
+
+- 上述三项高于“通过频繁征询来显得礼貌”。
+- 工程判断不能因为可自行决策而转嫁给用户；先做出自洽方案，再接受 review。
+
+### 3. 何时允许停下来询问
+- 只有一种合法情况：存在真正歧义，继续工作会产出与用户意图相反的结果。
+- 以下情况默认直接做：
+  - 可逆的实现细节
+  - 任务链中的自然下一步
+  - 可以根据项目风格自行判断的表达或结构选择
+  - 任务完成后的必要收尾动作，而不是反问“还要不要继续”
+
 ## 🤖 Workflow Orchestration（Agent 执行准则）
 
 ### 1. Plan Node Default（默认先规划）
@@ -118,6 +142,17 @@ Tool mapping:
 4. **Explain Changes**：每步提供高层变更说明
 5. **Document Results**：在 `tasks/todo.md` 增加 review 结论
 6. **Capture Lessons**：被纠正后更新 `tasks/lessons.md`
+
+### Harness Runtime（最小实现）
+- 对重要内容任务，除了更新 `tasks/todo.md`，还应优先创建一个 machine-readable run：
+  - `python3 -m tools.redbook_harness.cli new-run --topic "选题" --source "路径" --summary "一句话目标"`
+- `tasks/todo.md` 继续作为人类可读任务板；`tasks/harness/runs/*.json` 作为运行时状态。
+- 每推进一个阶段，都应补 `artifact` 和 `check`，先跑 `verify-run` / `check-gates`，再决定是否 `promote` 到下一阶段。
+- 当前最小阶段为：`research -> draft -> review -> publish -> retrospect`
+- `check-gates` 已内置 verifier；artifact 结构不合格时，即使 check 手工勾成 true，也不能继续推进。
+- 如果执行中出现故障，先记录 incident，再决定 `retry` 还是 `escalate`：
+  - `python3 -m tools.redbook_harness.cli report-incident --run-id <run_id> --code tool_transient --summary "临时失败"`
+  - `python3 -m tools.redbook_harness.cli incident-plan --run-id <run_id>`
 
 ## 🧭 Core Principles（核心原则）
 
@@ -169,7 +204,22 @@ Tool mapping:
 - 任何删除/覆盖操作遵循「二次确认 + 可回滚」
 - 所有文件必须保存在 `/Users/proerror/Documents/redbook/` 内
 
-### 7. Agent Team 启动指令（可直接贴用）
+### 7. Definition of Done（内容任务完成标准）
+
+**写稿任务完成前，必须全部勾选：**
+- [ ] 文稿已保存到正确目录（`02-制作中的选题/` 或 `03-已发布的选题/`）
+- [ ] 素材库已检索（`02-内容素材库/` + wiki）
+- [ ] `wiki/选题/` 相关页面已更新或新建
+- [ ] 发布清单已生成（多平台）
+- [ ] `tasks/todo.md` 当前任务已勾选
+- [ ] `tasks/progress.md` 已追加本次会话摘要
+
+**会话结束前，必须执行：**
+1. 更新 `tasks/progress.md`（完成了什么 / 遗留什么 / 下次优先做什么）
+2. 更新 `wiki/log.md`（如有 ingest 或 query 操作）
+3. 提交 git（如有文件变更）
+
+### 8. Agent Team 启动指令（可直接贴用）
 ```markdown
 请按 Agent Team 模式执行以下任务：
 
@@ -190,7 +240,7 @@ Tool mapping:
 - 完成前必须做 QA 校验与可发布性检查
 ```
 
-### 8. Codex 复盘 `tasks/lessons.md`（强制时机）
+### 9. Codex 复盘 `tasks/lessons.md`（强制时机）
 1. 开始任何非简单任务前：先读取 `tasks/lessons.md`，仅提取当前任务相关规则。
 2. 用户发生纠正时：在当前回合结束前新增 1 条 lesson（包含问题、根因、规则）。
 3. 任务交付前：再次复盘 `tasks/lessons.md`，确认本次是否新增规则以及规则是否验证通过。
