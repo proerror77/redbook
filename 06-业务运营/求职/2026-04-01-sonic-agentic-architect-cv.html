@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sonic - Agentic Engineer 简历</title>
+  <style>
+    :root {
+      --text: #1f2937;
+      --muted: #5b6472;
+      --line: #d9e0ea;
+      --accent: #0f766e;
+      --bg: #f4f7fb;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+      line-height: 1.5;
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      padding: 16mm 15mm 14mm;
+      background: #fff;
+    }
+
+    .header {
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 10px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 0.5px;
+    }
+
+    .subtitle {
+      margin-top: 4px;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .meta {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    section {
+      margin-top: 14px;
+    }
+
+    h2 {
+      margin: 0 0 8px;
+      font-size: 16px;
+      color: var(--accent);
+      border-left: 4px solid var(--accent);
+      padding-left: 8px;
+    }
+
+    h3 {
+      margin: 12px 0 4px;
+      font-size: 15px;
+    }
+
+    .role {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    ul {
+      margin: 6px 0 0 18px;
+      padding: 0;
+    }
+
+    li {
+      margin: 4px 0;
+      font-size: 13.5px;
+    }
+
+    p {
+      margin: 6px 0;
+      font-size: 13.5px;
+    }
+
+    .skills {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 18px;
+    }
+
+    .skills p {
+      margin: 0;
+    }
+
+    @media print {
+      body { background: #fff; }
+      .page {
+        width: auto;
+        min-height: auto;
+        margin: 0;
+        padding: 12mm 12mm 10mm;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <h1>Sonic</h1>
+      <div class="subtitle">Agentic Engineer / AI Agent 架构与落地负责人</div>
+      <div class="meta">上海 | 18621942912 | proerror@gmail.com</div>
+    </header>
+
+    <section>
+      <h2>职位匹配摘要</h2>
+      <ul>
+        <li>14 年系统、产品与工程经验，当前核心定位是 Agentic Engineer / AI Agent 架构与落地负责人，专注于把 AI Agent 从模型能力与 Demo，做成可进入真实组织流程的生产系统。</li>
+        <li>强项不是模型接入，而是完成从任务建模、角色编排、工具接入、上下文与记忆管理、状态持久化、权限边界、异常恢复、评估监控到持续优化的完整 Agentic 架构设计。</li>
+        <li>已搭建并落地 Auto Dev 与数字员工系统，把需求分析、任务拆解、代码生成、测试验证、部署发布、运行监控串成持续可执行的工程闭环，让 Agent 真正参与交付。</li>
+        <li>熟悉基于 Claude Code、OpenClaw、Codex，以及 Claude、Gemini 等模型能力构建单 Agent 与多 Agent 协同系统，能够推动 Agent 从一次性调用升级为可复用、可治理、可扩展的企业级能力。</li>
+        <li>同时具备 Rust / Python / TypeScript 的复杂系统工程基础，能把 Agent 能力与后端系统、数据系统、工作流引擎和 DevOps 体系结合，形成真正可交付、可维护的解决方案。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>核心技能</h2>
+      <div class="skills">
+        <p><strong>Agentic Architecture：</strong>角色设计、任务拆解、工作流编排、审批节点、执行链路设计</p>
+        <p><strong>Agent Runtime 治理：</strong>context / memory、状态持久化、权限控制、失败恢复、回滚</p>
+        <p><strong>Agent 工具体系：</strong>tool calling、structured output、工具适配层、知识检索、外部系统集成</p>
+        <p><strong>评估与监控：</strong>运行观测、结果校验、效果评估、异常定位、持续优化</p>
+        <p><strong>工程实现：</strong>Rust / Python / TypeScript / Node.js</p>
+        <p><strong>系统与基础设施：</strong>REST API、SQL、Redis、Docker、服务恢复与性能定位</p>
+        <p><strong>交付协同：</strong>需求分析、架构设计、研发流程重组、测试验证、部署发布</p>
+        <p><strong>跨团队落地：</strong>研发、运营、数据、内容、业务协同场景的数字员工部署</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>工作经历</h2>
+
+      <h3>Icered co ltd</h3>
+      <div class="role">Agentic Engineer / AI Agent 架构与落地负责人 | 2025.09 - 2026.02</div>
+      <ul>
+        <li>负责 Auto Dev 与数字员工体系的整体架构设计与落地，定义 Planner、Coder、Reviewer、Tester、Executor 等角色分工与协作边界。</li>
+        <li>将需求理解、方案生成、代码实现、测试校验、部署发布与运行监控串成标准化执行链路，使 Agent 可以稳定参与真实研发流程，而不是停留在原型验证阶段。</li>
+        <li>基于 Claude Code、OpenClaw、Codex、Claude、Gemini 等能力构建单 Agent / 多 Agent 系统，完成工具接入、上下文分层、状态持久化、权限控制、异常恢复与效果评估。</li>
+        <li>推动 Agent 体系进入研发、运营、数据分析、内容生产与业务协同场景，让数字员工承担信息整理、任务推进、报告生成、知识检索与流程执行等高频工作。</li>
+        <li>核心贡献不是接入模型，而是把 AI Agent 做成可复用、可监控、可治理、可持续演进的生产系统。</li>
+      </ul>
+
+      <h3>独立开发</h3>
+      <div class="role">AI 系统架构 / 全栈交付 / DevOps | 2019.12 - 2025.09</div>
+      <ul>
+        <li>长期使用 Rust、Python、TypeScript 构建真实服务，覆盖后端 API、数据处理、部署运维、线上故障排查与稳定性优化。</li>
+        <li>在复杂项目中承担架构拆解、接口设计、模块边界划分、测试辅助、问题修复与上线支持，能够跨前端、后端、数据库与运维协同推进交付。</li>
+        <li>主导遗留社交 App 重构，围绕 AI coding agents 重组研发流程，用 2 人 4 个月完成原 30 人 8 个月同等核心功能的重建与交付。</li>
+        <li>长期处理 CPU、内存、延迟、部署、日志与服务恢复问题，具备将 Agent 架构落到生产环境所需的工程底座能力。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>代表项目</h2>
+
+      <h3>Auto Dev / 研发 Agent 系统</h3>
+      <ul>
+        <li>设计多角色 Agent 协作架构，明确 Planner、Coder、Reviewer、Tester、Executor 的职责边界、输入输出与交接协议。</li>
+        <li>将需求分析、任务拆解、代码生成、测试验证、部署发布与运行监控串成一条可持续执行链路，让 Agent 深度进入软件交付体系。</li>
+        <li>建立 context 管理、状态持久化、权限控制、执行记录、失败恢复与结果校验机制，使系统具备可治理、可追踪、可扩展特性。</li>
+      </ul>
+
+      <h3>企业数字员工系统</h3>
+      <ul>
+        <li>将 Agent 部署到研发、运营、数据分析、内容生产与业务协同场景，承担知识检索、信息整理、任务跟进、日报周报生成与流程协同工作。</li>
+        <li>重点不在单次问答，而在让数字员工持续参与真实工作流，形成稳定的人机协作模式。</li>
+        <li>让 Agent 从辅助工具升级为可持续工作的执行单元，为组织带来真实的效率提升与流程自动化价值。</li>
+      </ul>
+
+      <h3>复杂系统重构与工程自动化</h3>
+      <ul>
+        <li>在遗留系统重构中引入 AI coding agents，参与代码理解、模块拆分、重构建议、测试辅助与缺陷修复。</li>
+        <li>最终 2 人 4 个月完成原 30 人 8 个月同等核心功能重建，显著降低人力投入与协作成本。</li>
+        <li>证明我不仅能设计 Agent 系统，也能把 Agent 能力嵌入复杂工程现场并交付结果。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>针对目标岗位的匹配点</h2>
+      <ul>
+        <li><strong>我做的是 Agentic 架构，不是单点 AI 接入</strong>：能够设计 Agent 角色体系、执行链路、工具协议、状态治理与监控评估机制。</li>
+        <li><strong>我能把 Agent 落进真实业务流程</strong>：研发、运营、数据、内容与协同场景都有落地经验，知道如何把 Agent 变成组织能力，而不是孤立工具。</li>
+        <li><strong>我有完整工程底座</strong>：Rust / Python / TypeScript、后端系统、数据结构、部署运维、稳定性优化都能独立推进。</li>
+        <li><strong>我能从架构走到交付</strong>：不仅能设计方案，也能推动实现、验证、部署与持续优化，具备负责结果的能力。</li>
+        <li><strong>我适合 AI Agent 架构师 / AI Native 技术负责人 / 数字员工体系负责人</strong> 这类需要架构能力、落地能力、工程能力同时成立的岗位。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>教育经历</h2>
+      <ul>
+        <li>台北科技大学，MBA 硕士，2006 - 2008</li>
+        <li>淡江大学，资讯管理，本科，2004 - 2008</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>求职方向</h2>
+      <ul>
+        <li>Agentic Engineer</li>
+        <li>AI Agent 架构师</li>
+        <li>AI Agent 架构与落地负责人</li>
+        <li>AI Native 技术负责人 / TL</li>
+        <li>企业数字员工 / 研发自动化 / 流程自动化相关岗位</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

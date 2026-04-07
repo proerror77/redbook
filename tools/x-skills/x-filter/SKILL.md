@@ -119,8 +119,17 @@ If not found, assume domains: [AI/科技, 创业, 个人成长]
 3. **Score each material** on 4 criteria
 4. **Calculate totals** and sort by score
 5. **Categorize**: ≥7 (入选), 5-6 (待定), <5 (淘汰)
-6. **Generate recommendations** for top topics
-7. **Output report** with next steps
+6. **Wiki check**: For each ≥7 topic, check `wiki/index.md` — does a `wiki/选题/` page exist?
+7. **Generate recommendations** for top topics
+8. **Output report** with next steps
+
+## Wiki Check (Step 6)
+
+For each topic scoring ≥7:
+- If `wiki/选题/{topic}.md` exists → note "Wiki 已有页面，可直接深化"
+- If not → note "建议运行 /x-collect {topic} 建立 Wiki 页面"
+
+This ensures high-value topics get properly accumulated in the wiki before creation.
 
 ## Example
 
@@ -174,6 +183,7 @@ After filtering, suggest:
 筛选完成！{n} 个选题入选创作池。
 
 推荐优先创作：{top_topic}（{score}分）
+Wiki 状态：{已有页面 / 建议先运行 /x-collect 建立页面}
 
 下一步：运行 /x-create {top_topic} 开始创作
 ```

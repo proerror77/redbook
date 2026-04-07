@@ -1,4 +1,3 @@
-const { buildRejectionFollowup } = require('./reply');
 const { nowIso, stableHash } = require('./utils');
 const {
   extractConversations,
@@ -22,13 +21,22 @@ function hasRecentCompletedAction(existingActions, conversationId, type, cooldow
   });
 }
 
-function buildActionsForIntent({ intent, message, conversation, job, config, existingActions = [] }) {
+function buildActionsForIntent({
+  intent,
+  message,
+  conversation,
+  job,
+  config,
+  existingActions = [],
+  replyText = '',
+  replySource = '',
+}) {
   const conversationId = conversation?.id || message?.conversationId;
   if (!conversationId || !message?.id) {
     return [];
   }
 
-  if (intent === 'cv_request' && config.chat?.autoSendResumeButton) {
+  if (intent === 'cv_request' && config.chat?.autoSendResumeButton && replySource === 'claude') {
     return [{
       id: stableHash(`${conversationId}:${message.id}:send_resume_button`),
       conversationId,
@@ -51,7 +59,10 @@ function buildActionsForIntent({ intent, message, conversation, job, config, exi
       return [];
     }
 
-    const text = buildRejectionFollowup({ conversation, job, message }, config);
+    const text = String(replyText || '').trim();
+    if (!text || replySource !== 'claude') {
+      return [];
+    }
     return [{
       id: stableHash(`${conversationId}:${message.id}:send_text_reply:${text}`),
       conversationId,

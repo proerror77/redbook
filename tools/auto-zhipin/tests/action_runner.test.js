@@ -21,6 +21,7 @@ test('buildActionsForIntent creates a send_resume_button action for CV requests'
     message: { id: 'message-1', conversationId: 'conversation-1', text: '麻烦发一下简历' },
     conversation: { id: 'conversation-1', title: '某公司' },
     config,
+    replySource: 'claude',
   });
 
   assert.equal(actions.length, 1);
@@ -34,11 +35,27 @@ test('buildActionsForIntent creates one rejection follow-up action for explicit 
     conversation: { id: 'conversation-1', title: '某公司' },
     job: { title: 'AI应用架构师', summary: '负责企业知识库与智能体工作流' },
     config,
+    replyText: '收到，如果后续有更偏 AI Agent / RAG 落地的岗位，也欢迎再联系。',
+    replySource: 'claude',
   });
 
   assert.equal(actions.length, 1);
   assert.equal(actions[0].type, 'send_text_reply');
-  assert.match(actions[0].payload.text, /AI Agent|RAG|企业智能化/);
+  assert.match(actions[0].payload.text, /AI Agent|RAG/);
+});
+
+test('buildActionsForIntent refuses automatic text actions without claude output', () => {
+  const actions = buildActionsForIntent({
+    intent: 'explicit_rejection',
+    message: { id: 'message-3', conversationId: 'conversation-1', text: '这个岗位暂不匹配' },
+    conversation: { id: 'conversation-1', title: '某公司' },
+    job: { title: 'AI应用架构师', summary: '负责企业知识库与智能体工作流' },
+    config,
+    replyText: '收到，如果后续有更偏 AI Agent / RAG 落地的岗位，也欢迎再联系。',
+    replySource: 'fallback',
+  });
+
+  assert.equal(actions.length, 0);
 });
 
 test('pickRunnableActions caps automatic actions per run', () => {

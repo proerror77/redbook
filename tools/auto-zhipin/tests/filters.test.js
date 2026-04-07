@@ -1,12 +1,24 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const { evaluateJob, parseExperience, parseSalaryRange } = require('../lib/filters');
+const { evaluateJob, normalizeBossDigits, parseExperience, parseSalaryRange } = require('../lib/filters');
 
 test('parseSalaryRange parses monthly salary text', () => {
   assert.deepEqual(parseSalaryRange('25-35K·14薪'), {
     minMonthlyK: 25,
     maxMonthlyK: 35,
+  });
+});
+
+test('normalizeBossDigits converts BOSS private-use salary glyphs into ascii digits', () => {
+  assert.equal(normalizeBossDigits('-K·薪'), '51-71K·27薪');
+  assert.equal(normalizeBossDigits('-K'), '31-37K');
+});
+
+test('parseSalaryRange parses monthly salary text rendered with BOSS private-use glyphs', () => {
+  assert.deepEqual(parseSalaryRange('-K·薪'), {
+    minMonthlyK: 51,
+    maxMonthlyK: 71,
   });
 });
 
@@ -88,6 +100,7 @@ test('evaluateJob rejects overseas facility operations roles', () => {
       minMonthlySalaryK: 20,
       maxExperienceYears: 8,
       allowedDegrees: ['大专', '本科', '硕士'],
+      excludeCompanyKeywords: [],
       excludeCompanySizes: [],
       excludeFundingStages: [],
       excludeLocations: [],
@@ -118,6 +131,7 @@ test('evaluateJob still allows genuine AI infrastructure software roles', () => 
       minMonthlySalaryK: 20,
       maxExperienceYears: 10,
       allowedDegrees: ['本科', '硕士'],
+      excludeCompanyKeywords: [],
       excludeCompanySizes: [],
       excludeFundingStages: [],
       excludeLocations: [],
@@ -127,4 +141,60 @@ test('evaluateJob still allows genuine AI infrastructure software roles', () => 
 
   assert.equal(result.allow, true);
   assert.deepEqual(result.reasons, []);
+});
+
+test('evaluateJob rejects weekly-rate opportunities before they consume communication quota', () => {
+  const result = evaluateJob(
+    {
+      title: 'ai架构工程师',
+      company: '上海鞍石企业咨询管理',
+      salaryText: '900-1500元/周',
+      experienceText: '1-3年',
+      degreeText: '本科',
+      summary: 'AI Agent / Make.com / Claude API / 自动化流程搭建',
+    },
+    {
+      includeKeywords: ['AI', 'Agent', '架构'],
+      excludeKeywords: ['销售'],
+      minMonthlySalaryK: 20,
+      maxExperienceYears: 8,
+      allowedDegrees: ['本科', '硕士'],
+      excludeCompanyKeywords: [],
+      excludeCompanySizes: [],
+      excludeFundingStages: [],
+      excludeLocations: [],
+      excludeRecruiterTitles: [],
+    }
+  );
+
+  assert.equal(result.allow, false);
+  assert.deepEqual(result.reasons, ['weekly_rate_excluded']);
+});
+
+test('evaluateJob rejects blacklisted big-company and institution keywords', () => {
+  const result = evaluateJob(
+    {
+      title: 'AI 解决方案架构师',
+      company: '腾讯研究院',
+      salaryText: '45-65K',
+      experienceText: '3-5年',
+      degreeText: '本科',
+      summary: '企业 AI 应用落地',
+    },
+    {
+      includeKeywords: ['AI', '架构'],
+      excludeKeywords: ['销售'],
+      minMonthlySalaryK: 20,
+      maxExperienceYears: 8,
+      allowedDegrees: ['本科', '硕士'],
+      excludeCompanyKeywords: ['腾讯', '研究院', '集团', '国企'],
+      excludeCompanySizes: [],
+      excludeFundingStages: [],
+      excludeLocations: [],
+      excludeRecruiterTitles: [],
+    }
+  );
+
+  assert.equal(result.allow, false);
+  assert.deepEqual(result.reasons, ['company_keyword_excluded']);
 });

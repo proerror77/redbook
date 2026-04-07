@@ -1,0 +1,383 @@
+#!/usr/bin/env node
+
+const { loadConfig } = require('../lib/config');
+const { createCurrentTabAdapter, getCurrentTabState, navigateCurrentTab } = require('../lib/chrome_current');
+const { evaluateJob } = require('../lib/filters');
+const { matchJobAgainstChatTriage, readChatTriage } = require('../lib/chat_triage');
+const { requireBossCoreModule } = require('../lib/opencli_core');
+const { classifySiteHealth } = require('../lib/site_health');
+const { ZhipinStore } = require('../lib/store');
+const { makeApplicationIdentity, nowIso, parseArgs } = require('../lib/utils');
+const jobBrowserCore = requireBossCoreModule('job-browser');
+const currentTabAdapter = createCurrentTabAdapter();
+
+function parseCsv(value) {
+  return String(value || '')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function parseNonNegativeInt(value, fallback) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed < 0) {
+    return fallback;
+  }
+  return Math.floor(parsed);
+}
+
+function buildCollectOptions(config, args = {}) {
+  return {
+    limit: parseNonNegativeInt(args.limit, Number(config.jobs?.maxJobsPerRun || 30)),
+    waitMs: parseNonNegativeInt(args.waitMs, 4000),
+    scrollRounds: parseNonNegativeInt(args.scrolls, parseNonNegativeInt(config.jobs?.scrollRounds, 6)),
+    scrollWaitMs: parseNonNegativeInt(args.scrollWaitMs, parseNonNegativeInt(config.jobs?.scrollWaitMs, 1200)),
+    scrollStableRounds: Math.max(
+      1,
+      parseNonNegativeInt(args.scrollStableRounds, parseNonNegativeInt(config.jobs?.scrollStableRounds, 2))
+    ),
+  };
+}
+
+function buildFilters(config, args) {
+  const extraInclude = parseCsv(args.include);
+  const extraExclude = parseCsv(args.exclude);
+  return {
+    ...config.filters,
+    includeKeywords: [...(config.filters.includeKeywords || []), ...extraInclude],
+    excludeKeywords: [...(config.filters.excludeKeywords || []), ...extraExclude],
+  };
+}
+
+function locationMatches(requiredLocation, location) {
+  if (!requiredLocation) {
+    return true;
+  }
+  return String(location || '').includes(String(requiredLocation));
+}
+
+function resolveTargetUrls(config, args) {
+  if (args.url) {
+    return [args.url];
+  }
+  const configured = Array.isArray(config.jobs?.searchUrls)
+    ? config.jobs.searchUrls.filter(Boolean)
+    : [];
+  return configured.length ? configured : [null];
+}
+
+function parseJsonResult(raw, fallback = {}) {
+  if (raw && typeof raw === 'object') {
+    return raw;
+  }
+  try {
+    return JSON.parse(String(raw || ''));
+  } catch {
+    return fallback;
+  }
+}
+
+function buildInspectJobFeedScript() {
+  return `(() => JSON.stringify({
+    anchorCount: document.querySelectorAll('a[href*="/job_detail/"], a[href*="job_detail"]').length,
+    scrollTop: window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0,
+    scrollHeight: Math.max(
+      document.documentElement ? document.documentElement.scrollHeight : 0,
+      document.body ? document.body.scrollHeight : 0
+    ),
+    viewportHeight: window.innerHeight || (document.documentElement ? document.documentElement.clientHeight : 0) || 0
+  }))()`;
+}
+
+async function inspectJobFeed(adapter) {
+  return parseJsonResult(await adapter.evaluate(buildInspectJobFeedScript()), {
+    anchorCount: 0,
+    scrollTop: 0,
+    scrollHeight: 0,
+    viewportHeight: 0,
+  });
+}
+
+function buildScrollJobFeedScript() {
+  return `(() => {
+    const root = document.scrollingElement || document.documentElement || document.body;
+    const viewportHeight = window.innerHeight || (document.documentElement ? document.documentElement.clientHeight : 0) || 0;
+    const nextTop = Math.max(0, (root ? root.scrollHeight : 0) - viewportHeight * 0.35);
+    window.scrollTo({ top: nextTop, behavior: 'auto' });
+    return JSON.stringify({
+      scrollTop: window.scrollY || (root ? root.scrollTop : 0) || 0,
+      scrollHeight: root ? root.scrollHeight : 0,
+      viewportHeight
+    });
+  })()`;
+}
+
+async function autoLoadMoreJobs(adapter, options = {}) {
+  const maxRounds = Math.max(0, Number(options.scrollRounds || 0));
+  const initial = await inspectJobFeed(adapter);
+  if (maxRounds <= 0) {
+    return {
+      initialAnchorCount: initial.anchorCount,
+      finalAnchorCount: initial.anchorCount,
+      roundsCompleted: 0,
+      stoppedByPlateau: false,
+    };
+  }
+
+  let previous = initial;
+  let stableRounds = 0;
+  let roundsCompleted = 0;
+
+  for (let round = 1; round <= maxRounds; round += 1) {
+    await adapter.evaluate(buildScrollJobFeedScript());
+    if (typeof adapter.waitMs === 'function') {
+      await adapter.waitMs(Number(options.scrollWaitMs || 1200));
+    }
+
+    const current = await inspectJobFeed(adapter);
+    roundsCompleted = round;
+    const noGrowth = Number(current.anchorCount || 0) <= Number(previous.anchorCount || 0)
+      && Number(current.scrollHeight || 0) <= Number(previous.scrollHeight || 0);
+    stableRounds = noGrowth ? stableRounds + 1 : 0;
+    previous = current;
+
+    if (stableRounds >= Number(options.scrollStableRounds || 2)) {
+      return {
+        initialAnchorCount: initial.anchorCount,
+        finalAnchorCount: current.anchorCount,
+        roundsCompleted,
+        stoppedByPlateau: true,
+      };
+    }
+  }
+
+  return {
+    initialAnchorCount: initial.anchorCount,
+    finalAnchorCount: previous.anchorCount,
+    roundsCompleted,
+    stoppedByPlateau: false,
+  };
+}
+
+async function main() {
+  const args = parseArgs(process.argv.slice(2));
+  const { config } = loadConfig(args.config);
+  const filters = buildFilters(config, args);
+  const collectOptions = buildCollectOptions(config, args);
+  const store = new ZhipinStore();
+  const chatTriage = readChatTriage();
+  const runId = store.startRun('chrome_collect_queue', {
+    targetUrls: resolveTargetUrls(config, args).filter(Boolean),
+    limit: collectOptions.limit,
+  });
+  const requiredLocation = args['require-location'] || '';
+  const targetUrls = resolveTargetUrls(config, args);
+  const matched = [];
+  const skipped = [];
+  let inspected = 0;
+  let collectIndex = 0;
+  const loadMoreStats = [];
+
+  try {
+    for (const targetUrl of targetUrls) {
+      if (targetUrl) {
+        navigateCurrentTab(targetUrl, collectOptions.waitMs);
+      }
+
+      const pageState = getCurrentTabState(Number(args.bodyLimit || 2400));
+      const siteHealth = classifySiteHealth({
+        url: pageState.url,
+        title: pageState.title,
+        bodyText: pageState.bodyText,
+        looksReady: /job_detail|\/web\/geek\/jobs/.test(pageState.url || '') || /立即沟通|继续沟通|职位描述/.test(pageState.bodyText || ''),
+      });
+
+      if (siteHealth.status === 'auth_gate' || siteHealth.status === 'restricted') {
+        store.setSiteHealth({
+          ...siteHealth,
+          sourceUrl: pageState.url,
+          title: pageState.title,
+          backend: 'chrome_current',
+        });
+        store.save({
+          operation: 'chrome_collect_queue',
+          phase: 'blocked',
+          pageUrl: pageState.url,
+          runId,
+        });
+        throw new Error(`chrome collect blocked: ${siteHealth.reason}${siteHealth.recoveryAt ? ` until ${siteHealth.recoveryAt}` : ''}`);
+      }
+
+      if (/\/web\/geek\/job/.test(pageState.url || '')) {
+        const loadMoreResult = await autoLoadMoreJobs(currentTabAdapter, collectOptions);
+        loadMoreStats.push({
+          url: pageState.url,
+          beforeAnchorCount: loadMoreResult.initialAnchorCount,
+          finalAnchorCount: loadMoreResult.finalAnchorCount,
+          roundsCompleted: loadMoreResult.roundsCompleted,
+          stoppedByPlateau: loadMoreResult.stoppedByPlateau,
+        });
+      }
+
+      const jobs = await jobBrowserCore.extractJobsFromPage(currentTabAdapter);
+      if (!jobs.length) {
+        throw new Error(`no jobs found on current page: ${pageState.url}`);
+      }
+
+      inspected += jobs.length;
+      for (const job of jobs) {
+        collectIndex += 1;
+        const collectMeta = {
+          collectRunId: runId,
+          collectPageUrl: pageState.url,
+          collectIndex,
+          collectedAt: nowIso(),
+        };
+        const jobId = store.upsertJob({
+          ...job,
+          ...collectMeta,
+        });
+        const existingTerminalById = store.ledger.applications[jobId];
+        const existingTerminalByIdentity = store.findApplicationByIdentity(job, ['applied', 'skipped']);
+        const existingTerminal = ['applied', 'skipped'].includes(existingTerminalById?.status)
+          ? existingTerminalById
+          : existingTerminalByIdentity;
+        const chatBlocked = matchJobAgainstChatTriage(job, chatTriage);
+        const decision = evaluateJob(job, filters);
+        const reasons = decision.reasons.slice();
+        let status = decision.allow ? 'matched' : 'skipped';
+
+        if (!locationMatches(requiredLocation, job.location)) {
+          status = 'skipped';
+          reasons.push('location_required_mismatch');
+        }
+
+        if (chatBlocked) {
+          status = 'skipped';
+          reasons.push(`chat_triage_${chatBlocked.category || 'blocked'}`);
+        }
+
+        if (existingTerminal?.status === 'applied' || existingTerminal?.status === 'skipped') {
+          reasons.push(existingTerminal.status === 'applied' ? 'duplicate_applied_identity' : 'duplicate_skipped_identity');
+          skipped.push({
+            jobId,
+            title: job.title,
+            company: job.company,
+            salary: job.salaryText,
+            location: job.location,
+            url: job.url,
+            reasons,
+          });
+
+          if (existingTerminalById && !['applied', 'skipped'].includes(existingTerminalById.status)) {
+            store.upsertApplication({
+              jobId,
+              url: job.url,
+              title: job.title,
+              company: job.company,
+              salary: job.salaryText,
+              location: job.location,
+              status: 'deduped',
+              reasons,
+              duplicateOf: existingTerminal.jobId || null,
+              source: 'chrome_collect_queue',
+              manualRecord: true,
+              identityKey: makeApplicationIdentity(job),
+              reviewedAt: nowIso(),
+              ...collectMeta,
+            });
+          }
+
+          continue;
+        }
+
+        store.upsertApplication({
+          jobId,
+          url: job.url,
+          title: job.title,
+          company: job.company,
+          salary: job.salaryText,
+          location: job.location,
+          status,
+          reasons,
+          duplicateOf: existingTerminal?.jobId || null,
+          source: 'chrome_collect_queue',
+          manualRecord: true,
+          identityKey: makeApplicationIdentity(job),
+          reviewedAt: nowIso(),
+          ...collectMeta,
+        });
+
+        const item = {
+          jobId,
+          title: job.title,
+          company: job.company,
+          salary: job.salaryText,
+          location: job.location,
+          url: job.url,
+          reasons,
+        };
+        if (status === 'matched') {
+          matched.push(item);
+        } else {
+          skipped.push(item);
+        }
+      }
+    }
+
+    store.finishRun(runId, 'completed', {
+      inspected,
+      matched: matched.length,
+      skipped: skipped.length,
+    });
+    store.save({
+      operation: 'chrome_collect_queue',
+      phase: 'finish',
+      inspected,
+      targetUrls: targetUrls.filter(Boolean).length,
+      runId,
+    });
+    console.log(JSON.stringify({
+      targetUrls,
+      inspected,
+      matched: matched.length,
+      skipped: skipped.length,
+      matchedJobs: matched,
+      loadMoreStats,
+      collectRunId: runId,
+      summary: store.summary(),
+    }, null, 2));
+  } catch (error) {
+    store.finishRun(runId, 'failed', {
+      error: error.message || String(error),
+      inspected,
+      matched: matched.length,
+      skipped: skipped.length,
+    });
+    store.save({
+      operation: 'chrome_collect_queue',
+      phase: 'failed',
+      inspected,
+      runId,
+    });
+    throw error;
+  }
+}
+
+if (require.main === module) {
+  main().catch((error) => {
+    console.error(error.stack || error.message || String(error));
+    process.exitCode = 1;
+  });
+}
+
+module.exports = {
+  autoLoadMoreJobs,
+  buildCollectOptions,
+  buildInspectJobFeedScript,
+  buildScrollJobFeedScript,
+  inspectJobFeed,
+  parseNonNegativeInt,
+  parseJsonResult,
+  resolveTargetUrls,
+};

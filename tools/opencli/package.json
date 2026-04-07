@@ -1,0 +1,12 @@
+{
+  "name": "redbook-opencli-tools",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Repo-managed opencli install, patch, and serialized wrapper for redbook",
+  "scripts": {
+    "install-opencli": "node scripts/install.js",
+    "patch-opencli": "node scripts/install.js --skip-install",
+    "verify-opencli": "node scripts/verify.js"
+  }
+}

@@ -185,7 +185,7 @@ def run_daily_research(
     """
     运行每日研究，返回 (report, topics_source_for_append)。
 
-    - X.com 分析依赖浏览器（actionbook + Chrome CDP）
+    - X.com 分析依赖浏览器（agent-browser-session）
     - Hacker News / Reddit 分析不依赖浏览器
     - 追加到选题池时，只使用 X.com 相关部分，避免外部内容噪音
     """

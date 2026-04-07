@@ -27,9 +27,26 @@ function appendJsonLine(filePath, value) {
   fs.appendFileSync(filePath, `${JSON.stringify(value)}\n`);
 }
 
+function formatSaveContext(context = {}) {
+  const entries = Object.entries(context)
+    .filter(([, value]) => value !== undefined && value !== null && value !== '');
+  if (!entries.length) {
+    return '';
+  }
+
+  return entries
+    .map(([key, value]) => {
+      const formatted = typeof value === 'string'
+        ? value
+        : JSON.stringify(value);
+      return `${key}=${formatted}`;
+    })
+    .join(', ');
+}
+
 function makeDefaultLedger() {
   return {
-    version: 3,
+    version: 4,
     updatedAt: null,
     siteHealth: null,
     conversations: {},
@@ -39,6 +56,12 @@ function makeDefaultLedger() {
     applications: {},
     actions: {},
     runs: {},
+    supervisor: {
+      lock: null,
+      checkpoint: null,
+      managedTabs: {},
+      updatedAt: null,
+    },
   };
 }
 
@@ -53,8 +76,14 @@ function upgradeLedgerSchema(ledger) {
     applications: { ...((ledger && ledger.applications) || {}) },
     actions: { ...((ledger && ledger.actions) || {}) },
     runs: { ...((ledger && ledger.runs) || {}) },
+    supervisor: {
+      lock: (ledger && ledger.supervisor && ledger.supervisor.lock) || null,
+      checkpoint: (ledger && ledger.supervisor && ledger.supervisor.checkpoint) || null,
+      managedTabs: { ...(((ledger && ledger.supervisor && ledger.supervisor.managedTabs) || {})) },
+      updatedAt: (ledger && ledger.supervisor && ledger.supervisor.updatedAt) || null,
+    },
     siteHealth: (ledger && ledger.siteHealth) || null,
-    version: 3,
+    version: 4,
   };
 }
 
@@ -276,8 +305,151 @@ class ZhipinStore {
     this.event('action_status_changed', this.ledger.actions[actionId]);
   }
 
-  save() {
-    writeJsonAtomic(this.ledgerPath, this.ledger);
+  save(context = {}) {
+    try {
+      writeJsonAtomic(this.ledgerPath, this.ledger);
+    } catch (error) {
+      const contextText = formatSaveContext(context);
+      const wrapped = new Error(
+        [
+          `Failed to save ledger at ${this.ledgerPath}`,
+          contextText ? `context: ${contextText}` : '',
+          `cause: ${error.message || String(error)}`,
+        ].filter(Boolean).join(' | ')
+      );
+      wrapped.code = error.code;
+      wrapped.cause = error;
+      throw wrapped;
+    }
+  }
+
+  getSupervisorState() {
+    return {
+      lock: this.ledger.supervisor?.lock || null,
+      checkpoint: this.ledger.supervisor?.checkpoint || null,
+      managedTabs: { ...((this.ledger.supervisor && this.ledger.supervisor.managedTabs) || {}) },
+      updatedAt: this.ledger.supervisor?.updatedAt || null,
+    };
+  }
+
+  getSupervisorCheckpoint() {
+    return this.ledger.supervisor?.checkpoint || null;
+  }
+
+  setSupervisorCheckpoint(checkpoint, meta = {}) {
+    this.ledger.supervisor = this.ledger.supervisor || makeDefaultLedger().supervisor;
+    this.ledger.supervisor.checkpoint = checkpoint
+      ? {
+        ...(this.ledger.supervisor.checkpoint || {}),
+        ...checkpoint,
+        updatedAt: nowIso(),
+      }
+      : null;
+    this.ledger.supervisor.updatedAt = nowIso();
+    this.touch();
+    this.event('supervisor_checkpoint_updated', {
+      checkpoint: this.ledger.supervisor.checkpoint,
+      meta,
+    });
+    return this.ledger.supervisor.checkpoint;
+  }
+
+  getManagedTabs() {
+    return { ...((this.ledger.supervisor && this.ledger.supervisor.managedTabs) || {}) };
+  }
+
+  setManagedTabs(managedTabs, meta = {}) {
+    this.ledger.supervisor = this.ledger.supervisor || makeDefaultLedger().supervisor;
+    this.ledger.supervisor.managedTabs = {
+      ...managedTabs,
+    };
+    this.ledger.supervisor.updatedAt = nowIso();
+    this.touch();
+    this.event('supervisor_managed_tabs_updated', {
+      managedTabs: this.ledger.supervisor.managedTabs,
+      meta,
+    });
+    return this.ledger.supervisor.managedTabs;
+  }
+
+  acquireSupervisorLock(owner, options = {}) {
+    if (!owner) {
+      throw new Error('supervisor lock owner is required');
+    }
+
+    const ttlMs = Math.max(1000, Number(options.ttlMs || 0) || 60 * 1000);
+    const nowMs = Number(options.nowMs || Date.now());
+    const existingLock = this.ledger.supervisor?.lock || null;
+    const existingExpiresAtMs = existingLock?.expiresAt ? Date.parse(existingLock.expiresAt) : 0;
+    const isFresh = existingLock && existingExpiresAtMs > nowMs;
+
+    if (isFresh && existingLock.owner !== owner) {
+      return {
+        acquired: false,
+        reason: 'already_locked',
+        lock: existingLock,
+      };
+    }
+
+    const lock = {
+      owner,
+      ttlMs,
+      acquiredAt: existingLock?.owner === owner && existingLock.acquiredAt
+        ? existingLock.acquiredAt
+        : new Date(nowMs).toISOString(),
+      heartbeatAt: new Date(nowMs).toISOString(),
+      expiresAt: new Date(nowMs + ttlMs).toISOString(),
+    };
+
+    this.ledger.supervisor = this.ledger.supervisor || makeDefaultLedger().supervisor;
+    this.ledger.supervisor.lock = lock;
+    this.ledger.supervisor.updatedAt = nowIso();
+    this.touch();
+    this.event('supervisor_lock_acquired', lock);
+    return {
+      acquired: true,
+      reason: existingLock ? 'lock_refreshed' : 'lock_created',
+      lock,
+    };
+  }
+
+  heartbeatSupervisorLock(owner, options = {}) {
+    const lock = this.ledger.supervisor?.lock || null;
+    if (!lock || lock.owner !== owner) {
+      return null;
+    }
+    const nowMs = Number(options.nowMs || Date.now());
+    const ttlMs = Math.max(1000, Number(options.ttlMs || lock.ttlMs || 60 * 1000));
+    lock.ttlMs = ttlMs;
+    lock.heartbeatAt = new Date(nowMs).toISOString();
+    lock.expiresAt = new Date(nowMs + ttlMs).toISOString();
+    this.ledger.supervisor.updatedAt = nowIso();
+    this.touch();
+    this.event('supervisor_lock_heartbeat', lock);
+    return lock;
+  }
+
+  releaseSupervisorLock(owner, meta = {}) {
+    const lock = this.ledger.supervisor?.lock || null;
+    if (!lock || lock.owner !== owner) {
+      return false;
+    }
+    this.ledger.supervisor.lock = null;
+    this.ledger.supervisor.updatedAt = nowIso();
+    this.touch();
+    this.event('supervisor_lock_released', {
+      owner,
+      meta,
+    });
+    return true;
+  }
+
+  getTodaySuccessfulApplies(date = new Date()) {
+    const isoDate = new Date(date).toISOString().slice(0, 10);
+    return Object.values(this.ledger.applications || {}).filter((application) => {
+      return application.status === 'applied'
+        && String(application.appliedAt || '').startsWith(isoDate);
+    }).length;
   }
 
   summary() {
@@ -295,6 +467,8 @@ class ZhipinStore {
       skipped: applications.filter((item) => item.status === 'skipped').length,
       pendingDrafts: drafts.filter((item) => !item.sentAt && !item.dismissedAt).length,
       pendingActions: actions.filter((item) => item.status === 'pending' || item.status === 'in_progress').length,
+      supervisorLock: this.ledger.supervisor?.lock ? 'locked' : 'idle',
+      todaySuccessfulApplies: this.getTodaySuccessfulApplies(),
     };
   }
 }

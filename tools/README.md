@@ -10,6 +10,7 @@
 | **X.com 创作** | `/x-create` skill | 手动写作 | ✅ 主推 |
 | **X.com 发布** | `/baoyu-post-to-x` skill | ❌ ~~`auto-x/publish_x.sh`~~ | ✅ 唯一 |
 | **小红书图文** | `/baoyu-xhs-images` skill | ❌ ~~`auto-redbook/render_simple.sh`~~ | ✅ 唯一 |
+| **跨站点只读抓取 / 环境验证** | `tools/opencli/` | 现有 skills / 手工浏览器 | ✅ 辅助层 |
 | **Reddit 痛点** | `reddit_hack.py` | 无 | ✅ 唯一 |
 
 ---
@@ -38,6 +39,12 @@ tools/
 │   │   ├── following.json        # 关注列表缓存
 │   │   └── daily/                # 每日研究归档
 │   └── com.redbook.daily-x.plist  ✅ launchd 定时任务配置
+│
+├── opencli/              # opencli 安装/补丁/串行 wrapper（跨站点只读 + BOSS low-level core）
+│   ├── bin/
+│   ├── scripts/
+│   ├── vendor/           # 已验证的 opencli 1.0.1 patched files
+│   └── README.md
 │
 ├── x-skills/             # X.com Claude Skills
 │   ├── x-collect/        ✅ 研究工具（交互式）
@@ -184,6 +191,46 @@ python3 tools/reddit_hack.py \
 
 ---
 
+### 4. OpenCLI 适配层
+
+#### ✅ **`tools/opencli/`** - Browser Bridge 辅助层 + BOSS 统一核心
+
+**定位**：
+- 固化本机 `@jackwener/opencli@1.0.1` 的已验证补丁
+- 提供仓库内统一入口
+- 强制串行执行浏览器命令，避免 automation window/tab 串页
+- 为 `tools/auto-zhipin` 提供共享的 `boss core`
+
+**适用场景**：
+- 验证 `opencli` 环境是否健康
+- 只读抓取 `X / 小红书 / BOSS`
+- 直接调用 BOSS low-level 动作原语（聊天列表、读线程、发消息、发简历、单次 apply）
+- 复用用户主 Chrome 的真实登录态做 smoke / 取数
+
+**不适用场景**：
+- 不替代现有发布 skills
+- 不承担 X / 小红书 / 微信写操作主链路
+- 不承担 BOSS 的 supervisor / ledger / dedupe / breaker
+
+**常用命令**：
+```bash
+node tools/opencli/scripts/install.js
+node tools/opencli/bin/redbook-opencli.js doctor --live
+node tools/opencli/bin/redbook-opencli.js twitter search --query AI --limit 3 -f json
+node tools/opencli/bin/redbook-opencli.js xiaohongshu creator-notes --limit 3 -f json
+node tools/opencli/bin/redbook-opencli.js boss search --query "AI Agent" --city 上海 --limit 3 -f json
+node tools/opencli/bin/redbook-opencli.js boss chat-list --limit 3 -f json
+node tools/opencli/bin/redbook-opencli.js boss apply --url "<job_url>" --dry_run true -f json
+node tools/opencli/scripts/verify.js
+```
+
+**注意**：
+- 这套 wrapper 默认串行，不能并行跑多个浏览器命令
+- 主 Chrome 里必须手动安装 `opencli Browser Bridge`
+- 小红书 `creator.xiaohongshu.com` 和 `www.xiaohongshu.com` 需要分别登录
+
+---
+
 ## 🎯 使用决策树
 
 ```
@@ -200,6 +247,9 @@ python3 tools/reddit_hack.py \
 │
 ├─ 制作小红书图文
 │  └─ ✅ /baoyu-xhs-images skill
+│
+├─ 跨站点只读抓取 / 环境验证
+│  └─ ✅ tools/opencli/
 │
 └─ 挖掘 Reddit 痛点
    └─ ✅ reddit_hack.py

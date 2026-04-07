@@ -279,7 +279,7 @@ def main():
     print_colored("  📱 X.com Timeline 分析", 'green')
     print_colored("============================================================", 'green')
 
-    # 1. 检查 actionbook 连接
+    # 1. 检查 agent-browser-session 连接
     if not ensure_browser():
         return
 

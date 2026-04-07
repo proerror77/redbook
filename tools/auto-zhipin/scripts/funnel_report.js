@@ -2,12 +2,16 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { formatDateStamp } = require('../lib/daily_report');
 const { ZhipinStore } = require('../lib/store');
 const { DATA_DIR, ROOT_DIR } = require('../lib/paths');
 const { makeApplicationIdentity, normalizeWhitespace, parseArgs } = require('../lib/utils');
 
 const DEFAULT_SIDEBAR_PATH = path.join(DATA_DIR, 'chat_sidebar_latest.json');
-const DEFAULT_REPORT_PATH = path.join(ROOT_DIR, '..', '..', 'docs', 'reports', '2026-03-12-zhipin-funnel-report.md');
+
+function resolveDefaultReportPath(date = new Date()) {
+  return path.join(ROOT_DIR, '..', '..', 'docs', 'reports', `${formatDateStamp(date)}-zhipin-funnel-report.md`);
+}
 
 function readJson(filePath, fallback) {
   if (!fs.existsSync(filePath)) {
@@ -199,7 +203,7 @@ ${toBulletList(
 function main() {
   const args = parseArgs(process.argv.slice(2));
   const sidebarPath = args.sidebar || DEFAULT_SIDEBAR_PATH;
-  const reportPath = args.output || DEFAULT_REPORT_PATH;
+  const reportPath = args.output || resolveDefaultReportPath();
   const store = new ZhipinStore();
 
   const sidebarRaw = readJson(sidebarPath, []);
@@ -256,4 +260,10 @@ function main() {
   }, null, 2));
 }
 
-main();
+if (require.main === module) {
+  main();
+}
+
+module.exports = {
+  resolveDefaultReportPath,
+};

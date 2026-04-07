@@ -103,36 +103,65 @@ Generate structured material document:
 ## Execution Steps
 
 1. **Receive topic** from user
-2. **Execute Round 1** searches (official sources)
-3. **Execute Round 2** searches (technical analysis)
-4. **Execute Round 3** searches (comparisons)
-5. **Analyze gaps** from rounds 1-3
-6. **Execute Round 4** searches (fill gaps)
-7. **Synthesize results** into structured format
-8. **Save to temp file** for x-filter to use
-9. **Report summary** to user
+2. **Check wiki first**: Read `wiki/index.md` → find if a matching 选题 page exists in `wiki/选题/`
+3. **Execute Round 1** searches (official sources)
+4. **Execute Round 2** searches (technical analysis)
+5. **Execute Round 3** searches (comparisons)
+6. **Analyze gaps** from rounds 1-3
+7. **Execute Round 4** searches (fill gaps)
+8. **Synthesize results** into structured format
+9. **Wiki ingest**: Update or create the relevant `wiki/选题/{topic}.md` page; append to `wiki/log.md`
+10. **Report summary** to user
+
+## Wiki Ingest (Step 9)
+
+After synthesizing results:
+
+1. Read `wiki/index.md` to find matching 选题 page
+2. If page exists → update it: add new angles, update 热度, note contradictions with existing content
+3. If no page → create `wiki/选题/{topic}.md`:
+   ```markdown
+   # {Topic}
+
+   > 来源：x-collect {date} | 最后更新：{date}
+
+   ## 核心痛点
+   ## 高价值角度
+   ## 持续关注的信号源
+   ## 相关页面
+   ```
+4. Update `wiki/index.md` entry (add row or update 最后更新 date)
+5. Append to `wiki/log.md`:
+   ```
+   ## [{date}] ingest | x-collect: {topic}
+   触及页面：wiki/选题/{topic}.md
+   关键更新：{one-line summary}
+   ```
 
 ## Example
 
 User: `/x-collect Claude MCP协议`
 
 Expected behavior:
-1. Search "Claude MCP协议 官方文档"
-2. Search "MCP Model Context Protocol GitHub"
-3. Search "MCP协议 详细介绍"
-4. Search "MCP协议 教程"
-5. Search "MCP vs function calling"
-6. Search "MCP协议 评测"
-7. Identify gaps: need more about security, adoption rate
-8. Search "MCP协议 安全性"
-9. Search "MCP协议 最新 2025"
-10. Generate structured material report
+1. Check wiki/index.md → no existing MCP page
+2. Search "Claude MCP协议 官方文档"
+3. Search "MCP Model Context Protocol GitHub"
+4. Search "MCP协议 详细介绍"
+5. Search "MCP协议 教程"
+6. Search "MCP vs function calling"
+7. Search "MCP协议 评测"
+8. Identify gaps: need more about security, adoption rate
+9. Search "MCP协议 安全性"
+10. Search "MCP协议 最新 2025"
+11. Generate structured material report
+12. Create wiki/选题/MCP协议.md + update wiki/index.md + append wiki/log.md
 
 ## Integration
 
 After collection, suggest:
 ```
 素材收集完成！共找到 X 条相关素材。
+Wiki 已更新：wiki/选题/{topic}.md
 
 下一步：运行 /x-filter 对素材进行打分筛选，≥7分的选题将进入创作池。
 ```

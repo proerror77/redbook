@@ -1,7 +1,19 @@
 const { hasText, normalizeWhitespace } = require('./utils');
 
+function normalizeBossDigits(value) {
+  const extraDigitMap = {
+    '\uE03A': '7',
+  };
+  return String(value || '').replace(/[\uE030-\uE03A]/g, (char) => {
+    if (extraDigitMap[char]) {
+      return extraDigitMap[char];
+    }
+    return String(char.charCodeAt(0) - 0xE030);
+  });
+}
+
 function parseSalaryRange(text) {
-  const normalized = normalizeWhitespace(text);
+  const normalized = normalizeWhitespace(normalizeBossDigits(text));
   const match = normalized.match(/(\d+)(?:-(\d+))?\s*[kK]/);
   if (!match) {
     return null;
@@ -54,6 +66,9 @@ function evaluateJob(job, filters) {
   if (salaryText.includes('元/天')) {
     reasons.push('daily_rate_excluded');
   }
+  if (salaryText.includes('元/周')) {
+    reasons.push('weekly_rate_excluded');
+  }
 
   if (filters.includeKeywords.length > 0 && !containsAny(haystack, filters.includeKeywords)) {
     reasons.push('missing_include_keyword');
@@ -61,6 +76,10 @@ function evaluateJob(job, filters) {
 
   if (filters.excludeKeywords.length > 0 && containsAny(haystack, filters.excludeKeywords)) {
     reasons.push('matched_exclude_keyword');
+  }
+
+  if (filters.excludeCompanyKeywords?.length > 0 && containsAny(haystack, filters.excludeCompanyKeywords)) {
+    reasons.push('company_keyword_excluded');
   }
 
   if (containsAny(haystack, ['驻外', '驻日本', '马来西亚'])) {
@@ -127,4 +146,5 @@ module.exports = {
   parseSalaryRange,
   parseExperience,
   evaluateJob,
+  normalizeBossDigits,
 };
