@@ -14,6 +14,29 @@
 
 ## Lessons 列表
 
+### Lesson 082
+- 日期：2026-04-07
+- 场景：将 `@jackwener/opencli` 从 `1.6.7` / 仓库旧 pin 升到 `1.6.8`，并继续使用 redbook 的 `install.js` + `verify.js` 补丁链路
+- 问题：
+  1) `doctor` 在 `1.6.8` 下即使显示 `[MISSING] Extension` / `[FAIL] Connectivity`，也仍可能返回退出码 `0`
+  2) 如果 `verify.js` 只看 exit code，会把 `doctor` 误判成通过，直到后面的 `twitter search` 才报 `Browser Bridge not connected`
+  3) `1.6.8` clean tarball 默认没有 `dist/cli-manifest.json`，旧的 manifest patch 流程会直接 `ENOENT`
+- 根因：
+  1) 上游 CLI 在 `1.6.8` 把 `doctor` 的失败更多下沉为正文状态输出，而不是非零退出码
+  2) redbook 的 verify 逻辑沿用了旧版本“exit code 即 contract”的假设
+  3) `1.6.8` 的 command discovery 已允许没有 manifest 时走文件系统扫描，但仓库 patch 代码仍强依赖 manifest 文件存在
+- 修正动作：
+  1) 将仓库 pin 更新到 `1.6.8`
+  2) 修改 `tools/opencli/lib/runtime.js`，让 `patchCliManifest()` 在 manifest 缺失时以空数组启动并补写文件
+  3) 修改 `tools/opencli/scripts/verify.js` 和 `tools/opencli/lib/verify_helpers.js`，改为解析 `doctor` 正文，只在 `[OK] Daemon + [OK] Extension + [OK] Connectivity` 全满足时才算通过
+  4) 更新 `tools/opencli/README.md`，明确 `doctor` 不能只看退出码
+- 预防规则（Rule）：
+  1) 升级 `opencli` 时，`doctor` 的验收标准必须看正文状态，不得只看 exit code
+  2) 对会生成 `cli-manifest.json` 的 patch 流程，要先确认新版包是否还携带该文件；没有就按“补写”而不是“读取后合并”设计
+  3) 第三方 CLI 升级后，必须先验证安装链路和 verify 链路本身，再信任业务命令 smoke
+- 下次触发信号：`doctor` 看起来失败但 shell 退出码仍为 `0`；`verify.js` 报 `doctor ok` 后下一步立即提示 `Browser Bridge not connected`；安装脚本报 `dist/cli-manifest.json ENOENT`
+- 验证结果：`opencli --version` 为 `1.6.8`；`opencli list` 已包含 redbook 补丁命令；`node tools/opencli/scripts/verify.js` 现会直接在 doctor 阶段准确报 `Browser Bridge 未连接`
+
 ### Lesson 001
 - 日期：2026-03-03
 - 场景：运行每日入口 `bash tools/daily.sh`（全量）并自动追加选题到 `01-内容生产/选题管理/00-选题记录.md`
@@ -32,6 +55,51 @@
   3) 每日/定时任务必须幂等：同日重复运行不应污染数据
 - 下次触发信号：脚本运行 30s+ 无输出；选题记录出现“列数/推文数/统计”字样；同一日期重复出现多段 “X 每日研究发现”
 - 验证结果：`bash tools/daily.sh` 输出连续进度；2026-03-03 选题追加为 AI/code/openai/agent/rust，重复运行不会再重复追加
+
+### Lesson 080
+- 日期：2026-04-07
+- 场景：`tools/daily.sh` 的 X 研究链路反复提示“浏览器未连接”，但用户确认自己已经登录 X；实际日志里出现 `locator.ariaSnapshot: Frame was detached`
+- 问题：
+  1) 健康检查把可恢复的 session/frame 问题误报成“未安装/未连接”
+  2) `ensure_browser()` 仍依赖旧版 `agent-browser-session` 输出格式 `- document:`，导致健康页面也可能被误判为失败
+  3) 一旦命中坏 frame，系统没有自动恢复路径，整条 X 链路直接被跳过
+- 根因：
+  1) `ensure_browser()` 只做一次 `snapshot`，且没有读取结构化 stderr / returncode
+  2) 浏览器就绪判定写死了旧版 a11y tree 形态，而新版输出可能只有 `heading/button/main` 等节点，不再总带 `- document:`
+  3) 会话偶发会绑到 Google 登录 iframe 或坏 target，需要重建 session 才能恢复
+- 修正动作：
+  1) 在 `tools/auto-x/scripts/x_utils.py` 新增 `run_abs_result()`，保留 stdout/stderr/returncode
+  2) 新增 `_snapshot_looks_ready()`，改成基于多个有效 marker 判断，而不是硬编码 `- document:`
+  3) 新增 `_is_recoverable_browser_failure()` 和 `_recover_browser_session()`，对 `Frame was detached` / `Daemon failed to start` 做 `kill -> open x.com/home -> retry`
+  4) 新增 `tools/auto-x/tests/test_x_utils.py` 回归测试
+- 预防规则（Rule）：
+  1) 浏览器健康检查不能依赖单一 CLI 输出格式；只要上游工具变版本，就优先做宽松结构判定而不是硬编码精确字符串
+  2) 对浏览器自动化里的 `Frame was detached`，先怀疑 session/target 失稳，不要先把问题归因到“用户没登录”
+  3) CLI 集成层遇到可恢复故障时，必须把“未安装”和“会话损坏”分开提示，避免误导排障方向
+- 下次触发信号：`daily.sh` 输出“浏览器未连接”，但用户确认已登录；日志出现 `Frame was detached`、`Daemon failed to start`、`Empty page`
+- 验证结果：`python3 tools/auto-x/tests/test_x_utils.py`、`python3 -m py_compile ...` 通过；真实 `ensure_browser()` 返回 `True`；`scrape_timeline.py --scrolls 1` 不再报 detached-frame
+
+### Lesson 081
+- 日期：2026-04-07
+- 场景：浏览器健康检查修好后，`daily.sh` 不再跳过 X，但 X Pro / 搜索页仍然统一提取 `0` 条推文
+- 问题：
+  1) 页面可以正常打开、滚动、snapshot，但 `extract_tweets()` 结果始终是空
+  2) 真正的失败点已经从“浏览器会话层”下沉到了“页面结构解析层”
+- 根因：
+  1) 新版 X accessibility tree 的 tweet 节点是 `- article "..."` 或 `- 'article "..."'`，不再是旧代码假设的 `- article:`
+  2) 旧提取器按 `- article:` 做 split，导致整个 tweet block 根本没进入解析循环
+  3) article 头行本身还带有 `回复/次转帖/喜欢` 等互动数据，旧逻辑即使勉强分块也会把关键字段丢掉
+- 修正动作：
+  1) 在 `tools/auto-x/scripts/x_utils.py` 新增 `_extract_article_blocks()`，按新版 article 节点提取完整 block
+  2) 新增 `_populate_tweet_from_article_header()` 与 header fallback，从头行解析作者、handle、互动数据和正文
+  3) 补充 `tools/auto-x/tests/test_x_utils.py`，用真实 article 形态做回归测试
+  4) 重跑 `search_x.py`、`scrape_timeline.py` 和完整 `bash tools/daily.sh`，确认今天的 X 报告恢复产出
+- 预防规则（Rule）：
+  1) 任何页面解析器都不能把单一节点字面量当成永久 contract；上游 UI / a11y tree 一变，先拿真实 snapshot 复核结构
+  2) 当页面“能打开但提取为 0”时，优先检查 parser 的结构假设，不要继续把问题归到登录或网络
+  3) 对富内容节点，优先保留头行再解析；不要先 split 掉头部，免得把作者、互动数、正文摘要一起丢掉
+- 下次触发信号：`ensure_browser()` 正常，但 `X Pro` / `search_x.py` 连续多次提取 `0` 条；snapshot 里能看到 `- article "..."` 节点
+- 验证结果：`python3 tools/auto-x/tests/test_x_utils.py` 通过；真实 `search_x.py 'AI tools'` 提取 `9` 条；真实 `scrape_timeline.py --scrolls 1` 提取 `9` 条；完整 `daily.sh` 恢复 X 数据并追加 5 条选题
 
 ### Lesson 002
 - 日期：2026-03-06

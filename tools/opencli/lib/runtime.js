@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const expectedOpencliVersion = '1.5.5';
+export const expectedOpencliVersion = '1.6.8';
 export const opencliToolsDir = path.resolve(__dirname, '..');
 export const repoRoot = path.resolve(opencliToolsDir, '..', '..');
 export const dataDir = path.join(opencliToolsDir, 'data');
@@ -307,7 +307,14 @@ export async function loadManifestPatchEntries() {
 export async function patchCliManifest(packageDir) {
   const manifestPath = path.join(packageDir, 'dist', 'cli-manifest.json');
   const backupPath = await backupIfNeeded(packageDir, manifestPath);
-  const installedManifest = JSON.parse(await fsp.readFile(manifestPath, 'utf8'));
+  let installedManifest = [];
+  try {
+    installedManifest = JSON.parse(await fsp.readFile(manifestPath, 'utf8'));
+  } catch (error) {
+    if (error?.code !== 'ENOENT') {
+      throw error;
+    }
+  }
   const patchEntries = await loadManifestPatchEntries();
   const patchedKeys = new Set(
     patchEntries.map((entry) => `${entry.site}/${entry.name}`)

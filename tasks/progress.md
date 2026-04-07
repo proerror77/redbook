@@ -7,6 +7,100 @@
 ## [2026-04-07] 会话摘要
 
 **完成了什么：**
+- 将仓库 `tools/opencli` 的期望版本从 `1.5.5` 升到 `1.6.8`，并重放 redbook 补丁到全局 `@jackwener/opencli`。
+- 修复了 `1.6.8` 升级链路中的两个关键断点：
+  - `tools/opencli/lib/runtime.js` 现在能在 `dist/cli-manifest.json` 缺失时补写 manifest，而不是直接 `ENOENT`
+  - `tools/opencli/scripts/verify.js` / `tools/opencli/lib/verify_helpers.js` 现在会解析 `doctor` 正文状态，不再把 exit code `0` 误判成桥接健康
+- 更新文档：
+  - `tools/opencli/README.md` 说明 `doctor` 不能只看退出码
+  - `tools/README.md` / `tools/opencli/README.md` 中 `doctor` 用法已对齐新版契约
+- 验证结果：
+  - `opencli --version` => `1.6.8`
+  - `opencli list` 已包含 redbook 关键补丁命令：`boss apply`、`boss chat-list`、`boss chat-thread`、`boss send-message`、`boss send-resume`
+  - `node tools/opencli/scripts/verify.js` 现在会在 `doctor` 阶段直接准确报 `Browser Bridge 未连接`
+
+**未完成 / 遗留：**
+- 代码升级和补丁重放已经完成，但本机 `opencli Browser Bridge` 还没有连接到主 Chrome。
+- 当前 `opencli doctor` 真实状态是：
+  - `[OK] Daemon`
+  - `[MISSING] Extension`
+  - `[FAIL] Connectivity`
+
+**下次会话优先做：**
+- 把 Browser Bridge unpacked extension 加载到主 Chrome：
+  - `/Users/proerror/.nvm/versions/node/v24.11.1/lib/node_modules/@jackwener/opencli/extension`
+- 加载完成后重跑：
+  - `node tools/opencli/scripts/verify.js`
+- 如果 bridge 连上后还有业务命令 smoke 失败，再继续查 `twitter/xiaohongshu/boss` 的站点级契约漂移。
+
+**需要注意：**
+- `opencli 1.6.8` 的 `doctor` 在桥接失败时仍可能返回退出码 `0`，以后不能再把 exit code 当成唯一健康信号。
+- 当前阻断不在仓库补丁，而在本机浏览器扩展连接状态。
+
+## [2026-04-07] 会话摘要
+
+**完成了什么：**
+- 对 `tools/daily.sh` 的 X 链路做了“深修”，不只修浏览器健康检查，还修了 tweet 提取器对新版 X a11y tree 的兼容性。
+- 继续修复 `tools/auto-x/scripts/x_utils.py`：
+  - `extract_tweets()` 不再依赖旧版 `- article:`，现已兼容 `- article "..."` / `- 'article "..."'`
+  - 新增 article block 提取、头行互动数据解析、header fallback 正文提取
+- 扩充回归测试 `tools/auto-x/tests/test_x_utils.py`，覆盖新版 article 结构。
+- 真实验证通过：
+  - `python3 tools/auto-x/tests/test_x_utils.py`
+  - `python3 -m py_compile ...`
+  - `search_x.py 'AI tools'` 提取到 `9` 条推文
+  - `scrape_timeline.py --scrolls 1` 提取到 `9` 条推文
+- 已完整重跑 `bash tools/daily.sh`，并刷新今天的日报产物：
+  - `X Pro` 多列分析提取到 `11` 条推文
+  - `AI tools` 搜索提取 `4` 条
+  - `solopreneur` 搜索提取 `4` 条
+  - `crypto alpha` 搜索提取 `11` 条
+  - 关注者动态提取 `19` 条
+  - 同时追加了 `5` 条 X 选题到 `01-内容生产/选题管理/00-选题记录.md`
+
+**未完成 / 遗留：**
+- `X Pro` 报告里各列推文数仍显示为 `0`，说明“按列归属分配 tweet”这层还比较粗。
+- 热门趋势页 `trending` 仍然经常抓不到趋势项，后续需要单独检查 `extract_trends()` 是否也落后于页面结构。
+
+**下次会话优先做：**
+- 修 `X Pro` 按列统计，让 `Deck 列配置` 不再全部是 `0 条`。
+- 单独排查 `trending` 提取器，恢复趋势话题抓取。
+
+**需要注意：**
+- 当前 `agent-browser-session` 这层已经不是主要 blocker，下一批问题属于“页面结构适配”而不是“会话失效”。
+- `page.goto: net::ERR_ABORTED` 在 X 搜索页偶尔出现，但只要随后 snapshot 正常、提取有结果，就不该再把整轮任务判失败。
+
+## [2026-04-07] 会话摘要
+
+**完成了什么：**
+- 深度定位并修复了 `tools/daily.sh` 的 X 研究链路误报“浏览器未连接”问题。
+- 确认真实报错不是登录态，而是 `agent-browser-session` 在 `snapshot` 阶段命中 `Frame was detached`。
+- 修复了 `tools/auto-x/scripts/x_utils.py`：
+  - 新增 `run_abs_result()` 结构化结果
+  - 不再依赖旧版 `- document:` 输出判定健康
+  - 新增可恢复错误识别与 `kill -> open x.com/home -> 再检查` 的自动恢复逻辑
+- 新增回归测试 `tools/auto-x/tests/test_x_utils.py`。
+- 验证通过：
+  - `python3 tools/auto-x/tests/test_x_utils.py`
+  - `python3 -m py_compile tools/auto-x/scripts/x_utils.py tools/auto-x/tests/test_x_utils.py`
+  - 真实 `ensure_browser()` 返回 `True`
+  - `scrape_timeline.py --scrolls 1` 不再报 `Frame was detached`
+
+**未完成 / 遗留：**
+- 轻量 timeline smoke 虽然能跑通，但这次只提取到 `0` 条推文，说明下一层内容解析仍可能需要单独优化。
+- 今天的正式 `daily.sh` 还没有在修复后重新跑完整一轮 X 研究部分。
+
+**下次会话优先做：**
+- 在修复后的状态下重新跑一次今天的完整 `daily.sh`，确认 `X.com` 部分不再被跳过。
+- 如果仍然抓不到推文，再查 `extract_tweets()` 和 X Pro deck 页面结构是否变了。
+
+**需要注意：**
+- 这次根因是“健康检查过时 + 会话恢复缺失”，不是“你没登录 X”。
+- `agent-browser-session kill` 只应该作为恢复坏 session 的手段，不应在正常链路里被高频调用。
+
+## [2026-04-07] 会话摘要
+
+**完成了什么：**
 - 运行了今日全量收集入口 `bash tools/daily.sh`。
 - 已生成今天的三份日报：
   - `05-选题研究/X-每日日程-2026-04-07.md`

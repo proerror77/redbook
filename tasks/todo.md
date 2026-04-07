@@ -1,5 +1,79 @@
 # Task Todo
 
+## 新任务：升级 redbook 的 opencli 到 1.6.8 并修正 verify 契约
+- 任务名称：将仓库内 `tools/opencli` 从旧 pin 升级到 `@jackwener/opencli 1.6.8`，修复安装补丁链路和 `verify.js` 对新版 `doctor` 契约的误判
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-07
+- 截止日期：2026-04-07
+- 优先级：P0
+
+### 执行清单
+- [x] 1. 确认本机全局版本、仓库 pin 和新版 upstream 包结构差异
+- [x] 2. 修复 `install.js` / `runtime.js`，让 `1.6.8` 安装与 manifest patch 能落地
+- [x] 3. 修复仓库 vendor patch 对新版 package export 路径与 verify contract 的兼容
+- [x] 4. 重放补丁并验证 `opencli list` 能看到 redbook 自定义命令
+- [x] 5. 重跑 `verify.js`，确认失败会落在准确的桥接前置条件，而不是后续业务命令
+- [x] 6. 回填文档、lessons、progress、wiki 记录
+
+### Review 结论
+- 已将仓库 `tools/opencli` 的期望版本从 `1.5.5` 升到 `1.6.8`，并成功重放 redbook 补丁。
+- 已修复两个关键升级断点：
+  - `1.6.8` clean 包没有默认 `dist/cli-manifest.json`，`patchCliManifest()` 现会在缺失时补写新 manifest
+  - `verify.js` 现不再只看 `doctor` 退出码，而是解析正文中的 `Daemon / Extension / Connectivity` 状态
+- 当前验证结果：
+  - `opencli --version` => `1.6.8`
+  - `opencli list` 已包含 redbook 关键补丁命令：`boss apply`、`boss chat-list`、`boss chat-thread`、`boss send-message`、`boss send-resume`
+  - `node tools/opencli/scripts/verify.js` 现在会在 `doctor` 阶段准确阻断，并提示 `Browser Bridge 未连接`
+- 当前未完全打通的唯一前置条件不是代码问题，而是本机浏览器环境：
+  - `opencli doctor` 显示 `[OK] Daemon`、`[MISSING] Extension`、`[FAIL] Connectivity`
+  - Browser Bridge extension 目录为 `/Users/proerror/.nvm/versions/node/v24.11.1/lib/node_modules/@jackwener/opencli/extension`
+  - 需要把该扩展加载到主 Chrome 并确认连接后，再重跑 `node tools/opencli/scripts/verify.js`
+
+## 新任务：修复 X 每日收集链路的 agent-browser-session 健康检查
+- 任务名称：定位并修复 `tools/daily.sh` 中 X 研究链路反复被误判为“浏览器未连接”的问题，确保 `agent-browser-session` 在 `Frame was detached` 和输出格式变化时能自动恢复
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-07
+- 截止日期：2026-04-07
+- 优先级：P0
+
+### 执行清单
+- [x] 1. 复现失败并确认真实报错，不把问题误判成登录态
+- [x] 2. 找到健康检查和 session 恢复逻辑的根因
+- [x] 3. 实现更稳的浏览器就绪检查与自动恢复
+- [x] 4. 补回归测试，并做真实 smoke 验证
+- [x] 5. 回填 lessons / progress / wiki 记录
+
+### Review 结论
+- 根因确认有两层：
+  - `ensure_browser()` 只做一次 `snapshot`，且把所有失败都误报成“未连接/请安装”
+  - 健康检查仍硬编码旧版 `agent-browser-session` 的 `- document:` 输出格式，导致新版可用 snapshot 也可能被误判为失败
+- 深挖后又确认了第二层解析问题：
+  - 新版 X accessibility tree 的 tweet 节点是 `- article "..."` / `- 'article "..."'`
+  - 旧版 `extract_tweets()` 只会按 `- article:` 分割，导致页面明明能打开也会提取 `0` 条推文
+- 已在 `tools/auto-x/scripts/x_utils.py` 新增：
+  - `run_abs_result()` 结构化命令结果
+  - `_snapshot_looks_ready()` 新版 snapshot 判定
+  - `_is_recoverable_browser_failure()` 故障分类
+  - `_recover_browser_session()` 自动恢复：`kill -> open x.com/home -> 再次 snapshot`
+  - `_extract_article_blocks()`：按新版 `article` 节点提取完整 tweet block
+  - `_populate_tweet_from_article_header()` / header fallback：从 article 头行补作者、handle、互动数据和正文
+- 已新增回归测试：
+  - `tools/auto-x/tests/test_x_utils.py`
+- 验证结果：
+  - `python3 tools/auto-x/tests/test_x_utils.py` 通过
+  - `python3 -m py_compile tools/auto-x/scripts/x_utils.py tools/auto-x/tests/test_x_utils.py` 通过
+  - 真实 `python3 - <<... ensure_browser()` 返回 `True`
+  - 轻量 `daily_schedule.py` smoke 不再在浏览器检查阶段直接跳过 X
+  - `search_x.py 'AI tools'` 真实提取到 `9` 条推文
+  - `scrape_timeline.py --scrolls 1` 真实提取到 `9` 条推文
+  - 完整重跑 `bash tools/daily.sh` 后，`05-选题研究/X-每日日程-2026-04-07.md` 已恢复真实 X 结果：
+    - X Pro 多列分析：`11` 条推文
+    - 搜索 `AI tools`：`4` 条推文
+    - 搜索 `solopreneur`：`4` 条推文
+    - 搜索 `crypto alpha`：`11` 条推文
+    - 关注者动态：`19` 条推文
+  - 本轮正式日报还成功追加 `5` 条 X 相关选题到 `01-内容生产/选题管理/00-选题记录.md`
+
 ## 新任务：为 redbook harness 增加 retry / escalation policy
 - 任务名称：给最小 harness 增加故障策略层，让 run 在失败时能明确记录 incident、给出下一步建议，并阻止未处理故障被“跳过去”
 - 负责人（Lead Agent）：Codex

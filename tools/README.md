@@ -215,7 +215,7 @@ python3 tools/reddit_hack.py \
 **常用命令**：
 ```bash
 node tools/opencli/scripts/install.js
-node tools/opencli/bin/redbook-opencli.js doctor --live
+node tools/opencli/bin/redbook-opencli.js doctor
 node tools/opencli/bin/redbook-opencli.js twitter search --query AI --limit 3 -f json
 node tools/opencli/bin/redbook-opencli.js xiaohongshu creator-notes --limit 3 -f json
 node tools/opencli/bin/redbook-opencli.js boss search --query "AI Agent" --city 上海 --limit 3 -f json

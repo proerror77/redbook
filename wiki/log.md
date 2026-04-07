@@ -5,6 +5,51 @@
 
 ---
 
+## [2026-04-07] ingest | 升级 opencli 到 1.6.8 并修正 doctor/verify 契约
+
+来源：将 `tools/opencli` 从旧版仓库 pin 升级到 `@jackwener/opencli 1.6.8`
+
+触及页面：5个
+- `tools/opencli/lib/runtime.js` — 将版本 pin 升到 `1.6.8`，并修复 manifest 缺失时的 patch 行为
+- `tools/opencli/scripts/verify.js` — 不再只看 `doctor` exit code，改为校验正文状态
+- `tools/opencli/lib/verify_helpers.js` — 新增 doctor 状态解析与失败原因归一化
+- `tools/opencli/README.md` — 补充 `doctor` 在 `1.6.8` 下的真实验收规则
+- `tasks/lessons.md` — 回填 `doctor` exit code 假阳性与 manifest 缺失的升级教训
+
+关键洞察：
+- `opencli 1.6.8` 的 `doctor` 失败不一定体现为非零退出码，桥接验收必须看正文里的 `Daemon / Extension / Connectivity`
+- clean `1.6.8` 包默认没有 `dist/cli-manifest.json`，仓库 patch 代码必须改成“缺失则补写”，不能假设 manifest 先存在
+- 这次升级后，代码侧已经完成；剩余唯一 blocker 是本机 Browser Bridge extension 尚未连接到主 Chrome
+
+## [2026-04-07] ingest | 修复 X 收集链路的浏览器健康检查
+
+来源：排查 `agent-browser-session` 在 `daily.sh` 中反复报 `Frame was detached`
+
+触及页面：2个
+- `tools/auto-x/scripts/x_utils.py` — 重写浏览器健康检查与自动恢复逻辑
+- `tools/auto-x/tests/test_x_utils.py` — 新增回归测试，覆盖新版 snapshot 判定和 detached-frame 恢复
+
+关键洞察：
+- 问题不在 X 登录态，而在 `agent-browser-session` 的 session/target 偶发卡到坏 frame
+- `ensure_browser()` 之前依赖旧版 `snapshot` 形态 `- document:`，对新版输出过于脆弱，连健康页面也可能误判为失败
+- 正确修法不是简单重试 `snapshot`，而是区分可恢复错误，并在必要时重建 session 后回到 `https://x.com/home`
+
+## [2026-04-07] ingest | 修复 X tweet 解析器并重跑今日日报
+
+来源：浏览器恢复后，`daily.sh` 的 X 页面虽然能打开，但 `extract_tweets()` 仍持续返回 `0`
+
+触及页面：5个
+- `tools/auto-x/scripts/x_utils.py` — 兼容新版 `- article "..."` / `- 'article "..."'` 节点，补 article block 提取与头行解析
+- `tools/auto-x/tests/test_x_utils.py` — 新增新版 article 结构回归测试
+- `05-选题研究/X-每日日程-2026-04-07.md` — 重跑后恢复真实 X 研究结果
+- `05-选题研究/HN-每日热点-2026-04-07.md` — 同步刷新当天 HN 数据
+- `05-选题研究/Reddit-每日监控-2026-04-07.md` — 同步刷新当天 Reddit 数据
+
+关键洞察：
+- 新版 X a11y tree 的 tweet 节点已经不是旧代码假设的 `- article:`，而是带引号的 `article` 头行
+- 对这类页面，真正稳定的做法不是先 split 掉头部，而是保留 article 头行再解析作者、互动数和 fallback 正文
+- 修完 parser 后，正式 `daily.sh` 已恢复 X 结果，且本轮成功向 `01-内容生产/选题管理/00-选题记录.md` 追加了 5 条 X 选题
+
 ## [2026-04-07] query | 每日收集：HN / Reddit 成功，X 跳过
 
 来源：`bash tools/daily.sh`

@@ -4,7 +4,7 @@
 
 它现在做 4 件事：
 
-1. 固化已经验证过的 `opencli 1.3.3` 本地补丁。
+1. 固化已经验证过的 `opencli 1.6.8` 本地补丁。
 2. 提供一个仓库内统一入口 `redbook-opencli`。
 3. 用锁文件强制串行执行浏览器命令，避免 automation window/tab 串页。
 4. 为 BOSS 提供与 `auto-zhipin` 共用的 low-level browser core 和 CLI 面。
@@ -30,13 +30,13 @@
 
 ## 安装与补丁
 
-安装或修补全局 `@jackwener/opencli@1.3.3`：
+安装或修补全局 `@jackwener/opencli@1.6.8`：
 
 ```bash
 node tools/opencli/scripts/install.js
 ```
 
-如果你已经装好了 `1.3.3`，只想重放仓库里的补丁：
+如果你已经装好了 `1.6.8`，只想重放仓库里的补丁：
 
 ```bash
 node tools/opencli/scripts/install.js --skip-install
@@ -45,7 +45,7 @@ node tools/opencli/scripts/install.js --skip-install
 脚本会：
 
 - 检测全局安装目录
-- 必要时安装 `@jackwener/opencli@1.3.3`
+- 必要时安装 `@jackwener/opencli@1.6.8`
 - 备份原始文件到 `.redbook-opencli-backup/`
 - 覆盖为仓库里的 canonical patched files
 - 写入 `.redbook-opencli-patches.json`
@@ -76,6 +76,12 @@ node tools/opencli/bin/redbook-opencli.js verify
 ```bash
 node tools/opencli/scripts/verify.js
 ```
+
+注意：
+
+- `opencli 1.6.8` 的 `doctor` 即使在 `[MISSING] Extension` / `[FAIL] Connectivity` 时也可能返回退出码 `0`。
+- 仓库里的 `verify.js` 已改成读取 `doctor` 正文；只有同时看到 `[OK] Daemon`、`[OK] Extension`、`[OK] Connectivity` 才算通过。
+- 如果 `verify.js` 直接报 `Browser Bridge 未连接`，先把安装脚本输出的 extension 目录加载到主 Chrome，再重跑。
 
 它会串行验证：
 
@@ -123,7 +129,7 @@ node tools/opencli/scripts/verify.js
 
 ## 约束
 
-- 当前补丁只针对 `@jackwener/opencli@1.3.3`。
+- 当前补丁只针对 `@jackwener/opencli@1.6.8`。
 - 这个 wrapper 默认把浏览器命令当成单会话共享资源来处理，所以会加锁等待。
 - 如果要升级 upstream 版本，先重新验证补丁兼容性，再更新 `vendor/` 和 installer 的固定版本。
 - `boss send-message / send-resume / apply` 是低层动作原语；批量投递、去重、台账、熔断仍归 `tools/auto-zhipin`。

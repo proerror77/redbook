@@ -6,15 +6,35 @@ import {
   sleep,
   withBrowserLock,
 } from '../lib/runtime.js';
-import { isTransientBridgeError } from '../lib/verify_helpers.js';
+import {
+  isTransientBridgeError,
+  parseDoctorOutput,
+  summarizeDoctorFailure,
+} from '../lib/verify_helpers.js';
+
+async function runDoctorStep(label = 'doctor') {
+  process.stdout.write(`[verify] ${label}\n`);
+  const result = await runInstalledOpencli(['doctor'], { capture: true });
+  const doctorText = [result.stdout, result.stderr].filter(Boolean).join('\n');
+  const parsed = parseDoctorOutput(doctorText);
+
+  if (result.code !== 0 || !parsed.healthy) {
+    throw new Error(`${label} failed: ${summarizeDoctorFailure(doctorText, result.code)}`);
+  }
+
+  process.stdout.write(`[verify] ok: ${label}\n`);
+  return doctorText.trim();
+}
 
 async function reconnectBridge(label) {
   process.stdout.write(`[verify] reconnect bridge for ${label}\n`);
-  const doctorResult = await runInstalledOpencli(['doctor', '--live'], { capture: true });
-  if (doctorResult.code !== 0) {
-    const doctorMessage =
-      doctorResult.stderr.trim() || doctorResult.stdout.trim() || `exit ${doctorResult.code}`;
-    throw new Error(`bridge reconnect failed for ${label}: ${doctorMessage}`);
+  const doctorResult = await runInstalledOpencli(['doctor'], { capture: true });
+  const doctorText = [doctorResult.stdout, doctorResult.stderr].filter(Boolean).join('\n');
+  const parsed = parseDoctorOutput(doctorText);
+  if (doctorResult.code !== 0 || !parsed.healthy) {
+    throw new Error(
+      `bridge reconnect failed for ${label}: ${summarizeDoctorFailure(doctorText, doctorResult.code)}`
+    );
   }
   await sleep(1200);
 }
@@ -63,7 +83,7 @@ async function main() {
       }
       summary.push('list');
 
-      await runStep('doctor', ['doctor']);
+      await runDoctorStep('doctor');
       summary.push('doctor');
 
       await runStep('twitter search', [
