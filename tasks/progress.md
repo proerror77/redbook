@@ -388,6 +388,27 @@
 **需要注意：**
 - `AGENTS.md` 的共享 playbook 区块由 `docs/shared/redbook-playbook.md` 同步，不要在该区块内手改后忘记同步。
 
+## [2026-04-07] 会话摘要
+
+**完成了什么：**
+- 给 `tools/auto-zhipin` 补了 current-tab 投递入口 `tools/auto-zhipin/scripts/opencli_apply_current_tab.js`。
+- 新增 `npm run boss:apply-current`，默认直接接管当前聚焦的 BOSS 页，不再依赖 `boss apply --url` 先跳详情页再按 URL 选卡。
+- 同时补了 `--probe true`，可以先无副作用地读取当前页岗位信息，再决定是否真正执行 `立即沟通`。
+- 更新了 `tools/auto-zhipin/README.md`，把 current-tab 路径提升成当前推荐用法。
+
+**未完成 / 遗留：**
+- 还没有在真实 BOSS 页上跑通一次 `boss:apply-current`。
+- 当前机器的 Chrome CDP 没连上，`--probe true` 返回 `connect ECONNREFUSED 127.0.0.1:9222`。
+
+**下次会话优先做：**
+- 先恢复带 `--remote-debugging-port=9222` 的 Chrome 会话。
+- 然后执行 `npm run boss:apply-current -- --probe true`，确认脚本能看到当前 BOSS 页。
+- 如果 probe 正常，再执行 `npm run boss:apply-current` 或 `--dry-run true`。
+
+**需要注意：**
+- 这次实现刻意绕开了 `goto(url) + selectJobCard(url)`，因为这正是 BOSS 当前页场景里最容易导致 `job_card_not_found` 的环节。
+- 用户当前要的是“直接自动化”，不是额外宿主页；后续 BOSS 主线不要再绕回 Page Agent 控制台。
+
 ## 模板
 
 ```

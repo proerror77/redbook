@@ -7,6 +7,7 @@
   "scripts": {
     "bootstrap": "node -e \"console.log('Use an already logged-in Google Chrome tab, then run chrome:collect / chrome:monitor / boss:apply.')\"",
     "boss:apply": "node ../opencli/bin/redbook-opencli.js boss apply",
+    "boss:apply-current": "node scripts/opencli_apply_current_tab.js",
     "chrome:collect": "node scripts/chrome_collect_queue.js",
     "chrome:monitor": "node scripts/chrome_monitor_queue.js",
     "chrome:supervisor": "node scripts/chrome_supervisor.js",

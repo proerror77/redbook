@@ -103,6 +103,37 @@
   - 当前后端未做鉴权，只适合本机 localhost
   - 当前只包装最小 harness 动作，尚未接 artifact / promote / incident 流程
 
+## 新任务：补 BOSS 当前页直连投递入口
+- 任务名称：为 `tools/auto-zhipin` 增加“当前已打开 BOSS 页直接 apply”的最小入口，绕开 `boss apply --url` 在当前上下文里反复命中 `job_card_not_found` 的问题
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-07
+- 截止日期：2026-04-07
+- 优先级：P0
+
+### 执行清单
+- [x] 1. 复盘 BOSS / opencli lessons，确认问题根因在 `goto(url) + selectJobCard(url)` 而不是 apply 核心逻辑
+- [x] 2. 实现 `opencli_apply_current_tab.js`，复用现有 `applyOnActiveJobDetail()`，但直接接管当前聚焦的 BOSS 页
+- [x] 3. 增加 `npm run boss:apply-current` 入口，并支持 `--probe true`
+- [x] 4. 更新 `tools/auto-zhipin/README.md`，把 current-tab 入口提升为主推荐路径
+- [x] 5. 静态验证新脚本可执行，并记录当前环境里的真实阻断点
+
+### Review 结论
+- 已新增：
+  - `tools/auto-zhipin/scripts/opencli_apply_current_tab.js`
+  - `tools/auto-zhipin/package.json` 中的 `boss:apply-current`
+- 新入口行为：
+  - 默认直接选择当前聚焦/可见的 BOSS 标签页
+  - 直接读取当前已展开岗位信息，再调用上游 `applyOnActiveJobDetail()`
+  - 不再先 `goto(job_url)` 再 `selectJobCard(url)`，从而避开当前页场景下的 `job_card_not_found`
+  - 支持 `--probe true` 做只读探测，支持 `--dry-run true` 做最小点击验证
+- 已完成验证：
+  - `node --check tools/auto-zhipin/scripts/opencli_apply_current_tab.js`
+  - `node tools/auto-zhipin/scripts/opencli_apply_current_tab.js --help`
+- 当前真实阻断点不是脚本本身，而是本机当前没有可连接的 Chrome CDP：
+  - `node tools/auto-zhipin/scripts/opencli_apply_current_tab.js --probe true`
+  - 返回 `connect ECONNREFUSED 127.0.0.1:9222`
+- 结论：current-tab 入口已经补齐；下一步要真正执行，只需要恢复 `--remote-debugging-port=9222` 的 Chrome 会话。
+
 ## 新任务：升级 redbook 的 opencli 到 1.6.8 并修正 verify 契约
 - 任务名称：将仓库内 `tools/opencli` 从旧 pin 升级到 `@jackwener/opencli 1.6.8`，修复安装补丁链路和 `verify.js` 对新版 `doctor` 契约的误判
 - 负责人（Lead Agent）：Codex
