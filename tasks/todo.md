@@ -11,8 +11,8 @@
 - [x] 1. 核对仓库内 LLM Wiki 规范、skills 和已有运行记录
 - [x] 2. 确认当前缺的是“显式 run / 验收痕迹”，不是规则文本
 - [x] 3. 为 LLM Wiki ingest 建立独立 harness run
-- [ ] 4. 约定后续 ingest/query/lint 的最小 artifact 与 check
-- [ ] 5. 回填 progress / review 结论
+- [x] 4. 约定后续 ingest/query/lint 的最小 artifact 与 check
+- [x] 5. 回填 progress / review 结论
 
 ### Review 结论
 - 当前状态已经确认：
@@ -23,8 +23,14 @@
 - 本轮已补出第一条显式运行痕迹：
   - `20260407-050729-llm-wiki-ingest-显式化-a7fdd7`
   - 已挂接 artifact：`docs/reports/2026-04-07-llm-wiki-workflow-gap.md`
-- 这说明系统目前是“有规范、有零散执行、没有显式 workflow 启动证据”。
-- 下一步要补的不是更多说明文，而是独立 run、artifact、check 和完成记录。
+- 已接入自动启动入口：
+  - `tools/wiki_workflow.py start-daily-ingest --date YYYY-MM-DD`
+  - `tools/auto-x/scripts/run_daily.sh` 结束后会自动调用
+- 已完成真实日报 run 验证：
+  - `20260407-051553-llm-wiki-ingest-2026-04-07-90316a`
+  - 自动挂接 3 份日报 artifact：`X-每日日程`、`HN-每日热点`、`Reddit-每日监控`
+  - 自动置位 `materials_queried=true`、`research_complete=true`
+- 这个缺口已经从“无运行层证据”推进到“每日研究完成后有自动创建的 ingest run”。
 
 ## 新任务：发布 2026-04-07 的两篇 X 长文与两篇小红书图文
 - 任务名称：完成“爆款研究观众”和“Galileo-0”两组内容的生成、发布与归档，确保 X.com 长文和小红书图文全部实际发出

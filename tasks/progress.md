@@ -7,6 +7,36 @@
 ## [2026-04-07] 会话摘要
 
 **完成了什么：**
+- 把 LLM Wiki 的“显式 run”从手工补建推进到了自动启动：
+  - 新增脚本 `tools/wiki_workflow.py`
+  - 新增命令 `start-daily-ingest --date YYYY-MM-DD`
+  - `tools/auto-x/scripts/run_daily.sh` 现会在日报完成后自动调用
+- 已完成真实验证：
+  - 首次自动日报 run：`20260407-051553-llm-wiki-ingest-2026-04-07-90316a`
+  - 自动挂接了 3 份 source artifact：
+    - `05-选题研究/X-每日日程-2026-04-07.md`
+    - `05-选题研究/HN-每日热点-2026-04-07.md`
+    - `05-选题研究/Reddit-每日监控-2026-04-07.md`
+  - 自动置位 `materials_queried` 和 `research_complete`
+- 还验证了幂等性：同一天重复执行不会创建第二条同 topic/source 的日报型 ingest run。
+
+**未完成 / 遗留：**
+- 目前自动化只覆盖 `ingest` 的启动痕迹，还没有覆盖 `query` / `lint`。
+- 现在只是把每日研究挂进显式 run，还没有自动更新具体 wiki 页面内容。
+
+**下次会话优先做：**
+- 给 `query` / `lint` 也补独立入口和 run 模板。
+- 再决定是否要把“日报后更新哪些 wiki 页面”也自动化，而不是只创建 ingest run。
+
+**需要注意：**
+- `wiki/log.md` 仍然是结果日志，不是运行层主证据；主证据现在是 harness run。
+- 现在存在两类 run：
+  - 审计 run：用来确认系统缺口
+  - 日报 run：用来记录每日 ingest 是否真的启动
+
+## [2026-04-07] 会话摘要
+
+**完成了什么：**
 - 复核了 redbook 里 LLM Wiki 的真实状态，确认之前只有：
   - 规则层：`CLAUDE.md` 的 `Wiki Schema`
   - skill 约束：`x-collect` / `x-create`

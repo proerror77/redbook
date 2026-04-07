@@ -5,6 +5,20 @@
 
 ---
 
+## [2026-04-07] ingest | 为每日研究接入显式 LLM Wiki ingest 启动器
+
+来源：将 `LLM Wiki` 从“只有规则”推进到“每日研究后自动创建 ingest run”
+
+触及页面：3个
+- `tools/wiki_workflow.py` — 新增日报型 wiki ingest 启动器
+- `tools/auto-x/scripts/run_daily.sh` — 日报完成后自动触发 `start-daily-ingest`
+- `tasks/harness/runs/20260407-051553-llm-wiki-ingest-2026-04-07-90316a.json` — 首条自动化日报 ingest run
+
+关键洞察：
+- 仅靠 `wiki/log.md` 不能证明 workflow 启动过，必须把启动动作落到 harness run
+- 最小正确做法不是立刻自动改写 wiki 页面，而是先让每日研究完成后留下显式 ingest run
+- 这条入口现在已经幂等：同一天重复执行会复用同一条日报型 ingest run，而不是重复创建
+
 ## [2026-04-07] query | 审计 LLM Wiki workflow 是否有真实启动痕迹
 
 来源：用户指出“已经形成 LLM Wiki workflow，但没有看到它真正启动过”

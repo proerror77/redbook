@@ -12,6 +12,7 @@ set -euo pipefail
 export PATH="/opt/homebrew/bin:$HOME/.local/bin:$PATH"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/../../.." && pwd)"
 LOG_DIR="$SCRIPT_DIR/../data/logs"
 mkdir -p "$LOG_DIR"
 
@@ -28,5 +29,13 @@ log "使用 agent-browser-session $(agent-browser-session --version 2>/dev/null 
 log "运行每日日程脚本..."
 cd "$SCRIPT_DIR"
 PYTHONUNBUFFERED=1 python3 -u daily_schedule.py "$@" 2>&1 | tee -a "$LOG_FILE"
+
+TODAY="$(date +%Y-%m-%d)"
+log "为当日研究创建显式 LLM Wiki ingest run..."
+if PYTHONUNBUFFERED=1 python3 -u "$ROOT_DIR/tools/wiki_workflow.py" start-daily-ingest --date "$TODAY" 2>&1 | tee -a "$LOG_FILE"; then
+    log "LLM Wiki ingest run 已记录"
+else
+    log "WARNING: LLM Wiki ingest run 记录失败（不影响日报本身）"
+fi
 
 log "========== 每日日程结束 =========="
