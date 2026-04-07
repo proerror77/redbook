@@ -1,5 +1,31 @@
 # Task Todo
 
+## 新任务：把 LLM Wiki 从“规范”补成“显式工作流”
+- 任务名称：为 redbook 的 LLM Wiki ingest/query/lint 建立可见的运行痕迹，避免只有规则没有启动证据
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-07
+- 截止日期：2026-04-07
+- 优先级：P1
+
+### 执行清单
+- [x] 1. 核对仓库内 LLM Wiki 规范、skills 和已有运行记录
+- [x] 2. 确认当前缺的是“显式 run / 验收痕迹”，不是规则文本
+- [x] 3. 为 LLM Wiki ingest 建立独立 harness run
+- [ ] 4. 约定后续 ingest/query/lint 的最小 artifact 与 check
+- [ ] 5. 回填 progress / review 结论
+
+### Review 结论
+- 当前状态已经确认：
+  - `CLAUDE.md` 有 LLM Wiki Schema
+  - `x-collect` / `x-create` skills 有 wiki 更新要求
+  - `wiki/log.md` 有多条 ingest/query 结果
+  - 但 `tasks/harness/runs/` 里没有任何一个独立的 LLM Wiki run
+- 本轮已补出第一条显式运行痕迹：
+  - `20260407-050729-llm-wiki-ingest-显式化-a7fdd7`
+  - 已挂接 artifact：`docs/reports/2026-04-07-llm-wiki-workflow-gap.md`
+- 这说明系统目前是“有规范、有零散执行、没有显式 workflow 启动证据”。
+- 下一步要补的不是更多说明文，而是独立 run、artifact、check 和完成记录。
+
 ## 新任务：发布 2026-04-07 的两篇 X 长文与两篇小红书图文
 - 任务名称：完成“爆款研究观众”和“Galileo-0”两组内容的生成、发布与归档，确保 X.com 长文和小红书图文全部实际发出
 - 负责人（Lead Agent）：Codex

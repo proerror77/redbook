@@ -7,6 +7,32 @@
 ## [2026-04-07] 会话摘要
 
 **完成了什么：**
+- 复核了 redbook 里 LLM Wiki 的真实状态，确认之前只有：
+  - 规则层：`CLAUDE.md` 的 `Wiki Schema`
+  - skill 约束：`x-collect` / `x-create`
+  - 结果层：`wiki/log.md` 的零散 ingest/query 记录
+- 但确实没有任何一条独立的 LLM Wiki harness run，所以“workflow 没有真正启动痕迹”这个判断成立。
+- 已补最小运行痕迹：
+  - 新增报告 `docs/reports/2026-04-07-llm-wiki-workflow-gap.md`
+  - 新建 run `20260407-050729-llm-wiki-ingest-显式化-a7fdd7`
+  - 已挂接 `research_report` artifact，并把 `materials_queried` / `research_complete` 置为完成
+- 已把这次纠偏写入 `tasks/lessons.md`，避免以后再把“顺手更新 wiki”误当成“wiki workflow 已运行”。
+
+**未完成 / 遗留：**
+- 还没有把 `query` / `lint` 也显式化成独立 run 模板。
+- 还没有把每日研究后的 wiki ingest 自动接入 `daily.sh` 或统一 orchestrator。
+
+**下次会话优先做：**
+- 给 LLM Wiki 补最小 artifact/check 约定，至少覆盖 ingest/query/lint 三类 run。
+- 决定是把它接进 `daily.sh`，还是做成单独的 `wiki-ingest` 命令。
+
+**需要注意：**
+- 以后回答“workflow 跑没跑过”时，必须给出 run / artifact / log 三级证据。
+- `wiki/log.md` 只能证明结果被写回，不能单独证明 workflow 曾经启动。
+
+## [2026-04-07] 会话摘要
+
+**完成了什么：**
 - 生成并整理了两组小红书图文素材：
   - `xhs-images/baokuan-audience/`
   - `xhs-images/galileo-0/`

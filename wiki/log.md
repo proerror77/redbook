@@ -5,6 +5,21 @@
 
 ---
 
+## [2026-04-07] query | 审计 LLM Wiki workflow 是否有真实启动痕迹
+
+来源：用户指出“已经形成 LLM Wiki workflow，但没有看到它真正启动过”
+
+触及页面：4个
+- `CLAUDE.md` — 确认存在 `Wiki Schema（LLM 知识库维护规范）`
+- `tasks/harness/runs/` — 确认此前没有任何一个独立的 LLM Wiki run
+- `tasks/todo.md` — 新增“把 LLM Wiki 从规范补成显式工作流”任务
+- `docs/reports/2026-04-07-llm-wiki-workflow-gap.md` — 固化缺口与修复方案
+
+关键洞察：
+- 当前系统有 LLM Wiki 的规则层和结果层，但没有运行层证据
+- `wiki/log.md` 里的 ingest/query 记录不能替代 workflow 启动痕迹
+- 本轮已补出第一条显式 run：`20260407-050729-llm-wiki-ingest-显式化-a7fdd7`
+
 ## [2026-04-07] ingest | 发布“爆款研究观众”与“Galileo-0”到 X.com / 小红书
 
 来源：`01-内容生产/03-已发布的选题/2026-04-07-为什么产不出稳定爆款.md`、`01-内容生产/03-已发布的选题/2026-04-07-Galileo-0-AI视频瑕疵检测.md`

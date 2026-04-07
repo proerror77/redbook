@@ -56,6 +56,25 @@
 - 下次触发信号：用户说“直接发”“以后不用确认”“你继续完成”；流程只剩登录校验、按钮补点、端口修复这类可恢复步骤
 - 验证结果：两篇小红书图文已在同一轮内自动发布，并通过 `content-data` 后台列表确认入库
 
+### Lesson 085
+- 日期：2026-04-07
+- 场景：仓库里已经定义了 LLM Wiki 的工作流规范，但用户指出“我没有看到它有一次真正启动过”
+- 问题：
+  1) 我把零散的 wiki 更新、发布后回写，当成了“LLM Wiki 工作流已经在运行”
+  2) 实际上系统里没有独立的 run、启动记录和验收痕迹，用户无法确认它真的被执行过
+- 根因：
+  1) 之前只有规范层（`CLAUDE.md` / skills）和结果层（`wiki/log.md`），缺少运行层（显式 workflow run）
+  2) 我默认把“顺手更新 wiki”视为等同于“启动了 wiki workflow”
+- 修正动作：
+  1) 本轮明确区分“有规则”和“有运行痕迹”
+  2) 为 LLM Wiki ingest 补独立 task / harness run，后续要求每次启动都留下 machine-readable 记录
+- 预防规则（Rule）：
+  1) 只要用户问“某个 workflow 有没有真的跑过”，必须给出 run / log / artifact 三级证据，不能只引用文档规则
+  2) LLM Wiki 这类长期工作流，不能只靠 `wiki/log.md` 的结果倒推出“流程已启动”；必须有独立启动痕迹
+  3) 以后任何 wiki ingest/query/lint，只要被当成一级 workflow 使用，就必须创建或挂接到显式 harness run
+- 下次触发信号：用户说“我没看到它启动过”“这只是规则不是流程”“没有 run 记录”
+- 验证结果：本轮已补建 LLM Wiki ingest 的 task 和 harness run，后续可直接追踪
+
 ### Lesson 083
 - 日期：2026-04-07
 - 场景：`opencli 1.6.8` 升级后，`verify.js` 修好 exit code 误判，但 Browser Bridge 仍然始终显示未连接
