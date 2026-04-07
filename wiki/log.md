@@ -5,6 +5,23 @@
 
 ---
 
+## [2026-04-07] ingest | 把 LLM Wiki workflow 补到最小完整状态
+
+来源：继续把“是否完整”从口头判断收敛成可验证状态
+
+触及页面：6个
+- `tools/wiki_workflow.py` — 新增 `daily-cycle --date ...` 与 `query --attach-run-id ...`
+- `tools/auto-x/scripts/run_daily.sh` — 日报完成后改为自动调用 `daily-cycle`
+- `docs/reports/wiki-query-本地-ai-2026-04-07.md` — 首份挂接到内容 run 的 query 报告
+- `tasks/harness/runs/20260407-134516-llm-wiki-query-本地-ai-2026-04-07-4eac53.json` — 首条带内容挂接的 query run
+- `tasks/harness/runs/20260406-131247-ai-已经从模型战争进入部署战争-7d8fbc.json` — 已附加 query report artifact
+- `docs/reports/2026-04-07-llm-wiki-workflow-gap.md` — 将 gap 报告更新为“最小完整 workflow”
+
+关键洞察：
+- `query` 天然是按主题触发，不该伪装成日报自动任务；正确做法是让它能附着到内容 run
+- `daily` 侧真正该自动化的是 `ingest + lint`，因为这是知识库维护的固定周期动作
+- 到这一步，LLM Wiki 已具备最小完整闭环：日报有自动维护，创作前有显式 query，三类动作都有 run / report / log 证据
+
 ## [2026-04-07] query | 为 LLM Wiki 增加显式 query 入口并完成首次查询
 
 来源：继续把 LLM Wiki workflow 从 ingest 扩到 query / lint

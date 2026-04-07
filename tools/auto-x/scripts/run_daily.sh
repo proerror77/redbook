@@ -31,11 +31,11 @@ cd "$SCRIPT_DIR"
 PYTHONUNBUFFERED=1 python3 -u daily_schedule.py "$@" 2>&1 | tee -a "$LOG_FILE"
 
 TODAY="$(date +%Y-%m-%d)"
-log "为当日研究创建显式 LLM Wiki ingest run..."
-if PYTHONUNBUFFERED=1 python3 -u "$ROOT_DIR/tools/wiki_workflow.py" start-daily-ingest --date "$TODAY" 2>&1 | tee -a "$LOG_FILE"; then
-    log "LLM Wiki ingest run 已记录"
+log "运行 LLM Wiki 每日维护周期（ingest + lint）..."
+if PYTHONUNBUFFERED=1 python3 -u "$ROOT_DIR/tools/wiki_workflow.py" daily-cycle --date "$TODAY" 2>&1 | tee -a "$LOG_FILE"; then
+    log "LLM Wiki 每日维护周期已记录"
 else
-    log "WARNING: LLM Wiki ingest run 记录失败（不影响日报本身）"
+    log "WARNING: LLM Wiki 每日维护周期失败（不影响日报本身）"
 fi
 
 log "========== 每日日程结束 =========="

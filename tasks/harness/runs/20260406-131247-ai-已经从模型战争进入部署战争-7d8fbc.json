@@ -9,7 +9,7 @@
   "current_stage": "draft",
   "status": "in_progress",
   "created_at": "2026-04-06T13:12:47+00:00",
-  "updated_at": "2026-04-06T13:14:31+00:00",
+  "updated_at": "2026-04-07T13:46:45+00:00",
   "artifacts": [
     {
       "id": "c6ec9e6e07",
@@ -26,6 +26,14 @@
       "description": "长文母稿",
       "stage": "research",
       "created_at": "2026-04-06T13:13:07+00:00"
+    },
+    {
+      "id": "00994a9403",
+      "type": "research_report",
+      "path": "docs/reports/wiki-query-本地-ai-2026-04-07.md",
+      "description": "Wiki query report attached for topic: 本地 AI",
+      "stage": "research",
+      "created_at": "2026-04-07T13:45:16+00:00"
     }
   ],
   "checks": {
@@ -114,6 +122,37 @@
       "stage": "draft",
       "message": "Stage promoted to draft",
       "meta": {}
+    },
+    {
+      "at": "2026-04-07T13:45:16+00:00",
+      "type": "artifact_added",
+      "stage": "draft",
+      "message": "Artifact added: research_report",
+      "meta": {
+        "path": "docs/reports/wiki-query-本地-ai-2026-04-07.md",
+        "artifact_id": "00994a9403"
+      }
+    },
+    {
+      "at": "2026-04-07T13:45:16+00:00",
+      "type": "check_updated",
+      "stage": "draft",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-07T13:46:45+00:00",
+      "type": "check_updated",
+      "stage": "draft",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
     }
-  ]
+  ],
+  "incidents": []
 }

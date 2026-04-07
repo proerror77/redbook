@@ -8,14 +8,40 @@
 - 优先级：P1
 
 ### 执行清单
-- [ ] 1. 复盘相关 lessons，并确认可通过 SSH 登录远端主机
-- [ ] 2. 检查远端 Shadowrocket 相关进程、系统代理与网络设置
-- [ ] 3. 检查远端 Shell / Terminal 的代理环境变量与实际连通性
-- [ ] 4. 如有偏差，补充修复建议或最小修复动作
-- [ ] 5. 回填 progress / review 结论
+- [x] 1. 复盘相关 lessons，并确认可通过 SSH 登录远端主机
+- [x] 2. 检查远端 Shadowrocket 相关进程、系统代理与网络设置
+- [x] 3. 检查远端 Shell / Terminal 的代理环境变量与实际连通性
+- [x] 4. 如有偏差，补充修复建议或最小修复动作
+- [x] 5. 回填 progress / review 结论
 
 ### Review 结论
-- 待执行
+- 已通过 SSH 登录 `networkworker@192.168.1.41`，确认账号与 SSH 正常。
+- 远端系统初始状态：
+  - `/Applications/Shadowrocket.app` 已安装
+  - `scutil --nc status "Shadowrocket"` 初始显示 `Disconnected`
+  - `scutil --proxy` 初始只有 `ExceptionsList`，没有任何 HTTP / HTTPS / SOCKS 代理生效
+  - `networksetup -getwebproxy/-getsecurewebproxy/-getsocksfirewallproxy` 对 `Wi-Fi` 与 `Ethernet` 初始均返回 `Enabled: No`
+- 远端 Terminal / Shell 当前状态：
+  - SSH 会话中无 `http_proxy` / `https_proxy` / `all_proxy` / `no_proxy`
+  - `zsh -lic` 进入交互 shell 后仍无任何 `*_proxy`
+  - 用户目录下未发现 `.zshrc` / `.zprofile` / `.zshenv` 等用于注入代理变量的 shell 配置
+- 实测连通性（连接前）：
+  - `curl -I https://www.google.com` 10 秒超时
+  - `curl https://api.ipify.org` 直接连接失败
+  - 说明当前这台机子离开代理后外网不可用
+- 最小修复动作：
+  - 已远程执行 `open -a /Applications/Shadowrocket.app`，确认应用可启动
+  - 已进一步执行 `scutil --nc start "Shadowrocket"`，现已成功连接
+  - 当前 `scutil --proxy` 显示系统 HTTP / HTTPS 代理均指向 `127.0.0.1:1082`
+  - 本机已确认有 `MacPacket` 监听 `127.0.0.1:1082`、`192.168.1.41:1082`
+  - `curl -x http://127.0.0.1:1082 -I http://example.com` 返回 `HTTP/1.1 200 OK`
+  - 但 Terminal 默认环境仍没有 `*_proxy`
+  - 对 `https://www.google.com`、`https://api.ipify.org` 的 CONNECT 测试返回 `503`，说明除了 shell 未注入代理外，当前 Shadowrocket 规则或出站节点对部分 HTTPS 目标也存在额外问题
+- 结论：
+  - 用户的判断基本成立：远端 Terminal 当前确实没有正确设置到 Proxy Server
+  - 目前可用的本地代理目标是 `http://127.0.0.1:1082`
+  - 同时，这台机子原始问题也包含 Shadowrocket 未连接；我已代为拉起连接
+  - 下一步若要让命令行稳定走代理，需要把 `http_proxy` / `https_proxy` 指到 `127.0.0.1:1082`，并继续检查 Shadowrocket 对部分 HTTPS CONNECT 返回 `503` 的规则/节点问题
 
 ## 新任务：在 Mac Studio 上下载 Ollama 模型 `gemma4:31b`
 - 任务名称：通过内网 SSH 登录 `192.168.1.41` 的 Mac Studio，检查 `ollama` 环境并下载用户指定模型 `gemma4:31b`
@@ -79,7 +105,11 @@
   - query run：`20260407-065343-llm-wiki-query-内容创作-2026-04-07-064648`
   - lint run：`20260407-065343-llm-wiki-lint-2026-04-07-d9dee3`
   - lint 报告已抓到并修复 `wiki/index.md` 缺页、日期陈旧和 `wiki/overview.md` 过期问题
-- 这个缺口已经从“无运行层证据”推进到“ingest 自动启动、query/lint 可显式执行且有真实 run”。
+- 已补到最小完整 workflow：
+  - `tools/wiki_workflow.py daily-cycle --date YYYY-MM-DD`
+  - `run_daily.sh` 现自动执行 `daily-cycle = ingest + lint`
+  - `query --attach-run-id` 已能把 wiki query 结果直接挂到内容 run
+- 这个缺口已经从“无运行层证据”推进到“日报自动维护 + 创作前可挂接 query + 三类 workflow 均有真实 run”。
 
 ## 新任务：发布 2026-04-07 的两篇 X 长文与两篇小红书图文
 - 任务名称：完成“爆款研究观众”和“Galileo-0”两组内容的生成、发布与归档，确保 X.com 长文和小红书图文全部实际发出

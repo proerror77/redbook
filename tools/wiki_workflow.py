@@ -88,6 +88,28 @@ def find_existing_run(runtime: HarnessRuntime, *, topic: str, source: str) -> di
     return None
 
 
+def ensure_report_artifact(
+    runtime: HarnessRuntime,
+    *,
+    run_id: str,
+    artifact_type: str,
+    path: str,
+    description: str,
+    stage: str,
+) -> None:
+    run = runtime.load_run(run_id)
+    existing_paths = {artifact["path"] for artifact in run.get("artifacts", [])}
+    if path in existing_paths:
+        return
+    runtime.add_artifact(
+        run_id,
+        artifact_type=artifact_type,
+        path=path,
+        description=description,
+        stage=stage,
+    )
+
+
 def ensure_daily_ingest_run(date_str: str) -> dict:
     runtime = HarnessRuntime(ROOT)
     topic = f"LLM Wiki ingest {date_str}"
@@ -143,7 +165,7 @@ def ensure_daily_ingest_run(date_str: str) -> dict:
     }
 
 
-def query_wiki(topic: str, *, date_str: str) -> dict:
+def query_wiki(topic: str, *, date_str: str, attach_run_id: str | None = None) -> dict:
     token_matches = re.findall(r"[\u4e00-\u9fff]{2,}|[A-Za-z0-9_+-]+", topic.lower())
     scored: list[tuple[int, Path, str, str]] = []
     for path in content_wiki_pages():
@@ -208,24 +230,42 @@ def query_wiki(topic: str, *, date_str: str) -> dict:
             priority="P1",
             summary=f"显式记录一次 wiki query：{topic}",
         )
-    existing_paths = {artifact["path"] for artifact in run.get("artifacts", [])}
     report_rel_path = relative(report_path)
-    if report_rel_path not in existing_paths:
-        runtime.add_artifact(
-            run["run_id"],
-            artifact_type="research_report",
-            path=report_rel_path,
-            description=f"Wiki query report for topic: {topic}",
-            stage="research",
-        )
+    ensure_report_artifact(
+        runtime,
+        run_id=run["run_id"],
+        artifact_type="research_report",
+        path=report_rel_path,
+        description=f"Wiki query report for topic: {topic}",
+        stage="research",
+    )
     if matches:
         runtime.set_check(run["run_id"], check_name="materials_queried", value=True)
         runtime.set_check(run["run_id"], check_name="research_complete", value=True)
+
+    attached_run: dict[str, object] | None = None
+    if attach_run_id is not None:
+        target_run = runtime.load_run(attach_run_id)
+        ensure_report_artifact(
+            runtime,
+            run_id=attach_run_id,
+            artifact_type="research_report",
+            path=report_rel_path,
+            description=f"Wiki query report attached for topic: {topic}",
+            stage="research",
+        )
+        runtime.set_check(attach_run_id, check_name="materials_queried", value=True)
+        attached_run = {
+            "run_id": attach_run_id,
+            "topic": target_run["topic"],
+        }
+
     final_run = runtime.load_run(run["run_id"])
     return {
         "run_id": final_run["run_id"],
         "report_path": report_rel_path,
         "matches": matches,
+        "attached_run": attached_run,
         "checks": {
             "materials_queried": final_run["checks"]["materials_queried"],
             "research_complete": final_run["checks"]["research_complete"],
@@ -375,6 +415,16 @@ def lint_wiki(*, date_str: str) -> dict:
     }
 
 
+def daily_cycle(*, date_str: str) -> dict:
+    ingest_result = ensure_daily_ingest_run(date_str)
+    lint_result = lint_wiki(date_str=date_str)
+    return {
+        "date": date_str,
+        "ingest": ingest_result,
+        "lint": lint_result,
+    }
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Explicit wiki workflow helpers.")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -391,12 +441,19 @@ def build_parser() -> argparse.ArgumentParser:
     )
     query.add_argument("--topic", required=True)
     query.add_argument("--date", default=datetime.now().strftime("%Y-%m-%d"))
+    query.add_argument("--attach-run-id")
 
     lint = subparsers.add_parser(
         "lint",
         help="Run wiki health checks and create an explicit harness run.",
     )
     lint.add_argument("--date", default=datetime.now().strftime("%Y-%m-%d"))
+
+    daily = subparsers.add_parser(
+        "daily-cycle",
+        help="Run the minimal daily wiki maintenance cycle: ingest plus lint.",
+    )
+    daily.add_argument("--date", default=datetime.now().strftime("%Y-%m-%d"))
     return parser
 
 
@@ -408,11 +465,19 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(result, ensure_ascii=False, indent=2))
             return 0
         if args.command == "query":
-            result = query_wiki(args.topic, date_str=args.date)
+            result = query_wiki(
+                args.topic,
+                date_str=args.date,
+                attach_run_id=args.attach_run_id,
+            )
             print(json.dumps(result, ensure_ascii=False, indent=2))
             return 0
         if args.command == "lint":
             result = lint_wiki(date_str=args.date)
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+            return 0
+        if args.command == "daily-cycle":
+            result = daily_cycle(date_str=args.date)
             print(json.dumps(result, ensure_ascii=False, indent=2))
             return 0
     except Exception as exc:  # noqa: BLE001

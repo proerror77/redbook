@@ -7,6 +7,69 @@
 ## [2026-04-07] 会话摘要
 
 **完成了什么：**
+- 通过 SSH 登录了 `networkworker@192.168.1.41`，确认远端主机可正常访问，系统版本为 macOS `26.3`。
+- 核查了远端代理链路：
+  - `/Applications/Shadowrocket.app` 已安装
+  - `Shadowrocket` 网络服务初始为 `Disconnected`
+  - 我已通过 `scutil --nc start "Shadowrocket"` 成功拉起连接
+  - 当前 `scutil --proxy` 显示系统 HTTP / HTTPS 代理为 `127.0.0.1:1082`
+  - `MacPacket` 已监听 `127.0.0.1:1082`、`192.168.1.41:1082`
+- 核查了远端 Terminal / Shell：
+  - SSH 会话和 `zsh -lic` 交互 shell 中都没有 `http_proxy` / `https_proxy` / `all_proxy` / `no_proxy`
+  - 用户目录下未发现 `.zshrc` / `.zprofile` / `.zshenv` 等代理注入配置
+- 做了实际网络验证：
+  - 连接前：`curl -I https://www.google.com` 超时，`curl https://api.ipify.org` 连接失败，说明这台机器直连外网不可用
+  - 连接后：`curl -x http://127.0.0.1:1082 -I http://example.com` 返回 `HTTP/1.1 200 OK`
+  - 但对 HTTPS 目标的 CONNECT 测试返回 `503`，说明 Shadowrocket 当前规则或出站节点对部分 HTTPS 目标还存在额外问题
+- 额外做了最小修复尝试：远程执行 `open -a /Applications/Shadowrocket.app`，确认应用能启动，并已代为把系统 VPN 服务拉起到连接态。
+
+**未完成 / 遗留：**
+- 还没有把 `http_proxy` / `https_proxy` 永久写入远端 shell 配置。
+- Shadowrocket 当前对部分 HTTPS CONNECT 请求返回 `503`，还需要继续检查规则、节点或出站策略。
+
+**下次会话优先做：**
+- 先决定是否要把命令行永久指向 `http://127.0.0.1:1082`。
+- 如果要永久化，再给 `~/.zprofile` 或 `~/.zshrc` 写入 `http_proxy` / `https_proxy`。
+- 继续排查 Shadowrocket 为什么对部分 HTTPS CONNECT 返回 `503`。
+
+**需要注意：**
+- 这次问题分两层：
+  - 第一层是 Shadowrocket 原本没有连接，我已代为连上
+  - 第二层是 Terminal 仍然没有 `*_proxy`，所以命令行默认不会使用 `127.0.0.1:1082`
+- 即使手动指向 `127.0.0.1:1082`，当前某些 HTTPS 目标仍会返回 `503`，不能直接假设代理链路已经完全健康。
+
+## [2026-04-07] 会话摘要
+
+**完成了什么：**
+- 把 LLM Wiki workflow 从“显式但分散”补到了“最小完整”：
+  - `tools/wiki_workflow.py` 新增 `daily-cycle --date ...`
+  - `tools/wiki_workflow.py query` 新增 `--attach-run-id`
+  - `tools/auto-x/scripts/run_daily.sh` 改为自动执行 `daily-cycle = ingest + lint`
+- 已完成真实验证：
+  - `python3 tools/wiki_workflow.py daily-cycle --date 2026-04-07`
+  - 复用当日 ingest run：`20260407-051553-llm-wiki-ingest-2026-04-07-90316a`
+  - 复用当日 lint run：`20260407-065343-llm-wiki-lint-2026-04-07-d9dee3`
+  - 新建 attached query run：`20260407-134516-llm-wiki-query-本地-ai-2026-04-07-4eac53`
+- 已把 query 结果真实挂到内容 run：
+  - 内容 run：`20260406-131247-ai-已经从模型战争进入部署战争-7d8fbc`
+  - 新增 artifact：`docs/reports/wiki-query-本地-ai-2026-04-07.md`
+- 已更新 `docs/reports/2026-04-07-llm-wiki-workflow-gap.md`、`wiki/log.md`、`wiki/overview.md`，把结论改成当前真实状态。
+
+**未完成 / 遗留：**
+- 还没有把 `query --attach-run-id` 自动接进 `x-create` 或其他内容创作快捷入口。
+- 还没有做自动 wiki 页面改写；当前 workflow 负责运行痕迹、报告和挂接，不负责强制自动写回。
+
+**下次会话优先做：**
+- 把内容创作入口补一个“先 query 再起草”的封装命令，避免每次手敲 `--attach-run-id`。
+- 视需要再决定是否让 lint 在周日之外增加发布后自动触发。
+
+**需要注意：**
+- 如果把“完整”限定为 `ingest/query/lint` 三类 workflow 都有显式入口、真实 run、自动/半自动接线点，那么现在已经完整。
+- 如果把“完整”定义成“wiki 页面内容也自动改写”，那还是下一层能力，不属于这次补齐的最小 workflow 范围。
+
+## [2026-04-07] 会话摘要
+
+**完成了什么：**
 - 把 LLM Wiki workflow 从只有 `ingest`，补到了 `query` / `lint`：
   - `python3 tools/wiki_workflow.py query --topic '内容创作' --date 2026-04-07`
   - `python3 tools/wiki_workflow.py lint --date 2026-04-07`
