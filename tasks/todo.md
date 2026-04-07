@@ -1,5 +1,47 @@
 # Task Todo
 
+## 新任务：搭建 Page Agent 最小试点控制台
+- 任务名称：为 redbook 搭建一个本地 `page-agent` 试点控制台，验证它是否适合作为内部工作台的自然语言代理层，而不是替换现有发布主链路
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-07
+- 截止日期：2026-04-07
+- 优先级：P1
+
+### 执行清单
+- [x] 1. 收敛试点范围，明确只覆盖内部控制台与 harness 基础动作
+- [x] 2. 实现本地控制台页面，展示任务板 / runs / 最新研究摘要
+- [x] 3. 接入 `page-agent` extension 调用入口与 redbook 专用 system instruction
+- [x] 4. 打通最小可执行动作：`new-run`、`show-run`、`set-check`
+- [x] 5. 本地验证服务可启动、页面可访问、API 可返回
+- [x] 6. 回填文档、progress 与 review 结论
+
+### Review 结论
+- 已新增本地试点工具：
+  - `tools/page-agent-console/server.mjs`
+  - `tools/page-agent-console/public/index.html`
+  - `tools/page-agent-console/public/app.js`
+  - `tools/page-agent-console/public/styles.css`
+  - `tools/page-agent-console/README.md`
+- 试点定位已收敛为“内部工作台代理层”，不碰现有发布主链路。
+- 当前控制台能力：
+  - 汇总 `tasks/todo.md` / `tasks/progress.md`
+  - 展示最近 harness runs 和最新研究报告
+  - 打通 `new-run`、`show-run`、`set-check`
+  - 提供 `Page Agent Extension` 的自然语言控制入口
+- 已完成本地验证：
+  - `node --check tools/page-agent-console/server.mjs`
+  - `node --check tools/page-agent-console/public/app.js`
+  - `curl http://127.0.0.1:4318/api/dashboard`
+  - `curl -X POST http://127.0.0.1:4318/api/runs ...`
+  - `curl -X POST http://127.0.0.1:4318/api/runs/<run_id>/checks ...`
+  - Chrome DevTools 实测页面已加载数据，`run detail` 与 `gate report` 联动正常
+- 本轮还创建了一个真实试点 run：
+  - `20260407-044025-page-agent-工作台试点-8f7d20`
+- 当前边界：
+  - 仍需要用户手动安装 `Page Agent Extension` 并填入 token / model / key
+  - 当前后端未做鉴权，只适合本机 localhost
+  - 当前只包装最小 harness 动作，尚未接 artifact / promote / incident 流程
+
 ## 新任务：升级 redbook 的 opencli 到 1.6.8 并修正 verify 契约
 - 任务名称：将仓库内 `tools/opencli` 从旧 pin 升级到 `@jackwener/opencli 1.6.8`，修复安装补丁链路和 `verify.js` 对新版 `doctor` 契约的误判
 - 负责人（Lead Agent）：Codex

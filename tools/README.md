@@ -11,6 +11,7 @@
 | **X.com 发布** | `/baoyu-post-to-x` skill | ❌ ~~`auto-x/publish_x.sh`~~ | ✅ 唯一 |
 | **小红书图文** | `/baoyu-xhs-images` skill | ❌ ~~`auto-redbook/render_simple.sh`~~ | ✅ 唯一 |
 | **跨站点只读抓取 / 环境验证** | `tools/opencli/` | 现有 skills / 手工浏览器 | ✅ 辅助层 |
+| **内部工作台自然语言试点** | `tools/page-agent-console/` | 无 | ✅ 试点 |
 | **Reddit 痛点** | `reddit_hack.py` | 无 | ✅ 唯一 |
 
 ---
@@ -44,6 +45,11 @@ tools/
 │   ├── bin/
 │   ├── scripts/
 │   ├── vendor/           # 已验证的 opencli 1.0.1 patched files
+│   └── README.md
+│
+├── page-agent-console/   # Page Agent 内部工作台试点（本地控制台 + harness 包装）
+│   ├── public/
+│   ├── server.mjs
 │   └── README.md
 │
 ├── x-skills/             # X.com Claude Skills
@@ -228,6 +234,39 @@ node tools/opencli/scripts/verify.js
 - 这套 wrapper 默认串行，不能并行跑多个浏览器命令
 - 主 Chrome 里必须手动安装 `opencli Browser Bridge`
 - 小红书 `creator.xiaohongshu.com` 和 `www.xiaohongshu.com` 需要分别登录
+
+### 5. Page Agent 内部工作台试点
+
+#### ✅ **`tools/page-agent-console/`** - 内部控制台 + 自然语言代理试点
+
+**定位**：
+- 为 redbook 提供一个本地 `localhost` 控制台
+- 验证 `page-agent` 是否适合作为“内部工作台代理层”
+- 只覆盖内部任务板 / harness / 研究报告，不替代发布主链路
+
+**当前能力**：
+- 展示 `tasks/todo.md` 摘要
+- 展示 `tasks/progress.md` 近期会话
+- 展示最新 harness runs
+- 新建 run、查看单个 run、设置 run check
+- 预览 `05-选题研究/` 最新 Markdown 报告
+- 如果用户安装了 `Page Agent Extension`，可以在页面内直接发自然语言任务
+
+**启动**：
+```bash
+node tools/page-agent-console/server.mjs
+```
+
+**访问地址**：
+```text
+http://127.0.0.1:4318
+```
+
+**边界**：
+- 只适合本机 localhost
+- 不接 X / 小红书 / 微信发布
+- 不替代 `/baoyu-post-to-x`、`/baoyu-xhs-images`、`/baoyu-post-to-wechat`
+- 当前只包装最小 harness 命令：`new-run`、`show-run`、`set-check`
 
 ---
 

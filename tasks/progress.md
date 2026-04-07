@@ -7,6 +7,45 @@
 ## [2026-04-07] 会话摘要
 
 **完成了什么：**
+- 为 redbook 新增了一个本地 `Page Agent` 试点控制台：`tools/page-agent-console/`。
+- 实现了零依赖 Node 服务端 `server.mjs`，负责：
+  - 汇总 `tasks/todo.md` / `tasks/progress.md`
+  - 列出最新 harness runs
+  - 预览 `05-选题研究/` 最新报告
+  - 包装最小 harness 动作：`new-run`、`show-run`、`set-check`
+- 实现了本地页面：
+  - `public/index.html`
+  - `public/app.js`
+  - `public/styles.css`
+- 页面已接入 `Page Agent Extension` 调用入口，支持填写 token / base URL / model / API key，并附带 redbook 专用 `systemInstruction`。
+- 已完成真实验证：
+  - `node --check tools/page-agent-console/server.mjs`
+  - `node --check tools/page-agent-console/public/app.js`
+  - `curl http://127.0.0.1:4318/api/dashboard`
+  - `curl -X POST /api/runs`
+  - `curl -X POST /api/runs/<run_id>/checks`
+  - Chrome DevTools 打开 `http://127.0.0.1:4318/` 后，页面数据、run 详情和 gate report 均正常渲染
+- 本轮新增真实试点 run：
+  - `20260407-044025-page-agent-工作台试点-8f7d20`
+
+**未完成 / 遗留：**
+- 当前仍要求用户手动安装 `Page Agent Extension` 并提供 auth token / 模型配置。
+- 后端没有鉴权，只适合 localhost 试点。
+- 还没有接 `add-artifact`、`promote`、`incident`、`verify-run` 这些更完整的 harness 流程。
+- 还没有把这套控制台挂到现有 `/x-collect` 或发布工具链上。
+
+**下次会话优先做：**
+- 把 `run detail` 扩到 artifact 和 incident 视图。
+- 加一个“从研究报告创建 run”的快捷动作，减少手工录入。
+- 如果试点体验成立，再考虑把它升级成真正的内部运营台，而不是单页 demo。
+
+**需要注意：**
+- 这次试点验证的是“工作台代理层”，不是“浏览器自动发布替代品”。
+- 现有 `/baoyu-post-to-x`、`/baoyu-xhs-images`、`/baoyu-post-to-wechat` 仍然应该保留为生产主链路。
+
+## [2026-04-07] 会话摘要
+
+**完成了什么：**
 - 继续把 `tools/opencli` 从“代码升级完成但扩展没连上”推进到“真实可用”。
 - 确认 `opencli 1.6.8` 的 npm 包本身不带 `extension/`，而 Chrome profile 里旧的 unpacked extension 记录却仍指向 `/.../node_modules/@jackwener/opencli/extension`，导致 Browser Bridge 永远显示未连接。
 - 已从 GitHub Releases 下载 `opencli-extension.zip` 到：
