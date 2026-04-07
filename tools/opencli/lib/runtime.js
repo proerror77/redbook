@@ -11,6 +11,7 @@ export const expectedOpencliVersion = '1.6.8';
 export const opencliToolsDir = path.resolve(__dirname, '..');
 export const repoRoot = path.resolve(opencliToolsDir, '..', '..');
 export const dataDir = path.join(opencliToolsDir, 'data');
+export const browserBridgeDataDir = path.join(dataDir, 'browser-bridge');
 export const lockFilePath = path.join(dataDir, 'browser.lock');
 export const patchStampFileName = '.redbook-opencli-patches.json';
 export const backupDirName = '.redbook-opencli-backup';
@@ -18,6 +19,7 @@ export const manifestPatchEntriesPath = path.join(
   opencliToolsDir,
   'vendor/@jackwener/opencli/dist/cli-manifest.redbook.json'
 );
+export const opencliReleaseBaseUrl = 'https://github.com/jackwener/opencli/releases/download';
 
 export const replacementFiles = [
   {
@@ -258,6 +260,98 @@ export async function readInstalledOpencliMetadata(packageDir = resolveGlobalOpe
 
 export async function ensureDir(dirPath) {
   await fsp.mkdir(dirPath, { recursive: true });
+}
+
+export function resolvePackageExtensionDir(packageDir) {
+  return path.join(packageDir, 'extension');
+}
+
+export function resolveCachedExtensionDir(version = expectedOpencliVersion) {
+  return path.join(browserBridgeDataDir, `opencli-extension-v${version}`);
+}
+
+export function resolveCachedExtensionZipPath(version = expectedOpencliVersion) {
+  return path.join(browserBridgeDataDir, `opencli-extension-v${version}.zip`);
+}
+
+function browserBridgeReleaseUrl(version = expectedOpencliVersion) {
+  return `${opencliReleaseBaseUrl}/v${version}/opencli-extension.zip`;
+}
+
+async function pathExists(targetPath) {
+  try {
+    await fsp.access(targetPath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function hasExtensionManifest(extensionDir) {
+  return pathExists(path.join(extensionDir, 'manifest.json'));
+}
+
+async function downloadBrowserBridgeZip(version = expectedOpencliVersion) {
+  const zipPath = resolveCachedExtensionZipPath(version);
+  const url = browserBridgeReleaseUrl(version);
+
+  await ensureDir(path.dirname(zipPath));
+  const response = await fetch(url, { redirect: 'follow' });
+  if (!response.ok) {
+    throw new Error(`Failed to download Browser Bridge ${version}: HTTP ${response.status}`);
+  }
+
+  const bytes = Buffer.from(await response.arrayBuffer());
+  await fsp.writeFile(zipPath, bytes);
+  return zipPath;
+}
+
+async function extractBrowserBridgeZip(zipPath, extensionDir) {
+  await fsp.rm(extensionDir, { recursive: true, force: true });
+  await ensureDir(path.dirname(extensionDir));
+
+  const unzipResult = runCommandSync('unzip', ['-o', zipPath, '-d', extensionDir]);
+  if (unzipResult.status !== 0) {
+    throw new Error(unzipResult.stderr?.trim() || `Failed to unzip ${zipPath}`);
+  }
+
+  if (!(await hasExtensionManifest(extensionDir))) {
+    throw new Error(`Downloaded Browser Bridge is missing manifest.json: ${extensionDir}`);
+  }
+}
+
+async function ensurePackageExtensionLink(packageDir, sourceDir) {
+  const packageExtensionDir = resolvePackageExtensionDir(packageDir);
+
+  if (await hasExtensionManifest(packageExtensionDir)) {
+    return packageExtensionDir;
+  }
+
+  const stat = await fsp.lstat(packageExtensionDir).catch(() => null);
+  if (stat) {
+    await fsp.rm(packageExtensionDir, { recursive: true, force: true });
+  }
+
+  await fsp.symlink(sourceDir, packageExtensionDir);
+  return packageExtensionDir;
+}
+
+export async function ensureBrowserBridgeExtension(
+  packageDir,
+  version = expectedOpencliVersion
+) {
+  const packageExtensionDir = resolvePackageExtensionDir(packageDir);
+  if (await hasExtensionManifest(packageExtensionDir)) {
+    return packageExtensionDir;
+  }
+
+  const cachedExtensionDir = resolveCachedExtensionDir(version);
+  if (!(await hasExtensionManifest(cachedExtensionDir))) {
+    const zipPath = await downloadBrowserBridgeZip(version);
+    await extractBrowserBridgeZip(zipPath, cachedExtensionDir);
+  }
+
+  return ensurePackageExtensionLink(packageDir, cachedExtensionDir);
 }
 
 export async function copyReplacementFiles(packageDir) {

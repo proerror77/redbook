@@ -7,6 +7,35 @@
 ## [2026-04-07] 会话摘要
 
 **完成了什么：**
+- 继续把 `tools/opencli` 从“代码升级完成但扩展没连上”推进到“真实可用”。
+- 确认 `opencli 1.6.8` 的 npm 包本身不带 `extension/`，而 Chrome profile 里旧的 unpacked extension 记录却仍指向 `/.../node_modules/@jackwener/opencli/extension`，导致 Browser Bridge 永远显示未连接。
+- 已从 GitHub Releases 下载 `opencli-extension.zip` 到：
+  - `tools/opencli/data/browser-bridge/opencli-extension-v1.6.8`
+- 已修复安装链路：
+  - `tools/opencli/lib/runtime.js` 新增 Browser Bridge 资产下载、解压和 symlink 修复逻辑
+  - `tools/opencli/scripts/install.js` 现在会自动确保 `extension` 路径真实存在
+- 已修复运行环境：
+  - 把全局包里的 `extension` 路径修成指向仓库缓存目录的 symlink
+  - 启动使用登录态副本 profile 的独立 Chrome bridge 实例
+- 真实验证通过：
+  - `opencli doctor` => `[OK] Daemon` / `[OK] Extension: connected (v1.6.8)` / `[OK] Connectivity`
+  - `node tools/opencli/scripts/verify.js` 全量通过
+
+**未完成 / 遗留：**
+- 当前可用 bridge 来自独立 Chrome clone profile；主 Chrome 自己还没重启过，所以它那边的旧扩展记录是否已自动恢复，暂时没再单独验证。
+- 仓库里缓存了下载下来的 Browser Bridge 资产和 clone profile 运行目录，但本轮没有把这些运行时文件纳入 git。
+
+**下次会话优先做：**
+- 如果你希望完全回到主 Chrome 单实例模式，可以在合适的时候重启一次主 Chrome，再跑 `opencli doctor` 确认它直接接上主浏览器。
+- 如需长期保留当前 workaround，可再补一个显式的 `launch_bridge_browser` 脚本，把 clone profile 启动流程固化。
+
+**需要注意：**
+- 这次真正的根因不是“扩展没开”，而是 Chrome 记着一个已经失效的 unpacked extension 路径。
+- 以后只要看到 `doctor` 长期 `[MISSING] Extension`，第一检查项应该是 `packageDir/extension` 是否真实存在，而不是先怀疑登录态。
+
+## [2026-04-07] 会话摘要
+
+**完成了什么：**
 - 将仓库 `tools/opencli` 的期望版本从 `1.5.5` 升到 `1.6.8`，并重放 redbook 补丁到全局 `@jackwener/opencli`。
 - 修复了 `1.6.8` 升级链路中的两个关键断点：
   - `tools/opencli/lib/runtime.js` 现在能在 `dist/cli-manifest.json` 缺失时补写 manifest，而不是直接 `ENOENT`

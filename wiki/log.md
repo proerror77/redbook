@@ -5,6 +5,23 @@
 
 ---
 
+## [2026-04-07] ingest | 修复 opencli Browser Bridge 悬空扩展路径
+
+来源：`opencli 1.6.8` 已升级，但 `doctor` 长期显示 `[MISSING] Extension`
+
+触及页面：6个
+- `tools/opencli/lib/runtime.js` — 新增 Browser Bridge 下载、解压、缓存目录和 package `extension` symlink 修复逻辑
+- `tools/opencli/scripts/install.js` — 安装时自动确保 Browser Bridge 扩展目录真实存在
+- `tools/opencli/README.md` — 更新 Browser Bridge 的真实来源和恢复方式
+- `tasks/lessons.md` — 记录 npm 包不带扩展、Chrome profile 路径悬空的教训
+- `tasks/todo.md` — 更新 opencli 升级任务的 review 结论为“真实 verify 通过”
+- `tasks/progress.md` — 记录本轮 bridge 修复与独立 Chrome bridge 实例
+
+关键洞察：
+- `opencli 1.6.8` 的 npm 包并不自带 Browser Bridge，扩展必须从 GitHub Releases 单独下载 `opencli-extension.zip`
+- Chrome profile 里旧的 unpacked extension 记录仍指向 `packageDir/extension`；只要这个路径悬空，`doctor` 就会永远卡在 `[MISSING] Extension`
+- 最稳的修法不是反复重装 npm 包，而是补齐扩展资产，并把 `packageDir/extension` 修成稳定可用的 symlink
+
 ## [2026-04-07] ingest | 升级 opencli 到 1.6.8 并修正 doctor/verify 契约
 
 来源：将 `tools/opencli` 从旧版仓库 pin 升级到 `@jackwener/opencli 1.6.8`

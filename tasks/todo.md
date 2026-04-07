@@ -17,17 +17,19 @@
 
 ### Review 结论
 - 已将仓库 `tools/opencli` 的期望版本从 `1.5.5` 升到 `1.6.8`，并成功重放 redbook 补丁。
-- 已修复两个关键升级断点：
+- 已修复三个关键升级断点：
   - `1.6.8` clean 包没有默认 `dist/cli-manifest.json`，`patchCliManifest()` 现会在缺失时补写新 manifest
   - `verify.js` 现不再只看 `doctor` 退出码，而是解析正文中的 `Daemon / Extension / Connectivity` 状态
+  - `1.6.8` npm 包本身不再携带 Browser Bridge 扩展目录，`install.js` 现会自动下载 `opencli-extension.zip` 并把全局包里的 `extension` 路径修成有效 symlink
 - 当前验证结果：
   - `opencli --version` => `1.6.8`
   - `opencli list` 已包含 redbook 关键补丁命令：`boss apply`、`boss chat-list`、`boss chat-thread`、`boss send-message`、`boss send-resume`
-  - `node tools/opencli/scripts/verify.js` 现在会在 `doctor` 阶段准确阻断，并提示 `Browser Bridge 未连接`
-- 当前未完全打通的唯一前置条件不是代码问题，而是本机浏览器环境：
-  - `opencli doctor` 显示 `[OK] Daemon`、`[MISSING] Extension`、`[FAIL] Connectivity`
-  - Browser Bridge extension 目录为 `/Users/proerror/.nvm/versions/node/v24.11.1/lib/node_modules/@jackwener/opencli/extension`
-  - 需要把该扩展加载到主 Chrome 并确认连接后，再重跑 `node tools/opencli/scripts/verify.js`
+  - `opencli doctor` => `[OK] Daemon`、`[OK] Extension: connected (v1.6.8)`、`[OK] Connectivity`
+  - `node tools/opencli/scripts/verify.js` 已完整通过：`twitter search`、`xiaohongshu search`、`creator-notes`、`creator-note-detail`、`boss search`、`boss detail`、`boss chat-list`
+- 当前环境修复方式：
+  - 已从 GitHub Releases 下载 `opencli-extension.zip` 到仓库缓存目录 `tools/opencli/data/browser-bridge/opencli-extension-v1.6.8`
+  - 已将全局包里的 `extension` 路径修成 symlink，兼容 Chrome profile 中旧的 unpacked-extension 安装记录
+  - 已启动一个使用登录态副本 profile 的独立 Chrome bridge 实例，当前 `opencli` 命令走这条 bridge 链路可用
 
 ## 新任务：修复 X 每日收集链路的 agent-browser-session 健康检查
 - 任务名称：定位并修复 `tools/daily.sh` 中 X 研究链路反复被误判为“浏览器未连接”的问题，确保 `agent-browser-session` 在 `Frame was detached` 和输出格式变化时能自动恢复

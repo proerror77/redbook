@@ -49,6 +49,8 @@ node tools/opencli/scripts/install.js --skip-install
 - 备份原始文件到 `.redbook-opencli-backup/`
 - 覆盖为仓库里的 canonical patched files
 - 写入 `.redbook-opencli-patches.json`
+- 如果 npm 包本身不带 Browser Bridge 扩展，会自动从 GitHub Releases 下载 `opencli-extension.zip` 到 `tools/opencli/data/browser-bridge/`
+- 自动把全局包里的 `extension` 路径修成指向该缓存目录的 symlink，兼容旧 Chrome profile 中已经记住的 unpacked-extension 路径
 
 ## 统一入口
 
@@ -81,7 +83,7 @@ node tools/opencli/scripts/verify.js
 
 - `opencli 1.6.8` 的 `doctor` 即使在 `[MISSING] Extension` / `[FAIL] Connectivity` 时也可能返回退出码 `0`。
 - 仓库里的 `verify.js` 已改成读取 `doctor` 正文；只有同时看到 `[OK] Daemon`、`[OK] Extension`、`[OK] Connectivity` 才算通过。
-- 如果 `verify.js` 直接报 `Browser Bridge 未连接`，先把安装脚本输出的 extension 目录加载到主 Chrome，再重跑。
+- 安装脚本现在会自动准备 Browser Bridge 扩展目录；如果 `verify.js` 仍报 `Browser Bridge 未连接`，优先重启一次主 Chrome，或启动仓库维护的 bridge profile 再重跑。
 
 它会串行验证：
 

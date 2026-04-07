@@ -37,6 +37,28 @@
 - 下次触发信号：`doctor` 看起来失败但 shell 退出码仍为 `0`；`verify.js` 报 `doctor ok` 后下一步立即提示 `Browser Bridge not connected`；安装脚本报 `dist/cli-manifest.json ENOENT`
 - 验证结果：`opencli --version` 为 `1.6.8`；`opencli list` 已包含 redbook 补丁命令；`node tools/opencli/scripts/verify.js` 现会直接在 doctor 阶段准确报 `Browser Bridge 未连接`
 
+### Lesson 083
+- 日期：2026-04-07
+- 场景：`opencli 1.6.8` 升级后，`verify.js` 修好 exit code 误判，但 Browser Bridge 仍然始终显示未连接
+- 问题：
+  1) `install.js` 输出的 Browser Bridge extension 目录是 `/.../node_modules/@jackwener/opencli/extension`，但这个目录实际不存在
+  2) Chrome profile 里已经记着旧的 unpacked extension 安装记录，路径正好指向这个失效目录
+  3) 结果就是“看起来像装过扩展”，但 `doctor` 永远只能报 `[MISSING] Extension`
+- 根因：
+  1) `1.6.8` 的 npm 包 README 仍然提 Browser Bridge，但真正的扩展要从 GitHub Releases 单独下载 `opencli-extension.zip`
+  2) redbook 的 `readInstalledOpencliMetadata()` / `install.js` 仍把 `packageDir/extension` 当成真实扩展目录对外输出
+  3) Chrome 的 unpacked extension 记录没有坏，只是目标路径悬空了
+- 修正动作：
+  1) 从 `https://github.com/jackwener/opencli/releases/download/v1.6.8/opencli-extension.zip` 下载扩展并解压到 `tools/opencli/data/browser-bridge/opencli-extension-v1.6.8`
+  2) 修改 `tools/opencli/lib/runtime.js` / `tools/opencli/scripts/install.js`：安装时自动下载扩展缓存，并将全局包里的 `extension` 路径修成指向缓存目录的 symlink
+  3) 启动一个使用登录态副本 profile 的独立 Chrome bridge 实例，立即恢复 `doctor` 和 `verify.js`
+- 预防规则（Rule）：
+  1) 对 `opencli` 这类“npm 包 + 独立扩展资产”的工具，不能把 README 里的安装提示等同于 npm 包实际内容；必须检查 release asset 是否另发
+  2) 只要 Browser Bridge 一直报未连接，就要检查 Chrome profile 里的 unpacked extension 路径是否悬空，而不是只盯着扩展开关
+  3) 安装脚本输出给用户的路径必须是真实存在、可用的路径；不能打印逻辑上应该存在但包里实际没有的目录
+- 下次触发信号：`opencli doctor` 持续 `[MISSING] Extension`；`ls <packageDir>/extension` 报不存在；Chrome profile `Secure Preferences` 里有旧的 unpacked extension path
+- 验证结果：`opencli doctor` 变为 `[OK] Extension: connected (v1.6.8)`；`node tools/opencli/scripts/verify.js` 全量 smoke 通过
+
 ### Lesson 001
 - 日期：2026-03-03
 - 场景：运行每日入口 `bash tools/daily.sh`（全量）并自动追加选题到 `01-内容生产/选题管理/00-选题记录.md`

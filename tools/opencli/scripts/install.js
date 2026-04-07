@@ -3,6 +3,7 @@
 import path from 'node:path';
 import {
   copyReplacementFiles,
+  ensureBrowserBridgeExtension,
   expectedOpencliVersion,
   patchCliManifest,
   readInstalledOpencliMetadata,
@@ -63,6 +64,7 @@ async function main() {
   const copiedFiles = await copyReplacementFiles(packageDir);
   const manifestPatch = await patchCliManifest(packageDir);
   const stampPath = await writePatchStamp(packageDir, metadata, copiedFiles);
+  const extensionDir = await ensureBrowserBridgeExtension(packageDir, metadata.version);
 
   console.log(`[install] Package dir: ${metadata.dir}`);
   console.log(`[install] Version: ${metadata.version}`);
@@ -77,7 +79,7 @@ async function main() {
     `[install] Manifest patch: ${manifestPatch.manifestPath} (${manifestPatch.patchedCommandCount} commands)`
   );
   console.log(`[install] Patch stamp: ${stampPath}`);
-  console.log(`[install] Browser Bridge extension dir: ${metadata.extensionDir}`);
+  console.log(`[install] Browser Bridge extension dir: ${extensionDir}`);
   console.log('[install] Next: node tools/opencli/scripts/verify.js');
 }
 
