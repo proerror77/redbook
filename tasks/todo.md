@@ -1,5 +1,50 @@
 # Task Todo
 
+## 新任务：排查 Mac Studio 远端 Terminal 代理配置
+- 任务名称：通过 SSH 登录 `192.168.1.41` 的 Mac Studio，确认 Shadowrocket 是否运行，以及远端 Terminal / Shell 是否正确继承代理设置
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-07
+- 截止日期：2026-04-07
+- 优先级：P1
+
+### 执行清单
+- [ ] 1. 复盘相关 lessons，并确认可通过 SSH 登录远端主机
+- [ ] 2. 检查远端 Shadowrocket 相关进程、系统代理与网络设置
+- [ ] 3. 检查远端 Shell / Terminal 的代理环境变量与实际连通性
+- [ ] 4. 如有偏差，补充修复建议或最小修复动作
+- [ ] 5. 回填 progress / review 结论
+
+### Review 结论
+- 待执行
+
+## 新任务：在 Mac Studio 上下载 Ollama 模型 `gemma4:31b`
+- 任务名称：通过内网 SSH 登录 `192.168.1.41` 的 Mac Studio，检查 `ollama` 环境并下载用户指定模型 `gemma4:31b`
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-07
+- 截止日期：2026-04-07
+- 优先级：P1
+
+### 执行清单
+- [x] 1. 复盘相关 lessons，并确认远程目标机可通过 SSH 登录
+- [x] 2. 检查 Mac Studio 上的 `ollama`、磁盘空间与基础环境
+- [ ] 3. 执行模型下载并验证 `ollama list` 中可见
+- [x] 4. 回填 progress / review 结论
+
+### Review 结论
+- 当前状态：
+  - 已通过 SSH 登录 `networkworker@192.168.1.41`
+  - 目标机规格：`Apple M4 Max`、`64GB RAM`、可用磁盘约 `802GiB`
+  - 已安装 `Ollama.app 0.20.3` 到 `/Applications/Ollama.app`
+  - 本机下载 `Ollama-darwin.zip` 后已通过 `scp` 传到目标机并完成安装
+- 模型下载状态：
+  - `gemma4:31b` 标签有效，已开始拉取
+  - 由于目标机到 registry 的下载速率较慢，已切为后台任务持续下载
+  - 当前后台进程：`1494` / `1506`
+  - 当前日志：`/tmp/gemma4-31b.pull.log`
+  - 当前缓存体积（2026-04-07 14:55 CST）：`117M ~/.ollama/models`
+- 待完成：
+  - 等 `ollama pull gemma4:31b` 完成后，再验证 `ollama list` 中可见
+
 ## 新任务：把 LLM Wiki 从“规范”补成“显式工作流”
 - 任务名称：为 redbook 的 LLM Wiki ingest/query/lint 建立可见的运行痕迹，避免只有规则没有启动证据
 - 负责人（Lead Agent）：Codex

@@ -7,6 +7,30 @@
 ## [2026-04-07] 会话摘要
 
 **完成了什么：**
+- 已通过 SSH 登录内网 Mac Studio：`networkworker@192.168.1.41`。
+- 已确认目标机基础条件足够跑大模型：
+  - `Apple M4 Max`
+  - `64GB RAM`
+  - 可用磁盘约 `802GiB`
+- 目标机原本未安装 `ollama`；本轮已通过“本机下载 `Ollama-darwin.zip` + `scp` 传输 + 远端安装”完成 `Ollama.app 0.20.3` 安装。
+- 已拉起 `Ollama.app`，并确认本地 API `http://127.0.0.1:11434/api/version` 返回 `0.20.3`。
+- 已启动 `gemma4:31b` 的后台下载任务，日志写入 `/tmp/gemma4-31b.pull.log`；当前缓存体积约 `117M ~/.ollama/models`。
+
+**未完成 / 遗留：**
+- `gemma4:31b` 还没下载完，当前目标机到 registry 的速度较慢，估算仍需较长时间。
+- 因为模型未完成落盘，本轮还不能把 `ollama list` 里的最终可用状态勾成完成。
+
+**下次会话优先做：**
+- 先检查 `/tmp/gemma4-31b.pull.log` 最新进度和 `pgrep -af "ollama pull gemma4:31b"`。
+- 下载结束后运行 `/usr/local/bin/ollama list | grep gemma4:31b` 做最终验收。
+
+**需要注意：**
+- 这台 Mac Studio 远端直连 `ollama.com` 下载 app 包时出现过 `curl: (16) Error in the HTTP2 framing layer`，本轮已改用“本机下载后 `scp`”绕过。
+- 模型下载已经切到后台；即使当前 SSH 会话结束，后台任务仍会继续。
+
+## [2026-04-07] 会话摘要
+
+**完成了什么：**
 - 把 LLM Wiki 的“显式 run”从手工补建推进到了自动启动：
   - 新增脚本 `tools/wiki_workflow.py`
   - 新增命令 `start-daily-ingest --date YYYY-MM-DD`
