@@ -75,7 +75,11 @@
   - `20260407-051553-llm-wiki-ingest-2026-04-07-90316a`
   - 自动挂接 3 份日报 artifact：`X-每日日程`、`HN-每日热点`、`Reddit-每日监控`
   - 自动置位 `materials_queried=true`、`research_complete=true`
-- 这个缺口已经从“无运行层证据”推进到“每日研究完成后有自动创建的 ingest run”。
+- 已完成显式 query / lint 验证：
+  - query run：`20260407-065343-llm-wiki-query-内容创作-2026-04-07-064648`
+  - lint run：`20260407-065343-llm-wiki-lint-2026-04-07-d9dee3`
+  - lint 报告已抓到并修复 `wiki/index.md` 缺页、日期陈旧和 `wiki/overview.md` 过期问题
+- 这个缺口已经从“无运行层证据”推进到“ingest 自动启动、query/lint 可显式执行且有真实 run”。
 
 ## 新任务：发布 2026-04-07 的两篇 X 长文与两篇小红书图文
 - 任务名称：完成“爆款研究观众”和“Galileo-0”两组内容的生成、发布与归档，确保 X.com 长文和小红书图文全部实际发出

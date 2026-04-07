@@ -5,6 +5,36 @@
 
 ---
 
+## [2026-04-07] query | 为 LLM Wiki 增加显式 query 入口并完成首次查询
+
+来源：继续把 LLM Wiki workflow 从 ingest 扩到 query / lint
+
+触及页面：3个
+- `tools/wiki_workflow.py` — 新增 `query --topic ... --date ...` 入口
+- `docs/reports/wiki-query-内容创作-2026-04-07.md` — 首份显式 query 报告
+- `tasks/harness/runs/20260407-065343-llm-wiki-query-内容创作-2026-04-07-064648.json` — 首条 query run
+
+关键洞察：
+- query 不能只说“我查了 wiki”，需要留下结构化命中结果
+- 用主题关键词直接产出 query report，比只返回聊天摘要更适合后续挂接到内容 run
+- 首次 query 已证明 `内容创作与增长`、`系统化创作`、`内容生产 Agent 思维` 等页面能被稳定命中
+
+## [2026-04-07] lint | 为 LLM Wiki 增加显式 lint 入口并修复索引陈旧
+
+来源：继续把 LLM Wiki workflow 从 ingest 扩到 query / lint
+
+触及页面：5个
+- `tools/wiki_workflow.py` — 新增 `lint --date ...` 入口
+- `docs/reports/wiki-lint-2026-04-07.md` — 首份显式 lint 报告
+- `tasks/harness/runs/20260407-065343-llm-wiki-lint-2026-04-07-d9dee3.json` — 首条 lint run
+- `wiki/index.md` — 修复缺页、日期和页面总数
+- `wiki/overview.md` — 修复过期快照日期
+
+关键洞察：
+- lint 不应该只报问题，还应该推动最小闭环修复
+- 当前 wiki 的主要风险不是内容矛盾，而是索引和概览页容易落后于真实页面
+- 跑完修复后，当前 lint 已经是全绿状态：缺页 0、悬挂引用 0、孤立页面 0、index 陈旧项 0、overview 陈旧 0
+
 ## [2026-04-07] ingest | 为每日研究接入显式 LLM Wiki ingest 启动器
 
 来源：将 `LLM Wiki` 从“只有规则”推进到“每日研究后自动创建 ingest run”

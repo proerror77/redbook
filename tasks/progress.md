@@ -7,6 +7,39 @@
 ## [2026-04-07] 会话摘要
 
 **完成了什么：**
+- 把 LLM Wiki workflow 从只有 `ingest`，补到了 `query` / `lint`：
+  - `python3 tools/wiki_workflow.py query --topic '内容创作' --date 2026-04-07`
+  - `python3 tools/wiki_workflow.py lint --date 2026-04-07`
+- 已完成真实 run 验证：
+  - query run：`20260407-065343-llm-wiki-query-内容创作-2026-04-07-064648`
+  - lint run：`20260407-065343-llm-wiki-lint-2026-04-07-d9dee3`
+- `query` 会输出显式检索报告：
+  - `docs/reports/wiki-query-内容创作-2026-04-07.md`
+- `lint` 会输出显式健康检查报告：
+  - `docs/reports/wiki-lint-2026-04-07.md`
+- 本轮还用 lint 结果闭环修复了 wiki 元数据：
+  - `wiki/index.md` 已补齐 `低 token、本地 AI、端侧模型` 和 `内容创作与增长`
+  - `wiki/index.md` 的页面计数和日期已刷新
+  - `wiki/overview.md` 已更新到 2026-04-07
+
+**未完成 / 遗留：**
+- 现在 `query` / `lint` 还是手动触发，还没有挂到内容创作主链路里自动执行。
+- 还没有把 `query` 命中的页面自动作为后续草稿 run 的输入 artifact。
+
+**下次会话优先做：**
+- 把内容创作前的 `wiki query` 自动挂到对应内容 run。
+- 再决定是否要让 lint 在周日或发布后自动执行一次。
+
+**需要注意：**
+- 现在 LLM Wiki 已经有三类显式 workflow：
+  - ingest：日报后自动触发
+  - query：按主题显式检索并留 run
+  - lint：显式健康检查并留 run
+- 这三类 workflow 已经都能给出 run / report / log 三级证据。
+
+## [2026-04-07] 会话摘要
+
+**完成了什么：**
 - 已通过 SSH 登录内网 Mac Studio：`networkworker@192.168.1.41`。
 - 已确认目标机基础条件足够跑大模型：
   - `Apple M4 Max`
