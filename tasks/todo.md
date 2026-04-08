@@ -1,5 +1,33 @@
 # Task Todo
 
+## 新任务：基于 Accademia 模板生成 RioLU Clash 配置
+- 任务名称：用 `Accademia/Clash_Configuration_Template` 的 `BlackList-01.yaml` 接入用户提供的 RioLU 订阅链接，生成一份可直接导入的本地 Clash Meta 配置，并验证模板结构
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-08
+- 截止日期：2026-04-08
+- 优先级：P1
+
+### 执行清单
+- [x] 1. 复盘 `tasks/lessons.md` 与项目规则，确认这次按“生成本地配置产物”推进
+- [x] 2. 检查模板仓库结构与 `proxy-providers` 接入点
+- [x] 3. 生成接好订阅地址的本地 `BlackList-01` 配置文件
+- [x] 4. 验证 YAML 结构与关键字段
+- [x] 5. 回填 review / progress 结论
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已确认 `Accademia/Clash_Configuration_Template` 的 `BlackList-01.yaml` 通过 `proxy-providers.SUB-Provider-01.url` 接入机场订阅，而不是直接改 `proxies`
+  - 已生成本地配置文件：`tmp/clash-configs/BlackList-01-riolu.yaml`
+  - 已将 `proxy-providers.SUB-Provider-01.url` 替换为用户提供的 RioLU 订阅地址
+  - 已用 `yq` 验证 YAML 可正常解析，且 `proxy-providers.SUB-Provider-01.url` / `path` 字段读取正常
+- 当前阻塞：
+  - 订阅源 `https://subscription.riolu.link/...` 当前返回 `HTTP/2 502 Bad Gateway`
+  - 因此我只能确认“模板接线正确、文件可导入”，不能确认“远端订阅内容当前可拉取成功”
+- 使用建议：
+  - 如果你只是要一份已经接好订阅的模板，现在可以直接导入这份本地文件
+  - 如果 Clash 客户端导入后拉不到节点，根因大概率在 RioLU 订阅源当前不可用，不在模板文件本身
+
 ## 新任务：发布今天的 X 和小红书内容《AI办公进入代做时代》
 - 任务名称：围绕“AI 从问答工具变成工作流执行层”产出并发布一条 X 内容与一篇小红书图文，图片使用更生动的 Nano Banana / Gemini 风格
 - 负责人（Lead Agent）：Codex
