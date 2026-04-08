@@ -1,0 +1,75 @@
+{
+  "run_id": "20260408-150954-llm-wiki-query-内容创作-2026-04-08-3b9a36",
+  "kind": "content_pipeline",
+  "topic": "LLM Wiki query 内容创作 2026-04-08",
+  "summary": "显式记录一次 wiki query：内容创作",
+  "source": "wiki/index.md",
+  "owner": "Codex",
+  "priority": "P1",
+  "current_stage": "research",
+  "status": "in_progress",
+  "created_at": "2026-04-08T15:09:54+00:00",
+  "updated_at": "2026-04-08T15:09:54+00:00",
+  "artifacts": [
+    {
+      "id": "461da7c247",
+      "type": "research_report",
+      "path": "docs/reports/wiki-query-内容创作-2026-04-08.md",
+      "description": "Wiki query report for topic: 内容创作",
+      "stage": "research",
+      "created_at": "2026-04-08T15:09:54+00:00"
+    }
+  ],
+  "checks": {
+    "materials_queried": true,
+    "research_complete": true,
+    "outline_locked": false,
+    "draft_written": false,
+    "facts_checked": false,
+    "platform_ready": false,
+    "published": false,
+    "progress_updated": false,
+    "wiki_logged": false,
+    "lessons_reviewed": false
+  },
+  "incidents": [],
+  "events": [
+    {
+      "at": "2026-04-08T15:09:54+00:00",
+      "type": "run_created",
+      "stage": "research",
+      "message": "Run created for topic: LLM Wiki query 内容创作 2026-04-08",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-08T15:09:54+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: research_report",
+      "meta": {
+        "path": "docs/reports/wiki-query-内容创作-2026-04-08.md",
+        "artifact_id": "461da7c247"
+      }
+    },
+    {
+      "at": "2026-04-08T15:09:54+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-08T15:09:54+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check research_complete set to True",
+      "meta": {
+        "check_name": "research_complete",
+        "value": true
+      }
+    }
+  ]
+}

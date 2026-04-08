@@ -14,6 +14,28 @@
 
 ## Lessons 列表
 
+### Lesson 090
+- 日期：2026-04-08
+- 场景：用户追问 `LLM Wiki / workflow` 是否真的在运行，我最初看到 run 文件存在，以为问题主要是“今天没跑日报”；继续深查后发现真正把 gate 拉红的是 verifier 契约和 ingest artifact 设计。
+- 问题：
+  1) 我差点把“有 run / 有 report / 有 log”误判成“workflow 正常”
+  2) `research_report` verifier 只按长篇研究稿标准校验，导致 `wiki-query`、`wiki-lint`、原始日报文件这类运营型报告被系统性误判
+  3) ingest 直接拿原始日报文件过 gate，外部抓取一降级就会把 research stage 拖红
+- 根因：
+  1) 我把“存在运行痕迹”和“gate 真正 ready”混在了一起
+  2) 没把 report subtype 当成 verifier 设计的一部分
+  3) ingest 缺少专门的 summary artifact 来收口原始 source
+- 修正动作：
+  1) 为 `wiki-query-*`、`wiki-lint-*`、`wiki-ingest-*` 增加专用 verifier 契约
+  2) 让 `query` / `lint` 报告生成器补齐结论与来源 section
+  3) 让 `ensure_daily_ingest_run()` 生成 `wiki-ingest-*.md` summary artifact，并以该 artifact 作为 ingest gate 的验证对象
+- 预防规则（Rule）：
+  1) 判断 workflow 是否“正确运行”时，必须看 `check-gates` 是否 `ready: true`，不能只看 run 文件或 report 文件存在
+  2) 同一 `artifact_type` 下如果实际包含多种报告形态，必须按 subtype 设计 verifier，不能用一套长文标准硬验所有产物
+  3) ingest 类 run 不要直接验证原始 source 文件；应生成专门的 summary artifact 再过 gate
+- 下次触发信号：用户问“这个 workflow 真的在跑吗”；`check-gates` 假红；artifact 明明合理却因长度或 section 模板不符被 verifier 拒绝
+- 验证结果：本轮已把 `2026-04-08` 的 ingest / lint / query 三条 run 全部拉到 `ready: true`
+
 ### Lesson 088
 - 日期：2026-04-08
 - 场景：用户明确要用 Nano Banana 配图，我虽然查了相关 skill 和 API，但最终没有按专用 skill 的标准工作流执行，而是走了自写脚本加 fallback 的混合链路。

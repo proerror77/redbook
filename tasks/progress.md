@@ -629,6 +629,38 @@
 - 清理类操作属于破坏性动作，今后仍需在用户明确授权后再执行。
 - 删除完成后不能只看 toast，必须回查原链接是否已经失效，并同时确认正确内容仍然在线。
 
+## [2026-04-08] 会话补记：修复 LLM Wiki verifier 契约
+
+**完成了什么：**
+- 先核实了当前状态：`LLM Wiki` 的 workflow 入口和历史 run 是存在的，但今天的 `2026-04-08` 运行证据并不完整。
+- 发现 research stage 的 verifier 契约过于单一，误把 `wiki-query`、`wiki-lint` 和原始日报文件都按“长篇研究报告”标准校验，导致 gate 假红。
+- 已新增回归测试：
+  - `tools/redbook_harness/tests/test_verifier.py`
+  - `tools/redbook_harness/tests/test_wiki_workflow.py`
+- 已修正 `tools/redbook_harness/verifier.py`，为 `wiki-query-*`、`wiki-lint-*`、`wiki-ingest-*` 三类运营型 research report 增加专用校验规则。
+- 已修正 `tools/wiki_workflow.py`：
+  - `query` 报告补齐 `研究来源` 与 `一句话结论`
+  - `lint` 报告补齐 `结论` 与 `来源`
+  - `ensure_daily_ingest_run()` 现在会生成 `docs/reports/wiki-ingest-2026-04-08.md` 作为 ingest summary artifact
+- 已补跑 `bash tools/daily.sh --skip-x`，生成 `05-选题研究/X-每日日程-2026-04-08.md`，并重跑今日 `daily-cycle`
+- 已 fresh 验证：
+  - `20260408-144257-llm-wiki-ingest-2026-04-08-3f52b3` -> `ready: true`
+  - `20260408-144257-llm-wiki-lint-2026-04-08-3a53f9` -> `ready: true`
+  - `20260408-150954-llm-wiki-query-内容创作-2026-04-08-3b9a36` -> `ready: true`
+  - `python3 -m unittest ...test_wiki_workflow.py ...test_verifier.py ...test_x_utils.py` -> `9 tests OK`
+
+**未完成 / 遗留：**
+- `bash tools/daily.sh --skip-x` 这次只成功产出了 `X-每日日程-2026-04-08.md`；Hacker News 与 Reddit 在外部抓取时分别命中 SSL EOF 和 403 Blocked，今天没有落出独立 `HN/Reddit` 报告。
+- `tools/wiki-auto/run_wiki_ingest.sh` 在本轮收尾时仍因 `Invalid API key · Please run /login` 失败，所以 Claude CLI 的 wiki 内容写回没有完成。
+
+**下次会话优先做：**
+- 如果要把今天的日报链路补到更完整，先修 HN/Reddit 抓取稳定性，再重跑 `tools/daily.sh`。
+- 单独处理 `tools/wiki-auto/run_wiki_ingest.sh` 的登录态，让自动 wiki 写回恢复可用。
+
+**需要注意：**
+- 以后判断 LLM Wiki 是否“运行正常”，不能只看 run 文件存在，必须看 `check-gates` 是否真的 `ready: true`。
+- ingest 不该直接拿原始日报文件去过 verifier，应该由 summary artifact 收口；否则任何外部抓取降级都会把 research gate 误判成失败。
+
 ## 模板
 
 ```

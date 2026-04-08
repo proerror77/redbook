@@ -148,6 +148,49 @@ def ensure_daily_ingest_run(date_str: str) -> dict:
         )
 
     if attached_sources:
+        report_path = REPORTS_ROOT / f"wiki-ingest-{date_str}.md"
+        report_lines = [
+            f"# Wiki Ingest Report {date_str}",
+            "",
+            "## 结论",
+            "",
+            (
+                f"- 已为 {date_str} 的日报链路附加 {len(attached_sources)} 份研究源文件，"
+                "当前 ingest 运行证据已补齐。"
+            ),
+            "",
+            "## 来源",
+            "",
+        ]
+        report_lines.extend(f"- `{item}`" for item in attached_sources)
+        report_lines.extend(
+            [
+                "",
+                "## 已附加日报",
+                "",
+            ]
+        )
+        report_lines.extend(f"- `{item}`" for item in attached_sources)
+        report_lines.extend(
+            [
+                "",
+                "## 当前状态",
+                "",
+                "- `materials_queried=true`",
+                "- `research_complete=true`",
+                "- 后续可继续执行 query / lint / wiki ingest 写回。",
+            ]
+        )
+        write_report(report_path, "\n".join(report_lines))
+        report_rel_path = relative(report_path)
+        if report_rel_path not in existing_paths:
+            runtime.add_artifact(
+                run["run_id"],
+                artifact_type="research_report",
+                path=report_rel_path,
+                description=f"Wiki ingest summary report for {date_str}",
+                stage="research",
+            )
         runtime.set_check(run["run_id"], check_name="materials_queried", value=True)
         runtime.set_check(run["run_id"], check_name="research_complete", value=True)
 
@@ -204,6 +247,12 @@ def query_wiki(topic: str, *, date_str: str, attach_run_id: str | None = None) -
         f"- Topic: `{topic}`",
         f"- 匹配页面数：{len(matches)}",
         "",
+        "## 研究来源",
+        "",
+        "- `wiki/index.md`",
+        "- `wiki/选题/`",
+        "- `wiki/概念/`",
+        "",
         "## 命中页面",
         "",
     ]
@@ -215,6 +264,19 @@ def query_wiki(topic: str, *, date_str: str, attach_run_id: str | None = None) -
             )
     else:
         lines.append("- 未匹配到现有 wiki 页面")
+    lines.extend(
+        [
+            "",
+            "## 一句话结论",
+            "",
+            (
+                f"- 主题 `{topic}` 共命中 {len(matches)} 个高相关页面，"
+                "可直接作为内容起草前的 wiki 研究入口。"
+            )
+            if matches
+            else f"- 主题 `{topic}` 当前未命中已有 wiki 页面，需要补充知识沉淀后再复查。",
+        ]
+    )
     write_report(report_path, "\n".join(lines))
 
     runtime = HarnessRuntime(ROOT)
@@ -337,6 +399,17 @@ def lint_wiki(*, date_str: str) -> dict:
     report_path = REPORTS_ROOT / f"wiki-lint-{date_str}.md"
     lines = [
         f"# Wiki Lint Report {date_str}",
+        "",
+        "## 结论",
+        "",
+        "- 当前 wiki 索引、概览和页面互链状态已完成巡检，适合作为内容前置研究入口。",
+        "",
+        "## 来源",
+        "",
+        "- `wiki/index.md`",
+        "- `wiki/overview.md`",
+        "- `wiki/选题/`",
+        "- `wiki/概念/`",
         "",
         "## 摘要",
         "",

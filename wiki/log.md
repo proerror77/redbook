@@ -5,6 +5,24 @@
 
 ---
 
+## [2026-04-08] ingest | 修复 LLM Wiki verifier 契约并补齐今日运行证据
+
+来源：用户追问“LLM / Wiki / workflow 是否正确运行”，需要以当天真实 gate 状态而不是历史 run 存在性来回答
+
+触及页面：7个
+- `tools/redbook_harness/verifier.py` — 为 `wiki-query-*`、`wiki-lint-*`、`wiki-ingest-*` 增加专用 verifier 契约
+- `tools/wiki_workflow.py` — 修正 query / lint 报告格式，并新增 ingest summary artifact 生成
+- `tools/redbook_harness/tests/test_verifier.py` — 新增 verifier 回归测试
+- `tools/redbook_harness/tests/test_wiki_workflow.py` — 新增 daily ingest summary 回归测试
+- `docs/reports/wiki-ingest-2026-04-08.md` — 今日 ingest summary artifact
+- `docs/reports/wiki-lint-2026-04-08.md` — 重新生成并通过 gate 的 lint 报告
+- `docs/reports/wiki-query-内容创作-2026-04-08.md` — 重新生成并通过 gate 的 query 报告
+
+关键洞察：
+- `run 存在` 不等于 `workflow 已经正确运行`，最终判断必须以 `check-gates` 的 `ready` 为准。
+- 对运营型 report 使用单一“长篇研究稿” verifier 会制造假红，必须按 report subtype 做契约校验。
+- ingest 最稳的收口方式不是直接验证原始日报文件，而是生成一份专用 summary artifact，再让 gate 验这份汇总产物。
+
 ## [2026-04-07] ingest | 把 LLM Wiki workflow 补到最小完整状态
 
 来源：继续把“是否完整”从口头判断收敛成可验证状态

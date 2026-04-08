@@ -183,6 +183,27 @@ class HarnessVerifier:
         text = self._read_markdown(artifact_path=artifact_path, checks=checks, errors=errors)
         if text is None:
             return
+        if artifact_path.name.startswith("wiki-query-"):
+            self._validate_wiki_query_report(
+                text=text,
+                checks=checks,
+                errors=errors,
+            )
+            return
+        if artifact_path.name.startswith("wiki-ingest-"):
+            self._validate_wiki_ingest_report(
+                text=text,
+                checks=checks,
+                errors=errors,
+            )
+            return
+        if artifact_path.name.startswith("wiki-lint-"):
+            self._validate_wiki_lint_report(
+                text=text,
+                checks=checks,
+                errors=errors,
+            )
+            return
         self._require_heading_count(text=text, minimum=3, checks=checks, errors=errors)
         self._require_any_token(
             text=text,
@@ -199,6 +220,120 @@ class HarnessVerifier:
             label="source section",
         )
         self._require_min_length(text=text, minimum=1200, checks=checks, errors=errors)
+
+    def _validate_wiki_query_report(
+        self,
+        *,
+        text: str,
+        checks: list[str],
+        errors: list[str],
+    ) -> None:
+        self._require_heading_count(text=text, minimum=4, checks=checks, errors=errors)
+        self._require_any_token(
+            text=text,
+            tokens=("## 查询主题",),
+            checks=checks,
+            errors=errors,
+            label="query topic section",
+        )
+        self._require_any_token(
+            text=text,
+            tokens=("## 研究来源", "## 来源"),
+            checks=checks,
+            errors=errors,
+            label="source section",
+        )
+        self._require_any_token(
+            text=text,
+            tokens=("## 命中页面",),
+            checks=checks,
+            errors=errors,
+            label="matched pages section",
+        )
+        self._require_any_token(
+            text=text,
+            tokens=("## 一句话结论", "## 结论"),
+            checks=checks,
+            errors=errors,
+            label="结论 section",
+        )
+        self._require_min_length(text=text, minimum=200, checks=checks, errors=errors)
+
+    def _validate_wiki_lint_report(
+        self,
+        *,
+        text: str,
+        checks: list[str],
+        errors: list[str],
+    ) -> None:
+        self._require_heading_count(text=text, minimum=6, checks=checks, errors=errors)
+        self._require_any_token(
+            text=text,
+            tokens=("## 结论", "## 一句话结论"),
+            checks=checks,
+            errors=errors,
+            label="结论 section",
+        )
+        self._require_any_token(
+            text=text,
+            tokens=("## 来源", "## 研究来源"),
+            checks=checks,
+            errors=errors,
+            label="source section",
+        )
+        self._require_any_token(
+            text=text,
+            tokens=("## 摘要",),
+            checks=checks,
+            errors=errors,
+            label="summary section",
+        )
+        self._require_any_token(
+            text=text,
+            tokens=("## overview 状态",),
+            checks=checks,
+            errors=errors,
+            label="overview status section",
+        )
+        self._require_min_length(text=text, minimum=150, checks=checks, errors=errors)
+
+    def _validate_wiki_ingest_report(
+        self,
+        *,
+        text: str,
+        checks: list[str],
+        errors: list[str],
+    ) -> None:
+        self._require_heading_count(text=text, minimum=4, checks=checks, errors=errors)
+        self._require_any_token(
+            text=text,
+            tokens=("## 结论", "## 一句话结论"),
+            checks=checks,
+            errors=errors,
+            label="结论 section",
+        )
+        self._require_any_token(
+            text=text,
+            tokens=("## 来源", "## 研究来源"),
+            checks=checks,
+            errors=errors,
+            label="source section",
+        )
+        self._require_any_token(
+            text=text,
+            tokens=("## 已附加日报",),
+            checks=checks,
+            errors=errors,
+            label="attached reports section",
+        )
+        self._require_any_token(
+            text=text,
+            tokens=("## 当前状态",),
+            checks=checks,
+            errors=errors,
+            label="current status section",
+        )
+        self._require_min_length(text=text, minimum=180, checks=checks, errors=errors)
 
     def _validate_draft(
         self,

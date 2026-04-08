@@ -1,5 +1,32 @@
 # Task Todo
 
+## 新任务：修复 LLM Wiki 2026-04-08 运行与 verifier 契约
+- 任务名称：修正 LLM Wiki 的 query/lint report verifier 契约，并补齐 2026-04-08 的 ingest 运行证据
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-08
+- 截止日期：2026-04-08
+- 优先级：P0
+
+### 执行清单
+- [x] 1. 复盘相关 lessons，并确认 today ingest / query / lint 的真实失败点
+- [x] 2. 先补 failing tests，锁定 wiki query/lint report 的 verifier 契约
+- [x] 3. 实施最小修复，并确保不放宽普通 research_report 的质量门槛
+- [x] 4. 生成 2026-04-08 的日报源文件，重跑 ingest / lint gate
+- [x] 5. 回填 progress / review 结论
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已用失败测试锁定 3 个回归点：`wiki-query` 报告、`wiki-lint` 报告、`daily ingest` summary artifact
+  - 已为 `research_report` verifier 增加 3 类运营型报告子契约：`wiki-query-*`、`wiki-lint-*`、`wiki-ingest-*`
+  - 已修正 `tools/wiki_workflow.py` 的 query / lint report 生成格式，补齐结论与来源 section
+  - 已为 `ensure_daily_ingest_run()` 增加 `docs/reports/wiki-ingest-2026-04-08.md` 汇总产物，避免 gate 去直接验证原始日报文件
+  - 已补跑 `bash tools/daily.sh --skip-x`，生成 `05-选题研究/X-每日日程-2026-04-08.md`
+  - 已 fresh 验证 3 条 run 的 `check-gates` 均为 `ready: true`：
+    - `20260408-144257-llm-wiki-ingest-2026-04-08-3f52b3`
+    - `20260408-144257-llm-wiki-lint-2026-04-08-3a53f9`
+    - `20260408-150954-llm-wiki-query-内容创作-2026-04-08-3b9a36`
+
 ## 新任务：基于 Accademia 模板生成 RioLU Clash 配置
 - 任务名称：用 `Accademia/Clash_Configuration_Template` 的 `BlackList-01.yaml` 接入用户提供的 RioLU 订阅链接，生成一份可直接导入的本地 Clash Meta 配置，并验证模板结构
 - 负责人（Lead Agent）：Codex
