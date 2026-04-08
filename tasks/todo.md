@@ -31,6 +31,10 @@
     - `python3 tools/auto-x/scripts/scrape_hackernews.py --limit 5 --comments 1`
     - `python3 tools/auto-x/scripts/scrape_reddit.py --subreddits SaaS Entrepreneur --limit 5`
     两条链路都能成功产出 Markdown 报告
+  - 已完成 `bash tools/daily.sh` 全量重跑，并重新生成：
+    - `05-选题研究/X-每日日程-2026-04-09.md`
+    - `05-选题研究/HN-每日热点-2026-04-09.md`
+    - `05-选题研究/Reddit-每日监控-2026-04-09.md`
 
 ## 新任务：修复 LLM Wiki 2026-04-08 运行与 verifier 契约
 - 任务名称：修正 LLM Wiki 的 query/lint report verifier 契约，并补齐 2026-04-08 的 ingest 运行证据
