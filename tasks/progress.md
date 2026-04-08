@@ -4,6 +4,41 @@
 
 ---
 
+## [2026-04-09] 会话摘要
+
+**完成了什么：**
+- 对“为什么对外连不上”做了分层排查，确认不是整机外网故障：`curl https://example.com` 正常，真正有问题的是 3 条外部情报链路各自的接入方式。
+- 恢复了 X 浏览器会话：`agent-browser-session kill` 后重新 `open https://x.com/home`，`snapshot -c -d 2` 已能稳定返回主页结构。
+- 修复了 HN 抓取：
+  - 在 [scrape_hackernews.py](/Users/proerror/Documents/redbook/tools/auto-x/scripts/scrape_hackernews.py) 中为 Firebase API 增加统一请求封装
+  - 当 `topstories.json` 或 `item/{id}.json` 命中 `SSLEOFError` 时，自动降级到 Algolia `search?tags=front_page` 与 `items/{id}`
+- 修复了 Reddit 抓取：
+  - 在 [scrape_reddit.py](/Users/proerror/Documents/redbook/tools/auto-x/scripts/scrape_reddit.py) 中保留官方 JSON 为首选
+  - 当官方匿名 JSON 返回 403 Blocked 时，自动降级到 `api.pullpush.io` 的只读 submission 搜索接口
+- 新增回归测试 [test_external_source_fallbacks.py](/Users/proerror/Documents/redbook/tools/auto-x/tests/test_external_source_fallbacks.py)，覆盖：
+  - HN top stories -> Algolia fallback
+  - HN item -> Algolia item fallback
+  - Reddit official JSON -> PullPush fallback
+- 已真实验证：
+  - `python3 -m unittest tools/auto-x/tests/test_external_source_fallbacks.py` -> `OK`
+  - `python3 tools/auto-x/scripts/scrape_hackernews.py --limit 5 --comments 1 --output /tmp/hn-test.md` 成功，且报告不再是“未获取到 HN Stories”
+  - `python3 tools/auto-x/scripts/scrape_reddit.py --subreddits SaaS Entrepreneur --limit 5 --output /tmp/reddit-test.md` 成功，且报告包含 `r/SaaS` / `r/Entrepreneur` 正文
+- 已复核 `2026-04-09` 的 wiki 维护 run：
+  - ingest `20260408-232756-llm-wiki-ingest-2026-04-09-46fdb6` -> `ready: true`
+  - lint `20260408-232756-llm-wiki-lint-2026-04-09-41d58a` -> `ready: true`
+
+**未完成 / 遗留：**
+- `bash tools/daily.sh` 的全量重跑仍在进行中；X timeline / search / following 会把整条日报拉长，这轮我优先先把真正失败的外部源修通并单独验证。
+- Reddit 现在依赖 PullPush 作为公开只读 fallback，不是 Reddit 官方 API；如果以后要更稳定，需要补官方 OAuth 凭据。
+
+**下次会话优先做：**
+- 等全量 `tools/daily.sh` 重跑结束后，再核 `05-选题研究/X-每日日程-2026-04-09.md` 是否已包含更新后的 HN/Reddit 正文，而不是旧的占位提示。
+- 如果要彻底去掉第三方依赖，再补 Reddit 官方 OAuth 读链路。
+
+**需要注意：**
+- 以后看到“未获取到 HN/Reddit”时，先分层判断：浏览器会话、站点策略、TLS EOF，不能再笼统归因为“外网不通”。
+- Reddit 当前的根因不是网络断，而是匿名 JSON 被站点策略封锁；HN 当前的根因也不是完全断网，而是 Firebase 端点与本机 SSL 组合偶发 EOF。
+
 ## [2026-04-08] 会话摘要
 
 **完成了什么：**

@@ -26,21 +26,53 @@ DEFAULT_SUBREDDITS = [
     'MachineLearning',
     'artificial',
 ]
+REDDIT_JSON_URL = "https://www.reddit.com/r/{subreddit}/hot.json?limit={limit}"
+PULLPUSH_URL = (
+    "https://api.pullpush.io/reddit/search/submission/"
+    "?subreddit={subreddit}&size={limit}&sort=desc&sort_type=score"
+)
+REQUEST_HEADERS = {
+    'User-Agent': 'redbook-daily-research/1.0 (+https://www.reddit.com)',
+    'Accept': 'application/json',
+}
+
+
+def _request_json(url: str, timeout: int = 10) -> Dict:
+    """请求 JSON，统一 headers。"""
+    response = requests.get(url, headers=REQUEST_HEADERS, timeout=timeout)
+    response.raise_for_status()
+    return response.json()
+
+
+def _normalize_pullpush_post(post_data: Dict, subreddit: str) -> Dict:
+    """将 PullPush 返回结构转换为本地统一格式。"""
+    permalink = post_data.get('permalink', '')
+    if permalink and not permalink.startswith('/'):
+        permalink = '/' + permalink
+
+    return {
+        'id': post_data.get('id', ''),
+        'subreddit': subreddit,
+        'title': post_data.get('title', ''),
+        'author': post_data.get('author', 'unknown'),
+        'score': post_data.get('score', 0) or 0,
+        'num_comments': post_data.get('num_comments', 0) or 0,
+        'url': f"https://www.reddit.com{permalink}" if permalink else post_data.get('full_link', ''),
+        'created': datetime.fromtimestamp(
+            post_data.get('created_utc', 0) or 0
+        ).strftime('%Y-%m-%d %H:%M:%S'),
+        'selftext': (post_data.get('selftext') or '')[:500],
+        'link_flair_text': post_data.get('link_flair_text', '') or '',
+        'source': 'pullpush',
+    }
 
 
 def fetch_subreddit_hot(subreddit: str, limit: int = 25) -> List[Dict]:
     """获取 subreddit 热门帖子"""
-    url = f"https://www.reddit.com/r/{subreddit}/hot.json?limit={limit}"
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'
-    }
-
     print_colored(f"  获取 r/{subreddit} 热门帖子...", 'cyan')
 
     try:
-        response = requests.get(url, headers=headers, timeout=10)
-        response.raise_for_status()
-        data = response.json()
+        data = _request_json(REDDIT_JSON_URL.format(subreddit=subreddit, limit=limit), timeout=10)
         posts = data.get('data', {}).get('children', [])
 
         results = []
@@ -59,25 +91,31 @@ def fetch_subreddit_hot(subreddit: str, limit: int = 25) -> List[Dict]:
                 ).strftime('%Y-%m-%d %H:%M:%S'),
                 'selftext': post_data.get('selftext', '')[:500],  # 帖子正文（限制长度）
                 'link_flair_text': post_data.get('link_flair_text', ''),  # 标签
+                'source': 'reddit',
             })
 
         print_colored(f"    ✓ 获取 {len(results)} 条帖子", 'green')
         return results
 
     except Exception as e:
-        print_colored(f"    ✗ 获取失败: {e}", 'red')
-        return []
+        print_colored(f"    官方 JSON 获取失败，尝试 PullPush 兜底: {e}", 'yellow')
+        try:
+            data = _request_json(PULLPUSH_URL.format(subreddit=subreddit, limit=limit), timeout=15)
+            posts = data.get('data', [])
+            results = [_normalize_pullpush_post(post, subreddit) for post in posts[:limit]]
+            print_colored(f"    ✓ PullPush 兜底获取 {len(results)} 条帖子", 'green')
+            return results
+        except Exception as fallback_error:
+            print_colored(f"    ✗ PullPush 兜底失败: {fallback_error}", 'red')
+            return []
 
 
 def fetch_post_comments(post_url: str, limit: int = 5) -> List[Dict]:
     """获取帖子的 top comments（痛点挖掘）"""
     json_url = post_url.rstrip('/') + '/.json'
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'
-    }
 
     try:
-        response = requests.get(json_url, headers=headers, timeout=10)
+        response = requests.get(json_url, headers=REQUEST_HEADERS, timeout=10)
         response.raise_for_status()
         data = response.json()
 

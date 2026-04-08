@@ -5,6 +5,23 @@
 
 ---
 
+## [2026-04-09] ingest | 修复今日外部情报链路的 source-specific 故障
+
+来源：用户要求排查“为什么对外连不上”，而 `2026-04-09` 日报里同时出现 X 跳过、HN 空结果、Reddit 空结果
+
+触及页面：6个
+- `tools/auto-x/scripts/scrape_hackernews.py` — 为 Firebase API 增加 Algolia fallback
+- `tools/auto-x/scripts/scrape_reddit.py` — 为 Reddit 官方匿名 JSON 增加 PullPush fallback
+- `tools/auto-x/tests/test_external_source_fallbacks.py` — 新增外部源 fallback 回归测试
+- `05-选题研究/X-每日日程-2026-04-09.md` — 今日研究总报告
+- `docs/reports/wiki-ingest-2026-04-09.md` — 今日 ingest summary artifact
+- `docs/reports/wiki-lint-2026-04-09.md` — 今日 lint report
+
+关键洞察：
+- 这次不是“整机外网断开”，而是 3 条链路分别坏在浏览器会话、HN Firebase SSL EOF、Reddit 官方匿名 JSON 403。
+- 对外部源抓取器，最小正确修法不是继续空跑，而是给每个 source 提供独立 fallback，并把失败归因写清楚。
+- LLM Wiki 的 `2026-04-09` ingest / lint gate 已经是绿的；真正需要修的是日报上游 source，而不是 wiki runtime 本身。
+
 ## [2026-04-08] ingest | 修复 LLM Wiki verifier 契约并补齐今日运行证据
 
 来源：用户追问“LLM / Wiki / workflow 是否正确运行”，需要以当天真实 gate 状态而不是历史 run 存在性来回答

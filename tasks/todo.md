@@ -1,5 +1,37 @@
 # Task Todo
 
+## 新任务：抓取 2026-04-09 今日情报
+- 任务名称：生成今日 X/HN/Reddit 情报报告，并验证 LLM Wiki / harness 运行痕迹
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-09
+- 截止日期：2026-04-09
+- 优先级：P0
+- Harness Run：`20260408-232724-今日情报抓取-2026-04-09-0bb2ce`
+
+### 执行清单
+- [x] 1. 复盘相关 lessons，并检查今日研究文件是否已存在
+- [x] 2. 执行今日日报抓取链路，生成 `2026-04-09` 研究文件
+- [x] 3. 验证日报产物与 LLM Wiki ingest / lint 运行痕迹
+- [x] 4. 回填 progress / wiki / review 结论
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已创建 harness run：`20260408-232724-今日情报抓取-2026-04-09-0bb2ce`
+  - 已生成 `05-选题研究/X-每日日程-2026-04-09.md`
+  - 已核实 `2026-04-09` 的 LLM Wiki ingest / lint run 均为 `ready: true`
+    - `20260408-232756-llm-wiki-ingest-2026-04-09-46fdb6`
+    - `20260408-232756-llm-wiki-lint-2026-04-09-41d58a`
+  - 已定位并修复“对外连不上”的真实分层问题：
+    - X：不是外网断开，而是 `agent-browser-session` 会话失稳；已恢复并验证 `snapshot` 正常
+    - HN：Firebase API 偶发 `SSLEOFError`；已在 `scrape_hackernews.py` 增加 Algolia fallback
+    - Reddit：官方匿名 JSON 被站点策略 403；已在 `scrape_reddit.py` 增加 PullPush fallback
+  - 已新增回归测试 `tools/auto-x/tests/test_external_source_fallbacks.py`
+  - 已真实验证：
+    - `python3 tools/auto-x/scripts/scrape_hackernews.py --limit 5 --comments 1`
+    - `python3 tools/auto-x/scripts/scrape_reddit.py --subreddits SaaS Entrepreneur --limit 5`
+    两条链路都能成功产出 Markdown 报告
+
 ## 新任务：修复 LLM Wiki 2026-04-08 运行与 verifier 契约
 - 任务名称：修正 LLM Wiki 的 query/lint report verifier 契约，并补齐 2026-04-08 的 ingest 运行证据
 - 负责人（Lead Agent）：Codex
