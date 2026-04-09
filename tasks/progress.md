@@ -10,10 +10,14 @@
 - 重新核对了 `audit_following.py` 的断点续跑状态，确认 today following 当前为 `1410` 个账号，已有审计结果 `100` 条。
 - 发现全量巡检的真实瓶颈是 X 资料页导航普遍命中 `page.goto: Timeout 10000ms exceeded`，不是脚本崩溃；脚本会在超时后继续分类并进入下一个账号。
 - 已重新用 `--resume --save-every 1 --wait-seconds 0.9` 接上巡检，避免像上一轮那样在中断时丢掉本批进度。
-- 当前已确认继续落盘到第 `101` 条：最后写入账号为 `@axtrur`，状态为 `active`。
+- 已修正 `tools/auto-x/scripts/audit_following.py` 的单账号巡检流程：
+  - `open` 超时统一按软超时处理，不再额外做无效的 `get url` 重试
+  - `snapshot` 失败会返回 `error`，避免误记成普通 `no_recent_articles`
+  - 浏览器子命令超时已收紧，减少单账号卡住时间
+- 当前已确认继续落盘到第 `109` 条；`100 -> 109` 这 9 个账号的进度已安全写回 JSON / Markdown。
 
 **未完成 / 遗留：**
-- 受限于 X 资料页导航速度，剩余 `1309` 个账号仍需持续长跑，当前尚未形成完整 unfollow 候选面板。
+- 受限于 X 资料页导航速度，剩余 `1301` 个账号仍需持续长跑，当前尚未形成完整 unfollow 候选面板。
 
 **下次会话优先做：**
 - 继续观察 [X-following-巡检-2026-04-09.md](/Users/proerror/Documents/redbook/05-选题研究/X-following-巡检-2026-04-09.md) 与 [following_audit_latest.json](/Users/proerror/Documents/redbook/tools/auto-x/data/following_audit_latest.json) 的增长。

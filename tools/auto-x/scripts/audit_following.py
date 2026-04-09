@@ -29,7 +29,7 @@ from x_utils import (
     ensure_browser,
     now_str,
     print_colored,
-    run_abs,
+    run_abs_result,
     save_report,
     today_str,
     _extract_article_blocks,
@@ -307,20 +307,39 @@ def audit_profile(
 ) -> dict[str, Any]:
     """真实打开账号主页并做判定。"""
     url = f"https://x.com/{username}"
-    run_abs(f'open "{url}"', timeout=40)
+    open_result = run_abs_result(f'open "{url}"', timeout=12)
     time.sleep(wait_seconds)
-    current_url = run_abs("get url", timeout=10).strip()
-    if username.lower() not in current_url.lower():
-        run_abs(f'open "{url}"', timeout=40)
-        time.sleep(wait_seconds)
+    soft_timeout = "timeout" in open_result.get("stderr", "").lower()
 
-    snapshot = run_abs("snapshot -c -d 5", timeout=20)
-    if not _extract_article_blocks(snapshot):
-        run_abs("scroll down 900", timeout=10)
-        time.sleep(0.8)
-        second_snapshot = run_abs("snapshot -c -d 5", timeout=20)
-        if second_snapshot:
-            snapshot = second_snapshot
+    if not soft_timeout:
+        current_url = run_abs_result("get url", timeout=5)["stdout"].strip()
+        if current_url and username.lower() not in current_url.lower():
+            run_abs_result(f'open "{url}"', timeout=12)
+            time.sleep(wait_seconds)
+
+    snapshot_result = run_abs_result("snapshot -c -d 5", timeout=8)
+    snapshot = snapshot_result["stdout"]
+    if not snapshot and snapshot_result.get("stderr"):
+        return {
+            "username": username,
+            "profile_url": url,
+            "status": "error",
+            "latest_post_label": None,
+            "latest_post_days": None,
+            "sample_texts": [],
+            "reason": f"snapshot 失败: {snapshot_result['stderr']}",
+            "unfollow_recommended": False,
+            "review_required": True,
+            "audited_at": now_str(),
+        }
+
+    if snapshot and not _extract_article_blocks(snapshot):
+        scroll_result = run_abs_result("scroll down 900", timeout=4)
+        if scroll_result["ok"]:
+            time.sleep(0.6)
+            second_snapshot = run_abs_result("snapshot -c -d 5", timeout=8)["stdout"]
+            if second_snapshot:
+                snapshot = second_snapshot
 
     result = classify_profile_snapshot(
         snapshot,
