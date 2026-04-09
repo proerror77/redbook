@@ -35,11 +35,13 @@
   - `@OpenRouterAI`
   - `@dustingor`
 - 对当前 `inactive` 强候选执行 unfollow 时，实际发现 `@edendotso` 和 `@me` 当前都已经不是“已关注”状态，因此没有发生删除动作。
+- 在继续补 follow 时，`@aiDotEngineer` 页面明确出现了 `关注 @aiDotEngineer` 按钮，但点击后触发了 X 的 `速度限制` 提示，因此本轮未继续强行操作。
 
 **未完成 / 遗留：**
 - 全量巡检仍在运行，需要等待它继续落盘，形成完整候选清单。
 - 在全量清单完成后，需要按项目规则向用户做一次 unfollow 二次确认，再执行首轮清理。
 - 仍有少量待补关注账号因为页面超时或按钮未确认成功，需要单独复核，例如 `@aiDotEngineer`、`@latentspacepod`、`@agrimsingh`、`@ivanleomk`、`@aimuggle`。
+- 其中 `@latentspacepod`、`@ivanleomk`、`@aimuggle` 已在后续复核时成功关注；当前真正剩余待补的是 `@aiDotEngineer` 和 `@agrimsingh`，但需要等待 X 速度限制解除。
 
 **下次会话优先做：**
 - 继续观察 [following_audit_latest.json](/Users/proerror/Documents/redbook/tools/auto-x/data/following_audit_latest.json) 与 [X-following-巡检-2026-04-09.md](/Users/proerror/Documents/redbook/05-选题研究/X-following-巡检-2026-04-09.md) 的更新，直到全量巡检结束。
