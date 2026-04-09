@@ -4,6 +4,25 @@
 
 ---
 
+## [2026-04-09] 会话补记：X following 巡检续跑
+
+**完成了什么：**
+- 重新核对了 `audit_following.py` 的断点续跑状态，确认 today following 当前为 `1410` 个账号，已有审计结果 `100` 条。
+- 发现全量巡检的真实瓶颈是 X 资料页导航普遍命中 `page.goto: Timeout 10000ms exceeded`，不是脚本崩溃；脚本会在超时后继续分类并进入下一个账号。
+- 已重新用 `--resume --save-every 1 --wait-seconds 0.9` 接上巡检，避免像上一轮那样在中断时丢掉本批进度。
+- 当前已确认继续落盘到第 `101` 条：最后写入账号为 `@axtrur`，状态为 `active`。
+
+**未完成 / 遗留：**
+- 受限于 X 资料页导航速度，剩余 `1309` 个账号仍需持续长跑，当前尚未形成完整 unfollow 候选面板。
+
+**下次会话优先做：**
+- 继续观察 [X-following-巡检-2026-04-09.md](/Users/proerror/Documents/redbook/05-选题研究/X-following-巡检-2026-04-09.md) 与 [following_audit_latest.json](/Users/proerror/Documents/redbook/tools/auto-x/data/following_audit_latest.json) 的增长。
+- 当 `inactive / not_found / suspended / no_posts` 候选数量稳定后，整理第一批 unfollow 清单给用户确认。
+
+**需要注意：**
+- 当前这条巡检链路更适合长跑，不适合在交互会话里等它一次性扫完。
+- `save_every=1` 已经生效，后续即使手动中断，也不会再回退整批进度。
+
 ## [2026-04-09] 会话补记：X following 收尾补关注
 
 **完成了什么：**
