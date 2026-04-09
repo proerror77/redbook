@@ -5,6 +5,21 @@
 
 ---
 
+## [2026-04-09] query | 基于完整 following 筛选 X 重点跟踪账号
+
+来源：用户要求抓取 `@0xcybersmile` 的完整 following，并判断哪些账号值得长期跟踪，再查看其 timeline
+
+触及页面：4个
+- `tools/auto-x/data/following.json` — 刷新完整 following 缓存，当前批次 `scraped_at=2026-04-09`
+- `05-选题研究/X-关注列表-0xcybersmile-2026-04-09.md` — 完整 following 原始清单
+- `05-选题研究/X-following-重点跟踪-2026-04-09.md` — 重点跟踪账号与 timeline 摘要
+- `tasks/harness/runs/20260408-235457-x-following-深度跟踪-2026-04-09-ae8032.json` — 本轮 following 研究 run
+
+关键洞察：
+- 真正有价值的不是“抓全 following”，而是把 `1407` 个账号压缩成一个高信噪比 watchlist。
+- 对当前内容方向，最值得看的不是泛热门账号，而是三类源：官方开发者信号、方法论翻译者、把 AI 做成产品的 builder。
+- 当前最优的核心跟踪名单是：`@OpenAIDevs`、`@claudeai`、`@turingou`、`@shannholmberg`、`@EverMind`、`@alin_zone`；如果要补商业化视角，再加 `@KevinNaughtonJr` 和 `@IndieDevHailey`。
+
 ## [2026-04-09] ingest | 修复今日外部情报链路的 source-specific 故障
 
 来源：用户要求排查“为什么对外连不上”，而 `2026-04-09` 日报里同时出现 X 跳过、HN 空结果、Reddit 空结果

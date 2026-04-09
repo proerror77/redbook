@@ -4,6 +4,34 @@
 
 ---
 
+## [2026-04-09] 会话补记：X following 深度跟踪
+
+**完成了什么：**
+- 基于用户提供的 `https://x.com/0xcybersmile/following`，先验证 following 页在当前登录态下可读，然后重新抓取完整 following。
+- 使用 [scrape_following.py](/Users/proerror/Documents/redbook/tools/auto-x/scripts/scrape_following.py) 实际滚动 `130` 次，抓到当日 following `1407` 个账号。
+- `tools/auto-x/data/following.json` 已更新；由于该文件会合并历史缓存，因此总量为 `1495`，其中本轮最新账号以 `scraped_at=2026-04-09` 为准。
+- 已生成 following 原始清单：
+  - [X-关注列表-0xcybersmile-2026-04-09.md](/Users/proerror/Documents/redbook/05-选题研究/X-关注列表-0xcybersmile-2026-04-09.md)
+- 已进一步产出重点跟踪研究稿：
+  - [X-following-重点跟踪-2026-04-09.md](/Users/proerror/Documents/redbook/05-选题研究/X-following-重点跟踪-2026-04-09.md)
+- 结合候选账号的真实 timeline，最终收口出三层跟踪名单：
+  - 第一梯队：`@OpenAIDevs`、`@claudeai`、`@turingou`、`@shannholmberg`
+  - 第二梯队：`@EverMind`、`@KevinNaughtonJr`、`@IndieDevHailey`、`@alin_zone`
+  - 第三梯队：`@droid`、`@OpenAI`
+- 已把研究稿挂到 harness run `20260408-235457-x-following-深度跟踪-2026-04-09-ae8032`，并将 `materials_queried` / `research_complete` / `lessons_reviewed` 置为 `true`；`check-gates` 当前为 `ready: true`。
+
+**未完成 / 遗留：**
+- `following.json` 的 `display_name` / `bio` 解析质量仍有噪声，因为当前 `extract_users()` 是从 accessibility tree 粗提取，容易把按钮文案混进字段。
+- 本轮已经足够做 watchlist 筛选，但如果要做更精细的自动分类，最好单独修 `extract_users()`。
+
+**下次会话优先做：**
+- 如果要把这套研究变成日更流程，可以直接基于第一梯队和第二梯队生成一份“重点账号 timeline 日报”。
+- 如果要提升账号分类质量，优先修 `tools/auto-x/scripts/x_utils.py` 里的 `extract_users()`，让 following 元数据更干净。
+
+**需要注意：**
+- `following.json` 不能直接拿总量做“当前关注数”，必须先按 `scraped_at` 过滤。
+- 对 X 研究任务，真正有价值的不是“抓全了 1407 个”，而是收口成少量高信噪比 watchlist。
+
 ## [2026-04-09] 会话摘要
 
 **完成了什么：**

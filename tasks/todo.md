@@ -1,5 +1,33 @@
 # Task Todo
 
+## 新任务：抓取完整 X following 并筛选重点跟踪账号
+- 任务名称：抓取 `@0xcybersmile` 的完整 following，筛出最值得长期跟踪的账号，并查看这些账号的 timeline
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-09
+- 截止日期：2026-04-09
+- 优先级：P1
+- Harness Run：`20260408-235457-x-following-深度跟踪-2026-04-09-ae8032`
+
+### 执行清单
+- [x] 1. 复盘相关 lessons，并检查 following 抓取/分析脚本
+- [x] 2. 抓取并落盘完整 following 列表
+- [x] 3. 筛选值得长期跟踪的账号并查看其 timeline
+- [x] 4. 回填 progress / wiki / review 结论
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已创建 harness run：`20260408-235457-x-following-深度跟踪-2026-04-09-ae8032`
+  - 已重新抓取 `@0xcybersmile` 的完整 following，当前实际抓取数为 `1407`
+  - 已更新 `tools/auto-x/data/following.json`，其中 `scraped_at=2026-04-09` 的账号为本轮最新集合
+  - 已生成 following 报告：`05-选题研究/X-关注列表-0xcybersmile-2026-04-09.md`
+  - 已生成重点跟踪研究稿：`05-选题研究/X-following-重点跟踪-2026-04-09.md`
+  - 已结合主页 timeline 实际查看，筛出 3 个跟踪层级：
+    - 第一梯队：`@OpenAIDevs`、`@claudeai`、`@turingou`、`@shannholmberg`
+    - 第二梯队：`@EverMind`、`@KevinNaughtonJr`、`@IndieDevHailey`、`@alin_zone`
+    - 第三梯队：`@droid`、`@OpenAI`
+  - 已验证该研究 run 的 research gate 为 `ready: true`
+
 ## 新任务：抓取 2026-04-09 今日情报
 - 任务名称：生成今日 X/HN/Reddit 情报报告，并验证 LLM Wiki / harness 运行痕迹
 - 负责人（Lead Agent）：Codex
