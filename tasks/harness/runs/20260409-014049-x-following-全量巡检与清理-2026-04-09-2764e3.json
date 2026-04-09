@@ -1,0 +1,95 @@
+{
+  "run_id": "20260409-014049-x-following-全量巡检与清理-2026-04-09-2764e3",
+  "kind": "content_pipeline",
+  "topic": "X following 全量巡检与清理 2026-04-09",
+  "summary": "为每日全量轮巡 following 增加 timeline 活跃度审计与 unfollow 候选清单",
+  "source": "https://x.com/0xcybersmile/following",
+  "owner": "Codex",
+  "priority": "P1",
+  "current_stage": "research",
+  "status": "in_progress",
+  "created_at": "2026-04-09T01:40:49+00:00",
+  "updated_at": "2026-04-09T03:13:08+00:00",
+  "artifacts": [
+    {
+      "id": "db6c604791",
+      "type": "research_report",
+      "path": "05-选题研究/X-following-巡检-2026-04-09.md",
+      "description": "following 全量巡检当前进度报告",
+      "stage": "research",
+      "created_at": "2026-04-09T03:13:08+00:00"
+    }
+  ],
+  "checks": {
+    "materials_queried": true,
+    "research_complete": false,
+    "outline_locked": false,
+    "draft_written": false,
+    "facts_checked": false,
+    "platform_ready": false,
+    "published": false,
+    "progress_updated": true,
+    "wiki_logged": true,
+    "lessons_reviewed": true
+  },
+  "incidents": [],
+  "events": [
+    {
+      "at": "2026-04-09T01:40:49+00:00",
+      "type": "run_created",
+      "stage": "research",
+      "message": "Run created for topic: X following 全量巡检与清理 2026-04-09",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-09T01:52:51+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check lessons_reviewed set to True",
+      "meta": {
+        "check_name": "lessons_reviewed",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-09T01:52:51+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-09T03:12:56+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check progress_updated set to True",
+      "meta": {
+        "check_name": "progress_updated",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-09T03:12:56+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check wiki_logged set to True",
+      "meta": {
+        "check_name": "wiki_logged",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-09T03:13:08+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: research_report",
+      "meta": {
+        "path": "05-选题研究/X-following-巡检-2026-04-09.md",
+        "artifact_id": "db6c604791"
+      }
+    }
+  ]
+}

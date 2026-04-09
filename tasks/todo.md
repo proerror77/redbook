@@ -1,5 +1,31 @@
 # Task Todo
 
+## 新任务：X following 全量巡检与清理
+- 任务名称：为 `@0xcybersmile` 建立每天早上全量轮巡 following 的流程，输出新动态与 unfollow 候选，并支持后续执行清理
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-09
+- 截止日期：2026-04-09
+- 优先级：P1
+- Harness Run：`20260409-014049-x-following-全量巡检与清理-2026-04-09-2764e3`
+
+### 执行清单
+- [x] 1. 复盘 lessons，并检查现有 following / daily 链路
+- [x] 2. 设计 following 全量巡检、失效账号识别与 unfollow 候选规则
+- [x] 3. 实现 following 审计脚本、dry-run unfollow 脚本，并接入早上自动流程
+- [ ] 4. 完成 today 的全量巡检并生成候选报告
+- [ ] 5. 在用户确认后执行首轮 unfollow 清理
+
+### Review 结论
+- 进行中
+- 当前已完成：
+  - 已创建 harness run：`20260409-014049-x-following-全量巡检与清理-2026-04-09-2764e3`
+  - 已新增全量巡检脚本：`tools/auto-x/scripts/audit_following.py`
+  - 已新增 dry-run / apply unfollow 脚本：`tools/auto-x/scripts/unfollow_from_audit.py`
+  - 已新增回归测试：`tools/auto-x/tests/test_audit_following.py`
+  - 已将 following 巡检接入 `tools/auto-x/scripts/run_daily.sh`，默认在早上任务后端后台启动
+  - 已用 `limit=5` 做真实巡检 smoke test，确认报告和 JSON 会正确落盘
+  - 全量巡检当前正在运行中；首轮 unfollow 仍需按项目规则做二次确认
+
 ## 新任务：抓取完整 X following 并筛选重点跟踪账号
 - 任务名称：抓取 `@0xcybersmile` 的完整 following，筛出最值得长期跟踪的账号，并查看这些账号的 timeline
 - 负责人（Lead Agent）：Codex

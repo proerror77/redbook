@@ -4,6 +4,35 @@
 
 ---
 
+## [2026-04-09] 会话补记：X following 全量巡检与清理
+
+**完成了什么：**
+- 为 `@0xcybersmile` 的 following 维护任务新增了全量巡检脚本 [audit_following.py](/Users/proerror/Documents/redbook/tools/auto-x/scripts/audit_following.py)。
+- 新增了默认 `dry-run` 的清理脚本 [unfollow_from_audit.py](/Users/proerror/Documents/redbook/tools/auto-x/scripts/unfollow_from_audit.py)，用于在确认后执行 unfollow。
+- 新增回归测试 [test_audit_following.py](/Users/proerror/Documents/redbook/tools/auto-x/tests/test_audit_following.py)，覆盖 `not_found / suspended / active / inactive / pinned` 等关键判定。
+- 已把 following 巡检接入 [run_daily.sh](/Users/proerror/Documents/redbook/tools/auto-x/scripts/run_daily.sh)，早上自动任务会在日报之后后台启动 following 审计。
+- 已完成 `limit=5` 的真机 smoke test，并开始了 today 的全量巡检。
+
+**当前结果：**
+- 当前 following 全量巡检已重新抓取到 `1407` 个最新 following，并开始逐个审计主页 timeline。
+- 当前已落盘的首批结果在：
+  - [X-following-巡检-2026-04-09.md](/Users/proerror/Documents/redbook/05-选题研究/X-following-巡检-2026-04-09.md)
+  - [following_audit_latest.json](/Users/proerror/Documents/redbook/tools/auto-x/data/following_audit_latest.json)
+- 截至首批 `25` 个账号，已出现 `1` 个强 unfollow 候选：`@edendotso`，最近一条可见动态距今 `290` 天。
+- 另有若干 `no_recent_articles` 账号已被列入“待人工复核”，暂不直接 unfollow。
+
+**未完成 / 遗留：**
+- 全量巡检仍在运行，需要等待它继续落盘，形成完整候选清单。
+- 在全量清单完成后，需要按项目规则向用户做一次 unfollow 二次确认，再执行首轮清理。
+
+**下次会话优先做：**
+- 继续观察 [following_audit_latest.json](/Users/proerror/Documents/redbook/tools/auto-x/data/following_audit_latest.json) 与 [X-following-巡检-2026-04-09.md](/Users/proerror/Documents/redbook/05-选题研究/X-following-巡检-2026-04-09.md) 的更新，直到全量巡检结束。
+- 以 `inactive / not_found / suspended / no_posts` 为第一批候选，向用户做 unfollow 二次确认。
+
+**需要注意：**
+- “精选几个值得跟踪的账号”和“每天全量巡检 following 并做清理”是两种不同任务，不能混在一起回答。
+- unfollow 属于关系清理动作，必须先给候选清单，再执行二次确认。
+
 ## [2026-04-09] 会话补记：X following 深度跟踪
 
 **完成了什么：**

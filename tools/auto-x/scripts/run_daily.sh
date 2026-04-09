@@ -17,6 +17,7 @@ LOG_DIR="$SCRIPT_DIR/../data/logs"
 mkdir -p "$LOG_DIR"
 
 LOG_FILE="$LOG_DIR/$(date +%Y-%m-%d).log"
+FOLLOWING_AUDIT_LOG_FILE="$LOG_DIR/following-audit-$(date +%Y-%m-%d).log"
 
 log() {
     echo "[$(date '+%H:%M:%S')] $1" | tee -a "$LOG_FILE"
@@ -36,6 +37,43 @@ if PYTHONUNBUFFERED=1 python3 -u "$ROOT_DIR/tools/wiki_workflow.py" daily-cycle 
     log "LLM Wiki 每日维护周期已记录"
 else
     log "WARNING: LLM Wiki 每日维护周期失败（不影响日报本身）"
+fi
+
+# Claude CLI 执行实际 wiki 内容写入（在 harness 记录层之后）
+WIKI_INGEST_RUNNER="$ROOT_DIR/tools/wiki-auto/run_wiki_ingest.sh"
+if [ -f "$WIKI_INGEST_RUNNER" ]; then
+    log "运行 Claude CLI wiki ingest..."
+    if bash "$WIKI_INGEST_RUNNER" "$TODAY" 2>&1 | tee -a "$LOG_FILE"; then
+        log "Wiki ingest 完成"
+    else
+        log "WARNING: Wiki ingest 失败（不影响日报本身）"
+    fi
+fi
+
+SHOULD_RUN_FOLLOWING_AUDIT="true"
+for arg in "$@"; do
+    case "$arg" in
+        --skip-research|--skip-x|--skip-following)
+            SHOULD_RUN_FOLLOWING_AUDIT="false"
+            ;;
+    esac
+done
+
+if [ "$SHOULD_RUN_FOLLOWING_AUDIT" = "true" ]; then
+    log "后台启动 following 全量巡检..."
+    (
+        cd "$SCRIPT_DIR"
+        PYTHONUNBUFFERED=1 python3 -u audit_following.py \
+            --username 0xcybersmile \
+            --full-scrape \
+            --scroll-times 130 \
+            --inactive-days 60 \
+            --stale-days 120 \
+            2>&1 | tee -a "$FOLLOWING_AUDIT_LOG_FILE"
+    ) >/dev/null 2>&1 &
+    log "following 巡检已后台启动，日志: $FOLLOWING_AUDIT_LOG_FILE"
+else
+    log "按当前参数跳过 following 全量巡检"
 fi
 
 log "========== 每日日程结束 =========="

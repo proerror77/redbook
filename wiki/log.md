@@ -5,6 +5,23 @@
 
 ---
 
+## [2026-04-09] query | X following 全量巡检与清理
+
+来源：用户要求不要只看 6-8 个 watchlist，而是每天早上全量轮巡 `@0xcybersmile` 的 following，查看有没有新动态，并把失效/长期不活跃账号列入 unfollow 清理流程
+
+触及页面：6个
+- `tools/auto-x/scripts/audit_following.py` — 新增 following 全量巡检脚本
+- `tools/auto-x/scripts/unfollow_from_audit.py` — 新增 unfollow dry-run / apply 脚本
+- `tools/auto-x/scripts/run_daily.sh` — 将 following 巡检接入晨间自动任务
+- `tools/auto-x/data/following_audit_latest.json` — 持续落盘审计结果
+- `05-选题研究/X-following-巡检-2026-04-09.md` — 当前 following 巡检报告
+- `tasks/harness/runs/20260409-014049-x-following-全量巡检与清理-2026-04-09-2764e3.json` — 本轮维护 run
+
+关键洞察：
+- `watchlist 研究` 和 `following 维护` 是两种不同任务：前者追求信噪比，后者追求覆盖率和账户卫生。
+- unfollow 不该直接对“安静账号”动手，必须先分成 `强候选`（失效/冻结/长期停更）和 `待复核` 两层。
+- 这类任务的正确形态不是一次性报告，而是“晨间自动巡检 + 中途持续落盘 + 用户确认后执行清理”。
+
 ## [2026-04-09] query | 基于完整 following 筛选 X 重点跟踪账号
 
 来源：用户要求抓取 `@0xcybersmile` 的完整 following，并判断哪些账号值得长期跟踪，再查看其 timeline
