@@ -20,10 +20,26 @@
   - [following_audit_latest.json](/Users/proerror/Documents/redbook/tools/auto-x/data/following_audit_latest.json)
 - 截至首批 `25` 个账号，已出现 `1` 个强 unfollow 候选：`@edendotso`，最近一条可见动态距今 `290` 天。
 - 另有若干 `no_recent_articles` 账号已被列入“待人工复核”，暂不直接 unfollow。
+- 在继续处理用户“补 follow AI Agent 相关博主”的请求时，已新增批量 follow 脚本 [follow_accounts.py](/Users/proerror/Documents/redbook/tools/auto-x/scripts/follow_accounts.py)。
+- 本轮已实际补 follow 成功的账号包括：
+  - `@perplexity_ai`
+  - `@jerryjliu0`
+  - `@swyx`
+  - `@dkundel`
+  - `@PaulSolt`
+  - `@yoheinakajima`
+  - `@mckaywrigley`
+  - `@SherryYanJiang`
+  - `@mervenoyann`
+  - `@LlamaIndex`
+  - `@OpenRouterAI`
+  - `@dustingor`
+- 对当前 `inactive` 强候选执行 unfollow 时，实际发现 `@edendotso` 和 `@me` 当前都已经不是“已关注”状态，因此没有发生删除动作。
 
 **未完成 / 遗留：**
 - 全量巡检仍在运行，需要等待它继续落盘，形成完整候选清单。
 - 在全量清单完成后，需要按项目规则向用户做一次 unfollow 二次确认，再执行首轮清理。
+- 仍有少量待补关注账号因为页面超时或按钮未确认成功，需要单独复核，例如 `@aiDotEngineer`、`@latentspacepod`、`@agrimsingh`、`@ivanleomk`、`@aimuggle`。
 
 **下次会话优先做：**
 - 继续观察 [following_audit_latest.json](/Users/proerror/Documents/redbook/tools/auto-x/data/following_audit_latest.json) 与 [X-following-巡检-2026-04-09.md](/Users/proerror/Documents/redbook/05-选题研究/X-following-巡检-2026-04-09.md) 的更新，直到全量巡检结束。

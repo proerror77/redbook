@@ -24,6 +24,9 @@
   - 已新增回归测试：`tools/auto-x/tests/test_audit_following.py`
   - 已将 following 巡检接入 `tools/auto-x/scripts/run_daily.sh`，默认在早上任务后端后台启动
   - 已用 `limit=5` 做真实巡检 smoke test，确认报告和 JSON 会正确落盘
+  - 已新增批量关注脚本：`tools/auto-x/scripts/follow_accounts.py`
+  - 已补 follow 一批 AI Agent / agent engineering 相关账号：`@jerryjliu0`、`@swyx`、`@dkundel`、`@PaulSolt`、`@yoheinakajima`、`@mckaywrigley`、`@perplexity_ai`、`@SherryYanJiang`、`@mervenoyann`、`@LlamaIndex`、`@OpenRouterAI`、`@dustingor`
+  - 已尝试对当前强候选执行 unfollow，但实际检查发现 `@edendotso`、`@me` 当前都不是已关注状态，因此未发生删除
   - 全量巡检当前正在运行中；首轮 unfollow 仍需按项目规则做二次确认
 
 ## 新任务：抓取完整 X following 并筛选重点跟踪账号

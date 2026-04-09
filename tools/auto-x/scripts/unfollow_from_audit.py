@@ -46,11 +46,27 @@ def unfollow(username: str, wait_seconds: float) -> bool:
         print_colored(f"@{username} 页面已失效，无需点按钮，跳过。", "yellow")
         return True
 
-    if "button \"正在关注" not in snapshot and "button \"Following" not in snapshot:
+    has_unfollow_button = (
+        "button \"取消关注" in snapshot
+        or "button \"Unfollow" in snapshot
+        or "button \"正在关注" in snapshot
+        or "button \"Following" in snapshot
+    )
+
+    if not has_unfollow_button:
         print_colored(f"@{username} 未找到正在关注按钮，可能已 unfollow 或页面异常。", "yellow")
         return False
 
-    run_abs('find role button click --name 正在关注', timeout=15)
+    if "button \"取消关注" in snapshot:
+        ref_match = __import__("re").search(r'button "取消关注 [^"]*" \[ref=(e\d+)\]', snapshot)
+        if ref_match:
+            run_abs(f"click @{ref_match.group(1)}", timeout=15)
+        else:
+            run_abs('find text 取消关注 click', timeout=15)
+    elif "button \"Unfollow" in snapshot:
+        run_abs('find text Unfollow click', timeout=15)
+    else:
+        run_abs('find role button click --name 正在关注', timeout=15)
     time.sleep(0.8)
 
     confirm_snapshot = run_abs("snapshot -c -d 4", timeout=20)
