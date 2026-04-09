@@ -1,5 +1,41 @@
 # Task Todo
 
+## 新任务：升级 X Article / Thread 的爆文写作架构
+- 任务名称：研究高互动 X Article 与 X Thread 样本，沉淀适用于 `AI 工具/产品分析` 与 `AI 观点判断` 的新写作架构，并回写当前方法论与在制文稿
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-09
+- 截止日期：2026-04-09
+- 优先级：P1
+- Harness Run：`20260409-093747-x爆文结构升级-95a2d5`
+
+### 执行清单
+- [x] 1. 复盘 lessons、现有方法论与现成 X 稿件
+- [x] 2. 研究高互动 X Article / Thread 样本，重点看 `AI 工具/产品分析` 与 `AI 观点判断`
+- [x] 3. 提炼新的长文 / Thread 写作架构与检查清单
+- [x] 4. 更新 `03-方法论沉淀/` 与相关素材库文档
+- [x] 5. 用新架构改写当前相关在制文稿
+- [x] 6. 回填 progress / wiki / review 结论
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已创建 harness run：`20260409-093747-x爆文结构升级-95a2d5`
+  - 已复盘 `tasks/lessons.md`、现有 `X-长文稿` / `X Thread` 草稿，以及 `写作风格拆解-@karminski3.md`
+  - 已确认本轮目标聚焦两类题材：`AI 工具/产品分析`、`AI 观点判断`
+  - 已发现当前仓库 X 文稿的主要缺口：长文偏顺叙、Thread 偏平铺，强冲突、证据锚点、互动回环不足
+  - 已完成样本研究并新增 `05-选题研究/X-爆文结构拆解-2026-04-09.md`
+  - 已新增方法论文档 `03-方法论沉淀/X-长文与Thread写作架构.md`
+  - 已新增 `wiki/方法论/X-长文与Thread写作架构.md`，并更新 `wiki/方法论/爆款规律.md`
+  - 已改写 8 篇在制文稿，覆盖 `X Article`、`X Thread`、单帖热点评论、工具分析帖
+  - 本轮新增迁移稿件包括：
+    - `2026-03-25-LiteLLM供应链投毒/X-主帖.md`
+    - `2026-03-25-GPT-5.4前沿数学/X-主帖.md`
+    - `2026-03-31-Claude-Code-NPM源码泄露/X-主帖.md`
+    - `2026-03-10-AgentHub/X-主帖.md`
+    - `2026-04-05-从在业务里工作到在业务上工作.md`
+    - `2026-02-16-OpenClaw加入OpenAI/推文草稿.md`
+  - 已回填 `tasks/progress.md`、`wiki/log.md`，并让 harness run 的 research gate 验证通过
+
 ## 新任务：X following 全量巡检与清理
 - 任务名称：为 `@0xcybersmile` 建立每天早上全量轮巡 following 的流程，输出新动态与 unfollow 候选，并支持后续执行清理
 - 负责人（Lead Agent）：Codex
