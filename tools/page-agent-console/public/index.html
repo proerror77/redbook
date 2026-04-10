@@ -67,6 +67,10 @@
               API Key
               <input id="apiKey" name="apiKey" type="password" placeholder="sk-..." />
             </label>
+            <label class="check-row">
+              <input id="allTabsMode" name="allTabsMode" type="checkbox" />
+              <span>Allow multi-tab probe (`experimentalIncludeAllTabs`)</span>
+            </label>
             <label>
               Task
               <textarea
@@ -92,7 +96,17 @@
             <button class="ghost prompt-button" data-prompt="检查任务板摘要，说明当前最优先应该推进哪一个工程任务。">
               看任务优先级
             </button>
+            <button
+              class="ghost prompt-button"
+              data-prompt="在同一浏览器窗口中查找 zhipin.com 的 BOSS 直聘标签页，读取当前职位标题、薪资、经验要求、公司名、职位描述前两段，并确认页面里是否存在“立即沟通”按钮。只读检查，不要点击任何按钮，也不要跳转页面。"
+            >
+              探测 BOSS 页面
+            </button>
           </div>
+
+          <p class="meta">
+            做 BOSS 探测时，把 BOSS 页面和这个控制台放在同一个 Chrome 窗口里，再勾选 multi-tab probe。
+          </p>
 
           <div class="log-box">
             <h3>Agent Activity</h3>

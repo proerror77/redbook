@@ -21,6 +21,7 @@ const elements = {
   baseUrl: document.querySelector('#baseUrl'),
   modelName: document.querySelector('#modelName'),
   apiKey: document.querySelector('#apiKey'),
+  allTabsMode: document.querySelector('#allTabsMode'),
   extensionState: document.querySelector('#extensionState'),
   pendingCount: document.querySelector('#pendingCount'),
   completedCount: document.querySelector('#completedCount'),
@@ -47,6 +48,16 @@ for (const check of knownChecks) {
 }
 
 function agentSystemInstruction() {
+  if (elements.allTabsMode.checked) {
+    return [
+      'You are operating the Redbook Page Agent Pilot in multi-tab probe mode.',
+      'You may inspect other non-pinned tabs in the same browser window when needed.',
+      'Your current priority is read-only page inspection, especially for zhipin.com tabs already opened by the user.',
+      'Do not create new tabs, do not navigate away, do not refresh pages, and do not click any button unless the user explicitly asks for that exact action.',
+      'When inspecting BOSS直聘, summarize in concise Chinese: title, company, salary, experience, education, whether a 立即沟通 button exists, and whether the page appears to be in a security-check state.',
+    ].join(' ')
+  }
+
   return [
     'You are operating the Redbook Page Agent Pilot, an internal dashboard for the redbook content workflow.',
     'Stay inside this page. Use visible controls instead of inventing actions.',
@@ -174,6 +185,7 @@ function persistAgentSettings() {
   localStorage.setItem('redbook.pageAgent.baseUrl', elements.baseUrl.value.trim())
   localStorage.setItem('redbook.pageAgent.modelName', elements.modelName.value.trim())
   localStorage.setItem('redbook.pageAgent.apiKey', elements.apiKey.value.trim())
+  localStorage.setItem('redbook.pageAgent.allTabsMode', elements.allTabsMode.checked ? 'true' : 'false')
 }
 
 function hydrateAgentSettings() {
@@ -181,6 +193,7 @@ function hydrateAgentSettings() {
   elements.baseUrl.value = localStorage.getItem('redbook.pageAgent.baseUrl') || elements.baseUrl.value
   elements.modelName.value = localStorage.getItem('redbook.pageAgent.modelName') || elements.modelName.value
   elements.apiKey.value = localStorage.getItem('redbook.pageAgent.apiKey') || ''
+  elements.allTabsMode.checked = localStorage.getItem('redbook.pageAgent.allTabsMode') === 'true'
 }
 
 async function refreshExtensionState() {
@@ -267,6 +280,7 @@ document.querySelector('#agentConfigForm').addEventListener('submit', async (eve
     model: elements.modelName.value.trim(),
     systemInstruction: agentSystemInstruction(),
     includeInitialTab: true,
+    experimentalIncludeAllTabs: elements.allTabsMode.checked,
     onStatusChange(status) {
       appendActivity(`status: ${status}`)
     },
