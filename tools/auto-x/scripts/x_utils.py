@@ -36,16 +36,17 @@ def print_colored(text: str, color: str = 'nc'):
     print(f"{COLORS.get(color, '')}{text}{COLORS['nc']}")
 
 
-def run_abs(command: str, timeout: int = 30) -> str:
+def run_abs_result(command: str, timeout: int = 30) -> dict:
     """
-    执行 agent-browser-session 命令并返回输出
-
-    Args:
-        command: 子命令（如 'open "url"', 'snapshot', 'scroll down 800'）
-        timeout: 超时时间（秒）
+    执行 agent-browser-session 命令并返回结构化结果
 
     Returns:
-        命令的 stdout 输出
+        {
+            'ok': bool,
+            'stdout': str,
+            'stderr': str,
+            'returncode': int,
+        }
     """
     full_cmd = f"agent-browser-session {command}"
     env = {**os.environ, 'PATH': f"/opt/homebrew/bin:{Path.home()}/.local/bin:{os.environ.get('PATH', '')}"}
@@ -58,15 +59,46 @@ def run_abs(command: str, timeout: int = 30) -> str:
             timeout=timeout,
             env=env,
         )
-        if result.returncode != 0 and result.stderr:
-            print_colored(f"agent-browser-session 警告: {result.stderr.strip()}", 'yellow')
-        return result.stdout.strip()
+        stdout = result.stdout.strip()
+        stderr = result.stderr.strip()
+        if result.returncode != 0 and stderr:
+            print_colored(f"agent-browser-session 警告: {stderr}", 'yellow')
+        return {
+            'ok': result.returncode == 0,
+            'stdout': stdout,
+            'stderr': stderr,
+            'returncode': result.returncode,
+        }
     except subprocess.TimeoutExpired:
         print_colored(f"agent-browser-session 命令超时 ({timeout}s): {command}", 'red')
-        return ""
+        return {
+            'ok': False,
+            'stdout': '',
+            'stderr': f"timeout after {timeout}s",
+            'returncode': -1,
+        }
     except FileNotFoundError:
         print_colored("错误: 未找到 agent-browser-session，请确认已安装", 'red')
-        return ""
+        return {
+            'ok': False,
+            'stdout': '',
+            'stderr': 'agent-browser-session not found',
+            'returncode': -1,
+        }
+
+
+def run_abs(command: str, timeout: int = 30) -> str:
+    """
+    执行 agent-browser-session 命令并返回输出
+
+    Args:
+        command: 子命令（如 'open "url"', 'snapshot', 'scroll down 800'）
+        timeout: 超时时间（秒）
+
+    Returns:
+        命令的 stdout 输出
+    """
+    return run_abs_result(command, timeout=timeout)['stdout']
 
 
 # 向后兼容别名
@@ -80,14 +112,86 @@ def ensure_browser() -> bool:
     Returns:
         True 如果连接正常
     """
-    output = run_abs("snapshot", timeout=15)
-    # 检查是否有有效的 accessibility tree 输出
-    if not output or len(output) < 50 or "- document:" not in output:
-        print_colored("agent-browser-session 未响应。请确认已安装：", 'red')
-        print_colored("  brew tap BUNotesAI/agent-browser-session", 'yellow')
-        print_colored("  brew install agent-browser-session", 'yellow')
+    snapshot = run_abs_result("snapshot -c -d 2", timeout=15)
+    if _snapshot_looks_ready(snapshot['stdout']):
+        print_colored("✓ agent-browser-session 已就绪", 'green')
+        return True
+
+    if _is_recoverable_browser_failure(snapshot):
+        print_colored("检测到浏览器会话失稳，尝试自动恢复...", 'yellow')
+        if _recover_browser_session():
+            recovered = run_abs_result("snapshot -c -d 2", timeout=15)
+            if _snapshot_looks_ready(recovered['stdout']):
+                print_colored("✓ agent-browser-session 已自动恢复", 'green')
+                return True
+
+    print_colored("agent-browser-session 未就绪。可能是会话卡在失效 frame 或 daemon 启动失败：", 'red')
+    print_colored("  先执行: agent-browser-session kill", 'yellow')
+    print_colored("  再执行: agent-browser-session open https://x.com/home", 'yellow')
+    print_colored("  最后确认: agent-browser-session snapshot -c -d 2", 'yellow')
+    return False
+
+
+def _snapshot_looks_ready(output: str) -> bool:
+    """
+    判断 snapshot 输出是否像一个可用页面
+
+    兼容 agent-browser-session 不同版本的输出，不再依赖旧的 `- document:` 形态。
+    """
+    if not output:
         return False
-    print_colored("✓ agent-browser-session 已就绪", 'green')
+
+    normalized = output.strip()
+    if not normalized or normalized in {'Empty page', 'about:blank'}:
+        return False
+
+    valid_markers = (
+        '- document',
+        '[ref=',
+        '- heading',
+        '- button',
+        '- link',
+        '- main',
+        '- navigation',
+        '- banner',
+        '- region',
+        '- textbox',
+    )
+    return any(marker in normalized for marker in valid_markers)
+
+
+def _is_recoverable_browser_failure(result: dict) -> bool:
+    """
+    判断是否是可通过重建 session 恢复的错误
+    """
+    combined = f"{result.get('stdout', '')}\n{result.get('stderr', '')}".lower()
+    recoverable_markers = (
+        'frame was detached',
+        'daemon failed to start',
+        'empty page',
+        'waiting for locator',
+    )
+    return any(marker in combined for marker in recoverable_markers)
+
+
+def _recover_browser_session() -> bool:
+    """
+    尝试把 agent-browser-session 从坏掉的 frame / daemon 状态中拉回到稳定的 X 页面
+    """
+    run_abs_result("kill", timeout=10)
+    time.sleep(1.0)
+
+    open_result = run_abs_result('open "https://x.com/home"', timeout=45)
+    if not open_result['ok']:
+        return False
+
+    time.sleep(2.0)
+    url_result = run_abs_result("get url", timeout=10)
+    current_url = url_result['stdout'].strip()
+    if current_url and current_url != 'https://x.com/home' and 'x.com' not in current_url:
+        run_abs_result('open "https://x.com/home"', timeout=45)
+        time.sleep(2.0)
+
     return True
 
 
@@ -158,10 +262,9 @@ def extract_tweets(snapshot: str) -> List[Dict]:
     if not snapshot:
         return tweets
 
-    # 按 article 分割（每条推文是一个 article）
-    articles = re.split(r'^\s*-\s*article:', snapshot, flags=re.MULTILINE)
+    articles = _extract_article_blocks(snapshot)
 
-    for article in articles[1:]:  # 跳过第一个空分割
+    for article in articles:
         tweet = {
             'author': '',
             'handle': '',
@@ -179,9 +282,14 @@ def extract_tweets(snapshot: str) -> List[Dict]:
         for i, line in enumerate(lines):
             stripped = line.strip()
 
+            if i == 0:
+                _populate_tweet_from_article_header(tweet, stripped)
+
             # 1. 提取 @handle
             if not found_handle:
-                handle_match = re.search(r'@(\w{1,15})', stripped)
+                handle_match = re.search(r'^-\s*link\s+"@(\w{1,15})"', stripped)
+                if not handle_match:
+                    handle_match = re.search(r'@(\w{1,15})', stripped)
                 if handle_match:
                     tweet['handle'] = handle_match.group(1)
                     found_handle = True
@@ -193,6 +301,8 @@ def extract_tweets(snapshot: str) -> List[Dict]:
                             if author_text and not author_text.startswith('@'):
                                 tweet['author'] = author_text
                                 break
+                    if not tweet['author']:
+                        tweet['author'] = _extract_author_from_line(stripped, tweet['handle'])
                     continue
 
             # 2. 提取推文内容（handle 之后的 text: 行）
@@ -240,6 +350,8 @@ def extract_tweets(snapshot: str) -> List[Dict]:
         # 组装推文内容
         if text_lines:
             tweet['content'] = ' '.join(text_lines).strip()
+        elif lines:
+            tweet['content'] = _extract_content_from_header(lines[0], tweet['handle'])
 
         # 只保存有效推文（有 handle 和内容）
         if tweet['handle'] and tweet['content']:
@@ -249,7 +361,83 @@ def extract_tweets(snapshot: str) -> List[Dict]:
 
     return tweets
 
-    return tweets
+
+def _extract_article_blocks(snapshot: str) -> List[str]:
+    """提取每个 article 的完整文本块，兼容新版 `- article "..."` 形态。"""
+    lines = snapshot.splitlines()
+    blocks = []
+    current_block: List[str] = []
+    article_indent: Optional[int] = None
+
+    for line in lines:
+        article_match = re.match(r"^(\s*)-\s*['\"]?article\b.*$", line)
+        if article_match:
+            if current_block:
+                blocks.append('\n'.join(current_block).strip())
+            current_block = [line]
+            article_indent = len(article_match.group(1))
+            continue
+
+        if current_block:
+            peer_match = re.match(r"^(\s*)-\s+", line)
+            if peer_match and article_indent is not None and len(peer_match.group(1)) <= article_indent:
+                blocks.append('\n'.join(current_block).strip())
+                current_block = []
+                article_indent = None
+
+            if current_block:
+                current_block.append(line)
+
+    if current_block:
+        blocks.append('\n'.join(current_block).strip())
+
+    return blocks
+
+
+def _populate_tweet_from_article_header(tweet: Dict, header_line: str) -> None:
+    """从 article 头行补齐作者、handle 和互动数据。"""
+    handle_match = re.search(r'@(\w{1,15})', header_line)
+    if handle_match and not tweet['handle']:
+        tweet['handle'] = handle_match.group(1)
+
+    if tweet['handle'] and not tweet['author']:
+        tweet['author'] = _extract_author_from_line(header_line, tweet['handle'])
+
+    replies_match = re.search(r'(\d[\d,.]*)\s*回复', header_line)
+    if replies_match:
+        tweet['replies'] = _parse_number(replies_match.group(1))
+
+    retweets_match = re.search(r'(\d[\d,.]*)\s*次转帖', header_line)
+    if retweets_match:
+        tweet['retweets'] = _parse_number(retweets_match.group(1))
+
+    likes_match = re.search(r'(\d[\d,.]*)\s*喜欢', header_line)
+    if likes_match:
+        tweet['likes'] = _parse_number(likes_match.group(1))
+
+
+def _extract_author_from_line(line: str, handle: str) -> str:
+    """从 article/link 行里提取作者显示名。"""
+    text = re.sub(r"^\s*-\s*['\"]?article\s+\"?", "", line)
+    text = re.sub(r'^\s*-\s*link\s+"?', '', text)
+    before_handle = text.split(f"@{handle}", 1)[0]
+    author = before_handle.replace("认证账号", "").strip(" '\":")
+    return author
+
+
+def _extract_content_from_header(header_line: str, handle: str) -> str:
+    """当 article 子节点没有可用 text 时，从头行回退提取正文。"""
+    if not handle:
+        return ""
+
+    text = re.sub(r"^\s*-\s*['\"]?article\s+\"?", "", header_line).strip()
+    if f"@{handle}" not in text:
+        return ""
+
+    content = text.split(f"@{handle}", 1)[1].strip()
+    content = re.sub(r'^(?:\d{1,2}月\d{1,2}日|昨天|今天|刚刚)\s*', '', content)
+    content = re.sub(r'\d[\d,.]*\s*回复.*$', '', content).strip(" '\":,，")
+    return content
 
 
 def _parse_number(text: str) -> int:
