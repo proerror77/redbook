@@ -1,4 +1,4 @@
-const { isCircuitBreakerActive } = require('./site_health');
+const { classifySiteHealth, isCircuitBreakerActive } = require('./site_health');
 const { inspectChatPage, inspectPageHealth } = require('./zhipin');
 
 function toHealthRecord(state) {

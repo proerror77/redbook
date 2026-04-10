@@ -17,30 +17,86 @@ from x_utils import (
 
 HN_API_BASE = "https://hacker-news.firebaseio.com/v0"
 HN_ITEM_URL = "https://news.ycombinator.com/item?id={}"
+HN_ALGOLIA_API = "https://hn.algolia.com/api/v1"
+REQUEST_HEADERS = {
+    "User-Agent": "redbook-daily-research/1.0 (+https://news.ycombinator.com/)",
+    "Accept": "application/json",
+}
+
+
+def _request_json(url: str, timeout: int = 10) -> Dict:
+    """请求 JSON 数据。"""
+    response = requests.get(url, timeout=timeout, headers=REQUEST_HEADERS)
+    response.raise_for_status()
+    return response.json()
+
+
+def _normalize_algolia_item(item: Dict) -> Dict:
+    """将 Algolia item 结构转换为接近 Firebase API 的格式。"""
+    item_type = item.get("type") or ("story" if item.get("title") else "comment")
+    children = item.get("children") or []
+
+    normalized = {
+        "id": item.get("id") or item.get("objectID"),
+        "type": item_type,
+        "by": item.get("author", "unknown"),
+        "time": item.get("created_at_i", 0),
+    }
+
+    if item_type == "story":
+        normalized.update({
+            "title": item.get("title", ""),
+            "url": item.get("url") or HN_ITEM_URL.format(item.get("id") or item.get("objectID")),
+            "score": item.get("points", 0) or 0,
+            "descendants": item.get("children_count", len(children)),
+            "kids": [child.get("id") for child in children if child.get("id")],
+        })
+    else:
+        normalized.update({
+            "text": item.get("text", ""),
+            "parent": item.get("parent_id"),
+            "kids": [child.get("id") for child in children if child.get("id")],
+        })
+
+    return normalized
 
 
 def fetch_top_stories(limit: int = 30) -> List[int]:
     """获取 HN 首页热门帖子 ID 列表"""
     print_colored(f"获取 Top {limit} Stories...", 'yellow')
     try:
-        response = requests.get(f"{HN_API_BASE}/topstories.json", timeout=10)
-        response.raise_for_status()
-        story_ids = response.json()[:limit]
+        story_ids = _request_json(f"{HN_API_BASE}/topstories.json", timeout=10)[:limit]
         print_colored(f"✓ 获取到 {len(story_ids)} 条 Story IDs", 'green')
         return story_ids
     except Exception as e:
-        print_colored(f"获取 Top Stories 失败: {e}", 'red')
+        print_colored(f"获取 Top Stories 失败，尝试 Algolia 兜底: {e}", 'yellow')
+        try:
+            data = _request_json(f"{HN_ALGOLIA_API}/search?tags=front_page&hitsPerPage={limit}", timeout=10)
+            story_ids = [
+                int(hit["objectID"])
+                for hit in data.get("hits", [])
+                if str(hit.get("objectID", "")).isdigit()
+            ][:limit]
+            if story_ids:
+                print_colored(f"✓ Algolia 兜底获取到 {len(story_ids)} 条 Story IDs", 'green')
+                return story_ids
+        except Exception as fallback_error:
+            print_colored(f"Algolia Top Stories 兜底失败: {fallback_error}", 'red')
         return []
 
 
 def fetch_item(item_id: int) -> Optional[Dict]:
     """获取单个 item（story/comment）详情"""
     try:
-        response = requests.get(f"{HN_API_BASE}/item/{item_id}.json", timeout=5)
-        response.raise_for_status()
-        return response.json()
+        return _request_json(f"{HN_API_BASE}/item/{item_id}.json", timeout=5)
     except Exception as e:
-        print_colored(f"获取 item {item_id} 失败: {e}", 'red')
+        print_colored(f"获取 item {item_id} 失败，尝试 Algolia 兜底: {e}", 'yellow')
+        try:
+            item = _request_json(f"{HN_ALGOLIA_API}/items/{item_id}", timeout=5)
+            if item:
+                return _normalize_algolia_item(item)
+        except Exception as fallback_error:
+            print_colored(f"Algolia item {item_id} 兜底失败: {fallback_error}", 'red')
         return None
 
 

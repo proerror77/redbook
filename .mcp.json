@@ -1,0 +1,17 @@
+{
+  "mcp": {
+    "playwright": {
+      "command": [
+        "npx",
+        "-y",
+        "@playwright/mcp@latest",
+        "--extension"
+      ],
+      "enabled": true,
+      "type": "local",
+      "env": {
+        "PLAYWRIGHT_MCP_EXTENSION_TOKEN": "tn2AJiKS8RAXjQXvXw7TpvN7i1ejfD-hjIm_hGmK0QE"
+      }
+    }
+  }
+}

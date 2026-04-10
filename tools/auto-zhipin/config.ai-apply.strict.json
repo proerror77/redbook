@@ -1,0 +1,137 @@
+{
+  "browser": {
+    "channel": "chrome",
+    "headless": true,
+    "slowMoMs": 350,
+    "navigationTimeoutMs": 30000
+  },
+  "pinchtab": {
+    "baseUrl": "http://127.0.0.1:9867",
+    "timeoutMs": 15000,
+    "bin": ""
+  },
+  "chat": {
+    "url": "https://www.zhipin.com/web/geek/chat?ka=header-message",
+    "pollIntervalMs": 25000,
+    "conversationScanLimit": 8,
+    "maxLoops": 0,
+    "draftReplyMode": "llm",
+    "replyProvider": "codex_cli",
+    "replyModel": "gpt-5.4-mini",
+    "replyTimeoutMs": 15000,
+    "autoReplyEnabled": false,
+    "autoReplySend": false,
+    "autoSendResumeButton": false,
+    "autoRejectionFollowup": false,
+    "rejectionFollowupCooldownHours": 72,
+    "maxAutoActionsPerRun": 2
+  },
+  "profile": {
+    "summary": "14年经验，Agentic Engineer / AI Agent 架构与落地负责人，擅长 Auto Dev、多 Agent 协同、Python、Rust、TypeScript/Node.js、工作流自动化与企业级交付",
+    "focusKeywords": [
+      "AI Agent 架构与落地",
+      "Auto Dev / 多 Agent 协同",
+      "Python Rust TypeScript 工程化"
+    ]
+  },
+  "jobs": {
+    "searchUrls": [
+      "https://www.zhipin.com/web/geek/jobs?query=AI%20Agent%E5%B7%A5%E7%A8%8B%E5%B8%88&city=101020100",
+      "https://www.zhipin.com/web/geek/jobs?query=AI%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E5%B8%88&city=101020100",
+      "https://www.zhipin.com/web/geek/jobs?query=AI%E6%9E%B6%E6%9E%84%E5%B8%88&city=101020100",
+      "https://www.zhipin.com/web/geek/jobs?query=AI%E5%BA%94%E7%94%A8%E6%9E%B6%E6%9E%84%E5%B8%88&city=101020100",
+      "https://www.zhipin.com/web/geek/jobs?query=%E6%99%BA%E8%83%BD%E4%BD%93%E5%B7%A5%E7%A8%8B%E5%B8%88&city=101020100",
+      "https://www.zhipin.com/web/geek/jobs?query=%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E5%B8%88&city=101020100",
+      "https://www.zhipin.com/web/geek/jobs?query=AI%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E6%9E%B6%E6%9E%84%E5%B8%88&city=101020100",
+      "https://www.zhipin.com/web/geek/jobs?query=Agentic%20Engineer&city=101020100"
+    ],
+    "maxPagesPerUrl": 2,
+    "maxJobsPerRun": 120
+  },
+  "filters": {
+    "includeKeywords": [
+      "AI",
+      "Agent",
+      "智能体",
+      "大模型",
+      "LLM",
+      "RAG",
+      "AIGC",
+      "应用工程师",
+      "应用架构",
+      "解决方案架构师",
+      "架构师",
+      "Agentic"
+    ],
+    "excludeKeywords": [
+      "销售",
+      "外包",
+      "贷款",
+      "助贷",
+      "保险",
+      "训练师",
+      "实习",
+      "IT信息化",
+      "产品经理",
+      "策划",
+      "设计师",
+      "顾问",
+      "运营",
+      "总监",
+      "驻外",
+      "驻日本",
+      "马来西亚",
+      "值班长",
+      "IDC机房运维",
+      "暖通",
+      "柴油发电机",
+      "配电室",
+      "高压电工",
+      "低压电工",
+      "精密空调",
+      "冷水机组",
+      "UPS"
+    ],
+    "minMonthlySalaryK": 50,
+    "maxExperienceYears": 20,
+    "allowedDegrees": [
+      "不限",
+      "大专",
+      "本科",
+      "硕士"
+    ],
+    "excludeCompanySizes": [
+      "500-999人",
+      "1000-9999人",
+      "10000人以上"
+    ],
+    "excludeFundingStages": [],
+    "excludeLocations": [],
+    "excludeRecruiterTitles": []
+  },
+  "apply": {
+    "enabled": true,
+    "dryRun": false,
+    "maxAppliesPerRun": 20,
+    "greeting": "",
+    "buttonTextCandidates": [
+      "立即沟通",
+      "立即投递",
+      "投递简历",
+      "立即申请",
+      "聊一聊"
+    ]
+  },
+  "supervisor": {
+    "enabled": false,
+    "pause": true,
+    "schedulerIntervalMinutes": 5,
+    "tickBudgetMs": 600000,
+    "lockTtlMs": 1200000,
+    "maxAppliesPerTick": 20,
+    "dailySuccessfulAppliesTarget": 20,
+    "maxAutoRepliesPerDay": 0,
+    "maxStaleFollowupsPerDay": 0,
+    "staleConversationHours": 48
+  }
+}

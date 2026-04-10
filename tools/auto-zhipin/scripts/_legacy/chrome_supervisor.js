@@ -7,6 +7,7 @@ const { loadConfig } = require('../lib/config');
 const { activateFrontWindowTab } = require('../lib/chrome_current');
 const { ensureManagedTabs } = require('../lib/managed_tabs');
 const { SUPERVISOR_DASHBOARD_PATH, SUPERVISOR_SNAPSHOT_PATH } = require('../lib/paths');
+const { getRemainingSuccessTarget } = require('../lib/opencli_apply_queue');
 const { ZhipinStore } = require('../lib/store');
 const { buildSupervisorSnapshot, persistSupervisorArtifacts, runSupervisorTick } = require('../lib/supervisor');
 const { parseArgs } = require('../lib/utils');
@@ -130,7 +131,6 @@ function main() {
       activateTab: (tab) => activateFrontWindowTab(tab.tabIndex),
       runJobsPhase: ({ checkpoint = {}, budgetMs }) => {
         const phaseBudgetMs = Math.max(1000, Number(budgetMs || config.supervisor?.tickBudgetMs || 10 * 60 * 1000));
-        const phaseStartedAt = Date.now();
         const jobsTarget = resolveJobsTarget({ config, args, checkpoint });
         if (!jobsTarget.targetUrl) {
           return {
@@ -147,18 +147,43 @@ function main() {
           };
         }
 
-        const collectBudgetMs = phaseBudgetMs;
+        const collectBudgetMs = Math.max(1000, Math.min(60 * 1000, Math.floor(phaseBudgetMs * 0.2)));
         const collect = runWorkerScript(
           'chrome_collect_queue.js',
           makeWorkerArgs(['--url', jobsTarget.targetUrl], args),
           { timeoutMs: collectBudgetMs }
         );
         const collectParsed = collect.parsed || { stdout: collect.stdout.trim() };
+        const targetSuccesses = getRemainingSuccessTarget({
+          store,
+          config,
+          requestedSuccesses: args['target-successes'] || config.supervisor?.maxAppliesPerTick,
+        });
+        let applyParsed = { status: 'skipped', reason: 'apply_disabled' };
+
+        if (targetSuccesses > 0) {
+          if (!config.apply?.enabled) {
+            applyParsed = { status: 'skipped', reason: 'apply_disabled' };
+          } else if (config.apply?.dryRun || args['dry-run']) {
+            applyParsed = { status: 'skipped', reason: 'apply_dry_run' };
+          } else {
+            const applyBudgetMs = Math.max(1000, phaseBudgetMs - collectBudgetMs);
+            const apply = runWorkerScript(
+              'opencli_apply_queue.js',
+              makeWorkerArgs(['--target-successes', String(targetSuccesses)], args),
+              { timeoutMs: applyBudgetMs }
+            );
+            applyParsed = apply.parsed || { stdout: apply.stdout.trim() };
+          }
+        } else {
+          applyParsed = { status: 'skipped', reason: 'daily_target_reached' };
+        }
+
         return {
           status: 'ok',
           target: jobsTarget,
           collect: collectParsed,
-          apply: { status: 'skipped', reason: 'chrome_apply_removed_use_opencli_boss_apply' },
+          apply: applyParsed,
           checkpoint: {
             jobsNextTargetIndex: jobsTarget.pinned ? jobsTarget.targetIndex : jobsTarget.nextTargetIndex,
             jobsLastTargetIndex: jobsTarget.targetIndex,

@@ -1,0 +1,115 @@
+{
+  "run_id": "20260408-144257-llm-wiki-lint-2026-04-08-3a53f9",
+  "kind": "content_pipeline",
+  "topic": "LLM Wiki lint 2026-04-08",
+  "summary": "显式记录一次 wiki lint 健康检查",
+  "source": "wiki/index.md",
+  "owner": "Codex",
+  "priority": "P1",
+  "current_stage": "research",
+  "status": "in_progress",
+  "created_at": "2026-04-08T14:42:57+00:00",
+  "updated_at": "2026-04-08T15:14:07+00:00",
+  "artifacts": [
+    {
+      "id": "fdb9a3c0e3",
+      "type": "research_report",
+      "path": "docs/reports/wiki-lint-2026-04-08.md",
+      "description": "Wiki lint report",
+      "stage": "research",
+      "created_at": "2026-04-08T14:42:57+00:00"
+    }
+  ],
+  "checks": {
+    "materials_queried": true,
+    "research_complete": true,
+    "outline_locked": false,
+    "draft_written": false,
+    "facts_checked": false,
+    "platform_ready": false,
+    "published": false,
+    "progress_updated": false,
+    "wiki_logged": false,
+    "lessons_reviewed": false
+  },
+  "incidents": [],
+  "events": [
+    {
+      "at": "2026-04-08T14:42:57+00:00",
+      "type": "run_created",
+      "stage": "research",
+      "message": "Run created for topic: LLM Wiki lint 2026-04-08",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-08T14:42:57+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: research_report",
+      "meta": {
+        "path": "docs/reports/wiki-lint-2026-04-08.md",
+        "artifact_id": "fdb9a3c0e3"
+      }
+    },
+    {
+      "at": "2026-04-08T14:42:57+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-08T14:42:57+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check research_complete set to True",
+      "meta": {
+        "check_name": "research_complete",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-08T15:09:06+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-08T15:09:06+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check research_complete set to True",
+      "meta": {
+        "check_name": "research_complete",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-08T15:14:07+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-08T15:14:07+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check research_complete set to True",
+      "meta": {
+        "check_name": "research_complete",
+        "value": true
+      }
+    }
+  ]
+}

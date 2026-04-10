@@ -15,7 +15,7 @@
 
 1. 手动打开 Google Chrome 并登录 BOSS 直聘
 2. 保持目标标签页在前台
-3. 运行 `chrome:collect` / `chrome:monitor` / `boss:apply`
+3. 运行 `chrome:collect` / `chrome:monitor` / `boss:apply-current`
 4. 所有动作都按单标签页串行执行，避免串写和风控放大
 
 如果页面出现登录失效、滑块或 `访问受限 / 异常访问行为`，先人工处理，再重新运行脚本。
@@ -138,14 +138,29 @@ npm run scan
 
 ### 4. 自动投递
 
-旧的 current-tab 投递入口已移除，避免 AppleScript 抢前台焦点。
+如果你已经把目标岗位打开在当前前台 BOSS 页里，优先用 current-tab 入口：
 
-现在统一走 `opencli`：
+```bash
+cd tools/auto-zhipin
+npm run boss:apply-current -- --probe true
+npm run boss:apply-current
+npm run boss:apply-current -- --dry-run true
+```
+
+说明：
+- `--probe true` 只读取当前聚焦的 BOSS 页，不点击按钮
+- 默认会优先选中当前聚焦/可见的 BOSS 页，再直接对当前已展开的岗位执行 `立即沟通`
+- 这条路径不会再先 `goto(job_url)` 再按 URL 重选职位卡，适合搜索结果右侧详情已展开的场景
+- 如果页面已经落在 `verify.html`，脚本会暂停等待人工完成验证，不会自动点验证按钮
+
+只有在你已经确认“当前页没有稳定展开目标岗位，但有可靠职位 URL”时，才退回旧入口：
 
 ```bash
 cd tools/auto-zhipin
 npm run boss:apply -- --url https://www.zhipin.com/job_detail/xxx.html
 ```
+
+旧的 URL 入口仍可用，但更容易命中 `job_card_not_found`，所以不再作为当前页投递的首选。
 
 ### 5. PinchTab 动作层（实验）
 
@@ -228,5 +243,7 @@ npm run pinchtab:apply -- --url https://www.zhipin.com/job_detail/xxx.html
 1. 手动在前台 Google Chrome 登录 BOSS，并打开职位列表或聊天页
 2. `npm run chrome:collect` 先看过滤效果
 3. 调整 `filters`
-4. 真正投递前，使用 `npm run boss:apply -- --url ...` 指定单条岗位
-5. 需要消息处理时再运行 `npm run chrome:monitor` 或 `npm run reply`
+4. 真正投递前，如果目标岗位已经在当前页展开，先用 `npm run boss:apply-current -- --probe true` 验证脚本是否看见当前页
+5. 确认读取无误后，使用 `npm run boss:apply-current` 执行当前页投递
+6. 只有当前页无法稳定展开岗位时，才退回 `npm run boss:apply -- --url ...`
+7. 需要消息处理时再运行 `npm run chrome:monitor` 或 `npm run reply`

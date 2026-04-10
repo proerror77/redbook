@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Redbook Page Agent Console</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+SC:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <div class="backdrop"></div>
+    <main class="shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Internal Ops Console</p>
+          <h1>Redbook Page Agent Pilot</h1>
+          <p class="lede">
+            用一个本地控制台验证 `page-agent` 是否适合作为 redbook 的内部工作台代理层。
+          </p>
+        </div>
+        <div class="hero-metrics" aria-label="Dashboard summary cards">
+          <article class="metric-card">
+            <span class="metric-label">Pending</span>
+            <strong id="pendingCount">--</strong>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">Completed</span>
+            <strong id="completedCount">--</strong>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">Runs</span>
+            <strong id="runCount">--</strong>
+          </article>
+        </div>
+      </header>
+
+      <section class="grid">
+        <section class="panel command-panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Agent</p>
+              <h2>Page Agent Control</h2>
+            </div>
+            <span class="pill" id="extensionState">Checking extension</span>
+          </div>
+
+          <form id="agentConfigForm" class="stack">
+            <label>
+              Extension Token
+              <input id="authToken" name="authToken" placeholder="Paste Page Agent token" />
+            </label>
+            <label>
+              LLM Base URL
+              <input id="baseUrl" name="baseUrl" value="https://api.openai.com/v1" />
+            </label>
+            <label>
+              Model
+              <input id="modelName" name="modelName" value="gpt-5.2" />
+            </label>
+            <label>
+              API Key
+              <input id="apiKey" name="apiKey" type="password" placeholder="sk-..." />
+            </label>
+            <label>
+              Task
+              <textarea
+                id="agentTask"
+                name="agentTask"
+                rows="4"
+                placeholder="例如：打开最新 run，检查缺哪些 gate，并把结论写到活动日志里。"
+              ></textarea>
+            </label>
+            <div class="actions">
+              <button type="submit" class="primary">Run Task</button>
+              <button type="button" id="stopAgentButton">Stop</button>
+            </div>
+          </form>
+
+          <div class="quick-prompts" aria-label="Suggested prompts">
+            <button class="ghost prompt-button" data-prompt="查看最新的 harness run，找出还没通过的 gate。">
+              审查最新 run
+            </button>
+            <button class="ghost prompt-button" data-prompt="浏览最新研究报告列表，告诉我今天最值得推进成 draft 的选题。">
+              筛选今日选题
+            </button>
+            <button class="ghost prompt-button" data-prompt="检查任务板摘要，说明当前最优先应该推进哪一个工程任务。">
+              看任务优先级
+            </button>
+          </div>
+
+          <div class="log-box">
+            <h3>Agent Activity</h3>
+            <pre id="agentActivity">No activity yet.</pre>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Workflow</p>
+              <h2>Task Board Snapshot</h2>
+            </div>
+            <button id="refreshDashboardButton" class="ghost">Refresh</button>
+          </div>
+          <p class="meta" id="activeTask">Loading active task…</p>
+          <ul id="taskHeadingList" class="heading-list"></ul>
+          <div class="log-box compact">
+            <h3>Recent Progress</h3>
+            <ul id="progressList" class="progress-list"></ul>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Harness</p>
+              <h2>Create New Run</h2>
+            </div>
+          </div>
+          <form id="newRunForm" class="stack">
+            <label>
+              Topic
+              <input name="topic" required placeholder="例如：Page Agent 工作台试点" />
+            </label>
+            <label>
+              Source
+              <input name="source" required placeholder="docs/plans/... 或 wiki/选题/..." />
+            </label>
+            <label>
+              Summary
+              <textarea name="summary" rows="3" placeholder="一句话目标"></textarea>
+            </label>
+            <div class="split">
+              <label>
+                Priority
+                <select name="priority">
+                  <option>P0</option>
+                  <option selected>P1</option>
+                  <option>P2</option>
+                </select>
+              </label>
+              <label>
+                Owner
+                <input name="owner" value="Codex" />
+              </label>
+            </div>
+            <button type="submit" class="primary">Create Run</button>
+          </form>
+          <p class="meta" id="newRunStatus">Ready.</p>
+        </section>
+
+        <section class="panel wide">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Runs</p>
+              <h2>Recent Harness Runs</h2>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Run ID</th>
+                  <th>Topic</th>
+                  <th>Stage</th>
+                  <th>Status</th>
+                  <th>Updated</th>
+                </tr>
+              </thead>
+              <tbody id="runTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Inspector</p>
+              <h2>Run Detail</h2>
+            </div>
+          </div>
+          <p class="meta" id="runDetailHint">Select a run from the table.</p>
+          <dl class="detail-grid" id="runSummary"></dl>
+          <form id="setCheckForm" class="stack hidden">
+            <input type="hidden" name="runId" id="setCheckRunId" />
+            <label>
+              Check
+              <select name="checkName" id="checkName"></select>
+            </label>
+            <label>
+              Value
+              <select name="checkValue">
+                <option value="true">true</option>
+                <option value="false">false</option>
+              </select>
+            </label>
+            <button type="submit">Set Check</button>
+          </form>
+          <div class="log-box compact">
+            <h3>Gate Report</h3>
+            <pre id="gateReport">No run selected.</pre>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Research</p>
+              <h2>Latest Reports</h2>
+            </div>
+          </div>
+          <ul id="reportList" class="report-list"></ul>
+        </section>
+
+        <section class="panel wide">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Preview</p>
+              <h2>Document Preview</h2>
+            </div>
+          </div>
+          <pre id="previewPane">Select a report to preview its markdown excerpt.</pre>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>

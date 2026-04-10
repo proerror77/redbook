@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 X/Twitter 自动化工具 - 共享工具模块
-提供 actionbook 浏览器交互封装、数据解析、报告生成等通用功能
+提供 agent-browser-session 浏览器交互封装、数据解析、报告生成等通用功能
 """
 
 import subprocess
@@ -36,19 +36,19 @@ def print_colored(text: str, color: str = 'nc'):
     print(f"{COLORS.get(color, '')}{text}{COLORS['nc']}")
 
 
-def run_ab(command: str, timeout: int = 30) -> str:
+def run_abs(command: str, timeout: int = 30) -> str:
     """
-    执行 actionbook browser 命令并返回输出
+    执行 agent-browser-session 命令并返回输出
 
     Args:
-        command: 浏览器子命令（如 'open "url"', 'snapshot', 'eval "window.scrollBy(0,800)"'）
+        command: 子命令（如 'open "url"', 'snapshot', 'scroll down 800'）
         timeout: 超时时间（秒）
 
     Returns:
         命令的 stdout 输出
     """
-    full_cmd = f"actionbook browser {command}"
-    env = {**os.environ, 'PATH': f"{Path.home()}/.local/bin:{os.environ.get('PATH', '')}"}
+    full_cmd = f"agent-browser-session {command}"
+    env = {**os.environ, 'PATH': f"/opt/homebrew/bin:{Path.home()}/.local/bin:{os.environ.get('PATH', '')}"}
     try:
         result = subprocess.run(
             full_cmd,
@@ -59,34 +59,35 @@ def run_ab(command: str, timeout: int = 30) -> str:
             env=env,
         )
         if result.returncode != 0 and result.stderr:
-            print_colored(f"actionbook 警告: {result.stderr.strip()}", 'yellow')
+            print_colored(f"agent-browser-session 警告: {result.stderr.strip()}", 'yellow')
         return result.stdout.strip()
     except subprocess.TimeoutExpired:
-        print_colored(f"actionbook 命令超时 ({timeout}s): {command}", 'red')
+        print_colored(f"agent-browser-session 命令超时 ({timeout}s): {command}", 'red')
         return ""
     except FileNotFoundError:
-        print_colored("错误: 未找到 actionbook，请确认已安装", 'red')
+        print_colored("错误: 未找到 agent-browser-session，请确认已安装", 'red')
         return ""
+
+
+# 向后兼容别名
+run_ab = run_abs
 
 
 def ensure_browser() -> bool:
     """
-    检查 actionbook 浏览器连接状态
+    检查 agent-browser-session 是否可用
 
     Returns:
         True 如果连接正常
     """
-    output = run_ab("snapshot", timeout=10)
-    # 检查是否有有效的 accessibility tree 输出（而不是简单查找 "error"）
-    if not output or len(output) < 100 or "- generic:" not in output:
-        print_colored("actionbook 未连接。推荐直接运行每日入口（会自动处理 Chrome + 连接）：", 'red')
-        print_colored("  bash tools/daily.sh", 'yellow')
-        print_colored("", 'nc')
-        print_colored("或手动连接（按你当前模式二选一）：", 'yellow')
-        print_colored('  actionbook browser connect 9222  # headed Chrome', 'yellow')
-        print_colored('  actionbook browser connect 9223  # headless Chrome（run_daily.sh）', 'yellow')
+    output = run_abs("snapshot", timeout=15)
+    # 检查是否有有效的 accessibility tree 输出
+    if not output or len(output) < 50 or "- document:" not in output:
+        print_colored("agent-browser-session 未响应。请确认已安装：", 'red')
+        print_colored("  brew tap BUNotesAI/agent-browser-session", 'yellow')
+        print_colored("  brew install agent-browser-session", 'yellow')
         return False
-    print_colored("✓ actionbook 已连接", 'green')
+    print_colored("✓ agent-browser-session 已就绪", 'green')
     return True
 
 
@@ -98,7 +99,7 @@ def navigate(url: str, wait: float = 2.0) -> None:
         url: 目标 URL
         wait: 加载后等待时间（秒）
     """
-    run_ab(f'open "{url}"', timeout=30)
+    run_abs(f'open "{url}"', timeout=30)
     time.sleep(wait)
 
 
@@ -109,7 +110,7 @@ def get_snapshot() -> str:
     Returns:
         页面 snapshot 文本
     """
-    return run_ab("snapshot", timeout=15)
+    return run_abs("snapshot", timeout=15)
 
 
 def scroll_and_collect(times: int = 3, wait: float = 2.0) -> List[str]:
@@ -128,7 +129,7 @@ def scroll_and_collect(times: int = 3, wait: float = 2.0) -> List[str]:
         snapshot = get_snapshot()
         if snapshot:
             snapshots.append(snapshot)
-        run_ab('eval "window.scrollBy(0, 800)"')
+        run_abs('scroll down 800')
         time.sleep(wait)
     # 最后一次滚动后再取一次
     final = get_snapshot()
@@ -139,16 +140,16 @@ def scroll_and_collect(times: int = 3, wait: float = 2.0) -> List[str]:
 
 def extract_tweets(snapshot: str) -> List[Dict]:
     """
-    从 actionbook snapshot 文本中解析推文数据
+    从 agent-browser-session snapshot 文本中解析推文数据
 
-    actionbook 的 accessibility tree 结构：
+    agent-browser-session 的 accessibility tree 结构：
     - article:
       - @handle 和显示名
       - text: 推文内容
       - 互动数据（X 回复、Y 次转帖、Z 喜欢）
 
     Args:
-        snapshot: actionbook snapshot 输出文本
+        snapshot: agent-browser-session snapshot 输出文本
 
     Returns:
         推文字典列表 [{author, handle, content, likes, retweets, replies}]

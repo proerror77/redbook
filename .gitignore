@@ -29,6 +29,8 @@ tools/auto-zhipin/data/*.jsonl
 tools/auto-zhipin/data/*.ndjson
 tools/auto-zhipin/data/*.png
 tools/auto-zhipin/data/*.html
+tools/opencli/data/browser-bridge/
+tools/opencli/data/chrome-bridge-profile/
 
 # 操作系统
 .DS_Store

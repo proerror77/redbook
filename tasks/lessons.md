@@ -14,6 +14,346 @@
 
 ## Lessons 列表
 
+### Lesson 097
+- 日期：2026-04-10
+- 场景：用户给出一整段关于平台审核池、AI 辅助比例、同质化、情绪密度和发布前三检的经验，我一开始差点把它当成待改写文章处理；用户随后明确纠正，这不是给我写稿，是要我检查工作流会不会犯同样的问题。
+- 问题：
+  1) 容易把“高质量经验输入”误判成“待发布文稿”
+  2) 如果沿着写稿路径往下走，就会错过更有价值的动作：审计工作流
+  3) 当前 redbook 流程虽然有 QA 和发布清单，但确实没把 AI 占比、同质化、情绪密度、暗限流风险显式写成门
+- 根因：
+  1) 我默认沿内容创作模式去处理文本，而不是先判断它是在描述“成稿”还是“规则”
+  2) 之前流程里的 QA 更偏事实、结构、平台规则，没有细化到“AI 内容风控”
+- 修正动作：
+  1) 立刻切换成工作流审计任务
+  2) 把 `AI 辅助安全线`、`强制人工素材嵌入`、`情绪密度检查`、`发布前内容风控（四检）` 补进 shared playbook
+  3) 把 X 写作方法论里的检查项补到“情绪密度”和“去模板化”
+- 预防规则（Rule）：
+  1) 当用户发来一段长文本时，先判断它是“成稿内容”、还是“规则/经验/标准输入”
+  2) 如果文本在描述平台机制、审核逻辑、数据观察、行业经验，优先考虑审计工作流，而不是直接润稿
+  3) 内容生产系统默认要有 4 道 AI 风控门：AI 辅助安全线、同质化检查、情绪密度检查、发布前四检
+- 下次触发信号：用户说“这不是文章”“这是给你校准工作流的”“检讨一下我们流程会不会有同样问题”
+- 验证结果：本轮已完成流程审计，并把 4 道门写进 redbook 工作流
+
+### Lesson 096
+- 日期：2026-04-10
+- 场景：用户在第二轮补 follow 时直接发来 X 移动端截图，页面底部明确出现蓝色横幅“抱歉，你受到速度限制。请稍等片刻，然后再试一次。”
+- 问题：
+  1) 我如果只看脚本返回的“点击后未确认成功”，很容易把问题继续归因到按钮识别或页面回读抖动
+  2) 但用户给的截图已经提供了更强的新证据：当前就是站点级 rate limit
+  3) 在这种情况下继续尝试 follow 失败账号，只会浪费配额并污染会话
+- 根因：
+  1) 自动化日志的证据强度低于用户直接给出的页面截图
+  2) 没有第一时间把“用户截图里的限速横幅”上升为当前 source of truth
+- 修正动作：
+  1) 立即暂停 follow，不再继续重试失败账号
+  2) 改成等待 20 分钟后再按每批 2 个、较长等待时间重试
+  3) 对后续失败账号不做二次点击，而是留到下一轮窗口再处理
+- 预防规则（Rule）：
+  1) 当用户提供页面截图且其中有明确的站点错误提示时，这个截图优先级高于脚本日志
+  2) 对 X follow / unfollow，一旦看到明确的 `速度限制` 横幅，当前轮次立即停止，不再验证失败账号
+  3) rate limit 恢复后的第一轮应降速到 `2 个一批`，并把失败账号留到最后收口
+- 下次触发信号：用户发来带有“抱歉，你受到速度限制”横幅的截图；脚本同时开始连续出现“点击后未确认成功”
+- 验证结果：本轮在用户截图提示后暂停；间隔后改为 `2 个一批` 的慢速策略，成功补 follow 多个剩余账号
+
+### Lesson 095
+- 日期：2026-04-09
+- 场景：围绕 `低 token / 本地 AI / 端侧模型` 写了一篇题为“AI 已经从模型战争，进入部署战争”的长文母稿；用户直接反馈“不想要这篇了，这个写得很不好”。
+- 问题：
+  1) 我过早用“大词判断”当标题和主论点
+  2) 论点先行，但读者的真实不爽、具体场景、切身代价没有足够早出现
+  3) 结果是文章更像作者在概括行业，而不是读者在理解自己为什么该在意
+- 根因：
+  1) 把“趋势归纳”误当成了“好内容切口”
+  2) 高估了“模型战争 / 部署战争”这类抽象对立词的解释力
+  3) 没有先用具体痛点、具体工作流、具体代价把判断钉住
+- 修正动作：
+  1) 直接停止继续优化该稿，不再硬救
+  2) 将文件移出 `02-制作中的选题/`，改放到 `01-内容生产/选题管理/已放弃选题/`
+  3) 清理 wiki 中继续把它当成制作中主线的引用
+- 预防规则（Rule）：
+  1) 对内容选题，先验证“读者能不能立刻感到痛”，再决定要不要上宏大判断
+  2) 如果标题里出现“战争 / 时代 / 迁移 / 变革”这类大词，正文前 3 段必须落到具体场景，否则默认有跑偏风险
+  3) 用户明确否掉一篇稿子后，不要继续迭代同一表达框架；应先撤出主线，再考虑是否换切口重写
+- 下次触发信号：标题里出现“XX战争”“XX时代已经来了”“真正的变化是……”这类抽象判断，但正文前半段没有具体人物、任务或代价
+- 验证结果：本轮已将该稿移到“已放弃选题”，并把相关主线引用从 wiki 中撤下
+
+### Lesson 092
+- 日期：2026-04-09
+- 场景：用户先让我从 following 里筛值得跟踪的账号，我给出了 6-8 个 watchlist；随后用户明确纠正，说需求不是精选名单，而是“每天早上全量轮巡 following，看有没有新的，并把失效/长期不活跃账号清掉”。
+- 问题：
+  1) 我把“信息提炼”误当成了“账户维护”
+  2) 给出了研究型 shortlist，却没有把需求延伸到持续性的全量巡检和账号卫生维护
+  3) 在涉及 unfollow 这种关系清理动作时，没有第一时间把“候选清单 + 二次确认”流程立起来
+- 根因：
+  1) 默认沿着内容研究思路往下推，忽略了这是一个账号运营/维护任务
+  2) 没把“研究关注对象”和“清理 following”区分成两种不同产物
+  3) 没有优先设计长期运行机制（晨间轮巡），而是只回答了当下的静态分析
+- 修正动作：
+  1) 新增 `audit_following.py`，支持全量轮巡、识别新动态、失效账号、不活跃账号
+  2) 新增 `unfollow_from_audit.py`，把 unfollow 做成默认 dry-run、确认后再 apply
+  3) 将 following 全量巡检接入 `tools/auto-x/scripts/run_daily.sh`，作为晨间自动任务后台运行
+- 预防规则（Rule）：
+  1) 用户一旦表达“全部轮巡 / 每天早上 / 清理 following”，默认目标就是持续运营流程，不是一次性的精选名单
+  2) 如果任务包含 unfollow、删除、清理关注关系，必须先给候选清单，再做二次确认，不能直接批量执行
+  3) 面对“研究 + 维护”混合需求时，产物必须同时覆盖：`新动态摘要`、`失效账号候选`、`长期不活跃候选`、`自动化运行入口`
+- 下次触发信号：用户说“不要只给我这几个”“全部看一遍”“每天早上巡一下”“不活跃的帮我 unfollow”
+- 验证结果：本轮已新增全量巡检脚本、dry-run unfollow 脚本，并接入晨间自动链路
+
+### Lesson 093
+- 日期：2026-04-09
+- 场景：在 X 上做 follow / unfollow 自动化时，脚本最初按旧文案识别“已关注”状态，导致 follow 明明成功却被误判成失败，unfollow 也找不到目标按钮。
+- 问题：
+  1) 我把“已关注”状态只写成了 `正在关注 / Following`
+  2) 当前中文界面的真实按钮文案经常直接显示为 `取消关注 @用户名`
+  3) 结果是自动化状态判断失真，后续动作会误以为失败
+- 根因：
+  1) 过度沿用旧页面文案，没有重新核对当前 X 页面上的实际按钮文本
+  2) 没在执行失败后第一时间回看真实 snapshot
+- 修正动作：
+  1) 修正 `follow_accounts.py` 对已关注状态的识别，兼容 `取消关注`
+  2) 修正 `unfollow_from_audit.py` 的按钮识别逻辑，兼容 `取消关注 / Unfollow`
+  3) 用真实页面 snapshot 复核 `@swyx`、`@edendotso` 的按钮状态，确认脚本应以当前 UI 为准
+- 预防规则（Rule）：
+  1) 任何社交平台自动化在“点了但没确认成功”时，先回看最新 snapshot，不要先假设站点风控或脚本彻底失败
+  2) 对 X 中文界面，已关注状态必须兼容 `取消关注 @用户名`，不能只匹配 `正在关注`
+  3) 对 follow / unfollow 这类状态型操作，按钮文案应抽象成多种等价态，而不是写死单一字符串
+- 下次触发信号：日志出现“点击后未确认成功”“未找到正在关注按钮”，但真实页面上已经显示取消关注按钮
+- 验证结果：本轮修正后已确认补 follow 成功账号数提升，且能解释为什么部分“强候选”其实已经不是已关注状态
+
+### Lesson 094
+- 日期：2026-04-09
+- 场景：连续补 follow 多个 AI Agent 账号后，继续手动点 `@aiDotEngineer` 时，X 弹出“抱歉，你受到速度限制。请稍等片刻，然后再试一次。”
+- 问题：
+  1) 批量 follow 太密集时，X 会直接触发速率限制
+  2) 这时即使页面和按钮都正常，点击也不会生效
+  3) 如果继续硬点，只会进一步污染会话，增加后续 unfollow / follow 的失败率
+- 根因：
+  1) 把“能自动点”误当成“可以持续无节制地点”
+  2) 没把站点级 rate limit 当成一等运行约束
+- 修正动作：
+  1) 发现速率限制提示后立即停止后续 follow 操作
+  2) 记录已成功关注的账号，剩余账号延后到下一轮
+  3) 将 `速度限制` 视为暂停信号，而不是单个账号失败
+- 预防规则（Rule）：
+  1) X 上做批量 follow / unfollow 时，一旦出现 `速度限制` 提示，立即停手，不再继续同轮批量操作
+  2) 社交平台批量关系操作应分批执行，先收口已完成结果，再在下一轮继续
+  3) 对 follow / unfollow 自动化，成功率下降时优先检查站点 rate limit，而不是继续重试
+- 下次触发信号：页面 alert 出现“抱歉，你受到速度限制”；关注按钮点击后状态不变但页面可正常浏览
+- 验证结果：本轮在触发限速后停止继续 follow，避免了继续污染当前 X 会话
+
+### Lesson 091
+- 日期：2026-04-09
+- 场景：用户说“修复一下为什么对外连不上的问题”，而当天日报里同时出现了 X 抓取跳过、HN 空结果、Reddit 空结果，表面上很像“整机外网挂了”。
+- 问题：
+  1) 很容易把多个外部源的失败混成一句“对外连不上”
+  2) 如果不分层排查，就会错把站点策略封锁、浏览器会话失稳、TLS EOF 都当成同一种故障
+  3) 这样会导致修错地方，例如去查代理、DNS、网卡，而不是直接修具体抓取器
+- 根因：
+  1) 观察面停留在日报最终产物，没有先做最小连通性验证
+  2) 外部源的失败模式没有在代码里显式分层处理
+  3) 失败时脚本只返回“未获取到数据”，隐藏了真实原因
+- 修正动作：
+  1) 先验证基础外网连通性与浏览器会话，再分别测试 HN / Reddit 官方端点
+  2) 给 `scrape_hackernews.py` 增加 Algolia fallback，处理 Firebase `SSLEOFError`
+  3) 给 `scrape_reddit.py` 增加 PullPush fallback，处理 Reddit 官方匿名 JSON 403
+- 预防规则（Rule）：
+  1) 遇到“外部情报抓不到”时，先判断是不是整机外网故障；基础 `curl` 正常就不要再笼统说“外网不通”
+  2) HN、Reddit、X 这三条链路必须分别归因：浏览器问题归浏览器，TLS EOF 归端点兼容，403 Blocked 归站点策略
+  3) 对外部源脚本，优先提供 source-specific fallback，而不是只返回空结果
+- 下次触发信号：日报里同时出现 `浏览器未连接`、`未获取到 HN Stories`、`未获取到 Reddit 帖子`
+- 验证结果：本轮已用真实环境验证 X 会话恢复，HN / Reddit 两条脚本均能成功产出报告
+
+### Lesson 090
+- 日期：2026-04-08
+- 场景：用户追问 `LLM Wiki / workflow` 是否真的在运行，我最初看到 run 文件存在，以为问题主要是“今天没跑日报”；继续深查后发现真正把 gate 拉红的是 verifier 契约和 ingest artifact 设计。
+- 问题：
+  1) 我差点把“有 run / 有 report / 有 log”误判成“workflow 正常”
+  2) `research_report` verifier 只按长篇研究稿标准校验，导致 `wiki-query`、`wiki-lint`、原始日报文件这类运营型报告被系统性误判
+  3) ingest 直接拿原始日报文件过 gate，外部抓取一降级就会把 research stage 拖红
+- 根因：
+  1) 我把“存在运行痕迹”和“gate 真正 ready”混在了一起
+  2) 没把 report subtype 当成 verifier 设计的一部分
+  3) ingest 缺少专门的 summary artifact 来收口原始 source
+- 修正动作：
+  1) 为 `wiki-query-*`、`wiki-lint-*`、`wiki-ingest-*` 增加专用 verifier 契约
+  2) 让 `query` / `lint` 报告生成器补齐结论与来源 section
+  3) 让 `ensure_daily_ingest_run()` 生成 `wiki-ingest-*.md` summary artifact，并以该 artifact 作为 ingest gate 的验证对象
+- 预防规则（Rule）：
+  1) 判断 workflow 是否“正确运行”时，必须看 `check-gates` 是否 `ready: true`，不能只看 run 文件或 report 文件存在
+  2) 同一 `artifact_type` 下如果实际包含多种报告形态，必须按 subtype 设计 verifier，不能用一套长文标准硬验所有产物
+  3) ingest 类 run 不要直接验证原始 source 文件；应生成专门的 summary artifact 再过 gate
+- 下次触发信号：用户问“这个 workflow 真的在跑吗”；`check-gates` 假红；artifact 明明合理却因长度或 section 模板不符被 verifier 拒绝
+- 验证结果：本轮已把 `2026-04-08` 的 ingest / lint / query 三条 run 全部拉到 `ready: true`
+
+### Lesson 088
+- 日期：2026-04-08
+- 场景：用户明确要用 Nano Banana 配图，我虽然查了相关 skill 和 API，但最终没有按专用 skill 的标准工作流执行，而是走了自写脚本加 fallback 的混合链路。
+- 问题：
+  1) 我把“能打到接口”误判成“已经正确使用了对应 skill”
+  2) 在用户明确指定能力来源（Nano Banana / 对应 skill）后，我仍然用自定义脚本兜底推进发布
+  3) 图像生成失败时没有 fail closed，而是静默退回本地图继续发布
+- 根因：
+  1) 过度追求把任务往前推，绕开了 skill 的正式执行边界
+  2) 没把“用户点名的 skill / 能力必须走原生链路”当成硬约束
+  3) 没把“生成失败就停止发布”当成发布前置门槛
+- 修正动作：
+  1) 明确承认本轮流程错误：调用发生了，但属于失败调用，不等于成功产出 Nano Banana 图片
+  2) 补充规则：以后用户明确指定 skill 或模型来源时，必须优先走该 skill 的标准链路，不得先用自定义脚本替代
+  3) 补充规则：图像链路一旦失败，默认中止发布，除非用户明确同意使用降级图
+- 预防规则（Rule）：
+  1) 用户明确点名某个 skill、模型或能力来源时，必须按该 skill 的工作流执行，不能只“参考”后自行拼装
+  2) 对外发布内容时，图片生成链路必须 fail closed；失败就停，不允许静默 fallback 后继续发
+  3) “后台看得到调用”与“skill 被正确执行并产生成图”必须分开判断，不能混为一谈
+- 下次触发信号：用户说“用某个 skill”“用某个模型”“后台明明有调用”“你没有正确用 skill”
+- 验证结果：本轮已记录规则；后续再做 Nano Banana 图时，必须先走 skill 原生流程并在成图后再发布
+
+### Lesson 089
+- 日期：2026-04-08
+- 场景：围绕“AI办公进入代做时代”发布 X 内容时，我默认走了普通帖链路，甚至误发出一条普通帖；用户指出这个题更适合发长文。
+- 问题：
+  1) 我把“发布到 X”机械等同于“发普通帖”，没有先判断内容载体是否应为 `X Article`
+  2) 对于明显偏观点展开、分段论证、适合长阅读的内容，错误地先走了短帖流
+  3) 还被 `x-article.ts` 的日志误导，以为已经发布，实际只是停在草稿预览
+- 根因：
+  1) 没把“内容形态判断”放在“调用发布脚本”之前
+  2) 过度相信脚本日志，没有用真实页面状态核验最终是否公开
+  3) 没区分 `post/status` 与 `article` 两种 X 产物的适用场景
+- 修正动作：
+  1) 立即停止继续走普通帖链路，改写为 X Article markdown
+  2) 使用 `baoyu-post-to-x` 的 `x-article.ts` 重新生成并发布长文
+  3) 在真实编辑页手动确认最终发布按钮与公开状态，不再只看脚本输出
+- 预防规则（Rule）：
+  1) 用户说“发到 X”时，先判断该内容应是普通帖、thread，还是 `X Article`
+  2) 对于需要完整展开论点、含多段结构化说明的内容，默认优先考虑 `X Article`
+  3) 所有发布动作都必须以真实页面最终状态为准，不能只信脚本日志里的 `published`
+- 下次触发信号：用户说“这个应该发长文”“这不是普通帖”“X 应该发 article”
+- 验证结果：本轮已把《AI办公进入代做时代，别再卷提示词了》改为 X Article，并在真实页面确认公开成功
+
+### Lesson 087
+- 日期：2026-04-08
+- 场景：为小红书内容生成配图并直接推进发布时，外部图像 API 实际已耗尽额度，脚本退回到兜底图，但我没有先做视觉验收就继续推进，导致用户直接指出“图片太丑了”。
+- 问题：
+  1) 我把“生成成功 / 文件落盘”误当成了“视觉质量可发布”
+  2) 看到 `list models` 正常后，默认以为图像生成也还可用，没有先验证真实 `generate` 配额
+  3) 在发布前没有先对最终卡片做一轮人工审美检查
+- 根因：
+  1) 过度相信自动化链路，把技术成功等同于内容成功
+  2) 没把“公开发布内容必须先验图”当成硬门槛
+  3) 没区分“账号可鉴权”与“图像额度仍然足够”这两个独立状态
+- 修正动作：
+  1) 核实 Tuzi 返回 `insufficient_user_quota`，同时确认本地 Google Gemini image 也触发 `429 RESOURCE_EXHAUSTED`
+  2) 重写配图提示词，并把本地兜底图改成更统一的抽象编辑风信息图
+  3) 删除之前那条丑图版本的小红书，再换新图重发
+- 预防规则（Rule）：
+  1) 任何要公开发布的配图，在点击发布前都必须先人工看最终成图，不能只看脚本退出码
+  2) 图像服务的健康检查必须用真实 `generate` 请求验证，不能只用 `list models`
+  3) 一旦命中额度不足，先切换备用链路或降级到明确可接受的本地设计风，不要把“凑合图”直接发出去
+- 下次触发信号：用户说“帮我配图并发出去”；脚本日志出现 fallback；图像 API 返回 `403 insufficient_user_quota` 或 `429 RESOURCE_EXHAUSTED`
+- 验证结果：本轮已先删除旧帖，再用替换后的卡片重新发布；同时把规则写入 lessons，避免再次把未验收配图直接公开
+
+### Lesson 086
+- 日期：2026-04-07
+- 场景：用户明确要“直接自动化接管当前 BOSS 页”，我却先做了一个额外的 `page-agent` 宿主页来验证技术路线
+- 问题：
+  1) 我把“验证某个技术方案是否可行”放在了“直接满足当前自动化目标”之前
+  2) 这导致工作流里凭空多出一个用户并不需要的页面，偏离了真实需求
+- 根因：
+  1) 我把 `Page Agent` 的技术接入需求误当成了当前交付目标
+  2) 没有把用户关于“完全自动化、不想多一个页面”的约束立即上升为主线边界
+- 修正动作：
+  1) 本轮把 BOSS 主线收口回 `tools/auto-zhipin`，新增 `boss:apply-current`，直接接管当前已打开的 BOSS 页
+  2) 将 `page-agent` 控制台降级为独立试点，不再作为 BOSS 自动化主交付
+- 预防规则（Rule）：
+  1) 当用户要“直接自动化某个现成页面/流程”时，不要先插入额外宿主页或控制台来验证路线
+  2) 技术验证产物如果不能直接缩短用户当前任务路径，就只能作为支线试点，不能挤占主线
+  3) 用户明确说“不想多一个页面 / 不要中间层”后，后续实现应优先改造现有链路，而不是新建 UI
+- 下次触发信号：用户说“我就是要自动点这个页面”“为什么又多了一个页面”“不要控制台，只要自动化”
+- 验证结果：本轮已新增 current-tab 直连投递入口，BOSS 主线重新回到现有 `tools/auto-zhipin` 链路
+
+### Lesson 082
+- 日期：2026-04-07
+- 场景：将 `@jackwener/opencli` 从 `1.6.7` / 仓库旧 pin 升到 `1.6.8`，并继续使用 redbook 的 `install.js` + `verify.js` 补丁链路
+- 问题：
+  1) `doctor` 在 `1.6.8` 下即使显示 `[MISSING] Extension` / `[FAIL] Connectivity`，也仍可能返回退出码 `0`
+  2) 如果 `verify.js` 只看 exit code，会把 `doctor` 误判成通过，直到后面的 `twitter search` 才报 `Browser Bridge not connected`
+  3) `1.6.8` clean tarball 默认没有 `dist/cli-manifest.json`，旧的 manifest patch 流程会直接 `ENOENT`
+- 根因：
+  1) 上游 CLI 在 `1.6.8` 把 `doctor` 的失败更多下沉为正文状态输出，而不是非零退出码
+  2) redbook 的 verify 逻辑沿用了旧版本“exit code 即 contract”的假设
+  3) `1.6.8` 的 command discovery 已允许没有 manifest 时走文件系统扫描，但仓库 patch 代码仍强依赖 manifest 文件存在
+- 修正动作：
+  1) 将仓库 pin 更新到 `1.6.8`
+  2) 修改 `tools/opencli/lib/runtime.js`，让 `patchCliManifest()` 在 manifest 缺失时以空数组启动并补写文件
+  3) 修改 `tools/opencli/scripts/verify.js` 和 `tools/opencli/lib/verify_helpers.js`，改为解析 `doctor` 正文，只在 `[OK] Daemon + [OK] Extension + [OK] Connectivity` 全满足时才算通过
+  4) 更新 `tools/opencli/README.md`，明确 `doctor` 不能只看退出码
+- 预防规则（Rule）：
+  1) 升级 `opencli` 时，`doctor` 的验收标准必须看正文状态，不得只看 exit code
+  2) 对会生成 `cli-manifest.json` 的 patch 流程，要先确认新版包是否还携带该文件；没有就按“补写”而不是“读取后合并”设计
+  3) 第三方 CLI 升级后，必须先验证安装链路和 verify 链路本身，再信任业务命令 smoke
+- 下次触发信号：`doctor` 看起来失败但 shell 退出码仍为 `0`；`verify.js` 报 `doctor ok` 后下一步立即提示 `Browser Bridge not connected`；安装脚本报 `dist/cli-manifest.json ENOENT`
+- 验证结果：`opencli --version` 为 `1.6.8`；`opencli list` 已包含 redbook 补丁命令；`node tools/opencli/scripts/verify.js` 现会直接在 doctor 阶段准确报 `Browser Bridge 未连接`
+
+### Lesson 084
+- 日期：2026-04-07
+- 场景：用户已经明确授权“直接发布，不要再确认”，而小红书发布卡在扫码登录后，我仍然再次让用户确认扫码是否完成
+- 问题：
+  1) 明明已经拿到自动发布授权，却在可恢复的登录节点再次把控制权抛回给用户
+  2) 这让发布流程被人为拆成多轮，降低了执行连续性
+- 根因：
+  1) 我把“登录态不确定”误当成“需要重新确认发布意图”
+  2) 没有把“用户已授权自动发布”视为跨步骤持续有效的约束
+- 修正动作：
+  1) 本轮改为先自行校验登录状态，再直接串行完成两篇小红书发布
+  2) 同步把这条规则写入 lessons，避免后续在扫码/登录恢复后再次停下来问
+- 预防规则（Rule）：
+  1) 用户已明确授权自动发布后，除非遇到真正不可替代的人机步骤，否则不要再次确认发布意图
+  2) 登录恢复、端口切换、草稿页补点发布按钮都属于代理应自行收尾的执行细节，不应重新把决定权抛回用户
+  3) 只有在继续执行会产生高风险错误发布时，才允许重新询问
+- 下次触发信号：用户说“直接发”“以后不用确认”“你继续完成”；流程只剩登录校验、按钮补点、端口修复这类可恢复步骤
+- 验证结果：两篇小红书图文已在同一轮内自动发布，并通过 `content-data` 后台列表确认入库
+
+### Lesson 085
+- 日期：2026-04-07
+- 场景：仓库里已经定义了 LLM Wiki 的工作流规范，但用户指出“我没有看到它有一次真正启动过”
+- 问题：
+  1) 我把零散的 wiki 更新、发布后回写，当成了“LLM Wiki 工作流已经在运行”
+  2) 实际上系统里没有独立的 run、启动记录和验收痕迹，用户无法确认它真的被执行过
+- 根因：
+  1) 之前只有规范层（`CLAUDE.md` / skills）和结果层（`wiki/log.md`），缺少运行层（显式 workflow run）
+  2) 我默认把“顺手更新 wiki”视为等同于“启动了 wiki workflow”
+- 修正动作：
+  1) 本轮明确区分“有规则”和“有运行痕迹”
+  2) 为 LLM Wiki ingest 补独立 task / harness run，后续要求每次启动都留下 machine-readable 记录
+- 预防规则（Rule）：
+  1) 只要用户问“某个 workflow 有没有真的跑过”，必须给出 run / log / artifact 三级证据，不能只引用文档规则
+  2) LLM Wiki 这类长期工作流，不能只靠 `wiki/log.md` 的结果倒推出“流程已启动”；必须有独立启动痕迹
+  3) 以后任何 wiki ingest/query/lint，只要被当成一级 workflow 使用，就必须创建或挂接到显式 harness run
+- 下次触发信号：用户说“我没看到它启动过”“这只是规则不是流程”“没有 run 记录”
+- 验证结果：本轮已补建 LLM Wiki ingest 的 task 和 harness run，后续可直接追踪
+
+### Lesson 083
+- 日期：2026-04-07
+- 场景：`opencli 1.6.8` 升级后，`verify.js` 修好 exit code 误判，但 Browser Bridge 仍然始终显示未连接
+- 问题：
+  1) `install.js` 输出的 Browser Bridge extension 目录是 `/.../node_modules/@jackwener/opencli/extension`，但这个目录实际不存在
+  2) Chrome profile 里已经记着旧的 unpacked extension 安装记录，路径正好指向这个失效目录
+  3) 结果就是“看起来像装过扩展”，但 `doctor` 永远只能报 `[MISSING] Extension`
+- 根因：
+  1) `1.6.8` 的 npm 包 README 仍然提 Browser Bridge，但真正的扩展要从 GitHub Releases 单独下载 `opencli-extension.zip`
+  2) redbook 的 `readInstalledOpencliMetadata()` / `install.js` 仍把 `packageDir/extension` 当成真实扩展目录对外输出
+  3) Chrome 的 unpacked extension 记录没有坏，只是目标路径悬空了
+- 修正动作：
+  1) 从 `https://github.com/jackwener/opencli/releases/download/v1.6.8/opencli-extension.zip` 下载扩展并解压到 `tools/opencli/data/browser-bridge/opencli-extension-v1.6.8`
+  2) 修改 `tools/opencli/lib/runtime.js` / `tools/opencli/scripts/install.js`：安装时自动下载扩展缓存，并将全局包里的 `extension` 路径修成指向缓存目录的 symlink
+  3) 启动一个使用登录态副本 profile 的独立 Chrome bridge 实例，立即恢复 `doctor` 和 `verify.js`
+- 预防规则（Rule）：
+  1) 对 `opencli` 这类“npm 包 + 独立扩展资产”的工具，不能把 README 里的安装提示等同于 npm 包实际内容；必须检查 release asset 是否另发
+  2) 只要 Browser Bridge 一直报未连接，就要检查 Chrome profile 里的 unpacked extension 路径是否悬空，而不是只盯着扩展开关
+  3) 安装脚本输出给用户的路径必须是真实存在、可用的路径；不能打印逻辑上应该存在但包里实际没有的目录
+- 下次触发信号：`opencli doctor` 持续 `[MISSING] Extension`；`ls <packageDir>/extension` 报不存在；Chrome profile `Secure Preferences` 里有旧的 unpacked extension path
+- 验证结果：`opencli doctor` 变为 `[OK] Extension: connected (v1.6.8)`；`node tools/opencli/scripts/verify.js` 全量 smoke 通过
+
 ### Lesson 001
 - 日期：2026-03-03
 - 场景：运行每日入口 `bash tools/daily.sh`（全量）并自动追加选题到 `01-内容生产/选题管理/00-选题记录.md`
@@ -32,6 +372,51 @@
   3) 每日/定时任务必须幂等：同日重复运行不应污染数据
 - 下次触发信号：脚本运行 30s+ 无输出；选题记录出现“列数/推文数/统计”字样；同一日期重复出现多段 “X 每日研究发现”
 - 验证结果：`bash tools/daily.sh` 输出连续进度；2026-03-03 选题追加为 AI/code/openai/agent/rust，重复运行不会再重复追加
+
+### Lesson 080
+- 日期：2026-04-07
+- 场景：`tools/daily.sh` 的 X 研究链路反复提示“浏览器未连接”，但用户确认自己已经登录 X；实际日志里出现 `locator.ariaSnapshot: Frame was detached`
+- 问题：
+  1) 健康检查把可恢复的 session/frame 问题误报成“未安装/未连接”
+  2) `ensure_browser()` 仍依赖旧版 `agent-browser-session` 输出格式 `- document:`，导致健康页面也可能被误判为失败
+  3) 一旦命中坏 frame，系统没有自动恢复路径，整条 X 链路直接被跳过
+- 根因：
+  1) `ensure_browser()` 只做一次 `snapshot`，且没有读取结构化 stderr / returncode
+  2) 浏览器就绪判定写死了旧版 a11y tree 形态，而新版输出可能只有 `heading/button/main` 等节点，不再总带 `- document:`
+  3) 会话偶发会绑到 Google 登录 iframe 或坏 target，需要重建 session 才能恢复
+- 修正动作：
+  1) 在 `tools/auto-x/scripts/x_utils.py` 新增 `run_abs_result()`，保留 stdout/stderr/returncode
+  2) 新增 `_snapshot_looks_ready()`，改成基于多个有效 marker 判断，而不是硬编码 `- document:`
+  3) 新增 `_is_recoverable_browser_failure()` 和 `_recover_browser_session()`，对 `Frame was detached` / `Daemon failed to start` 做 `kill -> open x.com/home -> retry`
+  4) 新增 `tools/auto-x/tests/test_x_utils.py` 回归测试
+- 预防规则（Rule）：
+  1) 浏览器健康检查不能依赖单一 CLI 输出格式；只要上游工具变版本，就优先做宽松结构判定而不是硬编码精确字符串
+  2) 对浏览器自动化里的 `Frame was detached`，先怀疑 session/target 失稳，不要先把问题归因到“用户没登录”
+  3) CLI 集成层遇到可恢复故障时，必须把“未安装”和“会话损坏”分开提示，避免误导排障方向
+- 下次触发信号：`daily.sh` 输出“浏览器未连接”，但用户确认已登录；日志出现 `Frame was detached`、`Daemon failed to start`、`Empty page`
+- 验证结果：`python3 tools/auto-x/tests/test_x_utils.py`、`python3 -m py_compile ...` 通过；真实 `ensure_browser()` 返回 `True`；`scrape_timeline.py --scrolls 1` 不再报 detached-frame
+
+### Lesson 081
+- 日期：2026-04-07
+- 场景：浏览器健康检查修好后，`daily.sh` 不再跳过 X，但 X Pro / 搜索页仍然统一提取 `0` 条推文
+- 问题：
+  1) 页面可以正常打开、滚动、snapshot，但 `extract_tweets()` 结果始终是空
+  2) 真正的失败点已经从“浏览器会话层”下沉到了“页面结构解析层”
+- 根因：
+  1) 新版 X accessibility tree 的 tweet 节点是 `- article "..."` 或 `- 'article "..."'`，不再是旧代码假设的 `- article:`
+  2) 旧提取器按 `- article:` 做 split，导致整个 tweet block 根本没进入解析循环
+  3) article 头行本身还带有 `回复/次转帖/喜欢` 等互动数据，旧逻辑即使勉强分块也会把关键字段丢掉
+- 修正动作：
+  1) 在 `tools/auto-x/scripts/x_utils.py` 新增 `_extract_article_blocks()`，按新版 article 节点提取完整 block
+  2) 新增 `_populate_tweet_from_article_header()` 与 header fallback，从头行解析作者、handle、互动数据和正文
+  3) 补充 `tools/auto-x/tests/test_x_utils.py`，用真实 article 形态做回归测试
+  4) 重跑 `search_x.py`、`scrape_timeline.py` 和完整 `bash tools/daily.sh`，确认今天的 X 报告恢复产出
+- 预防规则（Rule）：
+  1) 任何页面解析器都不能把单一节点字面量当成永久 contract；上游 UI / a11y tree 一变，先拿真实 snapshot 复核结构
+  2) 当页面“能打开但提取为 0”时，优先检查 parser 的结构假设，不要继续把问题归到登录或网络
+  3) 对富内容节点，优先保留头行再解析；不要先 split 掉头部，免得把作者、互动数、正文摘要一起丢掉
+- 下次触发信号：`ensure_browser()` 正常，但 `X Pro` / `search_x.py` 连续多次提取 `0` 条；snapshot 里能看到 `- article "..."` 节点
+- 验证结果：`python3 tools/auto-x/tests/test_x_utils.py` 通过；真实 `search_x.py 'AI tools'` 提取 `9` 条；真实 `scrape_timeline.py --scrolls 1` 提取 `9` 条；完整 `daily.sh` 恢复 X 数据并追加 5 条选题
 
 ### Lesson 002
 - 日期：2026-03-06
@@ -218,6 +603,28 @@
   2) 行业传统与否是次级信号，岗位是否能承载用户的能力和目标，才是一级判断条件
 - 下次触发信号：我写出“本质只是传统企业数字化，所以不优先”这类判断；用户再次强调“企业数字化也可以”
 - 验证结果：待本轮继续扩搜并复核此前边缘岗位时验证
+
+### Lesson 079
+- 日期：2026-04-06
+- 场景：将“低 token / 本地 AI / 端侧模型”研究稿改写成长文，用户指出“太硬”“没有钩子”“不吸引人”
+- 问题：
+  1) 成稿信息正确，但像研究报告，不像会被读下去的长文
+  2) 开头直接抛结论，缺少读者已经感受到的具体不爽或反差画面
+  3) 中段解释过重，像在讲概念，不像在推进一个判断
+- 根因：
+  1) 我先按“结构完整”写，再试图补一点语气，导致稿子骨架本身就是硬的
+  2) 我把重点放在“把研究结论说全”，没有先把“读者为什么会在意”写出来
+  3) 长文里复用了太多报告式过渡句，缺少情绪张力和具体场景
+- 修正动作：
+  1) 直接重写开头，先写用户已经碰到的现实问题，再导入判断
+  2) 把文章主线改成“现象 -> 反差 -> 判断”，减少定义式展开
+  3) 保留关键证据，但每一段先讲“为什么重要”，再讲“它是什么”
+- 预防规则（Rule）：
+  1) 写长文母稿时，前 5 段必须先建立读者的现实感受或代价，不能直接进入概念框架
+  2) 如果用户说内容要“有吸引力”，优先用“你最近应该也碰到过”的场景开头，而不是“很多人现在看 X 还停在老问题上”
+  3) 研究型内容转文章时，不能按研究报告顺序平移；必须重排成“钩子 -> 反直觉判断 -> 证据”
+- 下次触发信号：开头连续出现“很多人现在…”“这当然重要”“我越来越感觉…”这类抽象引入；用户反馈“太硬”“像报告”“没有钩子”
+- 验证结果：本轮已将长文重写为“先写不爽感受，再导入部署战争判断”的版本，等待下一轮用户反馈验证
 
 ### Lesson 011
 - 日期：2026-03-10
@@ -707,3 +1114,851 @@
   3) `clicked_apply` 的成功判定必须覆盖三种情况：`留在此页弹层`、`聊天页跳转`、`详情页继续沟通`
 - 下次触发信号：页面弹出 `已向BOSS发送消息`、并出现 `留在此页 / 继续沟通`
 - 验证结果：`node --test tests/apply_flow.test.js` 和 `rtk test npm test` 已通过
+
+### Lesson 036
+- 日期：2026-03-19
+- 场景：用户补充了真实截图，显示详情页点击 `立即沟通` 后会短暂出现 `已向BOSS发送消息 / 留在此页 / 继续沟通` 弹层，但本轮 ledger 仍被记成更宽泛的 `detail_success_signal`
+- 问题：
+  1) 旧逻辑点击后只在单一时刻探测一次弹层
+  2) 如果弹层出现得稍晚或停留很短，脚本会错过它，虽然最终还能凭页面文案判成成功
+- 根因：
+  1) 成功语义已覆盖 modal，但采样时机不稳
+  2) `chrome_apply_queue.js` 缺少一个短窗口轮询机制来捕获瞬时弹层
+- 修正动作：
+  1) 在 [apply_flow.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/lib/apply_flow.js) 新增 `probeSentMessageModal()`，允许在短时间窗口内重复探测 modal
+  2) 在 [chrome_apply_queue.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/scripts/chrome_apply_queue.js) 改为点击后轮询探测 modal，再回读详情页结果
+  3) 在 [apply_flow.test.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/tests/apply_flow.test.js) 新增“第三次探测才出现 modal”回归测试
+- 预防规则（Rule）：
+  1) 对 BOSS 这类瞬时弹层，不能只采一次 DOM；至少要在短窗口内轮询数次
+  2) 如果用户提供了真实站点截图，应优先把它当成成功/失败判定链路的直接证据，而不是只信本地日志模式值
+- 下次触发信号：用户截图里看到 `已向BOSS发送消息`，但 ledger 却只记录为 `detail_success_signal` 或 `clicked_apply`
+- 验证结果：`node --test tests/apply_flow.test.js`、`node --check scripts/chrome_apply_queue.js`、`rtk test npm test` 已通过
+
+### Lesson 037
+- 日期：2026-03-19
+- 场景：用户希望 current-tab 模式支持“批量投递”，但要求行为语义是“当前结果页里这一批岗位，点完 `立即沟通` 后留在此页，再回到结果页继续下一条”
+- 问题：
+  1) 旧版 `chrome_apply_queue.js --limit N` 默认从全局历史 `matched` 队列取候选
+  2) 这样会把当前页无关的旧岗位也吃进来，和用户眼前看到的结果池不一致
+  3) 投完后如果不回结果页，用户也难以确认脚本是否还在按当前页继续推进
+- 根因：
+  1) collect 结果没有被标记为“本轮采集 / 来源结果页 / 页面内顺序”
+  2) apply 缺少“最近一轮 collect 优先”的候选选择策略，也没有回来源结果页的收尾动作
+- 修正动作：
+  1) 在 [chrome_collect_queue.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/scripts/chrome_collect_queue.js) 给应用记录写入 `collectRunId / collectPageUrl / collectIndex`
+  2) 在 [chrome_apply_queue.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/scripts/chrome_apply_queue.js) 默认只消费最近一轮 collect 的 matched，并按 `collectIndex` 顺序处理
+  3) 每条岗位处理结束后，自动回到该条记录的 `collectPageUrl`
+  4) 新增 [chrome_apply_queue.test.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/tests/chrome_apply_queue.test.js) 回归测试
+- 预防规则（Rule）：
+  1) current-tab 批量投递默认语义必须是“最近一轮 fresh collect”，不能再直接吃全局历史 matched
+  2) 只要用户把当前结果页当作操作基准，脚本结束后应尽量回到对应结果页，而不是停在某个详情页或聊天页
+- 下次触发信号：用户说“批量投当前页这些岗位”；或 `--limit N` 又出现吃到历史岗位的迹象
+- 验证结果：`node --test tests/chrome_apply_queue.test.js tests/apply_flow.test.js`、`rtk test npm test` 已通过；真实 `chrome:collect -> chrome:apply --limit 2` 已跑通，当前标签最终停回结果页
+
+### Lesson 038
+- 日期：2026-03-19
+- 场景：实机批量执行 `chrome:apply -- --limit 3` 时，第一条职位刚处理完，第二条开始前脚本中途报出“Google Chrome AppleScript 已禁用『允许 AppleScript 执行 JavaScript』”
+- 问题：
+  1) 报错文案看起来像 JXA 权限没开，但同一会话此前其实一直能跑
+  2) 手动重新激活 Chrome 后，`getCurrentTabState()` 又恢复正常，说明并不是纯权限缺失
+- 根因：
+  1) [chrome_current.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/lib/chrome_current.js) 的 `navigateCurrentTab()` 会 `activate` Chrome，但 `evalCurrentTab()` 不会
+  2) 批量 apply 中途如果前台焦点偏离 Chrome，`execute tabRef javascript` 会被误打成 AppleScript/JXA 权限错误
+- 修正动作：
+  1) 在 [chrome_current.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/lib/chrome_current.js) 的 `evalCurrentTab()` 前补上 `activate`
+  2) 用 [chrome_current.test.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/tests/chrome_current.test.js) 和 `node --check scripts/chrome_apply_queue.js` 回归后，重新实机串行跑完整轮 apply
+- 预防规则（Rule）：
+  1) 任何依赖当前前台 Chrome 分页执行 JS 的 helper，不仅跳转前要 `activate`，读 DOM / 执行 JS 前也要 `activate`
+  2) 如果 current-tab 模式突然报 AppleScript/JXA 权限错误，但该会话此前可用，优先排查前台焦点漂移，不要直接假设是用户没开设置
+- 下次触发信号：批量 apply 中途突然出现 AppleScript/JXA 权限错误；或手动激活 Chrome 后同命令又恢复正常
+- 验证结果：补丁后已连续跑完 `collectRunId=4e9fa136d1f19a6b` 的全部 13 条 matched，`chrome:apply` 未再中途报错
+
+### Lesson 039
+- 日期：2026-03-19
+- 场景：用户发来真实截图，显示周薪岗位 `ai架构工程师 / 900-1500元/周` 被点进详情页后触发 `您今天已与120位BOSS沟通，还剩30次沟通机会`
+- 问题：
+  1) `元/周` 这类短期/周薪岗位居然能进入 matched 池
+  2) 它们并不符合当前长期全职 AI 应用 / 架构投递目标，却会真实消耗当天沟通额度
+- 根因：
+  1) [filters.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/lib/filters.js) 之前只排除了 `元/天`，没有覆盖 `元/周`
+  2) 所以实习/周薪/短期机会会被当成正常岗位继续推进到详情页
+- 修正动作：
+  1) 在 [filters.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/lib/filters.js) 增加 `元/周 -> weekly_rate_excluded`
+  2) 在 [filters.test.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/tests/filters.test.js) 补充周薪岗位回归测试
+- 预防规则（Rule）：
+  1) 以后凡是 `元/周`、`元/天`、短期实习型薪资表达，一律在 collect 阶段直接排除
+  2) 任何会白白消耗站内沟通额度但明显偏离目标岗位类型的机会，都应优先前移到 filter 层拦下，而不是等详情页再判断
+- 下次触发信号：薪资文案出现 `元/周`、`元/天`；或用户截图里出现“周薪/日薪岗位却占用沟通额度”
+- 验证结果：`node --test tests/filters.test.js` 已通过；后续 fresh collect 中 `上海鞍石企业咨询管理 / ai架构工程师` 已被 `weekly_rate_excluded` 拦下
+
+### Lesson 040
+- 日期：2026-03-19
+- 场景：用户明确要求“连续执行直到成功投递 20 条以后再停”，并指出中途一轮一轮停下来汇报不符合自动化预期
+- 问题：
+  1) 操作层如果按“每跑完一小批就停一次”的节奏，会打断连续投递目标
+  2) 临近阈值时如果还用较大的 `--limit N`，即使观测到目标达成后立刻停，也可能被进程尾部多送出 1-2 条
+- 根因：
+  1) 我把“阶段性汇报”放得过重，没有把“连续执行直到目标达成”当成主约束
+  2) 临近目标时仍然使用批量 apply，而不是切换到更小批次或单条 URL 定点投递
+- 修正动作：
+  1) 本轮改为持续 `collect -> apply -> collect -> apply`，直到账本达到目标才停止
+  2) 将临近阈值的收尾风险记录到规则层，避免以后再用大批量尾收
+- 预防规则（Rule）：
+  1) 当用户给的是“达到 N 个成功后停止”这类目标时，默认执行模式必须是连续循环，不要一轮一轮停下来等下一次指令
+  2) 当剩余缺口 `<= 2` 时，禁止再用较大的 `--limit N` 批量 apply；优先改成 `--limit 1`、`--limit 2` 或单条 `--url`
+  3) 这类目标只有在“账本已达标且 apply 进程已停住”后，才算真正完成
+- 下次触发信号：用户说“继续直到投满再停”“不要一下停一下停”；或当前距离目标只剩 1-2 条
+- 验证结果：本轮已连续执行到 `applied=127`；虽然因尾部进程多出 `1` 条，但新规则已经明确后续收尾必须切小批次
+
+### Lesson 041
+- 日期：2026-03-19
+- 场景：用户明确要求“自动回复、自动发送一定要透过 LLM 来做”
+- 问题：
+  1) 现有消息链路默认还能走模板回复和规则触发动作
+  2) 这会让自动消息显得过硬、上下文利用不足，也不符合用户刚刚明确下达的约束
+- 根因：
+  1) [reply.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/lib/reply.js) 原先是基于 regex intent + template 文案
+  2) [chrome_monitor_queue.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/scripts/chrome_monitor_queue.js) 会直接消费这条模板链路来生成 draft / action
+- 修正动作：
+  1) 新增 [reply_llm.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/lib/reply_llm.js)，把消息判断和草稿生成收成 Claude JSON planner
+  2) [chrome_monitor_queue.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/scripts/chrome_monitor_queue.js) 改为只认 LLM planner 输出
+  3) [action_runner.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/lib/action_runner.js) 只有在 `replySource === claude` 时才允许自动动作落地
+  4) 默认配置里的 `chat.draftReplyMode` 改成 `llm`
+- 预防规则（Rule）：
+  1) 以后任何自动草稿、自动回复、自动发送动作，都必须先经过 LLM 生成或 LLM 结构化判定
+  2) 如果没有可用的 LLM key，自动消息链路应降级成“只读监看”，不能偷偷回退到模板直发
+  3) 模板文案可以保留作手动参考，但不能再作为自动外发的直接来源
+- 下次触发信号：用户提到“自动回复要更像真人”“不要模板腔”；或配置里还存在 `draftReplyMode=template`
+- 验证结果：`node --test tests/reply_llm.test.js tests/reply.test.js tests/action_runner.test.js`、`node --check scripts/chrome_monitor_queue.js` 已通过；未配置 `ANTHROPIC_API_KEY` 时，`chrome:monitor -- --once` 不再生成待发送草稿
+
+### Lesson 042
+- 日期：2026-03-19
+- 场景：用户在 BOSS 消息页提到“放一个钩子，让他们再多回复我”
+- 问题：
+  1) 我把“钩子”误解成了产品/自动化功能层面的 hook
+  2) 从而偏离了用户真正要的“基于具体对话内容，补一句能引出继续回复的话”
+- 根因：
+  1) 过度从实现视角理解词义，没有先用聊天上下文判断用户是在说“话术策略”还是“软件机制”
+  2) 在消息运营场景里，没有先围绕“这句该不该回、怎么回”来组织行动
+- 修正动作：
+  1) 把当前任务切回“逐个判断会话是否还有希望，再决定是否补一句”
+  2) 后续如果页面抓不到完整上下文，明确说明只能依据最后一条消息判断，不能假装自己看到了完整会话
+- 预防规则（Rule）：
+  1) 当用户在聊天/销售/求职语境里说“钩子”，默认先理解成“让对方继续回复的那句话/信息点”，不是程序 hook
+  2) 在消息跟进任务里，优先回答三件事：这条该不该继续、继续的目标是什么、补哪一句最容易把对方带回来
+  3) 如果上下文抓取不完整，必须显式标明判断依据是“最后一条对方消息”或“侧边栏摘要”，不能虚构完整会话理解
+- 下次触发信号：用户提到“钩子”“让他继续回我”“多说一句让对方接话”；或任务对象是私聊/站内信/销售跟进
+- 验证结果：待本轮消息跟进完成后复盘
+
+### Lesson 043
+- 日期：2026-03-20
+- 场景：用户先选择了更大范围的 agentic 平台方向，随后明确纠偏“先做能用的东西，正确自动回复和自动投递就好”
+- 问题：
+  1) 我顺着更大的平台愿景继续推进 review，和用户当下最急的“先可用、先正确”目标产生偏移
+  2) 没有第一时间把“长期 vision”和“当前交付边界”拆开
+- 根因：
+  1) 过度延续上一轮的战略语境，没有及时响应用户对交付优先级的重新排序
+  2) 在 plan review 里，没有把“方向选择”和“阶段目标”分层处理
+- 修正动作：
+  1) 一旦用户明确说“先不要加东西”“先做能用的”，立即把评审模式切回 `HOLD SCOPE` 或 `SCOPE REDUCTION`
+  2) 先围绕“核心链路是否可用、是否正确、是否连续”审 plan，再把平台化放到后续阶段
+- 预防规则（Rule）：
+  1) 当用户同时表达“长期想做平台”和“眼下先把核心能力做对”时，默认拆成两层：当前阶段只审可用最小闭环，长期平台进入后续 roadmap
+  2) 一旦用户说“先不要加东西”“先做能用的”“这样就好”，立即停止扩 scope，不再继续 vision 扩张
+  3) 在 agentic 系统讨论里，优先确认当前阶段目标是“证明可用”还是“搭平台骨架”，不要把两者混成同一轮交付
+- 下次触发信号：用户说“先别加了”“先做能用的”“先把这个跑通再说”“这样就好”
+- 验证结果：待本轮 plan review 收口后复盘
+
+### Lesson 044
+- 日期：2026-03-20
+- 场景：在 plan review 中连续逐题 AskUserQuestion，用户明确反馈“能不能一次问完”
+- 问题：
+  1) 我按单题推进，交互负担太高
+  2) 用户已经更关心快速收口，而不是完整参与每个细粒度决策
+- 根因：
+  1) 过度机械执行逐题 review 节奏，没有根据用户耐心和目标调整提问粒度
+  2) 没有及时把已锁定决策收敛成“默认方案 + 少数待拍板项”
+- 修正动作：
+  1) 改为批量汇总剩余未决项，一次性给推荐默认
+  2) 后续优先让用户只回复“改哪些”，而不是继续逐题作答
+- 预防规则（Rule）：
+  1) 当用户在 review/规划中表现出不耐烦，或明确要求“一次问完”时，立即停止单题追问，切成批量收口模式
+  2) 已经锁定的大部分决策，优先总结成当前默认方案；只把真正还影响方案走向的少数问题一次性列出
+  3) 如果剩余问题都可以合理默认，就直接给推荐默认并请用户只指出不同意的地方
+- 下次触发信号：用户说“还有多少问题”“一次问完”“别一个个问”“直接给结论”
+- 验证结果：待本轮 review 批量收口后复盘
+
+### Lesson 045
+- 日期：2026-03-20
+- 场景：让用户手动接管浏览器登录流程时，我说“小红书登录页已经打开”，但用户在主 Chrome 里看不到目标页面
+- 问题：
+  1) 我默认“新建标签页”就等于用户能立刻看见页面
+  2) 结果实际前台仍停留在别的标签，导致用户误以为页面根本没被打开
+- 根因：
+  1) 只做了浏览器层面的 `make new tab`，没有验证新标签是否真的成为当前前台活动页
+  2) 在需要用户手动登录/操作的交接点，没有把“可见性确认”当成必做检查
+- 修正动作：
+  1) 改为直接设置主 Chrome 前台活动标签的 URL，确保目标页覆盖到用户眼前
+  2) 打开后立即回读 `front window` 的 `active tab URL` 做确认，再通知用户接管
+- 预防规则（Rule）：
+  1) 任何需要用户手动接管浏览器的步骤，不能只说“我已经打开了”，必须验证用户当前前台活动标签就是目标页
+  2) 如果浏览器有多个窗口/标签，优先覆盖前台活动标签，而不是默认新建后台或不可见标签
+  3) 向用户交接登录/手动操作前，先给出明确的当前活动 URL，避免双方对“是否已打开”理解不一致
+- 下次触发信号：用户说“我没看到页面”“没弹出来”“你再打开一次”；或任务需要用户手动登录、扫码、点按钮
+- 验证结果：本轮已通过覆盖前台活动标签重新打开 `https://creator.xiaohongshu.com/login?...`，用户随后完成登录，后续 `opencli xiaohongshu creator-profile` 与 `creator-stats` 验证通过
+
+### Lesson 046
+- 日期：2026-03-20
+- 场景：`opencli xiaohongshu search --keyword AI --limit 3` 在桥接层正常、小红书创作者后台也已登录的情况下，仍然只返回空数组
+- 问题：
+  1) 我一开始把“返回空数组”优先怀疑为 DOM 选择器失效或页面结构变化
+  2) 但真实页面其实先被 public-site 登录墙拦住了，只是原命令没有识别这种状态
+- 根因：
+  1) 混淆了 `creator.xiaohongshu.com` 与 `www.xiaohongshu.com` 两套登录上下文，以为创作者后台登录后搜索页也会自动可用
+  2) 适配器在无结果时只继续抓取 `section.note-item`，没有先检查页面是否显示“登录后查看搜索结果”
+- 修正动作：
+  1) 用真实页面 DOM 和 `__INITIAL_STATE__` 证据确认搜索页命中了登录墙，而不是先猜选择器
+  2) 给本机 `opencli` 的 `xiaohongshu search` 补上登录墙检测，未登录时直接报 `HTTP 401`，提示必须登录 `www.xiaohongshu.com`
+- 预防规则（Rule）：
+  1) 对同一品牌下的不同子域（如 `creator.*` 与 `www.*`），默认视为独立登录上下文，不能用一侧已登录去推断另一侧也可用
+  2) 对“空结果”类自动化问题，先检查页面是否落在登录墙、风控页、空态页或错误页，再检查 DOM 选择器
+  3) 适配器返回空列表前，优先识别并显式抛出登录/权限错误，避免把鉴权失败伪装成“没有数据”
+- 下次触发信号：命令执行成功但结果是 `[]`；页面正文出现“登录后查看…”“请先登录”之类文案；同站点不同子域分别依赖不同 cookie
+- 验证结果：本轮已确认搜索页正文包含“登录后查看搜索结果”；补丁后同一命令先稳定报 `HTTP 401. Are you logged into www.xiaohongshu.com?`，在用户补登 `www.xiaohongshu.com` 后，`opencli xiaohongshu search --keyword AI --limit 3 -f json` 已正常返回 3 条搜索结果
+
+### Lesson 047
+- 日期：2026-03-20
+- 场景：`opencli xiaohongshu creator-notes --limit 3 -f json` 报 `SyntaxError: Unexpected token 'const'`，但我用同一页面和相近的 `page.evaluate` 探针脚本又能跑通
+- 问题：
+  1) 适配器本身在命令路径里触发了浏览器注入脚本语法错误
+  2) 但完整逻辑并不是业务上不可行，说明真正脆弱的是“把复杂解析都塞进浏览器侧 evaluate 字符串”
+- 根因：
+  1) 浏览器侧 `page.evaluate` 承载了过多解析逻辑、正则和结构清洗，调试与定位成本高，一旦注入失败就只能得到笼统的语法异常
+  2) 对这类 DOM 抓取任务，我之前默认把“提取 + 清洗 + 结构化”全放在浏览器端，耦合太高
+- 修正动作：
+  1) 将 `creator-notes` 改成“浏览器端只返回卡片原始文本和链接，Node 侧再做解析”
+  2) 这样把脆弱的浏览器注入逻辑降到最小，命令已恢复正常返回 3 条笔记数据
+- 预防规则（Rule）：
+  1) 对复杂 DOM 抓取，优先让浏览器侧只负责拿原始字段，复杂清洗和正则解析尽量放回 Node 侧
+  2) 当 `page.evaluate` 报语法错误而手工探针能跑通时，不要执着于继续堆浏览器内脚本，优先减小注入体积和职责
+  3) 浏览器端脚本只做最小必要提取，能显著降低站点变动和注入语法带来的不确定性
+- 下次触发信号：`SyntaxError: Unexpected token ...` 出现在 `page.evaluate`；浏览器侧脚本里同时出现长正则、复杂清洗和结构拼装
+- 验证结果：本轮改造后，`opencli xiaohongshu creator-notes --limit 3 -f json` 已正常返回 3 条笔记数据
+
+### Lesson 048
+- 日期：2026-03-20
+- 场景：`opencli twitter search --query AI --limit 3 -f json` 在 X 登录态正常、timeline/profile/notifications 都可用的情况下仍然返回空数组
+- 问题：
+  1) 原实现依赖脚本设置 explore 搜索框的值，再派发 synthetic Enter，希望触发 X 的内部搜索流
+  2) 实际页面 URL 仍停在 `https://x.com/explore`，拦截器没有抓到任何 `SearchTimeline` 请求
+- 根因：
+  1) 对 X 这类富前端站点，脚本写 input value + synthetic keyboard event 并不等于真正触发站点内部状态机
+  2) 原实现把“触发搜索”建立在前端事件细节上，耦合于当前页面实现，稳定性差
+- 修正动作：
+  1) 直接导航到 `https://x.com/search?q=<query>&src=typed_query&f=top`
+  2) 放弃脆弱的请求拦截策略，改成从搜索结果页 DOM 直接提取 `article` 数据
+- 预防规则（Rule）：
+  1) 对支持 URL 直达的搜索页，优先用“直达结果页 + DOM 提取”，不要优先依赖 synthetic input/keydown 去触发前端状态机
+  2) 如果命令返回空结果，先检查最终 URL 是否真的进入目标结果页；停在原页就说明触发链没成立
+  3) 对富前端站点，输入框中“看起来有值”不代表搜索/提交已经真正发生
+- 下次触发信号：搜索命令返回 `[]`；页面停在 explore/home 而不是结果页；拦截器没有抓到预期请求
+- 验证结果：本轮改为直达搜索结果页后，`opencli twitter search --query AI --limit 3 -f json` 已正常返回 3 条结果
+
+### Lesson 049
+- 日期：2026-03-20
+- 场景：`opencli xiaohongshu creator-notes` 已经能读到标题和指标，但最初返回的 `id/url` 为空，导致 `creator-note-detail` 虽然可用，却不能从列表顺滑衔接过去
+- 问题：
+  1) 我最初默认 note id 会出现在显式链接或常规 DOM 属性里
+  2) 实际 creator 后台卡片没有直接暴露详情链接，导致列表和详情命令之间断开
+- 根因：
+  1) note manager 页把真实 `noteId` 藏在 `.note[data-impression]` 的埋点 JSON 里，而不是普通 `href`
+  2) 对后台页面的 DOM 取证不够细，只看了文本和常规链接，没有先检查埋点属性
+- 修正动作：
+  1) 从 `.note[data-impression]` 解析 `noteTarget.value.noteId`
+  2) 用该 `noteId` 生成 `https://www.xiaohongshu.com/explore/<noteId>` 作为 `creator-notes` 的 `url`
+- 预防规则（Rule）：
+  1) 后台系统页面提取实体 id 时，不要只盯显式链接；优先检查 `data-*` 埋点属性、曝光埋点和事件属性
+  2) 如果同站点存在“列表命令 -> 详情命令”链路，列表输出必须优先补齐下游所需 id，不能只返回可读文本
+  3) 对 Vue/React 后台页，`data-impression`、`data-track`、`data-eaglet-*` 这类埋点属性常常比普通 DOM 链接更可靠
+- 下次触发信号：列表命令有标题但无 id；详情命令需要用户手抄 id；DOM 上存在 `data-impression`/`data-track` 等长 JSON 属性
+- 验证结果：本轮修复后，`opencli xiaohongshu creator-notes --limit 3 -f json` 已稳定返回 `id/url`，并可直接把第一条 `id` 喂给 `creator-note-detail`
+
+### Lesson 050
+- 日期：2026-03-20
+- 场景：我用并行工具同时跑 `opencli xiaohongshu creator-notes` 和 `opencli boss search`，结果 `creator-notes` 读到了 BOSS 页面内容
+- 问题：
+  1) 两条浏览器命令互相污染，同一个命令的输出来自另一个站点页面
+  2) 这类错误表面上像“适配器又坏了”，其实是运行时共享资源冲突
+- 根因：
+  1) `opencli` 浏览器命令当前共用同一个 automation window/tab
+  2) 我错误地把“shell 可以并行”类比成“浏览器自动化也可以并行”，忽略了底层会话是共享的
+- 修正动作：
+  1) 停止对 `opencli` 浏览器命令使用并行压测
+  2) 改回串行执行，同步验证结果是否恢复正常；恢复后确认问题确实来自 automation window 共享
+- 预防规则（Rule）：
+  1) 只要命令底层依赖 `opencli` Browser Bridge / automation window，就默认按“单会话共享资源”处理，禁止并行运行
+  2) 如果两个浏览器命令结果串页，先检查是否共享同一 automation window，而不是立刻怀疑站点适配器
+  3) 后续如果要做统一 wrapper，必须显式对浏览器命令加串行队列或会话隔离
+- 下次触发信号：并行执行时结果混入别的网站文本；同一时间只开了一条 automation tab 却有多个命令在跑；重跑同命令后结果恢复正常
+- 验证结果：本轮改回串行后，`creator-notes` 立即恢复正常输出，确认问题来自 `opencli` 浏览器命令并行执行
+
+### Lesson 051
+- 日期：2026-03-20
+- 场景：评审 BOSS 自动化后续架构时，用户明确要求“投递、聊天、自动回复、supervisor、ledger 这些操作核心都应该跟 opencli 用一样的核心”，并进一步确认希望用 `opencli` 替代原本的 Playwright/CDP 浏览器执行层
+- 问题：
+  1) 原仓库结构已经演化成 `opencli` 做只读、`auto-zhipin` 做写和状态的双核心
+  2) 如果继续沿着两套浏览器执行层演化，后续 apply/chat/health 逻辑会在两边重复，长期必然漂移
+- 根因：
+  1) 前一阶段的目标是先修通 `opencli` 只读链路，所以默认把它定位成辅助层，没有同步重画 BOSS 自动化的最终核心边界
+  2) `auto-zhipin` 的 supervisor/ledger 做得越来越完整后，容易让人忽略“真正该统一的是浏览器执行引擎，不只是命令入口”
+- 修正动作：
+  1) 锁定新原则：BOSS 浏览器执行核心统一进 `opencli`
+  2) 锁定边界：`opencli` 负责 `search/detail/apply/chat-list/chat-thread/send-message/send-resume/health/verification/hooks`，仓库保留 `supervisor/ledger/dedupe/breaker/dashboard`
+  3) 明确禁止“supervisor 每一步 shell 调 opencli 子命令”这种伪统一方案，必须 direct import 同一个 core
+- 预防规则（Rule）：
+  1) 当浏览器自动化系统同时包含“单次 CLI 动作”和“长期 supervisor 编排”时，优先统一浏览器执行核心，而不是容忍两套驱动长期并存
+  2) 真正的“共用同一个核心”指的是 direct import 同一个 browser core，不是 shell 出去调另一套命令入口
+  3) 对全局包 + 仓库上层的双层结构，默认让全局包承载“浏览器动作”，仓库承载“状态编排”，不要把这两个职责混写
+- 下次触发信号：同一站点同时存在 `read-only opencli path` 和 `write/supervisor custom path`；用户指出“这些操作应该共用一样的核心”；开始设计 apply/chat/reply/health 的第二套选择器或第二套浏览器封装
+- 验证结果：本轮已产出 [2026-03-20-boss-opencli-unified-core-design.md](/Users/proerror/Documents/redbook/docs/plans/2026-03-20-boss-opencli-unified-core-design.md)，正式锁定统一核心边界
+
+### Lesson 052
+- 日期：2026-03-20
+- 场景：给 `tools/opencli/vendor` 新增 shared boss core 导出后，repo unit test 仍然报 `extractConversations is not a function`
+- 问题：
+  1) 我以为测试会直接吃到 repo 里的 vendor 文件
+  2) 实际 `opencli_core` 默认优先加载全局安装包，导致测试还在读旧的已安装模块
+- 根因：
+  1) `tools/auto-zhipin/lib/opencli_core.js` 的解析顺序是 `global package -> repo vendor`
+  2) 修改 vendor shared core 之后，如果不先重放补丁到全局 `@jackwener/opencli`，repo 测试会出现“代码已改、导出仍旧”的假失败
+- 修正动作：
+  1) 先执行 `node tools/opencli/scripts/install.js --skip-install`
+  2) 再跑 focused tests 和 `rtk test npm test`
+- 预防规则（Rule）：
+  1) 只要 `tools/opencli/vendor` 改了 shared boss core，就先重放补丁到全局安装包，再跑 repo 测试
+  2) `opencli_core` 解析顺序不变前，不要把“测试失败”直接解读为 vendor 代码没生效
+- 下次触发信号：vendor 文件刚改完；repo 单测报导出缺失；全局 `@jackwener/opencli` 里还是旧文件
+- 验证结果：本轮执行 `node tools/opencli/scripts/install.js --skip-install` 后，focused tests 与 `rtk test npm test` 恢复正常
+
+### Lesson 053
+- 日期：2026-03-20
+- 场景：给 shared boss core 增加标准结果字段和 lifecycle hooks 后，旧单测因为 `deepEqual` 旧对象而失败
+- 问题：
+  1) 共享核心做“向后兼容的加法”时，旧测试把返回值写成了严格全等旧对象
+  2) 结果是实现没坏，但测试把新增字段误判成回归
+- 根因：
+  1) 测试关注的是“对象长什么样”，不是“旧 contract 是否仍可用”
+  2) 对共享 core 这种演进层，没有把“subset assertions + 新字段单独断言”当成默认写法
+- 修正动作：
+  1) 旧测试改成断言关键旧字段仍可读
+  2) 新增单独测试覆盖 `action/status/reason/normalized` 和 hook 调用
+- 预防规则（Rule）：
+  1) 对共享返回对象做 additive 演进时，兼容性测试默认用 subset assertions，不要用 `deepEqual` 锁死整个旧对象
+  2) 新字段要有自己的独立断言，旧字段兼容性也要有自己的独立断言，避免两类目标混在一个 `deepEqual`
+  3) 如果目标是“保留旧字段 + 新增标准字段”，测试也必须按这个分层写
+- 下次触发信号：共享 core 返回对象新增元数据字段；旧测试因为多了字段而红；设计要求明确写着“兼容性加法”
+- 验证结果：本轮调整断言后，focused tests、`rtk test npm test` 与 `node tools/opencli/scripts/verify.js` 全部恢复通过
+
+### Lesson 054
+- 日期：2026-03-20
+- 场景：`node tools/opencli/scripts/verify.js` 在前面步骤都正常的情况下，偶发在 `boss search` 上报 `Inspected target navigated or closed`
+- 问题：
+  1) smoke 偶发失败，但手工重跑同一命令是正常的
+  2) 原 retry 只识别 `Extension not connected`，把另一类瞬时 Browser Bridge/target 切换错误当成硬失败
+- 根因：
+  1) `opencli` Browser Bridge 在页面切换时会偶发抛出 CDP target reset 类错误
+  2) verify 的 transient matcher 写得过窄，没有覆盖真实线上会出现的第二种瞬时错误
+- 修正动作：
+  1) 抽出 `tools/opencli/lib/verify_helpers.js`
+  2) 将 `Inspected target navigated or closed` 纳入 transient retry 条件
+  3) 增加单测覆盖 retry matcher
+- 预防规则（Rule）：
+  1) 对依赖 Browser Bridge 的 smoke，transient retry 规则必须覆盖“bridge disconnect”和“target reset”两类瞬时错误
+  2) 如果 smoke 偶发失败但同命令立刻重跑恢复，优先把错误归类为 transient，再决定是否该加 retry
+  3) verify 脚本里的重试判定要抽成可测试 helper，不要把字符串匹配散落在脚本里
+- 下次触发信号：报错含 `Inspected target navigated or closed`；同一命令重跑即好；失败点出现在浏览器命令而非公共 HTTP 命令
+- 验证结果：本轮补充 matcher 后，`node tools/opencli/scripts/verify.js` 再次串行 smoke 全绿
+
+### Lesson 055
+- 日期：2026-03-20
+- 场景：用户截图显示 BOSS 聊天左栏明明有会话，但 `boss chat-list --limit 5 -f json` 返回 `[]`
+- 问题：
+  1) `chat-list` 在真实页面上读不到任何会话
+  2) 退化选择器命中了整块 `.chat-user` 容器，导致抽取逻辑把整个左栏当成一个节点候选，再被后续逻辑误处理
+- 根因：
+  1) 会话选择器还停留在旧版 `.user-list .list-item` / `[class*=list-item]` 结构
+  2) 当前 BOSS 聊天页真实 DOM 已改成 `.chat-user > .chat-content > .user-list > .user-list-content > ul > li`
+  3) `unreadCount` 还用整段文本正则抓数字，理论上会把 `14:22` 这种时间误判成未读数
+- 修正动作：
+  1) `CONVERSATION_ITEM_SELECTORS` 改为 `'.user-list-content li' / '.user-list li' / '[class*=user-list-content] li' / '[class*=user-list] li'`
+  2) 去掉 `.chat-user` 这类容器级泛选择器
+  3) `unreadCount` 改为只从显式 badge/unread 节点提取
+- 预防规则（Rule）：
+  1) 对聊天列表类页面，选择器必须优先指向“单个会话项”，不能用整块容器类名做兜底
+  2) 页面抽取为 `[]` 时，先在真实 DOM 上验证“节点没选到”还是“节点选到了但被过滤掉”，不要直接猜是登录态
+  3) 从整段文本用 `/\\d+/` 提取未读数是危险做法；时间、日期、薪资都可能误伤，未读数必须来自显式 badge 节点
+- 下次触发信号：页面肉眼可见有列表项，但命令返回 `[]`；选择器命中的是容器而不是 item；未读数出现 `14`、`03` 这类明显来自时间日期的值
+- 验证结果：本轮修复后，live `boss chat-list --limit 5 -f json` 已正常返回前 5 个真实会话
+
+### Lesson 056
+- 日期：2026-03-20
+- 场景：`boss chat-thread` 在 `chat-list` 已恢复正常之后，仍然返回 `[]` 或抓出重复碎片消息
+- 问题：
+  1) 会话表面上能被“打开”，但右侧线程没有真正切换出来
+  2) 消息抽取把 `message-content / status` 这种嵌套节点也算成消息，导致重复和 `direction: unknown`
+- 根因：
+  1) BOSS 聊天列表真正可点击的是 `li` 里的 `.friend-content` 卡片，而不是外层 `li`
+  2) `MESSAGE_ITEM_SELECTORS` 用了 `.chat-record [class*=message]` 这类过宽选择器，命中了容器、正文、状态等多层节点
+  3) `directionFromNode()` 只识别 `self/right/...`，没有覆盖 `item-friend`
+- 修正动作：
+  1) `openConversation()` 优先点击 `.friend-content.selected / .friend-content / .friend-content-warp`
+  2) `MESSAGE_ITEM_SELECTORS` 收窄到顶层 `li.message-item` 系列
+  3) `directionFromNode()` 增加 `friend` 匹配
+- 预防规则（Rule）：
+  1) 聊天线程抽取必须优先命中“顶层消息项”，不要用 `[class*=message]` 这种宽选择器直接扫整棵树
+  2) 列表 item 和真实 clickable card 分离时，点击动作必须落在 card，而不是默认点外层 `li`
+  3) 当线程结果出现重复正文/状态碎片时，先检查消息选择器是否抓到了嵌套节点，而不是先怀疑去重逻辑
+- 下次触发信号：`chat-thread` 返回 `[]` 但页面明明有右侧消息；结果里同一条消息出现多次；方向大量是 `unknown`
+- 验证结果：本轮修复后，live `boss chat-thread --limit 5 -f json` 已正常返回 5 条真实线程消息，并去掉了重复碎片项
+
+### Lesson 057
+- 日期：2026-03-20
+- 场景：继续验证 BOSS 写路径时，需要确认 `send-message` 可用，但又不能真实给招聘方发测试消息
+- 问题：
+  1) 之前 `send-message` 只有真实发送路径，没有安全预演模式
+  2) 这样每次 live 验证都要在“完全不测”和“冒险真发”之间二选一
+- 根因：
+  1) 写路径原语只考虑了最终动作，没有给验证/演示/人工确认阶段留出 dry-run 能力
+  2) manifest 也没有暴露这类安全参数，导致 CLI help 和实际能力容易漂移
+- 修正动作：
+  1) 给 `send-message` 增加 `--dry_run`
+  2) dry-run 仅填充输入框，不点击发送，返回 `via: "dry_run"` 与 `dryRun: true`
+  3) 同步更新 CLI manifest，并在验证后主动清空输入框
+- 预防规则（Rule）：
+  1) 对真实会触达外部人的写操作，默认优先提供 `dry_run` 或 preview 模式，再考虑 live submit
+  2) 新增 CLI 参数时，必须同时同步实现文件和 manifest；只改一边会导致 `--help` 与真实能力不一致
+  3) dry-run 如果会在页面上留下输入/草稿，测试后要主动清理，不把验证痕迹留给用户
+- 下次触发信号：需要 live 验证发送/投递类命令；命令没有 preview 模式；help 不显示刚加的参数
+- 验证结果：本轮 `boss send-message --dry_run true -f json` 已 live 成功，且后续已清空输入框
+
+### Lesson 058
+- 日期：2026-03-20
+- 场景：为 `boss send-resume` 增加 `--dry_run` 后，live 预演命中了“当前会话已发送简历”的 `already_sent` 分支
+- 问题：
+  1) dry-run 虽然没有点任何按钮，但返回结果最初没有显式带出顶层 `dryRun: true`
+  2) 等待逻辑还盯着原始结果里的 `result.dryRun`，导致 `already_sent` 这种成功分支仍可能误走等待
+- 根因：
+  1) `send_resume` 的 dry-run 标志被当成“脚本返回值的一部分”，没有被视为“调用上下文的一部分”
+  2) 写路径成功分支不只一种；如果只靠某个分支手动塞 `dryRun`，其它成功分支就会漏
+- 修正动作：
+  1) `sendResumeFromActiveConversation()` 统一从调用上下文注入 `dryRun`
+  2) 等待条件改为看 `context.dryRun`，而不是只看 `result.dryRun`
+  3) 新增单测覆盖 `already_sent + dry_run` 的组合分支
+- 预防规则（Rule）：
+  1) 对写操作的 preview/dry-run，`dryRun` 必须是调用上下文级别的标准字段，不能只依赖某条分支手动返回
+  2) 写路径如果存在 `already_sent / already_present / no_op_success` 这类成功分支，dry-run 也必须显式带出 `dryRun: true`
+  3) 任何 “成功后等待一下” 的逻辑，都要基于调用模式判断，而不是基于某个分支刚好返回了什么字段
+- 下次触发信号：dry-run 命令命中“已经完成/无需再次发送”分支；返回 JSON 里看不到 `dryRun`; preview 模式仍然执行了成功后的等待
+- 验证结果：本轮 `boss send-resume --dry_run true -f json` 在 `via: "already_sent"` 分支下已显式返回 `dryRun: true`，focused tests 与 `rtk test npm test` 全绿
+
+### Lesson 059
+- 日期：2026-03-20
+- 场景：验证 `chrome:apply` 的批量 dry-run 时，发现 README、config 和脚本真实行为不一致
+- 问题：
+  1) `chrome_apply_queue` 之前没有把 `config.apply.dryRun` / `--dry-run` 传给 shared `apply` core
+  2) dry-run 命中成功时，ledger 还会被错误记成 `applied`
+  3) `apply.enabled` 的保护只写在文档里，脚本没有真正执行
+- 根因：
+  1) 批量入口和单条 `boss apply` 的 contract 已经分叉，但没有统一的 `buildApplyOptions()`
+  2) “动作成功执行了 dry-run”和“真实完成投递”被混成一个布尔值 `applied`
+  3) 安全约束停留在 README，没有落到代码路径
+- 修正动作：
+  1) 给 `chrome_apply_queue` 增加 `buildApplyOptions()`
+  2) dry-run 统一透传给 shared `applyOnActiveJobDetail()`
+  3) 只有 `dryRun=false && apply.enabled=false` 才阻止真实投递
+  4) dry-run 成功时 ledger 保持 `matched`，不再污染成 `applied`
+- 预防规则（Rule）：
+  1) 批量入口和单条 CLI 共用同一个 shared core 时，`dryRun` / `enabled` 这类安全参数必须在所有入口统一透传，不能只在单条命令里生效
+  2) `ok` 表示“这次动作执行成功”，`applied` 表示“真实已投递”；对 dry-run 这两个语义必须分开存
+  3) 任何写在 README 里的安全约束，如果脚本里没落实，就要默认视为 bug 而不是文档问题
+- 下次触发信号：文档说“默认 dry-run/需显式开关”，但脚本实现看不到对应分支；dry-run 后 ledger 里的 `applied` 数增加；批量入口和单条命令行为不同
+- 验证结果：本轮 `chrome_apply_queue --limit 2 --dry-run` 已成功串行跑完，且 focused tests 与 `rtk test npm test` 全绿
+
+### Lesson 060
+- 日期：2026-03-20
+- 场景：用户澄清 BOSS 里的“投递”在当前真实使用语义上就是页面右侧的 `立即沟通`
+- 问题：
+  1) 我把 `apply_button_not_found` 过快解读成“这个职位不能投”
+  2) 没有先按用户的真实操作语义去校验当前页面上的主按钮
+- 根因：
+  1) BOSS 在不同页面流里会把“投递”表现成 `立即沟通 / 立即投递 / 聊一聊`
+  2) 自动化抽象如果不以用户当前真实操作为准，很容易把文案差异误判成功能失败
+- 修正动作：
+  1) 记住：当前这套 workflow 里，`投递` 默认包含 `立即沟通`
+  2) 后续验证 `apply` 时，优先按用户当前筛选后的搜索结果页与右侧详情联动页去看主按钮
+  3) 如果页面上肉眼可见 `立即沟通`，就不能直接下“不可投”的结论，必须先检查选择器与页面流
+- 预防规则（Rule）：
+  1) BOSS 的“投递”语义以用户当前实际点击的主 CTA 为准，不要死盯“投递简历”四个字
+  2) 当用户明确说某个按钮就是他的投递动作时，后续自动化判断必须和这个现实语义对齐
+  3) 做批量 apply 验证前，先记住并沿用用户当前配置里的筛选条件，避免拿不符合条件的职位做结论
+- 下次触发信号：页面上有 `立即沟通` 但脚本说 `apply_button_not_found`；用户强调“这就是投递”；搜索结果页采用左右分栏详情流
+- 验证结果：已记录为后续批量 apply 和 selector 校验的硬规则
+
+### Lesson 061
+- 日期：2026-03-20
+- 场景：BOSS 申请链逐步切到 `opencli` shared core 后，用户要求停止所有旧脚本排程，避免后台继续跑 `chrome_collect_queue / chrome_apply_queue`
+- 问题：
+  1) 仓库里保留的 `com.redbook.daily-x.plist` 仍然串了 `chrome:collect` 和 `chrome:apply`
+  2) `auto-zhipin` 默认配置里 `supervisor.enabled=true`，容易让旧自动链重新被误触发
+- 根因：
+  1) 旧的日常自动化把内容研究和 BOSS 自动投递绑在了一起
+  2) 从 Playwright/CDP 迁移到 `opencli` 期间，没有及时收口默认入口
+- 修正动作：
+  1) 将仓库内 [com.redbook.daily-x.plist](/Users/proerror/Documents/redbook/tools/auto-x/com.redbook.daily-x.plist) 恢复为只跑 `tools/daily.sh`
+  2) 将 [config.local.json](/Users/proerror/Documents/redbook/tools/auto-zhipin/config.local.json) 和 [config.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/lib/config.js) 的 `supervisor` 默认改为 `enabled=false`、`pause=true`
+- 预防规则（Rule）：
+  1) BOSS 自动申请不得再挂在通用 daily launchd 任务后面
+  2) 迁移到 `opencli` shared core 后，所有旧 `auto-zhipin` 自动入口默认应为关闭，只有手动明确触发时才运行
+  3) 任何会真实操作招聘网站的链路，都必须先检查有没有遗留排程或后台脚本在占用浏览器上下文
+- 下次触发信号：仓库里的 launchd/plist 命令还带 `chrome:collect` / `chrome:apply`；`config.local.json` 的 `supervisor.enabled` 被改回 `true`
+- 验证结果：当前系统无 `chrome_apply_queue / chrome_collect_queue / chrome_supervisor / reply_worker` 后台进程；仓库内旧 launchd 命令已去掉 zhipin 相关脚本
+
+### Lesson 062
+- 日期：2026-03-20
+- 场景：用纯 `opencli boss apply --url ...` 做真实 BOSS 申请，部分职位页面明明有 `立即沟通`，却出现 `apply_button_not_found` 或命中错误职位
+- 问题：
+  1) 同一个职位 URL 落地后，BOSS 可能先停在搜索结果左右分栏页，而不是直接进入独立 `job_detail` 页面
+  2) 申请按钮在真实页面里常常不是“带固定文案的普通按钮”，而是 `btn-startchat / op-btn-chat / redirect-url` 这类结构化 CTA
+- 根因：
+  1) 之前 `boss apply --url` 默认相信 `page.goto(url)` 后当前右侧详情就是目标职位，没有再按 `job_detail/<id>` 身份重选 job card
+  2) CTA 选择器过于泛化，必须靠文本猜按钮，导致遇到 `立即沟通` 变体或搜索页右栏 CTA 时不稳定
+- 修正动作：
+  1) 在 shared `job-browser` 里新增 `selectJobCard()`，先按目标 URL 的 `job_detail/<id>` 身份匹配并点击正确卡片
+  2) `buildClickApplyScript()` 改为优先命中显式 BOSS CTA 选择器：`.btn-startchat`、`.op-btn-chat`、`[redirect-url*="/web/geek/chat"]`、`[data-url*="/friend/add"]`
+  3) 完成后用纯 `opencli` 路径跑真实批量申请，验证达到 20 条新的成功申请
+- 预防规则（Rule）：
+  1) 对 BOSS 这类左右分栏搜索页，`--url` 不等于“已经选中了目标职位”；申请前必须按 URL 身份重选 job card
+  2) 对高价值主 CTA，优先用结构化 selector，不要依赖按钮文案做唯一判断
+  3) 做真实批量申请时，只有 `ok=true` 且 `mode` 不是 `already_*` 才算新的成功
+- 下次触发信号：`page.goto(job_url)` 后页面 URL 不是 `/job_detail/`；页面可见 `立即沟通` 但结果报 `apply_button_not_found`；申请成功数和 `already_continuing` 混在一起
+- 验证结果：纯 `opencli` 批量申请结果文件 [opencli-apply-batch-latest.json](/Users/proerror/Documents/redbook/tools/auto-zhipin/data/opencli-apply-batch-latest.json) 显示 `newSuccessCount=20`
+
+### Lesson 063
+- 日期：2026-03-20
+- 场景：用户强调“中小企业优先”后，继续用宽 query 批量筛岗与投递
+- 问题：
+  1) 即使把部分大厂放进黑名单，仍会漏进 `vivo / 今日头条 / 哈啰 / 奇瑞 / 锐捷` 这类不符合用户偏好的公司
+  2) 在短时间内连续搜索和投递后，BOSS 返回 `code=36`，提示“您的账户存在异常行为”
+- 根因：
+  1) “大公司降权”或不完整黑名单不足以表达“中小企业优先”这种强约束
+  2) 在账户已完成一轮 20 条真实申请后继续高频搜索/投递，触发了站点风控
+- 修正动作：
+  1) 将企业规模偏好改为硬约束，不再依赖降权或模糊公司名单
+  2) 发现 `code=36` 后立即停止所有 `opencli boss search/apply`，不再继续试探
+  3) 后续若继续，只能采用更慢的人工白名单化节奏，而不是大锅批量扫描
+- 预防规则（Rule）：
+  1) 用户说“中小企业优先”时，必须把大公司视为硬排除，而不是只是降低排序分数
+  2) BOSS 一旦出现 `code=36` / `账户存在异常行为`，必须立即停止自动化，不能继续碰运气重试
+  3) 完成一轮真实投递后，再做补投必须显著降低频率，并优先人工确认候选企业名单
+- 下次触发信号：候选池里出现明显大厂但系统仍准备申请；搜索接口返回 `code=36`
+- 验证结果：已停止所有在跑的 `opencli boss search/apply` 进程，当前无遗留 BOSS 自动化进程继续运行
+
+### Lesson 064
+- 日期：2026-03-20
+- 场景：用户要求先看 BOSS 消息列表，再决定哪些公司不要重复投、哪些要继续跟进
+- 问题：
+  1) 旧去重只认 ledger 里“这套系统投过没有”，不认历史聊天里已经被拒、要求站外邮箱、或已经沟通过的对象
+  2) 这样会把 `SHEIN / OPPO / 理想汽车` 这类明确拒绝过的公司，以及 `上海耀素` 这种要求站外邮箱的对象，再次送进候选池
+- 根因：
+  1) 申请前的过滤来源只有职位页和 ledger，没有把 `opencli boss chat-list` 当成第一手事实源
+  2) 用户历史聊天里有大量“早就联系过”的信息，但系统没有结构化沉淀成可复用 triage
+- 修正动作：
+  1) 新增 [opencli_chat_triage.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/scripts/opencli_chat_triage.js)，从 `opencli boss chat-list` 直接生成 [opencli-chat-triage-latest.json](/Users/proerror/Documents/redbook/tools/auto-zhipin/data/opencli-chat-triage-latest.json)
+  2) 新增 [chat_triage.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/lib/chat_triage.js)，提供 `明确拒绝 / 站外邮箱` 分类和公司提示词匹配
+  3) 让 [chrome_collect_queue.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/scripts/chrome_collect_queue.js) 在筛选时先读 triage，命中就直接 `skipped`
+  4) 对 `宏诺伊曼 / 云享智慧 / 上海精燧智能科技` 已完成 3 条真实站内跟进消息发送
+- 预防规则（Rule）：
+  1) 继续申请前，先跑一次 `node tools/auto-zhipin/scripts/opencli_chat_triage.js --limit 30`
+  2) 聊天列表里的 `明确拒绝` 和 `站外邮箱` 是硬跳过，不再重复申请
+  3) 聊过且长期未推进的对象，优先站内补一句，不要直接再投同公司新岗
+  4) 用户明确说“不要投汽车类、偏企业 AI Agent / 应用 / 流程改造”后，配置和筛选词都要同步收紧，而不是只靠人工记忆
+- 下次触发信号：用户说“这些我已经投过/聊过”；聊天预览出现 `不合适`、`发到邮箱`；候选池再次出现 `汽车 / 智驾 / 芯片 / 编译器`
+- 验证结果：triage 当前识别 `blockedEntries=4`、`followupCandidates=5`；3 条跟进消息发送成功；新增单测 `chat_triage.test.js` 通过
+
+### Lesson 065
+- 日期：2026-03-20
+- 场景：连续用 `opencli boss search/detail/apply` 做 BOSS 筛选和投递
+- 问题：
+  1) 只要把两条 `opencli` 浏览器命令并行跑，Chrome 页面就会明显闪烁跳页
+  2) 命令之间还会互相抢 automation tab，导致 `Extension not connected`、`attach failed: No tab with given id`
+- 根因：
+  1) `opencli` 的浏览器命令共用同一个 Browser Bridge / automation window
+  2) 它适合串行驱动，不适合并发调多个页面动作
+- 修正动作：
+  1) 后续所有 `boss search / detail / apply / chat-*` 改成严格串行
+  2) 只在瞬时 `attach failed` 时，先重新把目标职位页拉到前台，再单次重试
+  3) 将本轮结果落到 [opencli-apply-continue-latest.json](/Users/proerror/Documents/redbook/tools/auto-zhipin/data/opencli-apply-continue-latest.json)
+- 预防规则（Rule）：
+  1) `opencli` 浏览器命令一律不要并发
+  2) 用户看到页面闪烁跳跃时，第一怀疑对象就是“我是否并发触发了多个 browser command”
+  3) 真实投递前先筛，筛完后一次只执行一个动作
+- 下次触发信号：Chrome 标签页频繁切换、页面闪烁、`Extension not connected`、`attach failed: No tab with given id`
+- 验证结果：改回串行后，`首信知识产权` 正确识别为 `already_continuing`，`元响科技` 新申请成功 `sent_message_modal_stay`
+
+### Lesson 066
+- 日期：2026-03-20
+- 场景：用户指出 BOSS 搜索页往下滚会继续懒加载更多职位，但我前几轮只依据首屏或默认 `search --limit` 结果判断“新机会不多”
+- 问题：
+  1) 把“首屏职位少”误判成“整页机会少”
+  2) 这样会漏掉同一个搜索词下后半页才出现的中小企业岗位
+- 根因：
+  1) 采集链只抽当前已加载 DOM，没有主动下滚触发懒加载
+  2) 我在用户明确提醒前，没有把“BOSS 搜索页是无限滚动列表”当成硬约束
+- 修正动作：
+  1) 为 `chrome_collect_queue` 增加自动下滚加载逻辑：按轮次滚到底并在职位数量不再增长时停止
+  2) 重新对 `AI Agent / 企业AI / AI 应用架构师 / AI 工作流` 等搜索页做滚动采集，再基于完整候选池筛选
+  3) 基于滚动后的候选池补投 `上海艾芭奇科技 / 鹏生科技 / 上海雅通数据科技`
+- 预防规则（Rule）：
+  1) 在 BOSS 搜索结果页判断机会多少之前，必须先把当前页懒加载职位滚出来
+  2) 首屏职位数量不能直接作为“机会稀缺”的证据
+  3) 继续申请前，优先用滚动后的采集结果而不是只看 `search --limit` 的前几条
+- 下次触发信号：用户说“往下滚会出现更多职位”；搜索页明显是无限滚动列表；首屏只看到十几条职位就准备下结论
+- 验证结果：滚动采集后，单页 `anchorCount` 从 `17` 增至 `137`；基于新候选池完成 3 条新的中小企业申请
+
+### Lesson 067
+- 日期：2026-03-20
+- 场景：连续串行执行多条 `opencli boss apply --url ...` 时，后面的结果里出现了“目标职位 URL”和“实际落到的聊天/职位上下文”不一致
+- 问题：
+  1) 返回对象 `ok=true`，但 `initialMeta.url` 仍然指向上一条岗位，不能据此认定新岗位申请成功
+  2) 如果不额外核对，会把串页或复用上一条会话的结果误算成成功申请
+- 根因：
+  1) `opencli boss apply --url` 在前一条命令已经跳进聊天页后，后续同批次命令可能复用上一条 automation 上下文
+  2) 当前成功判定过于依赖 `ok/status/mode`，缺少“结果目标必须等于请求目标 URL”的二次校验
+- 修正动作：
+  1) 本轮将 `上海晒聚科技` 的结果标记为 `unverified`，不计入成功
+  2) 后续批量申请时，除了看 `ok=true`，还要核对 `initialMeta.url` 或职位标题是否与目标岗位一致
+  3) 一旦出现 `attach failed` 或目标错位，先停下来重连/重开正确职位页，再单独重试，不继续顺手串行下一个
+- 预防规则（Rule）：
+  1) `opencli boss apply --url` 的成功必须满足“动作成功 + 目标岗位校验通过”
+  2) 不能只靠 `ok=true` 或 `sent_message_modal_stay` 统计申请成功数
+  3) 批量串行申请中，只要发现一条结果目标错位，后续同批次结果都要提高警惕并优先人工核对
+- 下次触发信号：结果里的 `initialMeta.url` 不等于传入 `--url`；结果页面直接落在上一条聊天线程；重试报 `attach failed: No tab with given id`
+- 验证结果：本轮将 `小佩网络`、`碧蔓` 计为确认成功，将 `上海晒聚科技` 标为 `unverified`
+
+### Lesson 068
+- 日期：2026-03-20
+- 场景：用户要把偏 `CEO / Agentic Engineer` 的旧 PDF 简历，改成能投 `Node.js + TypeScript + Web + AI 应用工程` 这类岗位的新版本
+- 问题：
+  1) 直接在原 PDF 的高管/投融资叙事上零碎修补，会继续稀释岗位匹配度
+  2) 原始简历里最强的卖点其实是 `AI 应用工程 + 全栈交付 + 线上稳定性 + 工作流自动化`，但没有被放到最前面
+- 根因：
+  1) 原简历是按“职业全貌”写的，不是按目标岗位写的
+  2) 如果不单独做 targeted version，ATS 和招聘者都很难在前半页读到真正相关的能力
+- 修正动作：
+  1) 新建定制版简历，而不是覆盖原 PDF
+  2) 重排叙事顺序：先写 `AI 应用全栈 / 架构落地 / Node.js + TypeScript + Web / Docker / 线上稳定性`
+  3) 将 `社交 App 重构`、`Auto Dev / 数字员工`、`高性能系统与恢复能力` 作为核心证据前置
+- 预防规则（Rule）：
+  1) 面向具体岗位改简历时，优先新建 targeted CV，不要在 master resume 上直接打补丁
+  2) 如果目标是工程岗，必须主动压缩高管/投资/不相关叙事，把最相关的技术证据放到第一页
+  3) 简历导出文件必须保存在 `redbook` 工作区内，原始外部文件只读不覆盖
+- 下次触发信号：用户给出明确 JD；旧简历标题与目标岗位不一致；前半页出现大量不相关管理/投资内容
+- 验证结果：已产出 `2026-03-20-sonic-ai-fullstack-cv.md/html/pdf`，并完成 PDF 导出与文本抽取验证
+
+### Lesson 069
+- 日期：2026-03-21
+- 场景：用户指出定制简历 PDF 第三页不应出现“本版本为针对...”以及 Chrome 自动打印出来的标题页眉
+- 问题：
+  1) HTML 正文里多放了一句“定制版说明”，对正式投递简历是噪音
+  2) 用 Chrome 默认 `print-to-pdf` 时，会把页面标题等信息自动印到页眉页脚
+- 根因：
+  1) 把内部备注写进了最终投递文件
+  2) 导出 PDF 时没有显式关闭 header/footer
+- 修正动作：
+  1) 删除 HTML 里的 `.foot` 提示文案
+  2) 重新用 `--no-pdf-header-footer` 导出 PDF
+- 预防规则（Rule）：
+  1) 投递版简历不要出现“本版本针对某岗位”“定制版说明”这类元信息
+  2) 用 Chrome 导出正式 PDF 时，默认加 `--no-pdf-header-footer`
+- 下次触发信号：PDF 页首出现标题/路径/页码；末页出现内部备注或版本说明
+- 验证结果：重导后的 PDF 共 3 页，最后一页仅保留正文，不再出现页眉和定制版脚注
+
+### Lesson 070
+- 日期：2026-03-21
+- 场景：用户进一步纠正定制简历的技术重心，希望不要把 `Node.js` 放在前台，而要突出 `Rust` 和 `iOS`
+- 问题：
+  1) 即使简历整体比旧版更贴工程岗，第一页仍然把 `Node.js + TypeScript + Web` 放成主叙事
+  2) 这会把岗位方向带偏到典型前后端全栈，而不是更接近用户真实优势的 `Rust / iOS / 跨端架构`
+- 根因：
+  1) 我前一版过度贴合用户给的 JD 图片，忽略了用户真实能力重心与岗位选择策略
+  2) 没有把“JD 匹配”和“本人真实 strongest angle”做区分
+- 修正动作：
+  1) 将标题、摘要、技能排序、匹配点改成 `AI 应用工程师 / Rust 与跨端架构落地负责人`
+  2) 将 `Rust`、`Swift / SwiftUI`、`WebView / WKWebView` 前置，`TypeScript` 降为辅助技术栈
+  3) 重新导出 PDF 并验证第一页文本抽取结果
+- 预防规则（Rule）：
+  1) 改简历时，不能只跟着 JD 走，还要优先贴用户真正最强的技术叙事
+  2) 如果用户明确说“不要强调 X，要强调 Y”，必须同步改标题、摘要、技能排序和匹配点，不能只改一两句
+- 下次触发信号：用户指出“不要强调某技术”；第一页标题和技能排序与用户真实优势不一致
+- 验证结果：最新 PDF 首页已改为 `AI 应用工程师 / Rust 与跨端架构落地负责人`，`Rust / iOS` 位于前台叙事
+
+### Lesson 071
+- 日期：2026-03-21
+- 场景：用户在我继续做 BOSS 投递时，观察到 Chrome 页面不断被抢到前台并询问原因
+- 问题：
+  1) 手动投递时会明显抢占用户当前焦点，影响正常使用电脑
+  2) 我为了绕过 `opencli boss apply --url` 的 `job_card_not_found`，切回了 `chrome_apply_queue.js` 路径
+- 根因：
+  1) `chrome_apply_queue.js` 虽然底层已经复用 `opencli` shared boss core，但外层 tab adapter 仍然是 `chrome_current.js`
+  2) `chrome_current.js` 通过 AppleScript 驱动当前 Chrome 前台分页，核心函数里反复调用 `tell application "Google Chrome" ... activate`
+- 修正动作：
+  1) 说明根因并停止把“shared core = 不抢焦点”混为一谈
+  2) 后续当用户正在使用电脑时，优先使用纯 `opencli` / Browser Bridge 路径；只有用户接受前台切页时才用 `chrome_current` 路径
+- 预防规则（Rule）：
+  1) 只要涉及 `chrome_current.js` / AppleScript current-tab adapter，就必须默认会抢前台焦点
+  2) `opencli` shared core 与 `chrome_current` 外层控制不能混称为“纯 opencli”；需要明确告知用户当前走的是哪一层
+  3) 用户明确表达不希望被打扰时，不要用 `chrome_apply_queue.js` 做 live 投递
+- 下次触发信号：用户说页面一直闪、跳、抢焦点；命令链路进入 `chrome_apply_queue.js`、`chrome_collect_queue.js` 或任何 `chrome_current.js` adapter
+- 验证结果：已确认当前没有残留 `chrome_apply_queue` / `opencli boss apply` 进程在继续运行
+
+### Lesson 072
+- 日期：2026-03-21
+- 场景：用户明确要求删除残留的 `chrome_apply` 相关代码，避免仓库里继续保留会抢焦点的旧投递入口
+- 问题：
+  1) 即使主链已经切到 `opencli boss apply`，仓库里仍然暴露了 `chrome:apply`
+  2) 这会让后续使用者或自动化文档再次误走 current-tab / AppleScript 投递路径
+- 根因：
+  1) 之前只做了“停用”和“默认关闭”，没有把旧入口从 package、README、skill、supervisor 中真正摘掉
+  2) 旧脚本本体和测试还在，形成了可误用的残留面
+- 修正动作：
+  1) 删除 `tools/auto-zhipin/scripts/chrome_apply_queue.js` 和对应测试
+  2) 将 `package.json`、README、bootstrap、skill 全部改为 `boss:apply -> redbook-opencli.js boss apply`
+  3) 让 `chrome_supervisor.js` 不再调用旧 apply worker
+- 预防规则（Rule）：
+  1) 用户明确要求“不要再走旧入口”时，不能只停配置；要把仓库里的暴露面一起删掉
+  2) 对会强制抢前台焦点的 current-tab 路径，默认不保留公开 npm script 入口
+- 下次触发信号：README 仍写着旧命令；`package.json` 还保留 `chrome:apply`；supervisor 还能调旧 worker
+- 验证结果：`rtk test npm test` 通过，`npm run boss:apply -- --help` 正常，仓库内已无 `chrome:apply` 可执行入口
+
+### Lesson 073
+- 日期：2026-03-21
+- 场景：将 `opencli` 从 `1.0.1` 升到 `1.1.1` 后，仓库内 `verify.js` 立即因为命令参数变化失败
+- 问题：
+  1) `verify` 还在按旧接口调用 `twitter search --query`、`xiaohongshu search --keyword`
+  2) 细项命令参数也从下划线改成了连字符，例如 `--note-id`、`--security-id`
+- 根因：
+  1) `1.1.1` 把多个 search 命令统一成“位置参数”风格
+  2) 升级前只检查了版本和目录结构，没有先跑一轮 `--help` 对照 CLI contract
+- 修正动作：
+  1) 更新 `tools/opencli/scripts/verify.js`
+  2) 更新 `tools/opencli/README.md` 示例命令
+  3) 重新跑完整 `verify` smoke，确认 `twitter / xiaohongshu / boss` 读链仍然可用
+- 预防规则（Rule）：
+  1) 升级第三方 CLI 小版本时，不能只看安装成功；必须至少核对一次 `--help` 和 smoke 脚本
+  2) `opencli` 升级后优先怀疑“命令 contract 变化”，再怀疑 Browser Bridge 或登录态
+- 下次触发信号：升级后报 `unknown option '--query'`、`required option '--note-id' not specified` 这类参数错误
+- 验证结果：`opencli 1.1.1` 下 `node tools/opencli/scripts/verify.js` 已完整通过
+
+### Lesson 074
+- 日期：2026-03-21
+- 场景：升级到 `opencli 1.1.1` 后继续用纯 `opencli boss apply --url` 投递 AI 应用/架构岗位
+- 问题：
+  1) `boss apply --url` 并不是所有岗位都稳定，常见失败是 `job_card_not_found`
+  2) 还有一类更容易误判的情况：按钮点到了，但页面跳到 `about:blank`，随后 `greetingResult.reason=input_not_found`
+- 根因：
+  1) 某些岗位 URL 虽然从搜索结果可见，但直接按 URL 落点时，BOSS 当前页面上下文没有稳定复原对应职位卡片
+  2) `ok=true` 或 `clickResult.ok=true` 只代表按钮被点到，不代表已经形成了可验证的聊天/继续沟通状态
+- 修正动作：
+  1) 本轮只把 `afterMeta` 仍在原职位页、或按钮状态切到 `继续沟通` / `sent_message_modal_stay` 的结果记为成功
+  2) 将 `about:blank + input_not_found` 统一归为 `apply_not_verified`，不再算成功
+- 预防规则（Rule）：
+  1) BOSS 投递不能只看按钮点击成功；必须验证投递后的页面状态
+  2) 出现 `job_card_not_found` 或 `about:blank` 时，不得把该岗位记为成功投递
+  3) 对这类岗位，优先从搜索结果页就近处理，而不是只依赖 `--url` 直落
+- 下次触发信号：返回里出现 `job_card_not_found`；`afterMeta.url=about:blank`；`greetingResult.reason=input_not_found`
+- 验证结果：本轮 5 次尝试中只确认 `小许宠物 / AI 与流程自动化 (RPA) 应用负责人` 1 条成功，其余已按 `ambiguous` 或 `not_found` 处理，没有虚记成功数
+
+### Lesson 075
+- 日期：2026-03-23
+- 场景：按用户口径批量投递 BOSS 职位时，用户指出我把大公司 / 研究院 / 国企也投进去了，且消息列表里出现了大量不该继续互动的对象
+- 问题：
+  1) 自动投递没有把“大公司 / 研究院 / 集团 / 国企”当成硬阻断条件
+  2) 当职位 `company` / `companySize` 缺失时，旧 apply 队列仍然继续投，导致过滤失效
+  3) 消息 triage 里虽然能识别大公司对象，但没有统一沉到 blockedEntries，后续还可能继续跟进
+- 根因：
+  1) 之前只按薪资、关键词和公司规模做软过滤，没有把品牌/组织类型黑名单放进 apply gate
+  2) 过度信任采集数据完整性，没有把“公司字段缺失”视为高风险信号
+  3) opencli chat triage 的 blocked 构成只包含拒绝和站外邮箱，没有把大公司忽略类一并并入
+- 修正动作：
+  1) 为 `filters` 和 `apply` 同时加入 `excludeCompanyKeywords`
+  2) 增加 `apply.requireCompany = true`，`company` 缺失则不自动投递
+  3) 让 `opencli_chat_triage` 将 `big_company_ignore` 直接写入 blockedEntries，并生成可读的消息整理报告
+- 预防规则（Rule）：
+  1) 用户明确说“不投大公司/国企/研究院”时，这必须是 apply gate，而不是排序偏好
+  2) 自动投递前，只要 `company` 缺失，就默认不投；宁可漏投，不可盲投
+  3) 消息 triage 里的“忽略对象”必须沉到 blockedEntries，避免后续 follow-up 再次碰到
+- 下次触发信号：投递结果里 `company` 为空；消息列表里出现大量 `集团 / 研究院 / 大厂品牌`；用户再次指出“这些我根本不会去”
+- 验证结果：`pickOpencliApplyCandidates()` 已能拦截缺失公司和黑名单公司；current-tab 消息列表已整理出 `follow_up_candidate / big_company_ignore / offsite_email` 三桶，且可输出 Markdown 报告
+
+### Lesson 076
+- 日期：2026-03-25
+- 场景：将 `@jackwener/opencli` 从 `1.1.1` 升级到 `1.3.3` 并复用 redbook 现有 patch / verify 流程
+- 问题：
+  1) `verify.js` 仍按 `1.1.1` 的 CLI contract 调用 `doctor --live`
+  2) `xiaohongshu creator-note-detail` 和 `boss detail` 仍使用旧的 `--note-id` / `--security-id` 选项
+  3) 如果只看 `npm install` 是否成功，会误以为升级已经完成
+- 根因：
+  1) `1.3.3` 将部分命令进一步统一为“位置参数”风格
+  2) `doctor` 的默认行为变成直接做 live connectivity 检查，不再需要 `--live`
+  3) 旧 verify 脚本没有先跑一轮新版 `--help` 对照 contract
+- 修正动作：
+  1) 将仓库 pin 从 `1.1.1` 更新到 `1.3.3`
+  2) 更新 `tools/opencli/scripts/verify.js`：
+     - `doctor --live` -> `doctor`
+     - `creator-note-detail --note-id X` -> `creator-note-detail X`
+     - `boss detail --security-id X` -> `boss detail X`
+  3) 在临时目录先安装 `1.3.3` 并重放 patch，确认 smoke 通过后，再升级全局包
+- 预防规则（Rule）：
+  1) 升级 `opencli` 时，必须先在临时目录装一份新版并重放 patch，再决定是否动全局环境
+  2) 每次升级后先跑新版 `doctor --help`、`boss detail --help`、`xiaohongshu creator-note-detail --help`，确认 CLI contract 再改 verify
+  3) 对 redbook 这类 heavily patched 第三方 CLI，升级验收必须使用真实工作环境变量（本项目里是 `OPENCLI_CDP_ENDPOINT=http://localhost:9222`），不能只在默认桥接模式下判断
+- 下次触发信号：升级后出现 `unknown option '--live'`、`unknown option '--note-id'`、`unknown option '--security-id'`
+- 验证结果：临时 `1.3.3 + patch + CDP` smoke 通过；正式全局升级后 `opencli --version` 为 `1.3.3`，`node tools/opencli/scripts/verify.js` 在 CDP 环境下完整通过
+
+### Lesson 077
+- 日期：2026-03-25
+- 场景：升级到 `opencli 1.3.3` 后，继续用 `OPENCLI_CDP_ENDPOINT=http://localhost:9222` 在同一已连接 Chrome 目标页上连续做 BOSS 搜索
+- 问题：
+  1) 两条 `boss search` 只要并发跑，很容易有一条直接报 `Error: Inspected target navigated or closed`
+  2) 即使只是为了提速做多个关键词搜索，也会把当前 inspected target 的上下文打断
+- 根因：
+  1) `opencli 1.3.3` 下的 BOSS 搜索会真实驱动同一个 CDP target 导航
+  2) 同一 target 上并发导航没有隔离，后发起的搜索会抢掉前一个搜索的页面上下文
+- 修正动作：
+  1) 本轮全部退回“单 target 串行搜索 / 串行 detail / 串行 apply”
+  2) 先完成一条命令再开始下一条，不再对同一 Chrome 会话做并发 BOSS 搜索
+- 预防规则（Rule）：
+  1) 走 `opencli + CDP` 的 BOSS 链路时，同一浏览器 target 上禁止并发执行多个 `boss search/detail/apply`
+  2) 如果需要多关键词搜索，必须串行跑；提速应靠减少候选，不应靠并发抢同一页
+  3) 一旦看到 `Inspected target navigated or closed`，优先怀疑并发导航冲突，而不是立刻怀疑登录态失效
+- 下次触发信号：同一轮里同时发多个 `boss search`；返回 `Inspected target navigated or closed`
+- 验证结果：本轮改为全串行后，`boss detail` 和 3 条真实 `boss apply` 均稳定成功，且都拿到 `detail_success_signal`
+
+### Lesson 078
+- 日期：2026-03-25
+- 场景：BOSS 批量投递过程中命中安全验证页，用户要求不要为了“自动恢复”而反复点击或制造页面闪烁
+- 问题：
+  1) 之前的恢复逻辑会尝试自动点击验证按钮
+  2) 这会让页面出现额外跳动，不符合用户希望“我自己手动过验证”的操作方式
+- 根因：
+  1) 我把“尽快恢复批量流程”放在了“保持当前浏览器稳定、减少打扰”前面
+  2) 验证恢复策略默认成了自动操作，而不是先停住等待人工接管
+- 修正动作：
+  1) 去掉 `opencli_cdp_apply_until_target` 中对验证页的自动点击恢复
+  2) 改为检测到 `verify.html` 后只记录 `verification_pause_required`，并轮询等待用户手动完成验证后再继续
+- 预防规则（Rule）：
+  1) 用户明确说“验证我自己处理”后，自动化脚本在验证阶段只能暂停等待，不能主动点验证按钮
+  2) 遇到安全验证时，优先保证浏览器画面稳定，避免通过自动重试制造闪烁
+  3) 验证恢复日志必须明确提示“脚本已暂停，等待手动完成”，不要伪装成自动恢复成功
+- 下次触发信号：CDP 目标页出现 `verify.html`；用户提到“不要闪”“我自己跳验证”
+- 验证结果：脚本已改为手动验证暂停模式；待下一次真实触发验证页时按新口径复核

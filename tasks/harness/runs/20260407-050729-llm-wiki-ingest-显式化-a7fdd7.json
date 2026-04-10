@@ -1,0 +1,75 @@
+{
+  "run_id": "20260407-050729-llm-wiki-ingest-显式化-a7fdd7",
+  "kind": "content_pipeline",
+  "topic": "LLM Wiki ingest 显式化",
+  "summary": "将 LLM Wiki 从文档规则补成有 run 证据的显式工作流",
+  "source": "docs/reports/2026-04-07-llm-wiki-workflow-gap.md",
+  "owner": "Codex",
+  "priority": "P1",
+  "current_stage": "research",
+  "status": "in_progress",
+  "created_at": "2026-04-07T05:07:29+00:00",
+  "updated_at": "2026-04-07T05:07:37+00:00",
+  "artifacts": [
+    {
+      "id": "3e0a4e3d40",
+      "type": "research_report",
+      "path": "docs/reports/2026-04-07-llm-wiki-workflow-gap.md",
+      "description": "确认 LLM Wiki 当前只有规范层和结果层，缺少显式 workflow run",
+      "stage": "research",
+      "created_at": "2026-04-07T05:07:37+00:00"
+    }
+  ],
+  "checks": {
+    "materials_queried": true,
+    "research_complete": true,
+    "outline_locked": false,
+    "draft_written": false,
+    "facts_checked": false,
+    "platform_ready": false,
+    "published": false,
+    "progress_updated": false,
+    "wiki_logged": false,
+    "lessons_reviewed": false
+  },
+  "incidents": [],
+  "events": [
+    {
+      "at": "2026-04-07T05:07:29+00:00",
+      "type": "run_created",
+      "stage": "research",
+      "message": "Run created for topic: LLM Wiki ingest 显式化",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-07T05:07:37+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: research_report",
+      "meta": {
+        "path": "docs/reports/2026-04-07-llm-wiki-workflow-gap.md",
+        "artifact_id": "3e0a4e3d40"
+      }
+    },
+    {
+      "at": "2026-04-07T05:07:37+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-07T05:07:37+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check research_complete set to True",
+      "meta": {
+        "check_name": "research_complete",
+        "value": true
+      }
+    }
+  ]
+}

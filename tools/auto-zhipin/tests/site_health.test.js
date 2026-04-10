@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 
 const {
   classifySiteHealth,
+  classifySiteHealthWithHooks,
   extractRestrictedRecoveryAt,
   isCircuitBreakerActive,
 } = require('../lib/site_health');
@@ -54,6 +55,28 @@ test('classifySiteHealth reports healthy when expected shell is present', () => 
     reason: null,
     recoveryAt: null,
   });
+});
+
+test('classifySiteHealthWithHooks emits onHealthChange with context', async () => {
+  const events = [];
+  const result = await classifySiteHealthWithHooks({
+    url: 'https://www.zhipin.com/web/geek/chat?ka=header-message',
+    title: 'BOSS直聘',
+    bodyText: '',
+    looksReady: true,
+  }, {
+    context: { source: 'site_health_test' },
+    hooks: {
+      async onHealthChange(health, context) {
+        events.push({ health, context });
+      },
+    },
+  });
+
+  assert.equal(result.status, 'healthy');
+  assert.equal(events.length, 1);
+  assert.equal(events[0].health.status, 'healthy');
+  assert.deepEqual(events[0].context, { source: 'site_health_test' });
 });
 
 test('isCircuitBreakerActive only blocks while restricted cooldown is active', () => {

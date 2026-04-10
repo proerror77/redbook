@@ -13,7 +13,7 @@ from collections import Counter
 from x_utils import (
     ensure_browser,
     navigate,
-    run_ab,
+    run_abs as run_ab,
     extract_tweets,
     save_report,
     print_colored,
@@ -68,7 +68,7 @@ def scroll_column(column_name: str, times: int = 10, wait: float = 2.5) -> list:
     滚动指定列并收集 snapshots
 
     注意：X Pro 的滚动需要先聚焦到列，然后滚动
-    由于 actionbook 无法精确聚焦特定列，这个版本只滚动整个页面
+    由于 agent-browser-session 无法精确聚焦特定列，这个版本只滚动整个页面
 
     Args:
         column_name: 列名（暂时未使用，未来可以改进）
@@ -85,7 +85,7 @@ def scroll_column(column_name: str, times: int = 10, wait: float = 2.5) -> list:
         print_colored(f"  滚动 {i+1}/{times}...", 'yellow')
 
         # 滚动页面
-        run_ab('eval "window.scrollBy(0, 800)"', timeout=5)
+        run_ab('scroll down 800', timeout=5)
         time.sleep(wait)
 
         # 获取 snapshot

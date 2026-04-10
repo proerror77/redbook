@@ -54,9 +54,17 @@ After collecting answers, update `references/user-profile.md` with `initialized:
 
 ```
 1. Read references/user-profile.md → Get persona, style
-2. Check assets/templates/{type}/ → Look for user reference posts
-3. If no references → Use default patterns from references/post-patterns.md
+2. Read wiki/index.md → Find relevant pages for this topic
+3. Read relevant wiki pages (选题/{topic}.md, 概念/*.md, 创作者/*.md)
+4. Check assets/templates/{type}/ → Look for user reference posts
+5. If no references → Use default patterns from references/post-patterns.md
 ```
+
+**Wiki query priority**:
+- `wiki/选题/` — topic angles, pain points, existing coverage
+- `wiki/概念/` — theoretical frameworks to reference
+- `wiki/创作者/` — style patterns from tracked creators
+- `wiki/方法论/` — title and opening hook patterns
 
 ### Step 2: Determine Format
 
@@ -206,3 +214,15 @@ After creation, suggest:
 
 下一步：运行 /x-publish 发布到X草稿箱
 ```
+
+## Wiki Feedback (Optional)
+
+If the creation process produced a valuable new angle, comparison, or insight not already in the wiki:
+- Update `wiki/选题/{topic}.md` with the new angle
+- Append to `wiki/log.md`:
+  ```
+  ## [{date}] query | x-create: {topic}
+  新增洞察：{one-line summary}
+  ```
+
+This keeps the wiki compounding — good analysis doesn't disappear into chat history.

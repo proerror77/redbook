@@ -1,0 +1,14 @@
+Create a cover image for article "半年两次斩首：精准到可怕的新战争模式"
+
+Visual concept:
+- Dark tech aesthetic with satellite constellation
+- Three satellites in orbit forming a triangular pattern, beams converging on a target point
+- Digital grid overlay showing real-time coordination
+- Color palette: dark navy background, electric blue/cyan for satellites and beams, subtle red accent for target
+- Rendering: clean digital style with glowing elements
+- Composition: satellites in upper portion, target zone in lower third
+- Title text: "半年两次斩首：精准到可怕的新战争模式" in bold sans-serif, positioned at bottom
+
+Style: Cinematic tech visualization, professional military intelligence aesthetic
+Aspect ratio: 16:9
+No realistic human figures - use abstract geometric shapes for target representation

@@ -131,7 +131,7 @@ async function main() {
     return;
   }
 
-  const backend = String(args.backend || 'playwright').toLowerCase();
+  const backend = String(args.backend || 'pinchtab').toLowerCase();
   if (backend === 'pinchtab') {
     await runPinchTabWorker({
       config,

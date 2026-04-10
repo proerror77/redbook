@@ -15,7 +15,10 @@
     "pollIntervalMs": 25000,
     "conversationScanLimit": 8,
     "maxLoops": 0,
-    "draftReplyMode": "template",
+    "draftReplyMode": "llm",
+    "replyProvider": "codex_cli",
+    "replyModel": "gpt-5.4-mini",
+    "replyTimeoutMs": 15000,
     "autoReplyEnabled": false,
     "autoReplySend": false,
     "autoSendResumeButton": false,
@@ -94,5 +97,17 @@
       "立即申请",
       "聊一聊"
     ]
+  },
+  "supervisor": {
+    "enabled": true,
+    "pause": false,
+    "schedulerIntervalMinutes": 5,
+    "tickBudgetMs": 600000,
+    "lockTtlMs": 1200000,
+    "maxAppliesPerTick": 5,
+    "dailySuccessfulAppliesTarget": 130,
+    "maxAutoRepliesPerDay": 50,
+    "maxStaleFollowupsPerDay": 15,
+    "staleConversationHours": 48
   }
 }
