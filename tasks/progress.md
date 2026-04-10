@@ -115,6 +115,50 @@
 - X 关系操作要坚持“小批量、单次确认、页面回读”原则；不要因为剩余数量少就恢复连续点击。
 - 对 follow 成功与否，必须以资料页按钮切换到 `正在关注/取消关注` 为准，不能只看 click 返回成功。
 
+## [2026-04-10] 会话补记：X KOL 推荐名单慢速补关注
+
+**完成了什么：**
+- 根据用户提供的 KOL 推荐截图，继续补 follow 剩余账号。
+- 先复用昨晚的限速经验，确认浏览器会话正常后改成 `2 个一批`、`--wait-seconds 2.5` 的慢速策略。
+- 本轮明确成功补 follow 的账号有：
+  - `@dhh`
+  - `@karisaari`
+  - `@trq212`
+  - `@lennysan`
+  - `@leerob`
+  - `@ctatedev`
+  - `@shipgford`
+  - `@shadcn`
+  - `@emilkowalski`
+  - `@joshpuckett`
+  - `@jakubkrehel`
+  - `@raphaelsalaja`
+  - `@nandafyi`
+  - `@benjitaylor`
+  - `@mengto`
+  - `@jayneildalal`
+  - `@jh3yy`
+  - `@gergelyorosz`
+  - `@theo`
+- 用户截图提供了更强证据：X 明确弹出“抱歉，你受到速度限制。请稍等片刻，然后再试一次。” 蓝色横幅，因此后续执行全部按 rate limit 处理。
+
+**未完成 / 遗留：**
+- 仍未确认成功的账号有：
+  - `@ThePrimeagen`
+  - `@Rasmic`
+  - `@atmoio`
+  - `@jamwt`
+  - `@jamesacowling`
+  - `@glcst`
+  - `@samlambert`
+
+**下次会话优先做：**
+- 再隔一段时间后，仅针对上述 7 个失败账号继续慢速补 follow。
+
+**需要注意：**
+- 当用户截图已经明确给出 rate limit 横幅时，不要再拿“按钮回读失败”去和它对冲。
+- X 的 follow 失败账号要留到下一轮窗口处理，不要在同一轮里二次点击。
+
 ## [2026-04-09] 会话补记：X following 全量巡检与清理
 
 **完成了什么：**
