@@ -1,6 +1,6 @@
 # AI 工具与效率
 
-> 从 X 每日研究报告提炼 | 最后更新：2026-04-07
+> 从 X 每日研究报告提炼 | 最后更新：2026-04-10
 
 ## 核心痛点
 
@@ -65,6 +65,26 @@
 - `Ollama + Claude Code`、`LM Studio` 的官方支持，说明本地模型开始长出稳定的工程接口
 - `Gemma 4 + AI Edge Gallery + LiteRT-LM` 说明 Google 正在把端侧 agent 当正式路线推进，而不是 demo
 - 结论：AI 工具竞争开始从“谁更强”转向“谁更省、谁更快、谁离用户更近”
+
+## 今日信号（2026-04-10）
+
+**X.com 高频话题**：
+- `AI`（32次）、`agent`（17次）、`Claude`（10次）、`code`（10次）持续主导讨论
+- **LangChain Deep Agents Deploy** 发布 beta：开源替代 Claude Managed Agents，多人转发，agent 部署基础设施竞争加剧
+- **OpenAI Codex 插件生态**：Codex 开放插件接入，与主流开发工具无缝集成（❤️ 5340）
+- **ChatGPT Pro $100/月新套餐**：专为 Codex 重度用户设计，中文圈多人讨论（@okooo5km、@harryworld）
+- **DHH 谈 AI 态度转变**：6个月前反 AI，现在重新评估，Lex Fridman 播客（❤️ 7036），说明技术圈对 AI 的态度在快速演变
+
+**HN 高热讨论**：
+- **"Reallocating $100/Month Claude Code Spend to Zed and OpenRouter"**（291赞/198评）— 用户开始主动优化 AI 工具成本，从单一订阅转向多模型路由，OpenRouter 作为中间层价值凸显
+- **Maine 禁止新建大型数据中心**（243赞/343评）— AI 基础设施的能源/监管压力开始落地，不只是技术问题
+- **Instant 1.0：AI 编码 app 的后端**（76赞）— AI 生成代码的配套基础设施正在成熟
+
+**Reddit AI/ML**：
+- "AI Didn't and Will not Take our Jobs"（378赞/213评）— 开发者社区对 AI 替代论的反驳，真实使用场景中 AI 重度用户≠最高产
+- "Is anyone else noticing that the devs who use AI constantly aren't always the most productive ones?"（184赞/75评）— AI 工具使用量与实际产出的悖论，高价值选题角度
+
+**洞察**：AI 工具竞争正在分化为两条线：一是"谁更便宜/更灵活"（OpenRouter、Zed 替代 Claude Code）；二是"谁能真正提升产出"（AI 重度用户≠高产的悖论）。这两个角度都有强烈的内容共鸣潜力。
 
 ## 持续关注的信号源
 
