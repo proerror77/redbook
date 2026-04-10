@@ -3,6 +3,20 @@
 > Append-only。格式：`## [日期] 操作类型 | 描述`
 > 操作类型：ingest | query | lint | migrate
 
+## [2026-04-10] ingest | X 每日日程 + HN 热点 + Reddit 监控
+
+触及页面：5 个
+- `wiki/选题/AI工具与效率.md` — 补充今日信号：LangChain Deep Agents Deploy、OpenAI Codex 插件、ChatGPT $100/月套餐、DHH 态度转变、Claude Code 成本优化讨论
+- `wiki/选题/内容创作与增长.md` — 补充今日信号：emilkowalski 判断力角度、Thariq 内容资产化
+- `wiki/选题/创业与一人公司.md` — 补充今日信号：Reddit 加法陷阱、复利习惯
+- `wiki/选题/独立开发者.md` — 补充今日信号：AI 重度用户≠高产悖论、Claude Code 成本优化
+- `wiki/index.md` + `wiki/overview.md` — lint 修复：补录孤立页面 X-长文与Thread写作架构、更新日期
+
+关键洞察：
+- AI Agent 基础设施竞争加剧：LangChain 推出 Deep Agents Deploy 直接对标 Claude Managed Agents，开源 vs 托管的路线分化开始明显
+- AI 工具祛魅：开发者社区出现"AI 重度用户≠高产"的反思，这是高价值选题切入点
+- 成本意识觉醒：用户开始主动从 Claude Code 迁移到 Zed+OpenRouter，多模型路由成为新趋势
+
 ---
 
 ## [2026-04-09] query | X following 全量巡检与清理
@@ -374,6 +388,21 @@
 - 热点评论帖最容易犯的错是“先讲背景”，修法是第一句直接给判断。
 - 工具分析帖的书签价值来自“门槛信息”，不来自功能堆叠。
 - 多版本草稿会拖慢后续执行；对内容生产系统来说，推荐终稿比保留 3 套平级版本更有价值。
+
+## [2026-04-10] query | 内容工作流防同质化审计
+
+来源：用户提供关于平台审核池、AI 辅助比例、同质化与情绪密度的经验，要求检查 redbook 工作流是否会犯同样问题
+
+触及页面：4个
+- `docs/shared/redbook-playbook.md` — 新增 `AI 辅助安全线`、`情绪密度检查`、`发布前内容风控（强制）`
+- `03-方法论沉淀/X-长文与Thread写作架构.md` — 新增 `情绪密度` 与 `去模板化` 检查项
+- `AGENTS.md` — 通过 shared playbook sync 同步更新
+- `CLAUDE.md` — 通过 shared playbook sync 同步更新
+
+关键洞察：
+- redbook 原有流程偏“素材检索、结构 QA、发布清单”，缺的不是更多创作动作，而是内容风控门
+- 平台高风险通常不是单一 AI 痕迹，而是 `AI 味重 + 同质化高 + 情绪密度低` 的组合
+- 最小正确修法不是禁止 AI，而是把 AI 限定在初稿层，并把人工素材嵌入和发布前四检显式化
 
 ## [2026-04-09] query | 放弃“部署战争”长文主线
 
