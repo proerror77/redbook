@@ -1,5 +1,31 @@
 # Task Todo
 
+## 新任务：修复 Claude Code MCP 配置与失效插件引用
+- 任务名称：修复项目 `.mcp.json` 的 schema 错误，并将 `context-engineering-marketplace` 的旧插件名 `agent-architecture` 迁移到当前有效名称 `context-engineering`
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-11
+- 截止日期：2026-04-11
+- 优先级：P0
+- Harness Run：N/A（工程配置修复）
+
+### 执行清单
+- [x] 1. 复盘 `tasks/lessons.md`，并定位 `.mcp.json` 与插件错误的真实根因
+- [x] 2. 确认当前 marketplace 中的有效插件名与缓存状态
+- [x] 3. 修复项目 `.mcp.json` 的 schema
+- [x] 4. 修复用户级插件安装记录、缓存路径与启用键
+- [x] 5. 验证 JSON 可解析、插件引用已对齐，并回填 progress / review 结论
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已确认项目 `.mcp.json` 仍使用旧的顶层 `mcp.playwright` 结构，当前 Claude Code 需要的是顶层 `mcpServers`
+  - 已确认 `context-engineering-marketplace` 当前 marketplace 里只存在 `context-engineering` 插件，用户安装记录仍指向旧名 `agent-architecture`
+  - 已将项目 `.mcp.json` 改为当前可解析的 `mcpServers` 结构，并保留原有 Playwright token
+  - 已将用户级插件安装记录从 `agent-architecture@context-engineering-marketplace` 迁移到 `context-engineering@context-engineering-marketplace`
+  - 已用当前 marketplace 快照 `401f3dde9653` 重建缓存目录：`~/.claude/plugins/cache/context-engineering-marketplace/context-engineering/401f3dde9653`
+  - 已将 `~/.claude/settings.json` 的 `enabledPlugins` 键同步改为新插件名
+  - 已运行 `claude doctor` 复验；输出中已不再出现 `Project config` 解析错误，也不再出现 `Plugin Errors`
+
 ## 新任务：审计内容工作流的 AI 同质化与平台风控风险
 - 任务名称：基于用户提供的平台审核经验，检查 redbook 工作流是否缺少 AI 占比、同质化、情绪密度与发布前三检门槛，并补齐流程
 - 负责人（Lead Agent）：Codex

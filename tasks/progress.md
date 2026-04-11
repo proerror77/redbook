@@ -4,6 +4,29 @@
 
 ---
 
+## [2026-04-11] 会话补记：修复 Claude Code MCP 配置与失效插件
+
+**完成了什么：**
+- 修复了项目根目录的 `.mcp.json`，把旧的 `mcp.playwright` 结构改成当前 Claude Code 可解析的顶层 `mcpServers` 结构。
+- 保留了原有 `PLAYWRIGHT_MCP_EXTENSION_TOKEN`，仅做 schema 迁移，没有改动 token 值。
+- 定位出 `context-engineering-marketplace` 的插件错误不是 marketplace 缺失，而是插件已从旧名 `agent-architecture` 收敛为新名 `context-engineering`。
+- 已同步修复 3 处用户级状态：
+  - `~/.claude/plugins/installed_plugins.json`
+  - `~/.claude/plugins/cache/context-engineering-marketplace/...`
+  - `~/.claude/settings.json`
+- 已备份旧安装记录到 `~/.claude/plugins/backups/20260411-210526/installed_plugins.json`。
+- 已用 `claude doctor` 复验；新的输出里不再出现 `.mcp.json` parse error，也不再出现 `agent-architecture@context-engineering-marketplace` 的 plugin error。
+
+**未完成 / 遗留：**
+- 这次修的是当前配置与安装记录，不会自动清理历史 debug 日志里旧的 `agent-architecture` 文本；那些只是历史记录。
+- 如果你当前已经开着 Claude Code 旧会话窗口，界面上的旧错误提示可能要在下一次打开 `/doctor` 或重启会话后才完全刷新。
+
+**下次会话优先做：**
+- 如果还要继续整理 Claude Code 环境，可以顺手检查 `~/.claude/settings.json` 里的其他已启用插件是否都和各自 marketplace 当前名称一致。
+
+**需要注意：**
+- 当前仓库里还有大量与你这次修复无关的未提交内容改动；后续提交 git 时要继续保持只提交本次修复相关文件。
+
 ## [2026-04-10] 会话补记：内容工作流防同质化审计
 
 **完成了什么：**
