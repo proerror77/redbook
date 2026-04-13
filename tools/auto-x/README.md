@@ -2,6 +2,12 @@
 
 基于 actionbook（Chrome CDP）的 X/Twitter 研究与数据分析工具集。
 
+## Browser Mode Position
+
+- Standard: [docs/standards/browser-modes.md](/Users/proerror/Documents/redbook/docs/standards/browser-modes.md)
+- Current status: legacy / compatibility path
+- `actionbook` / `agent-browser` / `agent-browser-session` are historical browser stacks retained for compatibility. They are no longer the recommended foundation for new browser-facing work in this repo.
+
 ## 推荐入口（唯一正确路径）
 
 定时/手动都使用同一个入口：

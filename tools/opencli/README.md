@@ -2,6 +2,12 @@
 
 这个目录把本机 `opencli` 修复沉淀成仓库内可重复流程。
 
+## Browser Mode Position
+
+- Standard: [docs/standards/browser-modes.md](/Users/proerror/Documents/redbook/docs/standards/browser-modes.md)
+- Position: compatibility / adapter layer
+- It is not the repo's default browser foundation. It exists to preserve validated bridge flows and provide low-level browser primitives during migration.
+
 它现在做 4 件事：
 
 1. 固化已经验证过的 `opencli 1.6.8` 本地补丁。

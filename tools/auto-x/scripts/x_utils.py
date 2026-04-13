@@ -49,7 +49,7 @@ def run_abs_result(command: str, timeout: int = 30) -> dict:
         }
     """
     full_cmd = f"agent-browser-session {command}"
-    env = {**os.environ, 'PATH': f"/opt/homebrew/bin:{Path.home()}/.local/bin:{os.environ.get('PATH', '')}"}
+    env = {**os.environ, 'PATH': f"/opt/homebrew/bin:{Path.home()}/.local/bin:{os.environ.get('PATH', '')}", 'AGENT_BROWSER_HEADED': os.environ.get('AGENT_BROWSER_HEADED', 'false')}
     try:
         result = subprocess.run(
             full_cmd,
