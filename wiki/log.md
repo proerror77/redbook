@@ -3,6 +3,27 @@
 > Append-only。格式：`## [日期] 操作类型 | 描述`
 > 操作类型：ingest | query | lint | migrate
 
+## [2026-04-13] query | 小红书笔记导出数据复盘与方法论沉淀
+
+来源：`/Users/proerror/Downloads/笔记列表明细表.xlsx` + `04-内容数据统计/数据统计表.md` + 最近 `2026-04-07` 至 `2026-04-12` 已发布小红书稿件
+
+触及页面：6个
+- `wiki/方法论/标题创作.md` — 新增小红书标题规则、高转化案例与低表现案例提醒
+- `wiki/方法论/爆款规律.md` — 新增 7 条样本的点击漏斗复盘
+- `wiki/选题/内容创作与增长.md` — 回写最近一轮小红书偏弱的原因
+- `wiki/index.md` — 更新相关页面最后更新时间
+- `tasks/todo.md` — 将这轮复盘补成已完成的知识沉淀动作
+- `tasks/progress.md` — 记录这轮数据复盘已进入 wiki
+
+关键洞察：
+- 这轮样本的主瓶颈是点击，不是简单的“内容没人看完”。
+- 小红书第一击更吃“具体问题 + 明确结果”，不吃“行业评论式判断”。
+- 抽象词如 `Prompt`、`Harness`、`工作流`、`工程化` 不适合做小红书主标题第一钩子。
+- 标题、封面、正文前两屏一旦承诺不一致，点击和承接会一起掉。
+- 账号短期同时打多类人群时，平台标签会漂，分发会更不稳定。
+
+---
+
 ## [2026-04-10] ingest | X 每日日程 + HN 热点 + Reddit 监控
 
 触及页面：5 个
@@ -180,6 +201,42 @@
 - 小红书发布链路真正的坑不只是登录态，`publish_pipeline.py` 默认也只会把内容填到草稿页；必须显式带 `--auto-publish`，或额外补一次 `click-publish`
 - “选题 vs 观众”适合做内容创作类长期主题，强在反常识切口和可执行信号
 - Galileo-0 这类工具内容，最稳的写法不是“新工具介绍”，而是把它提升为“AI 质检基础设施”的行业信号
+
+## [2026-04-12] ingest | 补发《用 AI 越多，大脑越废？》到 X.com
+
+来源：`01-内容生产/03-已发布的选题/2026-04-11-用AI越多大脑越废.md`
+
+触及页面：7个
+- `01-内容生产/03-已发布的选题/2026-04-11-用AI越多大脑越废.md` — 回填 X.com 发布信息并归档
+- `01-内容生产/03-已发布的选题/2026-04-11-用AI越多大脑越废-article.md` — 记录 article 尝试稿未采用的原因
+- `wiki/选题/AI认知萎缩与依赖.md` — 追加已发布内容链接
+- `tasks/todo.md` — 新增本轮排障 / 补发任务与 review 结论
+- `tasks/progress.md` — 记录这次漏发排查与补发闭环
+- `tasks/lessons.md` — 记录“不要锚定单一 X 脚本”的新规则
+- `x-to-markdown/0xcybersmile/2043151115399942583.md` — 保存发布后回查证据
+
+关键洞察：
+- 这次真正失败的不是文稿，而是发布载体判断：`x-thread.ts` 在当前 X compose 页面上踩中了隐藏 editor / 失效 addButton 假设
+- `compose/articles` 的官方流程仍要求 `Articles -> Write`，但当前账号实际页面只有导航，没有 `Write` / editor，说明 article 入口与脚本假设暂时对不上
+- 过去仓库里标成“X.com 长文”的成功样例，实际至少有一部分是 `tweet` 形态的单条长帖；当正文长度合适时，改走 `x-browser.ts` 才是当前最稳路径
+
+## [2026-04-12] ingest | 发布《团队 AI 化后真正缺的不是 Prompt，是 Harness Engineering》
+
+来源：`01-内容生产/03-已发布的选题/2026-04-12-团队AI化后真正缺的不是Prompt，是Harness Engineering.md`
+
+触及页面：7个
+- `01-内容生产/03-已发布的选题/2026-04-12-团队AI化后真正缺的不是Prompt，是Harness Engineering.md` — 回填 X / 小红书发布信息并归档
+- `01-内容生产/01-待深化的选题/团队AI化后真正缺的不是Prompt，是Harness Engineering.md` — 保存今日市场信号版 brief
+- `tasks/todo.md` — 记录本轮发布任务与 review 结论
+- `tasks/progress.md` — 追加本轮发布闭环
+- `tasks/lessons.md` — 记录 X 图文粘贴链路失效、需改浏览器原生上传的规则
+- `wiki/log.md` — 回填本轮 ingest 记录
+- `x-to-markdown/0xcybersmile/2043201922392633769.md` — 保存 X 侧公开证据
+
+关键洞察：
+- 这个题今天成立，不是因为“AI 写代码会变差”这种单点情绪，而是因为 Reddit、HN、X 三条信号都在指向同一个底层问题：团队已经 AI 化了，但没有把 harness / eval / verification 结构补上
+- X 图文帖在当前机器上，最不稳的不是正文，而是图片挂载；脚本日志显示成功不代表最终公开帖一定带图
+- 小红书这边复用现成图组比重新生图更稳，只要视觉判断和主题足够接近，就能更快完成真实发布
 
 ## [2026-04-07] ingest | 修复 opencli Browser Bridge 悬空扩展路径
 
@@ -416,3 +473,22 @@
 关键洞察：
 - “模型战争 / 部署战争”这种大词判断，如果没有先落到具体用户痛点，很容易显得自说自话。
 - 同一个研究主题可以保留，但切口必须换；用户否掉的往往不是研究方向本身，而是表达框架。
+
+## [2026-04-12] ingest | 发布《团队 AI 化后真正缺的不是 Prompt，是 Harness Engineering》
+
+来源：`01-内容生产/03-已发布的选题/2026-04-12-团队AI化后真正缺的不是Prompt，是Harness Engineering.md`
+
+触及页面：8个
+- `01-内容生产/01-待深化的选题/团队AI化后真正缺的不是Prompt，是Harness Engineering.md` — 保存今日市场信号版 brief
+- `01-内容生产/03-已发布的选题/2026-04-12-团队AI化后真正缺的不是Prompt，是Harness Engineering.md` — 回填 X / 小红书发布信息并归档
+- `tasks/todo.md` — 回填本轮发布任务与 review 结论
+- `tasks/progress.md` — 追加本轮真实发布闭环
+- `tasks/lessons.md` — 记录 X 图文粘贴链路失效、需切浏览器原生上传的规则
+- `wiki/log.md` — 记录本轮 ingest 证据
+- `docs/reports/2026-04-12-harness-engineering-publish-record.md` — 保存双平台发布记录
+- `x-to-markdown/0xcybersmile/2043201922392633769.md` — 保存 X 侧公开证据
+
+关键洞察：
+- 这条内容今天成立，不是因为单一热点，而是因为 Reddit、HN、X 三条信号都指向同一个底层问题：团队已经 AI 化了，但没有把 harness / eval / verification 结构补上。
+- X 图文帖在当前机器上，真正不稳的是图片挂载；脚本显示“提交成功”不代表最终公开帖一定带图。
+- 小红书复用已有图组比重新生图更稳，只要主题判断一致，就能更快完成真实发布并拿到后台记录。

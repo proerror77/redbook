@@ -4,6 +4,209 @@
 
 ---
 
+## [2026-04-13] 会话摘要：interactive-browser 原型验证
+
+**完成了什么：**
+- 在不依赖 Playwright 的前提下，新增了一个最小 `interactive-browser` 原型：
+  - [chrome-cdp.mjs](/Users/proerror/Documents/redbook/tools/browser-core/interactive/chrome-cdp.mjs)
+  - [smoke.mjs](/Users/proerror/Documents/redbook/tools/browser-core/interactive/smoke.mjs)
+  - [README.md](/Users/proerror/Documents/redbook/tools/browser-core/interactive/README.md)
+- 原型只做 4 件事：
+  - 连接真实 Chrome CDP
+  - 枚举 page targets
+  - 读取只读页面元信息
+  - 按 URL / title 规则选出最优页签
+- 已在当前真实 Chrome 的小红书页签上完成 smoke：
+  - 成功识别当前聚焦的小红书创作页
+  - 成功读取 `hasFocus / visibilityState / readyState / bodyPreview`
+- 已输出验证报告：
+  - [2026-04-13-interactive-browser-prototype.md](/Users/proerror/Documents/redbook/docs/reports/2026-04-13-interactive-browser-prototype.md)
+- 已尝试过一版极窄的 BOSS probe 连接层替换，但因为验证不稳定，已经回滚，未保留在生产脚本里。
+
+**未完成 / 遗留：**
+- 这轮只验证了“真实 Chrome + 只读 probe”，还没有验证点击、输入、上传等动作能力。
+- 因为 `127.0.0.1:9222` 当前仍没有活跃的 BOSS 页签，所以没把这个原型接到 `opencli_apply_current_tab.js` 上。
+
+**下次会话优先做：**
+- 先拿这个原型去跑 BOSS current-tab 的真实只读 probe。
+- 再验证最小动作链（点击 / 输入）后，才决定是否替换现有业务脚本的连接层。
+
+**需要注意：**
+- 按当前规则，原型虽然成功，但还不足以直接替换生产主链。
+- 这轮最重要的结果是：`interactive-browser` 可以先走原生 Chrome CDP，不需要默认依赖 Playwright。
+
+## [2026-04-13] 会话摘要：浏览器统一 Phase 0
+
+**完成了什么：**
+- 把“浏览器统一”从盘点和草案推进到了第一批实际落地。
+- 已新增仓库内唯一标准文档：
+  - [browser-modes.md](/Users/proerror/Documents/redbook/docs/standards/browser-modes.md)
+- 已将关键业务入口挂到统一标准：
+  - X 发布 skill
+  - URL to Markdown skill
+  - 微信发布 skill
+  - BOSS `zhipin` skill
+  - `tools/opencli/README.md`
+  - `tools/auto-x/README.md`
+  - 两份小红书全局 skill
+- 已修正 gstack 相关明显漂移：
+  - `browse` skill 关键路径从旧 `~/.claude` 改到当前 `~/.codex`
+  - `setup-browser-cookies` skill 关键路径从旧 `~/.claude` 改到当前 `~/.codex`
+  - `connect-chrome` 已重写成路由型 skill，不再宣传不存在的 `browse connect/disconnect`
+- 已根据新偏好“尽量不要使用 Playwright”调整口径：
+  - 标准文档中将 Playwright 降级为 fallback
+  - 统一草案中把 QA / render 的默认建议改为优先非 Playwright 路径
+  - 烟测报告中把 `gstack browse` 和 `Playwright MCP` 明确标注为可用但不默认
+- 已根据新偏好“默认无头，只有登录/验证码/人工验证才临时有头”调整执行策略：
+  - 标准文档新增 `默认执行姿态` 章节
+  - 统一草案明确 `headless` 为默认，`headed` 只作为升级态
+  - `connect-chrome` 路由文档也同步改成 headless-first 说明
+
+**未完成 / 遗留：**
+- 这轮还没有开始迁移业务脚本到底层 shared browser core。
+- `agent-browser-session` 仍是 legacy 状态，但还没从旧链路里拔掉。
+- `connect-chrome` 现在是正确的路由文档，但还没有新的 headed runtime 替代实现。
+
+**下次会话优先做：**
+- 进入 Phase 1：开始抽共享 `interactive-browser` core。
+- 优先从 BOSS / XHS 两条最接近 current-tab 模型的业务线开始。
+
+**需要注意：**
+- 这轮统一的重点是“先统一默认分层和默认叙事”，不是一次性重写所有浏览器代码。
+
+## [2026-04-13] 会话摘要：浏览器方案烟测
+
+**完成了什么：**
+- 对当前主要浏览器方案做了一轮最小可用性验证，不再只靠文档推断。
+- 已输出烟测报告：
+  - [2026-04-13-browser-stack-smoke-test.md](/Users/proerror/Documents/redbook/docs/reports/2026-04-13-browser-stack-smoke-test.md)
+- 本轮确认可用的主链：
+  - `Chrome DevTools MCP`
+  - `Playwright MCP` 标准模式（SSE 监听成功）
+  - `gstack browse`
+  - `opencli Browser Bridge`
+  - `XHS current-tab CDP`
+- 本轮确认的主要问题：
+  - `connect-chrome` 文档要求的 `browse connect/disconnect` 在真实 binary 中不存在，属于文档/实现漂移
+  - `agent-browser-session` 当前恢复失败，旧 `auto-x` 研究链不稳定
+  - `render_xhs.py` 缺 Python 依赖，旧 Python render 栈不完整
+  - `BOSS current-tab` 的 probe 机制可用，但当前会话里没有激活的 BOSS 页，所以只做到了基础探测
+
+**未完成 / 遗留：**
+- X 发布、微信 browser 发布、URL to Markdown 这轮只做了命令面 smoke，没有做真实业务写操作，避免副作用。
+- `setup-browser-cookies` 没做完整交互测试，因为它需要人工在浏览器里选域名。
+
+**下次会话优先做：**
+- 优先修 `connect-chrome` 的文档/实现漂移。
+- 决定是否冻结 `agent-browser-session` 为 legacy。
+- 决定 `opencli bridge` 在统一方案里是长期兼容层还是过渡层。
+
+**需要注意：**
+- 这轮最大的价值不是“全部跑绿”，而是把“真可用主链”和“历史残留兼容层”区分清楚了。
+
+## [2026-04-13] 会话摘要：切换 gws 默认 OAuth client 到独立 GCP 项目
+
+**完成了什么：**
+- 确认 `gws` 本地默认 OAuth client 之前仍指向旧项目 `neural-engine-337808`，虽然已经创建了新项目 `gws-proerror-gmail-auth`，但并没有真正接成默认 client。
+- 在新项目里补齐了 Google Auth Platform 配置：
+  - 创建品牌信息
+  - 受众设为 `External / Testing`
+  - 新增测试用户 `proerror@gmail.com`
+  - 创建 Desktop OAuth client：`951380678194-906lnsdg4vk0me65ltkv4o1stk85p5nk.apps.googleusercontent.com`
+- 备份了旧本地配置到：`~/.config/gws/backup-20260413-124354/`
+- 将 `~/.config/gws/client_secret.json` 与 `~/.config/gws/client_secret.installed.json` 切到新项目 client。
+- 清理了旧 `credentials.enc` / `token_cache.json`，随后使用新 client 重新完成了 `gws auth login -s gmail`。
+- 已通过两层验证：
+  - `gws auth status` 当前返回 `project_id: gws-proerror-gmail-auth`
+  - `gws gmail users labels list --params '{"userId":"me"}'` 成功返回真实 Gmail labels
+
+**未完成 / 遗留：**
+- 当前认证链路为了避开 macOS 钥匙串交互，仍使用 `GOOGLE_WORKSPACE_CLI_KEYRING_BACKEND=file`。
+- 如果后续想恢复 OS keyring 模式，需要单独验证本机钥匙串权限与 `gws` 的 keyring backend 是否稳定。
+
+**下次会话优先做：**
+- 如需把 `gws` 用得更顺手，可以把 `GOOGLE_WORKSPACE_CLI_KEYRING_BACKEND=file` 固化到 shell 环境，避免每次手动带 env。
+- 如果接下来要扩展到 Drive / Sheets / Calendar，可以直接在当前新项目上继续新增 scopes，不必再回旧项目。
+
+**需要注意：**
+- 现在真正的默认 OAuth client 已经是新项目，不要再把 `~/.config/gws/client_secret*.json` 回滚到旧备份，除非你明确要迁回 `neural-engine-337808`。
+
+## [2026-04-13] 会话摘要：浏览器统一架构草案
+
+**完成了什么：**
+- 在浏览器方案盘点的基础上，继续往前收敛成一份目标架构草案，而不是停留在“现状很乱”。
+- 已输出方案文档：
+  - [2026-04-13-browser-unification-proposal.md](/Users/proerror/Documents/redbook/docs/plans/2026-04-13-browser-unification-proposal.md)
+- 草案核心不是“所有东西统一成一个工具”，而是明确只允许 3 种浏览器执行模式：
+  - `interactive-browser`
+  - `qa-browser`
+  - `render-browser`
+- 已明确建议：
+  - 真实 Chrome + current-tab / named-profile + CDP 作为生产交互底座
+  - gstack `browse` 作为 QA/headless 底座
+  - Playwright/Chromium headless 作为静态渲染底座
+- 已将 `opencli Browser Bridge`、`agent-browser`、`Playwright MCP --extension` 重新定位为兼容层 / fallback，而不是默认主入口。
+
+**未完成 / 遗留：**
+- 这仍是架构草案，不是最终拍板版。
+- 还没有开始把任何业务 skill 迁到新的分层。
+
+**下次会话优先做：**
+- 让你拍板 3 个问题：
+  - `interactive-browser` 是否正式定为真实 Chrome + current-tab / named-profile + CDP
+  - `opencli Browser Bridge` 是长期兼容层还是只保留到 BOSS 迁完
+  - `agent-browser` 系列是否立即冻结为 legacy
+
+**需要注意：**
+- 真正要统一的不是“浏览器程序名”，而是“默认分层、默认入口、默认登录态策略”。
+
+## [2026-04-13] 会话摘要：浏览器方案盘点
+
+**完成了什么：**
+- 对当前 redbook 里的浏览器相关方案做了一轮分层盘点，不急着合并，先把地图画清楚。
+- 已覆盖的层包括：
+  - 通用 MCP 控制层：`Playwright MCP`、`Chrome DevTools MCP`
+  - gstack 层：`browse`、`connect-chrome`、`setup-browser-cookies`
+  - 仓库内桥接层：`tools/opencli` Browser Bridge
+  - 站点专用业务层：X、小红书、微信、BOSS
+  - 试验层：`page-agent-console`
+- 已输出盘点文档：
+  - [2026-04-13-browser-stack-inventory.md](/Users/proerror/Documents/redbook/docs/reports/2026-04-13-browser-stack-inventory.md)
+
+**未完成 / 遗留：**
+- 这轮只做盘点，没有开始收敛，也没有改动各业务 skill 的实现。
+- 文档里给了“初步方向”，但还没做最终架构决策。
+
+**下次会话优先做：**
+- 先定 3 个问题：
+  - 默认浏览器底座是谁
+  - 默认登录态复用策略是谁
+  - 业务 skill 以后还能不能各自私带一套浏览器启动逻辑
+
+**需要注意：**
+- 现在真正的混乱不在于“有很多浏览器工具”，而在于“职责层级没有统一命名和优先级”。
+
+## [2026-04-13] 会话摘要：修复 Playwright MCP 扩展桥接拦截页
+
+**完成了什么：**
+- 复盘了 `.omx` 状态、`tasks/lessons.md` 和当前运行中的 MCP 进程，确认这不是页面本身或 token 的问题，而是启动模式选错了。
+- 确认当前仓库 `.mcp.json` 把 Playwright MCP 配成了 `npx -y @playwright/mcp@latest --extension`，这会强制走 Chrome 扩展桥接模式。
+- 确认当前主 Chrome `Default` profile 里并没有对应的 Playwright 扩展目录；Chrome 只保留了扩展签名残留，所以打开 `chrome-extension://mmlmfjhmonkocbjadbfplnigmagldckm/connect.html?...` 时会直接报 `ERR_BLOCKED_BY_CLIENT`。
+- 同时确认当前会话里确实有一个 `playwright-mcp --extension` 进程在跑，并监听 `127.0.0.1:50535`，说明报错页正是这份仓库配置拉起的。
+- 已将项目根目录 `.mcp.json` 改回 `@playwright/mcp` README 推荐的标准配置：只保留 `npx -y @playwright/mcp@latest`，移除了 `--extension` 和无效的 `PLAYWRIGHT_MCP_EXTENSION_TOKEN`。
+
+**未完成 / 遗留：**
+- 我只修了仓库内 `.mcp.json`。你用户级 `~/.codex/mcp.json` 里目前仍有同样的 `--extension` 配置；在别的仓库或无项目配置场景下，仍可能继续弹同样的拦截页。
+- 当前已经跑起来的旧 `playwright-mcp --extension` 进程不会自动自杀；要让新配置生效，需要重启使用这份 `.mcp.json` 的客户端会话或重载 MCP server。
+
+**下次会话优先做：**
+- 如果你希望全局也彻底消掉这个问题，可以把 `~/.codex/mcp.json` 同样改成标准模式，或在明确需要桥接真实 Chrome 时再单独安装 Playwright MCP Bridge 扩展。
+- 如果你确实需要扩展桥接而不是普通 Playwright 浏览器，再补一条“安装并验证 Playwright MCP Bridge 扩展”的显式流程，避免再次出现“配置要求扩展，但 profile 里没有扩展”的半配置状态。
+
+**需要注意：**
+- 这次真正的根因不是网页被广告拦截，也不是本地 `ws://127.0.0.1:50535/...` 不通，而是 `.mcp.json` 要求了一个本机并不存在的扩展桥接模式。
+- 对 `@playwright/mcp`，默认应先用官方标准配置；只有在明确要接入已安装的 Chrome 扩展桥时，才加 `--extension`。
+
 ## [2026-04-11] 会话补记：修复 Claude Code MCP 配置与失效插件
 
 **完成了什么：**
@@ -26,6 +229,63 @@
 
 **需要注意：**
 - 当前仓库里还有大量与你这次修复无关的未提交内容改动；后续提交 git 时要继续保持只提交本次修复相关文件。
+
+## [2026-04-12] 会话摘要
+
+**完成了什么：**
+- 确认昨天漏发的对象是 [2026-04-11-用AI越多大脑越废.md](/Users/proerror/Documents/redbook/01-内容生产/03-已发布的选题/2026-04-11-用AI越多大脑越废.md)；仓库里没有任何对应的发布记录、已发布归档或 harness 发布证据。
+- 真实复现了 `x-thread.ts` 的失败：`Textarea 1 not found after clicking add button`，并确认当前 X compose 页面存在重复的 `tweetTextarea_0`，旧脚本会打到隐藏 editor。
+- 进一步核对了历史成功路径：过去真正稳定跑通的是 `x-browser.ts` 和 `x-article.ts`；并用 `$baoyu-danger-x-to-markdown` 反查公开链接，确认仓库里部分标成“X.com 长文”的内容，实际公开形态是单条长帖 `tweet`。
+- 发现当前账号下 `https://x.com/compose/articles` 页面只有侧边导航，没有 `Write` / editor，因此这次没有继续硬走 article。
+- 修正了 [x-browser.ts](/Users/proerror/Documents/redbook/.agents/skills/baoyu-post-to-x/scripts/x-browser.ts) 的 editor 选择逻辑，改为只点击可见编辑器。
+- 最终将这篇内容作为 X.com 单条长帖补发成功，主页回查到最新公开链接：`https://x.com/0xcybersmile/status/2043151115399942583`。
+- 已用 `$baoyu-danger-x-to-markdown` 将新帖回拉成 markdown 证据：`x-to-markdown/0xcybersmile/2043151115399942583.md`。
+- 已将主稿和 article 尝试稿移动到 `01-内容生产/03-已发布的选题/`，并回填发布信息、wiki 页面和任务板。
+
+**未完成 / 遗留：**
+- `x-thread.ts` 本轮只完成了根因定位，没有做到稳定验证，不建议当前继续把它当成生产主链路。
+- `x-article.ts` 当前依赖的 `compose/articles -> Write` 流程，在你这次账号状态下没有跑通；后续若要继续用 article，需要单独再核对入口变化或账号权限状态。
+
+**下次会话优先做：**
+- 如果你还想把这条内容扩成真正的 X Article，再单独排查 `compose/articles` 当前为什么没有 `Write` / editor。
+- 如果要继续做 X 长内容，优先先判断“单条长帖是否足够”，不要默认走 thread / article。
+
+**需要注意：**
+- 对 X 发布，先确认历史公开产物的真实形态，再决定用哪个脚本。
+- `x-browser.ts` / `x-thread.ts` 这类 compose 脚本都要警惕“隐藏 editor”问题，不能只用第一个 `tweetTextarea_0`。
+
+## [2026-04-12] 会话摘要
+
+**完成了什么：**
+- 基于今天的正式研究产物，沉淀并发布了新题《团队 AI 化后真正缺的不是 Prompt，是 Harness Engineering》。
+- 新增待深化 brief：
+  - `01-内容生产/01-待深化的选题/团队AI化后真正缺的不是Prompt，是Harness Engineering.md`
+- 直接产出并发布了跨平台版本：
+  - X.com 带图单条长帖：`https://x.com/0xcybersmile/status/2043201922392633769`
+  - 小红书图文：标题 `团队AI化后，真正缺的不是Prompt`，笔记 ID `69db30e700000000230132e5`
+- 小红书复用了现成图组：
+  - `xhs-images/ai-architecture-skill/01-cover-ai-architecture.png`
+  - `.../02-content-pain-point.png`
+  - `.../03-content-insight.png`
+  - `.../04-content-comparison.png`
+  - `.../05-content-method.png`
+  - `.../06-ending-ai-architecture.png`
+- 已将主稿归档到：
+  - `01-内容生产/03-已发布的选题/2026-04-12-团队AI化后真正缺的不是Prompt，是Harness Engineering.md`
+- 已用 `x-to-markdown` 保存 X 侧公开证据：
+  - `x-to-markdown/0xcybersmile/2043201922392633769.md`
+
+**未完成 / 遗留：**
+- `x-browser.ts` 的图片粘贴链路在当前机器上仍不可靠；本轮最终是靠浏览器原生文件上传修正的。
+- 小红书这边刚发布，后台数据里只有标题 / 发布时间 / note id，曝光和互动还没形成有效样本。
+
+**下次会话优先做：**
+- 观察这条小红书和 X 的首轮数据，决定是否再拆公众号版。
+- 如果还要继续做 X 图文，优先修正或替换 `x-browser.ts` 的图片上传方式。
+
+**需要注意：**
+- 对图文帖，不能只信“脚本显示提交成功”；必须回查主页确认最终公开形态。
+- 当前机器上，X 图文更稳的做法是直接用浏览器文件上传，不要依赖系统粘贴权限。
 
 ## [2026-04-10] 会话补记：内容工作流防同质化审计
 
@@ -1023,3 +1283,124 @@
 ```
 
 ---
+
+## [2026-04-12] 会话摘要
+
+**完成了什么：**
+- 将《团队 AI 化后真正缺的不是 Prompt，是 Harness Engineering》从今日研究 brief 直接推进到了真实发布。
+- X 最终公开的是带图单条长帖：
+  - `https://x.com/0xcybersmile/status/2043201922392633769`
+- X 公开证据已落盘：
+  - `x-to-markdown/0xcybersmile/2043201922392633769.md`
+- 本轮先后误发了两条纯文字版 X 帖，均已删除；最终保留的是带图版本。
+- 小红书已真实发布，后台 `content-data` 返回最新记录：
+  - 标题：`团队AI化后，真正缺的不是Prompt`
+  - 发布时间：`2026-04-12 13:43`
+  - 笔记 ID：`69db30e700000000230132e5`
+- 小红书复用了既有图组：
+  - `xhs-images/ai-architecture-skill/01-cover-ai-architecture.png`
+  - `xhs-images/ai-architecture-skill/02-content-pain-point.png`
+  - `xhs-images/ai-architecture-skill/03-content-insight.png`
+  - `xhs-images/ai-architecture-skill/04-content-comparison.png`
+  - `xhs-images/ai-architecture-skill/05-content-method.png`
+  - `xhs-images/ai-architecture-skill/06-ending-ai-architecture.png`
+- 已将主稿归档到：
+  - `01-内容生产/03-已发布的选题/2026-04-12-团队AI化后真正缺的不是Prompt，是Harness Engineering.md`
+
+**未完成 / 遗留：**
+- `x-browser.ts` 的图片粘贴链路在当前机器上仍不可靠；本轮最终是靠浏览器原生文件上传修正的。
+- 小红书列表页偶尔半加载，做发布验证时不能只看页面列表，最好结合 `content-data`。
+
+**下次会话优先做：**
+- 观察这条 X 和小红书的首轮数据，再决定是否扩成公众号版。
+- 如果还要继续做 X 图文，优先修正图片上传方式，不要再依赖系统粘贴权限。
+
+**需要注意：**
+- 图文帖的“发布成功”必须按最终公开形态定义，不是按脚本日志定义。
+- 小红书这边优先复用当前已登录浏览器，比独立脚本起新的浏览器更稳。
+
+## [2026-04-13] 会话摘要
+
+**完成了什么：**
+- 深度整理了当前 work tree，把内容资产、研究稿、wiki/tasks 沉淀、浏览器统一方案文档纳入同一批次 tracking / staging。
+- 完成了 `AGENTS.md` 与 `CLAUDE.md` 的逐字同步，并补上 `Wiki Schema` 与入口约束缺口。
+- 收紧了 `.gitignore`，隐藏明确的运行时噪音：
+  - `tasks/harness/locks/`
+  - `session.tw_session`
+  - `x-to-markdown/`
+  - `tools/auto-x/data/twikit_cookies.json`
+  - `tools/auto-x/data/following_audit_latest.json`
+  - `tools/auto-x/scripts/test_twikit.py`
+  - `tools/post_thread.py`
+- 清掉了空壳 lock / session 文件。
+- 补了整理说明：`docs/reports/2026-04-13-worktree-organize-plan.md`
+- 继续第二轮整理后，当前状态已收口到：
+  - `unstaged = 0`
+  - `untracked = 0`
+
+**未完成 / 遗留：**
+- 当前还没有替你做 commit；只是把 work tree 整成了可提交的一批 staged 改动。
+- staged 批次里仍然混有“内容资产”和“浏览器统一方案”两大主题；如果你要极致干净，后续可以再拆成两三个 commit。
+
+**下次会话优先做：**
+- 按主题拆 staged 批次，形成更干净的提交序列。
+- 决定是否把 `04-内容数据统计/数据统计表.md` 和浏览器统一方案放在同一批里。
+
+**需要注意：**
+- 内容稿本身应该进入 Git tracking；运行时痕迹不应该。
+- 以后新增入口级约束时，默认要求 `AGENTS.md` 和 `CLAUDE.md` 同步修改。
+
+## [2026-04-13] 会话摘要
+
+**完成了什么：**
+- 读取并整理了 `/Users/proerror/Downloads/笔记列表明细表.xlsx`。
+- 已确认该文件是小红书笔记明细导出，包含 1 个 sheet、7 条图文数据，时间范围为 `2026-04-07` 到 `2026-04-12`。
+- 已将导出数据写入 `04-内容数据统计/数据统计表.md` 的「小红书数据」区块。
+- 已做一轮快速汇总：
+  - 总曝光 `4258`
+  - 总观看量 `513`
+  - 总点赞 `15`
+  - 总收藏 `13`
+  - 总评论 `2`
+  - 总涨粉 `3`
+- 当前样本中表现最好的是：
+  - 曝光/观看最高：`AI基础设施战争开打，24小时内出现替代品`
+  - 收藏最高：`AI视频哪里穿帮，现在能精确到秒`
+
+**未完成 / 遗留：**
+- 这次只完成了导入和初步读数，还没进一步沉淀成方法论或选题复盘。
+- Excel 原文件仍在 `Downloads/`，本轮没有移动或归档原始导出。
+
+**下次会话优先做：**
+- 基于这 7 条数据补一版小红书选题/标题复盘，提炼什么题材更容易拿到曝光和收藏。
+- 如果后续会持续导入同类表，可以把 Excel -> `数据统计表.md` 做成一个小脚本。
+
+**需要注意：**
+- 这份导出首行是平台说明文字，不是表头；后续做自动导入时要固定跳过第 1 行。
+- 当前统计表主列采用 `观看量` 作为「播放/阅读」，其它指标统一放进备注。
+
+## [2026-04-13] 会话摘要：小红书数据复盘沉淀进 wiki
+
+**完成了什么：**
+- 已将这轮“小红书为什么数据偏弱”的判断沉淀进知识库，而不是只停留在聊天里。
+- 已更新：
+  - `wiki/方法论/标题创作.md`
+  - `wiki/方法论/爆款规律.md`
+  - `wiki/选题/内容创作与增长.md`
+  - `wiki/index.md`
+  - `wiki/log.md`
+- 已固化的核心规则：
+  - 小红书第一钩子优先写“具体问题 + 明确结果”，不要先写抽象概念
+  - 标题、封面、正文前两屏必须承诺一致
+  - 当前样本的主瓶颈是点击，不是单纯留存
+  - 账号同时打多类人群时，平台标签会漂
+
+**未完成 / 遗留：**
+- 这轮只完成了规则沉淀，还没有把这些规则反向应用到旧稿改写或新选题筛选。
+
+**下次会话优先做：**
+- 用这套规则重写 1 到 2 条最近偏弱的小红书标题和封面承诺。
+- 把“该继续做的题”和“该停掉的题”明确列成选题白名单 / 黑名单。
+
+**需要注意：**
+- 以后看到“小红书数据差”，默认先查点击承诺是否一致，不要直接把问题归因成限流。

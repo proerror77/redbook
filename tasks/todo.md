@@ -1,5 +1,302 @@
 # Task Todo
 
+## 新任务：导入小红书笔记列表明细表
+- 任务名称：整理 `/Users/proerror/Downloads/笔记列表明细表.xlsx`，将小红书笔记导出数据落入项目统计表并补会话记录
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-13
+- 截止日期：2026-04-13
+- 优先级：P1
+- Harness Run：N/A（数据整理）
+
+### 执行清单
+- [x] 1. 检查 Excel 结构并确认字段映射
+- [x] 2. 更新 `04-内容数据统计/数据统计表.md`
+- [x] 3. 追加 `tasks/progress.md` 会话摘要
+- [x] 4. 将这轮复盘结论沉淀进 wiki 方法论页面
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已确认该 Excel 为单 sheet 的小红书笔记明细导出，包含 7 条图文数据
+  - 已将 2026-04-07 至 2026-04-12 的小红书数据写入 `04-内容数据统计/数据统计表.md`
+  - 已在 `tasks/progress.md` 追加本次导入与初步分析摘要
+  - 已将复盘结论回写到 `wiki/方法论/标题创作.md`、`wiki/方法论/爆款规律.md`、`wiki/选题/内容创作与增长.md`
+
+## 新任务：深度整理当前 work tree
+- 任务名称：梳理 redbook 当前 work tree，明确哪些内容应纳入 Git tracking，哪些属于运行时噪音，并收紧仓库边界
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-13
+- 截止日期：2026-04-13
+- 优先级：P0
+- Harness Run：N/A（仓库治理）
+
+### 执行清单
+- [x] 1. 盘点当前变更，区分内容资产 / 研究产物 / 运行时垃圾 / 工具链改动
+- [x] 2. 收紧 `.gitignore`，隐藏明确的运行时噪音
+- [x] 3. 补一份 work tree 边界文档，说明什么该进 Git，什么不该进
+- [x] 4. 给出可提交批次建议，减少后续提交面混乱
+
+### Review 结论
+- 第一轮整理已完成
+- 当前已完成：
+  - 已盘点当前 work tree，并明确区分：内容资产 / 研究产物 / 运行时垃圾 / 工具链改动
+  - 已收紧 `.gitignore`，新增：
+    - `tasks/harness/locks/`
+    - `session.tw_session`
+    - `x-to-markdown/`
+    - `tools/auto-x/data/twikit_cookies.json`
+    - `tools/auto-x/data/following_audit_latest.json`
+  - 已清理空壳 lock 文件与 session 临时文件
+  - 已新增整理说明：`docs/reports/2026-04-13-worktree-organize-plan.md`
+  - 已确认最新内容稿仍未进入 Git tracking，应作为内容资产纳入后续提交批次
+  - 已将 `AGENTS.md / CLAUDE.md` 完整同步，并将同步规则写入 `tasks/lessons.md`
+  - 第二轮整理已完成：内容资产、研究稿、wiki/tasks 沉淀、浏览器统一方案文档均已纳入 tracking / staging
+  - 当前 `git status` 已收口到：
+    - `unstaged = 0`
+    - `untracked = 0`
+  - 剩余仅为一批已经 staged 的清晰改动，后续可以按批次提交
+
+## 新任务：interactive-browser 原型验证
+- 任务名称：在不依赖 Playwright 的前提下，为真实 Chrome + CDP current-tab 模式建立最小共享原型，并做只读烟测
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-13
+- 截止日期：2026-04-13
+- 优先级：P1
+- Harness Run：N/A（原型验证）
+
+### 执行清单
+- [x] 1. 建立最小原型，只覆盖连接真实 Chrome、枚举页签、执行只读 probe
+- [x] 2. 在当前真实 Chrome 的小红书页签上做 smoke test
+- [x] 3. 输出原型验证报告，并明确“不成功不切换主链”的边界
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已新增原型目录：`tools/browser-core/interactive/`
+  - 已新增 smoke 脚本：`tools/browser-core/interactive/smoke.mjs`
+  - 已在真实 Chrome 的小红书页签上完成成功烟测
+  - 已输出报告：`docs/reports/2026-04-13-interactive-browser-prototype.md`
+  - 已尝试过一版极窄的 BOSS probe 连接层替换，但因验证不足已回滚
+  - 本轮没有替换任何现有业务主链
+
+## 新任务：落实浏览器统一的 Phase 0
+- 任务名称：建立唯一浏览器标准文档，并修正关键 skill/README 的模式定位与明显漂移点
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-13
+- 截止日期：2026-04-13
+- 优先级：P1
+- Harness Run：N/A（标准收敛）
+
+### 执行清单
+- [x] 1. 建立仓库内唯一浏览器标准文档
+- [x] 2. 给关键业务 skill / README 标注所属模式并引用标准
+- [x] 3. 修复 `connect-chrome` 和 gstack 相关 skill 的明显文档漂移
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已新增唯一标准：`docs/standards/browser-modes.md`
+  - 已将 X / 微信 / URL 抓取 / BOSS / opencli / auto-x / 小红书等关键入口挂到统一模式
+  - 已将 `connect-chrome` 重写为路由型 skill，不再宣传不存在的 `browse connect/disconnect`
+  - 已修正 gstack `browse` / `setup-browser-cookies` skill 中关键路径从旧 `~/.claude` 到当前 `~/.codex`
+  - 已根据用户新增偏好“尽量不要使用 Playwright”把标准、统一草案、烟测报告统一改成 Playwright fallback 口径
+  - 已根据用户新增偏好“默认无头，只有登录/验证码/人工验证才临时有头”把标准与统一草案统一改成 headless-first 口径
+
+## 新任务：将 gws 默认 OAuth client 切换到独立 GCP 项目
+- 任务名称：把 `gws` 当前默认 OAuth client 从旧项目 `neural-engine-337808` 迁移到独立项目 `gws-proerror-gmail-auth`，并重新完成 Gmail OAuth 验证
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-13
+- 截止日期：2026-04-13
+- 优先级：P0
+- Harness Run：N/A（本机环境配置）
+
+### 执行清单
+- [x] 1. 确认新项目 `gws-proerror-gmail-auth` 已存在，并定位旧默认 client 仍指向 `neural-engine-337808`
+- [x] 2. 在新项目中完成 Google Auth Platform 配置、创建 Desktop OAuth client，并将 `proerror@gmail.com` 加入测试用户
+- [x] 3. 备份旧 `~/.config/gws/client_secret*.json`，将默认 client 切换到新项目的 Desktop OAuth client
+- [x] 4. 清理旧凭据并重新执行 `gws auth login -s gmail`
+- [x] 5. 用 `gws auth status` 与 Gmail labels API 实际验证迁移成功
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已在项目 `gws-proerror-gmail-auth` 中创建新的 Desktop OAuth client：`951380678194-906lnsdg4vk0me65ltkv4o1stk85p5nk.apps.googleusercontent.com`
+  - 已将 `proerror@gmail.com` 添加为该 OAuth 应用的测试用户
+  - 已备份旧本地配置到：`~/.config/gws/backup-20260413-124354/`
+  - 已将 `~/.config/gws/client_secret.json` 与 `~/.config/gws/client_secret.installed.json` 切换到新项目 client
+  - 已重新完成 Gmail OAuth 登录，`gws auth status` 当前返回的 `project_id` 为 `gws-proerror-gmail-auth`
+  - 已通过 `gws gmail users labels list --params '{"userId":"me"}'` 成功返回 Gmail labels，证明新 client 已真实生效
+
+## 新任务：浏览器方案烟测
+- 任务名称：对当前浏览器相关方案做最小可用性验证，确认哪些能用、哪些阻塞、哪些只是兼容层存在
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-13
+- 截止日期：2026-04-13
+- 优先级：P1
+- Harness Run：N/A（技术验证）
+
+### 执行清单
+- [x] 1. 测试通用 MCP 层（Playwright MCP / Chrome DevTools MCP）
+- [x] 2. 测试 gstack 层（browse / connect-chrome / cookie bridge）
+- [x] 3. 测试仓库桥接层（opencli Browser Bridge）
+- [x] 4. 测试旧通用层（agent-browser-session / actionbook）
+- [x] 5. 测试业务层关键入口（BOSS current-tab / XHS login check）
+- [x] 6. 输出烟测结论与下一步建议
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已输出烟测报告：`docs/reports/2026-04-13-browser-stack-smoke-test.md`
+  - 已确认可用主链包括：`Chrome DevTools MCP`、`gstack browse`、`opencli bridge`、`XHS current-tab CDP`
+  - 已确认主要问题点包括：`connect-chrome` 文档/实现漂移、`agent-browser-session` 当前不稳定、旧 Python render 栈缺依赖
+
+## 新任务：提出浏览器统一架构草案
+- 任务名称：在浏览器方案盘点基础上，提出 redbook 后续的浏览器分层、默认底座和迁移顺序草案
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-13
+- 截止日期：2026-04-13
+- 优先级：P1
+- Harness Run：N/A（架构方案）
+
+### 执行清单
+- [x] 1. 基于盘点结果明确统一目标不是“一个工具”，而是“一套被允许的执行模式”
+- [x] 2. 定义默认浏览器底座、登录态策略和业务 skill 边界
+- [x] 3. 输出迁移顺序与兼容层定位草案
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已输出目标架构草案：`docs/plans/2026-04-13-browser-unification-proposal.md`
+  - 已明确推荐 3 层浏览器模式：`interactive-browser`、`qa-browser`、`render-browser`
+  - 已明确 `opencli Browser Bridge`、`agent-browser`、`Playwright MCP --extension` 在后续统一中的降级定位（兼容层 / fallback）
+
+## 新任务：盘点当前 skills 中分散的浏览器方案
+- 任务名称：梳理 redbook 当前 skills / 工具链中的浏览器自动化方案、入口、依赖和适用场景，为后续统一方案做准备
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-13
+- 截止日期：2026-04-13
+- 优先级：P1
+- Harness Run：N/A（技术盘点）
+
+### 执行清单
+- [x] 1. 盘点所有与浏览器相关的 skill / MCP / 本地工具入口
+- [x] 2. 按技术栈与用途分类，整理重叠点与冲突点
+- [x] 3. 输出一份统一视图，作为后续收敛方案输入
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已盘点通用 MCP 控制层、gstack 浏览器技能层、opencli/browser-bridge 层、站点专用自动化层、page-agent 试验层
+  - 已输出统一视图文档：`docs/reports/2026-04-13-browser-stack-inventory.md`
+  - 已明确当前核心问题不是“工具太多”，而是“浏览器底座、登录态复用、业务 skill 私有浏览器实现”三件事没有被统一分层
+
+## 新任务：修复 Playwright MCP 扩展桥接导致的 Chrome 拦截页
+- 任务名称：定位 `chrome-extension://.../connect.html` 被 Chrome 以 `ERR_BLOCKED_BY_CLIENT` 拦截的根因，并修复仓库内的 Playwright MCP 启动配置
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-13
+- 截止日期：2026-04-13
+- 优先级：P0
+- Harness Run：N/A（工程配置修复）
+
+### 执行清单
+- [x] 1. 复盘 `.omx` 状态、`tasks/lessons.md` 与当前运行中的 MCP 进程
+- [x] 2. 确认 Chrome profile 中的 Playwright 扩展是否真实安装，并定位 `ERR_BLOCKED_BY_CLIENT` 的直接根因
+- [x] 3. 修复项目 `.mcp.json`，移除对未安装扩展的强依赖
+- [x] 4. 验证 JSON 可解析，且修复后的启动方式符合 `@playwright/mcp` 官方标准配置
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已确认当前仓库 `.mcp.json` 使用 `npx -y @playwright/mcp@latest --extension` 启动 Playwright MCP
+  - 已确认当前 Chrome `Default` profile 中不存在对应的 Playwright 扩展目录，只有残留的安装签名记录，因此访问 `chrome-extension://mmlmfjhmonkocbjadbfplnigmagldckm/connect.html` 会被 Chrome 直接拦截
+  - 已确认当前会话中存在实际运行的 `playwright-mcp --extension` 进程，且监听本地 relay 端口 `127.0.0.1:50535`
+  - 已将项目 `.mcp.json` 改回 `@playwright/mcp` README 推荐的标准启动方式，移除了 `--extension` 与无效的扩展 token 环境变量
+  - 这样修复后，这个仓库后续不再主动拉起依赖浏览器扩展的 `connect.html` 页面
+
+## 新任务：发布《团队 AI 化后真正缺的不是 Prompt，是 Harness Engineering》
+- 任务名称：将“团队 AI 化后真正缺的不是 Prompt，是 Harness Engineering”产出为 X 单条长帖和小红书图文，并直接发布
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-12
+- 截止日期：2026-04-12
+- 优先级：P0
+- Harness Run：`20260412-052933-团队ai化后的harness-engineering发布-3d0787`
+
+### 执行清单
+- [x] 1. 根据已验证的 brief 产出 X 主帖与小红书正文
+- [x] 2. 复用或生成小红书图文素材并整理发布资产
+- [x] 3. 发布到 X.com 并回查公开链接
+- [x] 4. 发布到小红书并回查创作后台
+- [x] 5. 回填任务板、progress、wiki 与 harness 记录
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已基于已验证的 brief 产出跨平台主稿：`2026-04-12-团队AI化后真正缺的不是Prompt，是Harness Engineering.md`
+  - 已发布到 X.com，最终公开链接为：`https://x.com/0xcybersmile/status/2043201922392633769`
+  - 已使用 `x-to-markdown` 回拉 X 发布证据：`x-to-markdown/0xcybersmile/2043201922392633769.md`
+  - 本轮先后出现过两次纯文字误发；两条均已删除，最终保留的是带图版本
+  - X 配图最终没有继续依赖 `x-browser.ts` 的图片粘贴链路，而是直接在当前登录浏览器里上传文件并发出
+  - 已发布到小红书，创作者后台 `content-data` 已返回最新记录：
+    - 标题：`团队AI化后，真正缺的不是Prompt`
+    - 发布时间：`2026-04-12 13:43`
+    - 笔记 ID：`69db30e700000000230132e5`
+  - 小红书本轮复用了现成图组：`xhs-images/ai-architecture-skill/*.png`
+  - 已将主稿归档到 `01-内容生产/03-已发布的选题/`
+
+## 新任务：深化今日市场题《团队 AI 化后真正缺的是 Harness Engineering》
+- 任务名称：基于 2026-04-12 今日 X / HN / Reddit 市场信号，沉淀 “团队 AI 化后真正缺的是 Harness engineering” 选题，并产出跨平台写作 brief
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-12
+- 截止日期：2026-04-12
+- 优先级：P0
+- Harness Run：`20260412-050943-团队ai化后的harness-engineering-98f4e4`
+
+### 执行清单
+- [x] 1. 用今日正式研究产物交叉验证选题判断
+- [x] 2. 提炼核心论点、证据链和不该写偏的边界
+- [x] 3. 产出可直接开写的 X / 小红书 / 公众号 brief
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已基于 `2026-04-12` 的正式研究产物确认：今天最值得写的不是“AI 写代码变差”，而是“团队 AI 化后缺少 Harness engineering”
+  - 证据链已覆盖：
+    - Reddit：团队 all-in AI code generation 后出现质量下滑的深度讨论
+    - HN：AI agent benchmark 可被 exploit，说明没有 eval / verification harness 时，分数会失真
+    - HN：`Cirrus Labs to join OpenAI`，说明竞争正在往 AI 工程基础设施层收口
+    - X：今日关注圈高频词仍是 `ai / claude / agent`，且重点讨论从“模型更强”转到“agent / workflow / info consumption”
+  - 已新增待深化 brief：`01-内容生产/01-待深化的选题/团队AI化后真正缺的不是Prompt，是Harness Engineering.md`
+  - 该 brief 已包含：一句话结论、研究来源、核心判断、标题备选、X 单条长帖结构、小红书图文结构、公众号提纲
+
+## 新任务：修复《用 AI 越多，大脑越废？》昨日 X 漏发并完成补发
+- 任务名称：定位 `2026-04-11-用AI越多大脑越废` 昨日未发到 X 的真实失败点，修复发布脚本并完成补发
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-12
+- 截止日期：2026-04-12
+- 优先级：P0
+- Harness Run：`20260412-015047-用ai越多大脑越废-101e91`
+
+### 执行清单
+- [x] 1. 复盘 lessons / OMX 状态，并确认漏发对象与缺失证据
+- [x] 2. 复现 X Thread 发布失败，定位真实根因
+- [x] 3. 对比现有 X skills 与历史成功样例，确认最稳发布路径
+- [x] 4. 通过已验证的单条长帖链路完成补发，并回查公开链接
+- [x] 5. 回填 progress / wiki / review 结论
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已确认漏发对象为：`01-内容生产/02-制作中的选题/2026-04-11-用AI越多大脑越废.md`
+  - 已确认仓库内没有对应的发布记录、已发布归档或 harness 发布证据，因此昨天确实没有发出去
+  - 已真实复现 `x-thread.ts` 失败：`[x-thread] Textarea 1 not found after clicking add button`
+  - 已定位 thread 失败的直接根因：当前 X compose 页面存在重复 `tweetTextarea_0`，旧脚本会命中隐藏 editor；只有点到可见 editor 后，真正的 `addButton` 才会出现
+  - 已核对历史成功路径与公开样例，确认过去稳定跑通的主链是 `x-browser.ts` 与 `x-article.ts`，且部分“X.com 长文”公开形态实际是 `tweet` 单条长帖
+  - 已确认 `compose/articles` 当前账号页面只有导航，没有 `Write` / editor，因此本轮没有继续硬走 article
+  - 已修正 `x-browser.ts` 的 editor 聚焦方式，改为只点击可见编辑器
+  - 已将《用 AI 越多，大脑越废？》补发为 X.com 单条长帖，公开链接为：`https://x.com/0xcybersmile/status/2043151115399942583`
+  - 已用 `x-to-markdown` 回拉新帖证据：`x-to-markdown/0xcybersmile/2043151115399942583.md`
+  - 已将主稿与 article 尝试稿移动到 `01-内容生产/03-已发布的选题/`，并回填 `wiki/log.md`、`wiki/选题/AI认知萎缩与依赖.md`、`tasks/progress.md`、`tasks/lessons.md`
+
 ## 新任务：修复 Claude Code MCP 配置与失效插件引用
 - 任务名称：修复项目 `.mcp.json` 的 schema 错误，并将 `context-engineering-marketplace` 的旧插件名 `agent-architecture` 迁移到当前有效名称 `context-engineering`
 - 负责人（Lead Agent）：Codex
