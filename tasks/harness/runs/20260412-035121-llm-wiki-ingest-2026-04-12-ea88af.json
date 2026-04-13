@@ -1,0 +1,129 @@
+{
+  "run_id": "20260412-035121-llm-wiki-ingest-2026-04-12-ea88af",
+  "kind": "content_pipeline",
+  "topic": "LLM Wiki ingest 2026-04-12",
+  "summary": "为当日研究报告创建显式 wiki ingest 运行痕迹",
+  "source": "05-选题研究/X-每日日程-2026-04-12.md",
+  "owner": "Codex",
+  "priority": "P1",
+  "current_stage": "research",
+  "status": "in_progress",
+  "created_at": "2026-04-12T03:51:21+00:00",
+  "updated_at": "2026-04-12T03:51:21+00:00",
+  "artifacts": [
+    {
+      "id": "79e5dabc56",
+      "type": "research_report",
+      "path": "05-选题研究/X-每日日程-2026-04-12.md",
+      "description": "Daily source for wiki ingest: X-每日日程-2026-04-12.md",
+      "stage": "research",
+      "created_at": "2026-04-12T03:51:21+00:00"
+    },
+    {
+      "id": "1adc2876e6",
+      "type": "research_report",
+      "path": "05-选题研究/HN-每日热点-2026-04-12.md",
+      "description": "Daily source for wiki ingest: HN-每日热点-2026-04-12.md",
+      "stage": "research",
+      "created_at": "2026-04-12T03:51:21+00:00"
+    },
+    {
+      "id": "19c60670d2",
+      "type": "research_report",
+      "path": "05-选题研究/Reddit-每日监控-2026-04-12.md",
+      "description": "Daily source for wiki ingest: Reddit-每日监控-2026-04-12.md",
+      "stage": "research",
+      "created_at": "2026-04-12T03:51:21+00:00"
+    },
+    {
+      "id": "907522ed27",
+      "type": "research_report",
+      "path": "docs/reports/wiki-ingest-2026-04-12.md",
+      "description": "Wiki ingest summary report for 2026-04-12",
+      "stage": "research",
+      "created_at": "2026-04-12T03:51:21+00:00"
+    }
+  ],
+  "checks": {
+    "materials_queried": true,
+    "research_complete": true,
+    "outline_locked": false,
+    "draft_written": false,
+    "facts_checked": false,
+    "platform_ready": false,
+    "published": false,
+    "progress_updated": false,
+    "wiki_logged": false,
+    "lessons_reviewed": false
+  },
+  "incidents": [],
+  "events": [
+    {
+      "at": "2026-04-12T03:51:21+00:00",
+      "type": "run_created",
+      "stage": "research",
+      "message": "Run created for topic: LLM Wiki ingest 2026-04-12",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-12T03:51:21+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: research_report",
+      "meta": {
+        "path": "05-选题研究/X-每日日程-2026-04-12.md",
+        "artifact_id": "79e5dabc56"
+      }
+    },
+    {
+      "at": "2026-04-12T03:51:21+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: research_report",
+      "meta": {
+        "path": "05-选题研究/HN-每日热点-2026-04-12.md",
+        "artifact_id": "1adc2876e6"
+      }
+    },
+    {
+      "at": "2026-04-12T03:51:21+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: research_report",
+      "meta": {
+        "path": "05-选题研究/Reddit-每日监控-2026-04-12.md",
+        "artifact_id": "19c60670d2"
+      }
+    },
+    {
+      "at": "2026-04-12T03:51:21+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: research_report",
+      "meta": {
+        "path": "docs/reports/wiki-ingest-2026-04-12.md",
+        "artifact_id": "907522ed27"
+      }
+    },
+    {
+      "at": "2026-04-12T03:51:21+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-12T03:51:21+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check research_complete set to True",
+      "meta": {
+        "check_name": "research_complete",
+        "value": true
+      }
+    }
+  ]
+}

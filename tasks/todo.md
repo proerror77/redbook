@@ -55,6 +55,11 @@
     - `unstaged = 0`
     - `untracked = 0`
   - 剩余仅为一批已经 staged 的清晰改动，后续可以按批次提交
+  - 已新增 staged 分组说明：`docs/reports/2026-04-13-commit-batches.md`
+  - 当前 staged 批次已切成 3 个主题：
+    - `A. 内容资产与研究产物`
+    - `B. 运行规范与知识沉淀`
+    - `C. 浏览器统一方案与兼容层`
 
 ## 新任务：interactive-browser 原型验证
 - 任务名称：在不依赖 Playwright 的前提下，为真实 Chrome + CDP current-tab 模式建立最小共享原型，并做只读烟测
@@ -75,6 +80,7 @@
   - 已新增原型目录：`tools/browser-core/interactive/`
   - 已新增 smoke 脚本：`tools/browser-core/interactive/smoke.mjs`
   - 已在真实 Chrome 的小红书页签上完成成功烟测
+  - 已新增 `tools/browser-core/interactive/boss-probe.mjs`，并在 BOSS 域完成只读 probe
   - 已输出报告：`docs/reports/2026-04-13-interactive-browser-prototype.md`
   - 已尝试过一版极窄的 BOSS probe 连接层替换，但因验证不足已回滚
   - 本轮没有替换任何现有业务主链

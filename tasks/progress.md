@@ -19,6 +19,11 @@
 - 已在当前真实 Chrome 的小红书页签上完成 smoke：
   - 成功识别当前聚焦的小红书创作页
   - 成功读取 `hasFocus / visibilityState / readyState / bodyPreview`
+- 已补第二个真实业务域的只读验证：
+  - `node tools/browser-core/interactive/boss-probe.mjs` 成功导航到 BOSS 聊天页并读取 `pageTitle / readyState / loginExpired / securityCheck`
+- 已补到新的分叉证据：
+  - raw CDP 能看到并进入 BOSS 登录页
+  - 现有 `boss:apply-current -- --probe true` 的 Playwright `connectOverCDP` 会话却仍看不到同一张 BOSS 页签
 - 已输出验证报告：
   - [2026-04-13-interactive-browser-prototype.md](/Users/proerror/Documents/redbook/docs/reports/2026-04-13-interactive-browser-prototype.md)
 - 已尝试过一版极窄的 BOSS probe 连接层替换，但因为验证不稳定，已经回滚，未保留在生产脚本里。
@@ -1349,6 +1354,27 @@
 **需要注意：**
 - 内容稿本身应该进入 Git tracking；运行时痕迹不应该。
 - 以后新增入口级约束时，默认要求 `AGENTS.md` 和 `CLAUDE.md` 同步修改。
+
+## [2026-04-13] 会话摘要
+
+**完成了什么：**
+- 继续完成了 work tree 的第二轮和第三轮整理。
+- 当前仓库状态已经收口到：
+  - `unstaged = 0`
+  - `untracked = 0`
+- 把应该进 Git 的内容资产、研究稿、wiki/tasks 沉淀、浏览器统一方案文档全部纳入 tracking / staging。
+- 把剩余 staged 改动按主题切成 3 个批次，并输出清单：
+  - `docs/reports/2026-04-13-commit-batches.md`
+
+**未完成 / 遗留：**
+- 还没有替你执行 commit；当前只是把 staged 批次整理干净了。
+- `tasks/harness/locks/20260406-131247-ai-已经从模型战争进入部署战争-7d8fbc.lock` 作为历史已跟踪文件的删除仍在 staged 批次里。
+
+**下次会话优先做：**
+- 如果你要提交，我下一步可以直接按 `A / B / C` 三个批次帮你拆提交。
+
+**需要注意：**
+- 现在不是“所有东西都一锅端 commit”，而是已经具备清晰的按主题提交条件。
 
 ## [2026-04-13] 会话摘要
 

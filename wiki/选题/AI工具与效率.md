@@ -1,6 +1,6 @@
 # AI 工具与效率
 
-> 从 X 每日研究报告提炼 | 最后更新：2026-04-10
+> 从 X 每日研究报告提炼 | 最后更新：2026-04-11
 
 ## 核心痛点
 
@@ -85,6 +85,32 @@
 - "Is anyone else noticing that the devs who use AI constantly aren't always the most productive ones?"（184赞/75评）— AI 工具使用量与实际产出的悖论，高价值选题角度
 
 **洞察**：AI 工具竞争正在分化为两条线：一是"谁更便宜/更灵活"（OpenRouter、Zed 替代 Claude Code）；二是"谁能真正提升产出"（AI 重度用户≠高产的悖论）。这两个角度都有强烈的内容共鸣潜力。
+
+## 今日信号（2026-04-11）
+
+**X.com 高频话题**：
+- `AI`（8次）、`Claude`（3次）、`GPT`（2次）持续主导讨论
+- **Claude Code 技能列表**（@zodchiii，❤️ 10029）：扫描 1000+ repos、测试 200+ skills，"The Only List You Need"——工具整合型内容的高传播性再次验证
+- **OpenAI Codex 插件生态**（@OpenAIDevs，❤️ 5337）：Codex 开放插件接入，与主流开发工具无缝集成
+- **Figma Weave 发布**（@figma，❤️ 2619）：构建工作流创建/编辑图像、视频、3D，AI 进入设计工具核心层
+- **Perplexity Computer**（@AITechEchoes，❤️ 74）：从"回答问题"到"执行工作流"，AI 工具从信息层进入执行层
+- **OpenClaw 账号被封事件**（@op7418 转发）：Peter Steinberger 的 Claude 账号被封后解封，Anthropic 与第三方工具的边界持续紧张
+- **Claude Code 替代品竞争**（@hylarucoder）：opus 4.6 > glm 5.1 > gpt 5.4 在 agent 调试上的对比，模型能力分化
+
+**HN 高热讨论**：
+- **Linux kernel 官方 AI 辅助指南**（182赞/139评）— Linux 官方文档明确 AI 使用规则：可以用，但人类提交者负全责。开源社区对 AI 的态度从"拒绝"转向"规范化"
+- **Sam Altman 回应 Molotov cocktail 事件**（207赞/402评）— AI 公司领导人的公众形象与安全焦虑，HN 社区质疑 OpenAI/Anthropic 的"控制人类未来"叙事
+- **Twill.ai（YC S25）**（59赞/52评）— "Delegate to cloud agents, get back PRs"，云端 agent 代理开发任务，agent 基础设施商业化加速
+
+**Reddit AI/ML**：
+- "The age of cognitive atrophy is here"（r/webdev，379赞/106评）— 开发者从"自己解决问题"到"直接问 AI"的转变，大脑萎缩焦虑，高情绪共鸣
+- LinkedIn 自动化工具三月对比测试（31赞/34评）— AI 营销工具实测，ROI 数据驱动内容
+- AI 招聘助手 vs ATS 自动化（13赞/16评）— AI 工具在 HR 场景的落地
+
+**洞察**：
+- AI 工具正在从"能力展示"转向"规范化使用"——Linux kernel 的官方指南是标志性事件，说明 AI 辅助开发已进入主流工程实践
+- "AI 认知萎缩"是今日最高情绪密度话题，开发者社区对"过度依赖 AI"的焦虑正在形成新的内容需求
+- 工具整合型内容（"Top 50 Claude Skills"）的传播力远超单一工具测评，说明"帮用户做选择"比"介绍工具"更有价值
 
 ## 持续关注的信号源
 

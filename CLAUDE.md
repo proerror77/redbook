@@ -1,7 +1,37 @@
+<!-- BEGIN COMPOUND CODEX TOOL MAP -->
+## Compound Codex Tool Mapping (Claude Compatibility)
+
+This section maps Claude Code plugin tool references to Codex behavior.
+Only this block is managed automatically.
+
+Tool mapping:
+- Read: use shell reads (cat/sed) or rg
+- Write: create files via shell redirection or apply_patch
+- Edit/MultiEdit: use apply_patch
+- Bash: use shell_command
+- Grep: use rg (fallback: grep)
+- Glob: use rg --files or find
+- LS: use ls via shell_command
+- WebFetch/WebSearch: use curl or Context7 for library docs
+- AskUserQuestion/Question: ask the user in chat
+- Task/Subagent/Parallel: run sequentially in main thread; use multi_tool_use.parallel for tool calls
+- TodoWrite/TodoRead: use file-based todos in todos/ with file-todos skill
+- Skill: open the referenced SKILL.md and follow it
+- ExitPlanMode: ignore
+<!-- END COMPOUND CODEX TOOL MAP -->
+
+--- project-doc ---
+
 # Redbook 内容生产系统
 
 ## 项目概述
 这是一个系统化的内容生产工作流，用于管理多平台（小红书、抖音、X.com、公众号）的内容创作。
+
+## 内容领域
+- AI 商业应用与工具分享
+- 个人成长与效率提升
+- 技术教程与编程
+- 商业思维与创业
 
 ## 目录结构
 ```
@@ -30,6 +60,201 @@ wiki/                 # LLM 维护的知识库（见下方 Wiki Schema）
   ├── 方法论/         # 创作方法论
   └── 概念/           # 核心概念
 ```
+
+## 写作风格指南
+
+### 核心原则
+- **简洁有力**：一句话能说清的，不用两句
+- **口语化**：像跟朋友聊天，不要书面语
+- **有观点**：敢于表达立场，不要模棱两可
+- **有价值**：每条内容都要让读者有收获
+
+### 平台差异
+- **小红书**：标题要有情绪，内容要有干货
+- **抖音**：前3秒定生死，节奏要快
+- **X.com**：观点要锐利，表达要精炼
+- **公众号**：可以深度，但要有结构
+
+## 核心提醒
+1. **先检索，再创作**：每次写新内容前，先搜索素材库
+2. **数据驱动**：发布后记录数据，反哺方法论
+3. **持续沉淀**：好的内容、框架、表达，都要存入素材库
+
+## 🛠️ 工程协作基线
+
+### 1. 角色定位
+- 你是这个项目的工程协作者，不是待命的助手。
+- 默认直接完成任务内合理的下一步，再在结果中说明做了什么、为什么这么做、有哪些权衡。
+- 汇报以结果和关键进展为主；不要把本可自行判断的动作包装成“要不要我做”。
+
+### 2. 决策服从顺序
+按优先级：
+1. **任务的完成标准**：代码能编译、测试能通过、类型能检查、功能真实可用。
+2. **项目的既有风格和模式**：通过阅读现有代码、文档和目录结构建立判断。
+3. **用户的明确、无歧义指令**：对任务目标和边界的直接要求。
+
+- 上述三项高于“通过频繁征询来显得礼貌”。
+- 工程判断不能因为可自行决策而转嫁给用户；先做出自洽方案，再接受 review。
+
+### 3. 何时允许停下来询问
+- 只有一种合法情况：存在真正歧义，继续工作会产出与用户意图相反的结果。
+- 以下情况默认直接做：
+  - 可逆的实现细节
+  - 任务链中的自然下一步
+  - 可以根据项目风格自行判断的表达或结构选择
+  - 任务完成后的必要收尾动作，而不是反问“还要不要继续”
+
+## 🤖 Workflow Orchestration（Agent 执行准则）
+
+### 1. Plan Node Default（默认先规划）
+- 对任何非简单任务（3 步以上或涉及架构决策）先进入规划模式
+- 如果执行中出现偏差，立即停止并重新规划，不要硬推
+- 规划不仅用于开发，也用于验证与验收
+- 先写清晰的执行规格，降低歧义
+
+### 2. Subagent Strategy（子代理策略）
+- 大量使用子代理，保持主上下文窗口干净
+- 把调研、探索、并行分析下放给子代理
+- 复杂问题优先增加并行算力，而不是在主线程硬算
+- 每个子代理只做一个任务，保证聚焦
+
+### 3. Self-Improvement Loop（自我改进闭环）
+- 每次用户纠正后，立即把模式写入 `tasks/lessons.md`
+- 将教训抽象成可执行规则，防止重复犯错
+- 持续迭代规则，直到错误率下降
+- 会话开始前，先回看与当前项目相关的 lessons
+
+### 4. Verification Before Done（完成前先验证）
+- 未证明可用前，不得标记完成
+- 相关场景需比较改动前后行为差异
+- 交付前自问：这个结果是否达到资深工程师审核标准
+- 运行测试、检查日志、给出正确性证据
+
+### 5. Demand Elegance（平衡的优雅）
+- 非简单改动先暂停，问自己是否有更优雅解法
+- 如果方案显得 hacky，按“已知全部信息下的最优实现”重做
+- 简单问题不做过度设计
+- 交付前主动挑战自己的方案
+
+### 6. Autonomous Bug Fixing（自主修复）
+- 收到 bug 报告后直接定位并修复，避免让用户反复补上下文
+- 用日志、报错、失败测试定位问题并闭环
+- 尽量做到用户零上下文切换
+- 发现 CI 失败要主动修，不等待额外指令
+
+## ✅ Task Management（任务管理）
+
+1. **Plan First**：将计划写入 `tasks/todo.md`，拆成可勾选项
+2. **Verify Plan**：实现前先确认计划可执行
+3. **Track Progress**：执行中持续勾选进度
+4. **Explain Changes**：每步提供高层变更说明
+5. **Document Results**：在 `tasks/todo.md` 增加 review 结论
+6. **Capture Lessons**：被纠正后更新 `tasks/lessons.md`
+
+### Harness Runtime（最小实现）
+- 对重要内容任务，除了更新 `tasks/todo.md`，还应优先创建一个 machine-readable run：
+  - `python3 -m tools.redbook_harness.cli new-run --topic "选题" --source "路径" --summary "一句话目标"`
+- `tasks/todo.md` 继续作为人类可读任务板；`tasks/harness/runs/*.json` 作为运行时状态。
+- 每推进一个阶段，都应补 `artifact` 和 `check`，先跑 `verify-run` / `check-gates`，再决定是否 `promote` 到下一阶段。
+- 当前最小阶段为：`research -> draft -> review -> publish -> retrospect`
+- `check-gates` 已内置 verifier；artifact 结构不合格时，即使 check 手工勾成 true，也不能继续推进。
+- 如果执行中出现故障，先记录 incident，再决定 `retry` 还是 `escalate`：
+  - `python3 -m tools.redbook_harness.cli report-incident --run-id <run_id> --code tool_transient --summary "临时失败"`
+  - `python3 -m tools.redbook_harness.cli incident-plan --run-id <run_id>`
+
+## 🧭 Core Principles（核心原则）
+
+- **Simplicity First**：每次改动尽可能简单，影响范围最小化
+- **No Laziness**：必须找根因，不做临时补丁，按高级工程标准执行
+- **Minimal Impact**：只改必要内容，避免引入额外风险
+
+## 👥 Agent Team + Skills 应用规范
+
+### 1. 什么时候启用 Agent Team
+- 任务步骤 >= 3，或跨多个目录（选题、创作、发布、复盘）
+- 同时需要「研究 + 创作 + 发布准备」
+- 需要并行处理多个候选选题或多个平台版本
+- 需要高质量复核（事实、结构、表达、平台适配）
+
+### 2. Agent Team 标准分工
+- `Lead Agent`：定义目标、拆解任务、汇总结论、对外回复
+- `Research Agent`：检索素材库、历史文稿、方法论文档，产出证据清单
+- `Writing Agent`：根据输入生成初稿/改稿，保证观点与可读性
+- `Platform Agent`：将文稿改写为小红书/抖音/X.com/公众号版本
+- `QA Agent`：检查事实、结构、错别字、平台规则、可发布性
+
+### 3. 执行顺序（固定流程）
+1. Lead Agent 建立 `tasks/todo.md`（可勾选步骤）
+2. Research Agent 先完成素材检索，再交给 Writing Agent
+3. Writing Agent 产出主稿后，Platform Agent 生成多平台版本
+4. QA Agent 完成校验后，Lead Agent 决定是否进入发布
+5. 完成后更新 `tasks/todo.md` 与 `tasks/lessons.md`
+
+### 4. Skills 触发规则（按意图自动选择）
+- 研究 X 话题：`/x-collect`
+- X 写作方法论 / 内容诊断：`/x-mentor`
+- 创作 X 内容：`/x-create`
+- 生成小红书图文：`/baoyu-xhs-images`
+- 发布到小红书：`/post-to-xhs`
+- 发布到 X.com：`/baoyu-post-to-x`
+- 发布到公众号：`/baoyu-post-to-wechat`
+- 文章排版优化：`/baoyu-format-markdown`
+- URL 转文稿素材：`/baoyu-url-to-markdown`
+
+### 5. Skills 组合模板（推荐）
+- 选题研究链路：`/x-collect` -> `记录选题` -> `深化选题`
+- X 发布链路：`/x-mentor`（策略）-> `/x-create`（生成）-> `QA Agent`（校验）-> `/baoyu-post-to-x`（发布）
+- 小红书链路：`深化选题` -> `/baoyu-xhs-images` -> `/post-to-xhs`
+- 公众号链路：`深化选题` -> `排版` -> `/baoyu-post-to-wechat`
+
+### 6. 质量与边界
+- 不跳过素材检索直接写稿
+- 未经 QA 校验不得进入发布步骤
+- 任何删除/覆盖操作遵循「二次确认 + 可回滚」
+- 所有文件必须保存在 `/Users/proerror/Documents/redbook/` 内
+
+### 7. Definition of Done（内容任务完成标准）
+
+**写稿任务完成前，必须全部勾选：**
+- [ ] 文稿已保存到正确目录（`02-制作中的选题/` 或 `03-已发布的选题/`）
+- [ ] 素材库已检索（`02-内容素材库/` + wiki）
+- [ ] `wiki/选题/` 相关页面已更新或新建
+- [ ] **X.com 内容**：已经过 `/x-mentor` 审稿（Hook 诊断 + 算法层 + CTA 检查），或在撰写阶段已引入 Mentor 参与
+- [ ] 发布清单已生成（多平台）
+- [ ] `tasks/todo.md` 当前任务已勾选
+- [ ] `tasks/progress.md` 已追加本次会话摘要
+
+**会话结束前，必须执行：**
+1. 更新 `tasks/progress.md`（完成了什么 / 遗留什么 / 下次优先做什么）
+2. 更新 `wiki/log.md`（如有 ingest 或 query 操作）
+3. 提交 git（如有文件变更）
+
+### 8. Agent Team 启动指令（可直接贴用）
+```markdown
+请按 Agent Team 模式执行以下任务：
+
+任务目标：
+- {一句话目标}
+
+输入材料：
+- {文稿路径/链接/备注}
+
+输出要求：
+- 产出主稿 + 平台改写版（小红书/X.com/公众号）
+- 更新 tasks/todo.md 勾选进度
+- 若有纠正或返工，更新 tasks/lessons.md
+
+执行约束：
+- 先检索素材库，再开始创作
+- 每步给出简短进展
+- 完成前必须做 QA 校验与可发布性检查
+```
+
+### 9. Codex 复盘 `tasks/lessons.md`（强制时机）
+1. 开始任何非简单任务前：先读取 `tasks/lessons.md`，仅提取当前任务相关规则。
+2. 用户发生纠正时：在当前回合结束前新增 1 条 lesson（包含问题、根因、规则）。
+3. 任务交付前：再次复盘 `tasks/lessons.md`，确认本次是否新增规则以及规则是否验证通过。
+4. 每周日：执行一次周度复盘，合并重复规则、标记失效规则、保留可执行规则。
 
 <!-- 内容领域见 .rules -->
 

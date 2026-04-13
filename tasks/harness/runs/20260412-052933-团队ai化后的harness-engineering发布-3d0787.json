@@ -1,0 +1,298 @@
+{
+  "run_id": "20260412-052933-团队ai化后的harness-engineering发布-3d0787",
+  "kind": "content_pipeline",
+  "topic": "团队AI化后的Harness Engineering发布",
+  "summary": "产出并发布 X 单条长帖与小红书图文",
+  "source": "01-内容生产/01-待深化的选题/团队AI化后真正缺的不是Prompt，是Harness Engineering.md",
+  "owner": "Codex",
+  "priority": "P1",
+  "current_stage": "retrospect",
+  "status": "done",
+  "created_at": "2026-04-12T05:29:33+00:00",
+  "updated_at": "2026-04-12T05:49:00+00:00",
+  "artifacts": [
+    {
+      "id": "754b5826c9",
+      "type": "research_report",
+      "path": "01-内容生产/01-待深化的选题/团队AI化后真正缺的不是Prompt，是Harness Engineering.md",
+      "description": "已验证选题 brief",
+      "stage": "research",
+      "created_at": "2026-04-12T05:44:07+00:00"
+    },
+    {
+      "id": "0aeeb3f3e5",
+      "type": "draft",
+      "path": "01-内容生产/03-已发布的选题/2026-04-12-团队AI化后真正缺的不是Prompt，是Harness Engineering.md",
+      "description": "已发布主稿",
+      "stage": "draft",
+      "created_at": "2026-04-12T05:46:25+00:00"
+    },
+    {
+      "id": "b5551fcd87",
+      "type": "publish_record",
+      "path": "docs/reports/2026-04-12-harness-engineering-publish-record.md",
+      "description": "X 与小红书发布记录",
+      "stage": "publish",
+      "created_at": "2026-04-12T05:46:25+00:00"
+    },
+    {
+      "id": "48a1abb915",
+      "type": "progress_log",
+      "path": "tasks/progress.md",
+      "description": "会话进展回写",
+      "stage": "retrospect",
+      "created_at": "2026-04-12T05:46:25+00:00"
+    },
+    {
+      "id": "df703f9410",
+      "type": "wiki_log",
+      "path": "wiki/log.md",
+      "description": "wiki 日志回写",
+      "stage": "retrospect",
+      "created_at": "2026-04-12T05:46:25+00:00"
+    },
+    {
+      "id": "6aee8335e0",
+      "type": "qa_report",
+      "path": "docs/reports/2026-04-12-harness-engineering-qa.md",
+      "description": "发布前 QA 报告",
+      "stage": "review",
+      "created_at": "2026-04-12T05:48:33+00:00"
+    },
+    {
+      "id": "99eb9763f7",
+      "type": "publish_checklist",
+      "path": "docs/reports/2026-04-12-harness-engineering-publish-checklist.md",
+      "description": "发布检查清单",
+      "stage": "review",
+      "created_at": "2026-04-12T05:48:33+00:00"
+    }
+  ],
+  "checks": {
+    "materials_queried": true,
+    "research_complete": true,
+    "outline_locked": true,
+    "draft_written": true,
+    "facts_checked": true,
+    "platform_ready": true,
+    "published": true,
+    "progress_updated": true,
+    "wiki_logged": true,
+    "lessons_reviewed": true
+  },
+  "incidents": [],
+  "events": [
+    {
+      "at": "2026-04-12T05:29:33+00:00",
+      "type": "run_created",
+      "stage": "research",
+      "message": "Run created for topic: 团队AI化后的Harness Engineering发布",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-12T05:44:07+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: research_report",
+      "meta": {
+        "path": "01-内容生产/01-待深化的选题/团队AI化后真正缺的不是Prompt，是Harness Engineering.md",
+        "artifact_id": "754b5826c9"
+      }
+    },
+    {
+      "at": "2026-04-12T05:44:07+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-12T05:44:07+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check research_complete set to True",
+      "meta": {
+        "check_name": "research_complete",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-12T05:46:25+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: draft",
+      "meta": {
+        "path": "01-内容生产/03-已发布的选题/2026-04-12-团队AI化后真正缺的不是Prompt，是Harness Engineering.md",
+        "artifact_id": "0aeeb3f3e5"
+      }
+    },
+    {
+      "at": "2026-04-12T05:46:25+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check outline_locked set to True",
+      "meta": {
+        "check_name": "outline_locked",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-12T05:46:25+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check draft_written set to True",
+      "meta": {
+        "check_name": "draft_written",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-12T05:46:25+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: publish_record",
+      "meta": {
+        "path": "docs/reports/2026-04-12-harness-engineering-publish-record.md",
+        "artifact_id": "b5551fcd87"
+      }
+    },
+    {
+      "at": "2026-04-12T05:46:25+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check published set to True",
+      "meta": {
+        "check_name": "published",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-12T05:46:25+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: progress_log",
+      "meta": {
+        "path": "tasks/progress.md",
+        "artifact_id": "48a1abb915"
+      }
+    },
+    {
+      "at": "2026-04-12T05:46:25+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: wiki_log",
+      "meta": {
+        "path": "wiki/log.md",
+        "artifact_id": "df703f9410"
+      }
+    },
+    {
+      "at": "2026-04-12T05:46:25+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check progress_updated set to True",
+      "meta": {
+        "check_name": "progress_updated",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-12T05:46:25+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check wiki_logged set to True",
+      "meta": {
+        "check_name": "wiki_logged",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-12T05:46:26+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check lessons_reviewed set to True",
+      "meta": {
+        "check_name": "lessons_reviewed",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-12T05:48:33+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: qa_report",
+      "meta": {
+        "path": "docs/reports/2026-04-12-harness-engineering-qa.md",
+        "artifact_id": "6aee8335e0"
+      }
+    },
+    {
+      "at": "2026-04-12T05:48:33+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: publish_checklist",
+      "meta": {
+        "path": "docs/reports/2026-04-12-harness-engineering-publish-checklist.md",
+        "artifact_id": "99eb9763f7"
+      }
+    },
+    {
+      "at": "2026-04-12T05:48:33+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check facts_checked set to True",
+      "meta": {
+        "check_name": "facts_checked",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-12T05:48:33+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check platform_ready set to True",
+      "meta": {
+        "check_name": "platform_ready",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-12T05:48:33+00:00",
+      "type": "stage_promoted",
+      "stage": "draft",
+      "message": "Stage promoted to draft",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-12T05:48:34+00:00",
+      "type": "stage_promoted",
+      "stage": "review",
+      "message": "Stage promoted to review",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-12T05:48:34+00:00",
+      "type": "stage_promoted",
+      "stage": "publish",
+      "message": "Stage promoted to publish",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-12T05:48:34+00:00",
+      "type": "stage_promoted",
+      "stage": "retrospect",
+      "message": "Stage promoted to retrospect",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-12T05:49:00+00:00",
+      "type": "run_completed",
+      "stage": "retrospect",
+      "message": "Run completed; final stage already reached.",
+      "meta": {}
+    }
+  ]
+}
