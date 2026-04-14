@@ -1,5 +1,29 @@
 # Task Todo
 
+## 新任务：加入 video-wrapper skill
+- 任务名称：将 `op7418/Video-Wrapper-Skills` 安装到当前 Codex skills 环境，并补齐运行依赖与项目记录
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-15
+- 截止日期：2026-04-15
+- 优先级：P1
+- Harness Run：N/A（本机 skill 安装）
+
+### 执行清单
+- [x] 1. 检查目标仓库结构，确认这是可安装的根级 skill
+- [x] 2. 安装到 `~/.codex/skills/video-wrapper`
+- [x] 3. 补齐 Python 依赖与 Playwright Chromium
+- [x] 4. 验证 skill 元数据、Python import、Chromium 启动均可用
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已使用官方安装脚本将仓库根级 skill 安装到 `~/.codex/skills/video-wrapper`
+  - 已在 skill 目录内创建 `venv` 并安装 `moviepy / pillow / numpy / pysrt / playwright`
+  - 已完成 `playwright install chromium`
+  - 已验证 `check_browser_renderer_available = True`
+  - 已验证 Playwright Chromium 可无头启动并成功渲染最小页面
+  - 当前 skill 在下次 Codex 会话重启后应可直接被发现
+
 ## 新任务：小红书点击优化闭环
 - 任务名称：将“小红书数据偏弱”的结论落到实战改写、发布流程和自动化导入脚本
 - 负责人（Lead Agent）：Codex

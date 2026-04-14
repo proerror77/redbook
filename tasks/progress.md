@@ -30,6 +30,33 @@
 **需要注意：**
 - 当前仓库 worktree 仍有大量既有未提交改动；这次只追加了任务日志，没有做提交收口。
 
+## [2026-04-15] 会话摘要：安装 video-wrapper skill
+
+**完成了什么：**
+- 检查了用户提供的 GitHub 仓库 `op7418/Video-Wrapper-Skills`，确认它是一个根级 `SKILL.md` 的可安装 skill 仓库。
+- 使用系统安装脚本将其安装到：
+  - `/Users/proerror/.codex/skills/video-wrapper`
+- 补齐了该 skill 的本地运行依赖：
+  - 在 skill 目录创建 `venv`
+  - 安装 `moviepy / pillow / numpy / pysrt / playwright`
+  - 执行 `playwright install chromium`
+- 做了 3 层验证：
+  - `SKILL.md` 元数据可读
+  - `video_processor` 与 `content_analyzer` 可正常 import
+  - `check_browser_renderer_available = True`
+  - Playwright Chromium 可无头启动并成功渲染最小页面
+
+**未完成 / 遗留：**
+- 这轮只完成了安装与依赖准备，没有在真实视频文件上跑一次完整渲染链。
+- 该 skill 的“AI 分析”部分本质上仍依赖交互式 LLM 审核，不是仓库内自带的自动模型调用。
+
+**下次会话优先做：**
+- 如果要真正投入使用，先拿一段访谈视频 + `.srt` 做一轮端到端试跑，验证模板效果、时序和输出耗时。
+
+**需要注意：**
+- 新安装的 skill 需要重启 Codex 才会被新会话稳定发现。
+- 这次项目内只更新了任务记录，skill 本体安装在 `~/.codex/skills/`，不在当前仓库版本控制内。
+
 ## [2026-04-13] 会话摘要：interactive-browser 原型验证
 
 **完成了什么：**
