@@ -1,11 +1,12 @@
 Create a premium vertical editorial poster illustration for Xiaohongshu, aspect ratio 3:4.
 
-Theme: AI office work is entering the "done-for-you" era.
+Theme: someone has used AI for months but is still manually stitching together weekly reports.
 
 Scene:
-- A confident young Chinese professional woman working at a clean desk in a bright modern studio office
-- Around her are elegant floating sheets, search cards, structured notes, and workflow connectors
-- The mood is calm, sharp, intelligent, and expensive
+- A young Chinese professional at a desk, surrounded by half-finished weekly report pages, screenshots, and scattered notes
+- The screen should suggest AI is available, but the person still looks stuck in manual busywork
+- Visual contrast should imply that the real bottleneck is the messy workflow and scattered materials, not lack of AI tools
+- The mood is sharp, slightly frustrated, but still polished and premium
 - This should feel like a premium business magazine cover, not generic AI art
 - Leave generous clean empty space in the lower half for later Chinese text overlay
 

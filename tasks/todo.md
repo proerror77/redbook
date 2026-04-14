@@ -1,5 +1,50 @@
 # Task Todo
 
+## 新任务：小红书点击优化闭环
+- 任务名称：将“小红书数据偏弱”的结论落到实战改写、发布流程和自动化导入脚本
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-15
+- 截止日期：2026-04-15
+- 优先级：P0
+- Harness Run：N/A（内容优化 + 流程固化）
+
+### 执行清单
+- [x] 1. 选两条低表现小红书稿，重写标题和封面承诺
+- [x] 2. 将点击承诺一致性检查写入共享 playbook 并同步入口文档
+- [x] 3. 先写 failing test，再实现 Excel -> 数据统计表 -> wiki 复盘模板脚本
+- [x] 4. 在真实 Excel 上跑脚本，生成实际复盘模板
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已为 `团队AI化后，真正缺的不是Prompt` 补一版“小红书二次发布版”，避免继续用抽象概念做第一钩子
+  - 已将 `AI办公进入代做时代` 的小红书主标题、封面承诺和开头改成更具体的工作场景钩子
+  - 已把“点击承诺一致性检查”写入 `docs/shared/redbook-playbook.md`，并同步到 `AGENTS.md / CLAUDE.md`
+  - 已新增 `tools/import_xhs_note_stats.py` 与 `tools/redbook_harness/tests/test_import_xhs_note_stats.py`
+  - 已用真实 Excel 生成复盘模板：`docs/reports/xhs-note-review-template-2026-04-15.md`
+
+## 新任务：关注一批 X AI 博主
+- 任务名称：在当前登录的 X 账号中关注用户提供的 AI 博主列表，并记录执行结果
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-14
+- 截止日期：2026-04-14
+- 优先级：P1
+- Harness Run：N/A（账号操作）
+
+### 执行清单
+- [x] 1. 连接当前登录的 Chrome / X 会话
+- [x] 2. 逐个检查并关注目标账号，遇到已关注则跳过
+- [x] 3. 记录成功 / 已关注 / 未找到 / 被限速的结果
+- [x] 4. 追加 `tasks/progress.md` 会话摘要
+
+### Review 结论
+- 已完成
+- 当前状态：
+  - 已确认当前登录态账号为 `@0xcybersmile`
+  - 本轮已成功补关注：`@Pluvio9yte`、`@Zesee`、`@AshlynHe1129`、`@skaas777`
+  - 本轮检查时已处于关注状态：`@yaohui12138`、`@AI_Jasonyu`、`@servasyy_ai`、`@nftbanker`
+  - 本轮执行期间未出现 `速度限制 / rate limit` 横幅，也未遇到未找到账号
+
 ## 新任务：导入小红书笔记列表明细表
 - 任务名称：整理 `/Users/proerror/Downloads/笔记列表明细表.xlsx`，将小红书笔记导出数据落入项目统计表并补会话记录
 - 负责人（Lead Agent）：Codex
@@ -83,6 +128,12 @@
   - 已新增 `tools/browser-core/interactive/boss-probe.mjs`，并在 BOSS 域完成只读 probe
   - 已输出报告：`docs/reports/2026-04-13-interactive-browser-prototype.md`
   - 已尝试过一版极窄的 BOSS probe 连接层替换，但因验证不足已回滚
+  - 已将用户观察到的 BOSS 未登录跳页循环补入验证报告与 swap decision，进一步确认当前不应切主链
+  - 已通过 10 秒连续采样把 BOSS 未登录跳页循环量化为 target 状态振荡证据
+  - 已结合 `geekgeekrun` 仓库确认：登录恢复应独立于业务主链，且入口应优先 `/web/user/` 而不是直接 `chat`
+  - 已完成 `boss-login-helper` 原型的 5 秒 smoke，确认首页与 `/web/user/` 入口比 `chat` 入口稳定
+  - 已根据用户实测把 `OpenCLI / BB-browser / 外部 CDP 附加浏览器` 从 Boss 主链候选中移除
+  - 在用户确认“boss-login-helper 还是不行”后，已将 Boss 方向正式收敛为“辅助投递 + 管理投递”，不再继续推进外部附加浏览器主链
   - 本轮没有替换任何现有业务主链
 
 ## 新任务：落实浏览器统一的 Phase 0

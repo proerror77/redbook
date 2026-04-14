@@ -4,6 +4,32 @@
 
 ---
 
+## [2026-04-14] 会话摘要：关注一批 X AI 博主
+
+**完成了什么：**
+- 使用当前已登录的 Chrome / X 会话执行关注动作，没有切换到新的浏览器上下文。
+- 已确认当前执行账号为 `@0xcybersmile`。
+- 本轮成功补关注 4 个账号：
+  - `@Pluvio9yte`
+  - `@Zesee`
+  - `@AshlynHe1129`
+  - `@skaas777`
+- 本轮检查时已经处于关注状态 4 个账号：
+  - `@yaohui12138`
+  - `@AI_Jasonyu`
+  - `@servasyy_ai`
+  - `@nftbanker`
+- 执行过程中未出现 `速度限制 / rate limit` 横幅，也没有遇到账号不存在的情况。
+
+**未完成 / 遗留：**
+- 本轮只处理了用户点名的 8 个 AI 博主，没有继续扩展到资讯源作者或推文作者本人。
+
+**下次会话优先做：**
+- 如果用户要继续扩关注列表，沿用当前登录会话，按慢速批量模式继续执行。
+
+**需要注意：**
+- 当前仓库 worktree 仍有大量既有未提交改动；这次只追加了任务日志，没有做提交收口。
+
 ## [2026-04-13] 会话摘要：interactive-browser 原型验证
 
 **完成了什么：**
@@ -24,6 +50,25 @@
 - 已补到新的分叉证据：
   - raw CDP 能看到并进入 BOSS 登录页
   - 现有 `boss:apply-current -- --probe true` 的 Playwright `connectOverCDP` 会话却仍看不到同一张 BOSS 页签
+- 用户补充了更强的新证据：
+  - 未登录的 BOSS 页在自动化上下文里会在首页/前页之间来回跳转
+  - 因此当前不仅“未验证通过”，连“登录升级态”本身都不稳定
+- 本轮又补了一层结构化证据：
+  - 对同一个 BOSS target 连续采样 10 秒，确认它会在 chat、`/web/user/`、空 URL 之间振荡
+- 又补了一条路径对比结论：
+  - 直接进 `chat` 入口更不稳定
+  - 后续如果继续验证登录升级态，应优先从首页入口开始
+- 已结合 `geekgeekrun` 仓库实现补了一层外部参照：
+  - 其登录助手明确从 `/web/user/` 开始
+  - 登录与业务自动化明确分离
+  - 登录成功后以 cookies / 网络事件为判据，再进入后续业务流
+- 已把这一思路落成 `boss-login-helper` 原型，并完成 5 秒 smoke：
+  - 首页入口稳定落在 `https://www.zhipin.com/shanghai/?seoRefer=index`
+  - `/web/user/` 入口稳定停在登录页
+  - 相比之下，`chat` 入口仍然更不稳定
+- 用户又补了一条更强的一手证据：
+  - `OpenCLI / BB-browser` 这类外部 CDP 附加浏览器方案，亲测会被 Boss 检测并强制回退/关闭页面
+  - 因此 Boss 主链后续不应再把远程附加浏览器当候选路线
 - 已输出验证报告：
   - [2026-04-13-interactive-browser-prototype.md](/Users/proerror/Documents/redbook/docs/reports/2026-04-13-interactive-browser-prototype.md)
 - 已尝试过一版极窄的 BOSS probe 连接层替换，但因为验证不稳定，已经回滚，未保留在生产脚本里。
@@ -1430,3 +1475,54 @@
 
 **需要注意：**
 - 以后看到“小红书数据差”，默认先查点击承诺是否一致，不要直接把问题归因成限流。
+
+## [2026-04-15] 会话摘要：小红书点击优化闭环
+
+**完成了什么：**
+- 已把“小红书数据偏弱”的结论从 wiki 落到内容、流程和工具三层。
+- 内容层：
+  - 已为 `01-内容生产/03-已发布的选题/2026-04-12-团队AI化后真正缺的不是Prompt，是Harness Engineering.md` 补上「小红书二次发布版（2026-04-15）」
+  - 已重写 `01-内容生产/02-制作中的选题/2026-04-08-AI办公进入代做时代/小红书-图文稿.md` 的主标题、封面承诺和开头
+  - 已同步更新对应封面 prompt：`prompts/01-cover.md`
+- 流程层：
+  - 已在 `docs/shared/redbook-playbook.md` 新增“点击承诺一致性检查”
+  - 已运行 `python3 tools/sync_redbook_playbook.py`，把规则同步到 `AGENTS.md` 和 `CLAUDE.md`
+- 工具层：
+  - 先写了 failing test：`tools/redbook_harness/tests/test_import_xhs_note_stats.py`
+  - 再实现脚本：`tools/import_xhs_note_stats.py`
+  - 已在真实 Excel `/Users/proerror/Downloads/笔记列表明细表.xlsx` 上跑通
+  - 已生成实际复盘模板：`docs/reports/xhs-note-review-template-2026-04-15.md`
+
+**未完成 / 遗留：**
+- 这轮只完成了标题/封面承诺层的优化，还没把旧图组重新渲染出来。
+- 还没有把“点击承诺一致性检查”接进 harness verifier；当前先落在共享 playbook。
+
+**下次会话优先做：**
+- 基于这次改写，重做 `AI办公进入代做时代` 与 `团队AI化后...` 的小红书封面图。
+- 如果后续要把流程再收紧，可以把“点击承诺一致性检查”接进 publish checklist artifact 或 verifier。
+
+**需要注意：**
+- 对小红书，抽象概念可以留在正文里解释，但不要再做第一钩子。
+- 以后导入新 Excel，优先用 `python3 tools/import_xhs_note_stats.py --xlsx <path>` 生成统计表和复盘模板，再决定是否回写 wiki。
+
+---
+
+## 2026-04-14
+
+### 完成
+- 安装 nuwa-skill + x-mastery-mentor skill
+- 对 @0xcybersmile 做了完整账号诊断（报告在 `.claude/skills/x-mastery-mentor/user-data/0xcybersmile/`）
+- 更新 CLAUDE.md：X 发布流程加入 x-mastery-mentor 四层审稿关卡
+- 「AI办公代做时代」改写成10条Thread（待发布）
+- 其余3条帖子加了CTA（待手动更新）
+- 在 @intuitiveml 的 AI-First 文章下发了高质量英文回复
+
+### 遗留
+- 手动删除「这跟@dontbesilent系统一样」那条碎片帖
+- 把「AI办公代做时代」Thread发到X（替换原帖）
+- 另外3条帖子手动加CTA
+
+### 下次优先
+- 固定发帖时间（工作日9-11点）
+- 继续找AI赛道大号评论区留高质量回复
+- 「AI大脑萎缩」Thread版本可以考虑发
