@@ -324,6 +324,7 @@ wiki/                 # LLM 维护的知识库（见下方 Wiki Schema）
   - 公众号、X 长文、知识卡片、教程类内容需要统一视觉辅助
   - 想先做“文内配图/封面图”，再交给其他平台 skill 做二次分发
 - **首次使用前置条件**：
+  - 如果环境里已有 `TUZI_API_KEY`，`document-illustrator` 默认优先走兔子的 Nano Banana 中转
   - 优先复用 `~/.baoyu-skills/.env` 中的 `GOOGLE_API_KEY`
   - 也兼容在 `~/.codex/skills/document-illustrator/.env` 或 shell 环境中配置 `GEMINI_API_KEY`
   - 本机 Python 需要可导入 `google-genai`、`Pillow`、`python-dotenv`
