@@ -194,6 +194,7 @@ wiki/                 # LLM 维护的知识库（见下方 Wiki Schema）
 - 研究 X 话题：`/x-collect`
 - X 写作方法论 / 内容诊断 / 审稿关卡：`/x-mastery-mentor`
 - 创作 X 内容：`/x-create`
+- 生成文章 / 文档配图：`/document-illustrator`
 - 生成小红书图文：`/baoyu-xhs-images`
 - 发布到小红书：`/post-to-xhs`
 - 发布到 X.com：`/baoyu-post-to-x`
@@ -204,8 +205,9 @@ wiki/                 # LLM 维护的知识库（见下方 Wiki Schema）
 ### 5. Skills 组合模板（推荐）
 - 选题研究链路：`/x-collect` -> `记录选题` -> `深化选题`
 - X 发布链路：`/x-mastery-mentor`（审稿，必须通过）-> `/x-create`（生成）-> `QA Agent`（校验）-> `/baoyu-post-to-x`（发布）
+- 长文配图链路：`深化选题` -> `/document-illustrator` -> `排版 / 平台适配`
 - 小红书链路：`深化选题` -> `/baoyu-xhs-images` -> `/post-to-xhs`
-- 公众号链路：`深化选题` -> `排版` -> `/baoyu-post-to-wechat`
+- 公众号链路：`深化选题` -> `/document-illustrator` -> `排版` -> `/baoyu-post-to-wechat`
 
 ### 6. 质量与边界
 - 不跳过素材检索直接写稿
@@ -220,6 +222,7 @@ wiki/                 # LLM 维护的知识库（见下方 Wiki Schema）
 - [ ] 素材库已检索（`02-内容素材库/` + wiki）
 - [ ] `wiki/选题/` 相关页面已更新或新建
 - [ ] **X.com 内容**：已经过 `/x-mastery-mentor` 审稿通过（四层诊断：算法层 + Hook层 + 内容层 + CTA层，全部合格才能进入发布）
+- [ ] **需要配图的内容**：已完成 `/document-illustrator` 或其他目标平台对应的配图方案
 - [ ] 发布清单已生成（多平台）
 - [ ] `tasks/todo.md` 当前任务已勾选
 - [ ] `tasks/progress.md` 已追加本次会话摘要
@@ -309,6 +312,32 @@ wiki/                 # LLM 维护的知识库（见下方 Wiki Schema）
    - 至少补 `3-5` 个 AI 生成不出来的元素：真实案例、个人经历、行业数据、原始截图、对话片段、失败教训
    - 不允许整篇只靠 AI 生成后直接微调
 5. **保存**：保存到 `01-内容生产/01-待深化的选题/`
+
+#### 「生成文档配图」
+当用户说「生成配图」「给文章配图」「给文档配图」时：
+- **使用 Skill**：`/document-illustrator`
+  - 先读取完整文稿，再按内容主题自动归纳配图分组
+  - 支持 `16:9`、`3:4` 两种比例，支持封面图
+  - 默认把图片输出到文稿同级目录的 `images/`
+- **推荐使用时机**：
+  - 长文主稿已经基本定稿，准备进入发布和排版阶段
+  - 公众号、X 长文、知识卡片、教程类内容需要统一视觉辅助
+  - 想先做“文内配图/封面图”，再交给其他平台 skill 做二次分发
+- **首次使用前置条件**：
+  - 在 `~/.codex/skills/document-illustrator/.env` 或 shell 环境中配置 `GEMINI_API_KEY`
+  - 本机 Python 需要可导入 `google-genai`、`Pillow`、`python-dotenv`
+- **默认流程**：
+  1. 先确认文稿路径，优先使用 `01-内容生产/02-制作中的选题/` 下的主稿
+  2. 选择比例：
+     - `16:9`：适合公众号、X 配图、横版封面、网页文章
+     - `3:4`：适合小红书竖版封面、手机端长图场景
+  3. 选择是否生成封面图
+  4. 确认 AI 归纳出的配图主题列表，避免漏掉核心观点
+  5. 再启动生成，图片统一保存到 `images/`
+- **接入规则**：
+  - 配图前先把文稿主体改到接近可发布版本，不要在大纲阶段就生成
+  - 如果文稿后续结构大改，旧图默认作废，重新生成
+  - 生成完成后，在发布清单中补上“已完成配图”状态
 
 #### 「AI 辅助安全线」
 当用户使用 AI 辅助创作文章、推文、小红书图文时，默认遵守：
@@ -416,6 +445,7 @@ wiki/                 # LLM 维护的知识库（见下方 Wiki Schema）
 ```markdown
 ## 发布清单 - {选题名}
 
+- [ ] 文稿配图 / 封面图 - 用 `/document-illustrator`
 - [ ] X.com（长文/Thread）- 用 `/baoyu-post-to-x`
 - [ ] 小红书（图文）- 用 `/baoyu-xhs-images` 或 `/post-to-xhs`
 - [ ] 小红书（视频）- 用 `/post-to-xhs`
@@ -426,6 +456,7 @@ wiki/                 # LLM 维护的知识库（见下方 Wiki Schema）
 **标准流程**：
 1. 创作完成后，生成发布清单
 2. 逐个平台发布，勾选完成
+   - **文稿配图 / 封面图**：用 `/document-illustrator`，优先服务长文和知识型稿件
    - **小红书图文**：优先用 `/baoyu-xhs-images`（视觉效果好）
    - **小红书视频**：用 `/post-to-xhs --video`
    - **X.com**：用 `/baoyu-post-to-x`
@@ -477,6 +508,7 @@ wiki/                 # LLM 维护的知识库（见下方 Wiki Schema）
 - **X.com 研究**：`/x-collect` - 话题搜索、趋势分析、痛点提取
 - **X.com 创作**：`/x-create` - 病毒式推文生成
 - **X.com 发布**：`/baoyu-post-to-x` - 自动发布推文
+- **文档配图**：`/document-illustrator` - 按主稿内容自动生成封面图和文内配图
 - **小红书图文**：`/baoyu-xhs-images` - 图文生成 + 发布
 - **小红书发布**：`/post-to-xhs` - 图文/视频发布 + 数据分析
 - **筛选话题**：`/x-filter` - 选题评分和过滤（按需使用）

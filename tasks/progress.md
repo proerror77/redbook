@@ -1532,6 +1532,41 @@
 - 对小红书，抽象概念可以留在正文里解释，但不要再做第一钩子。
 - 以后导入新 Excel，优先用 `python3 tools/import_xhs_note_stats.py --xlsx <path>` 生成统计表和复盘模板，再决定是否回写 wiki。
 
+## [2026-04-15] 会话摘要：安装并接入 document-illustrator skill
+
+**完成了什么：**
+- 已使用 skill-installer 官方脚本将 `op7418/Document-illustrator-skill` 安装到：
+  - `~/.codex/skills/document-illustrator`
+- 已补齐该 skill 运行依赖：
+  - `google-genai`
+  - `Pillow`
+  - `python-dotenv`
+- 已完成入口验证：
+  - `python3 /Users/proerror/.codex/skills/document-illustrator/scripts/generate_single_image.py --help`
+  - Python import 检查通过：`google.genai`、`PIL`、`dotenv`
+- 已把该 skill 接入 redbook 工作流：
+  - `docs/shared/redbook-playbook.md`
+  - `AGENTS.md`
+  - `CLAUDE.md`
+  - `.rules`
+- 已新增的工作流约束包括：
+  - “生成文档配图”成为标准内容创作节点
+  - 发布清单新增“文稿配图 / 封面图”项
+  - 公众号链路和长文链路默认可接 `/document-illustrator`
+  - Definition of Done 新增“需要配图的内容必须完成对应配图方案”
+
+**未完成 / 遗留：**
+- 尚未配置 `GEMINI_API_KEY`，因此目前只验证到“脚本可启动”，还没有做真实出图。
+- 新装到 `~/.codex/skills` 的 skill 需要重启 Codex，后续新会话才会稳定发现。
+
+**下次会话优先做：**
+- 在 `~/.codex/skills/document-illustrator/.env` 或 shell 环境中配置 `GEMINI_API_KEY`。
+- 拿一篇 `01-内容生产/02-制作中的选题/` 下的主稿做一次真实配图 smoke test，确认 `images/` 输出与工作流衔接正常。
+
+**需要注意：**
+- 当前仓库里已有一份 workspace-local 的 `document-illustrator` 模板；这次新增的是 Codex 全局安装版，主要作用是让后续新会话能直接发现。
+- 真实配图会调用外部 Gemini API，成本和成功率要按 API 配额来评估。
+
 ---
 
 ## 2026-04-14

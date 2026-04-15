@@ -54,10 +54,11 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 
 ## 可用 Skills
 
-项目配置了以下 baoyu skills（位于 `.claude/skills/`），优先使用这些 skill：
+项目配置了以下常用 skills，优先使用这些 skill：
 
 - **baoyu-post-to-x** - 发布推文到 X.com（支持文本、图片、视频、长文章）
 - **baoyu-post-to-wechat** - 发布到微信公众号
+- **document-illustrator** - 为文章 / 文档自动生成封面图和文内配图
 - **baoyu-xhs-images** - 生成小红书图文卡片（10种风格 x 8种布局）
 - **baoyu-image-gen** - AI 图片生成
 - **baoyu-cover-image** - 封面图生成

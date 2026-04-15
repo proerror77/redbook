@@ -1,5 +1,54 @@
 # Task Todo
 
+## 新任务：安装并接入 document-illustrator skill
+- 任务名称：将 `op7418/Document-illustrator-skill` 安装到当前 Codex skills 环境，并补齐到 redbook 内容生产工作流
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-15
+- 截止日期：2026-04-15
+- 优先级：P1
+- Harness Run：N/A（skill 安装 + workflow 文档接入）
+
+### 执行清单
+- [x] 1. 检查目标仓库结构与本地已存在能力，确认安装边界
+- [x] 2. 安装到 `~/.codex/skills/document-illustrator`
+- [x] 3. 验证 skill 元数据、脚本入口和 Python 依赖状态
+- [x] 4. 将 skill 接入 redbook 的配图与发布工作流文档
+- [x] 5. 更新 `tasks/progress.md` 并记录 review 结论
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已使用官方安装脚本将仓库根级 skill 安装到 `~/.codex/skills/document-illustrator`
+  - 已补齐运行依赖：`google-genai`、`Pillow`、`python-dotenv`
+  - 已验证 `python3 ~/.codex/skills/document-illustrator/scripts/generate_single_image.py --help` 可正常运行
+  - 已将 `document-illustrator` 接入 `docs/shared/redbook-playbook.md`，并同步到 `AGENTS.md / CLAUDE.md`
+  - 已在 `.rules` 补充该 skill 为常用配图能力
+- 当前限制：
+  - 真实出图仍需用户自行配置 `GEMINI_API_KEY`
+  - 新安装到 `~/.codex/skills` 的 skill 需要重启 Codex 后，后续新会话才会稳定发现
+
+## 新任务：调研今天 Social Media 正在流行什么
+- 任务名称：结合外部实时榜单与仓库内历史研究，筛出 2026-04-15 值得写的社媒趋势选题
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-15
+- 截止日期：2026-04-15
+- 优先级：P0
+- Harness Run：`20260415-012459-2026-04-15-social-media-trends-a7d853`
+
+### 执行清单
+- [x] 1. 复盘 `tasks/lessons.md`、`wiki/` 与最近研究稿，先确认账号已有受众偏好
+- [x] 2. 抓取今天公开可见的 HN / Product Hunt / Reddit 热点，提取真正高频话题
+- [x] 3. 输出一份研究结论，筛成“适合 redbook 写”的候选方向
+- [x] 4. 将可复用洞察回写到 wiki 与会话记录
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已建立社媒趋势研究 run，并完成 research 阶段材料收集
+  - 已核对仓库内最近的 X / HN / Reddit 研究与 wiki 信号，确认当前账号更适合写 `agent / AI 工具 ROI / 具体工作流`，不适合泛新闻搬运
+  - 已抓取 2026-04-15 的 HN、Product Hunt、Reddit 热门内容，并生成研究报告
+  - 已将今日可复用信号回写到 `wiki/选题/AI工具与效率.md` 与 `wiki/选题/内容创作与增长.md`
+
 ## 新任务：加入 video-wrapper skill
 - 任务名称：将 `op7418/Video-Wrapper-Skills` 安装到当前 Codex skills 环境，并补齐运行依赖与项目记录
 - 负责人（Lead Agent）：Codex
