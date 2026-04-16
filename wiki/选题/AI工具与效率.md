@@ -46,6 +46,7 @@
 
 - AI 是又一次技术平权运动
 - 面对 AI 焦虑：人类的价值在于追求意义
+- AI 工具正在从聊天框，变成真正能交付结果的工具
 
 ## 今日信号（2026-04-05）
 
@@ -111,6 +112,30 @@
 - AI 工具正在从"能力展示"转向"规范化使用"——Linux kernel 的官方指南是标志性事件，说明 AI 辅助开发已进入主流工程实践
 - "AI 认知萎缩"是今日最高情绪密度话题，开发者社区对"过度依赖 AI"的焦虑正在形成新的内容需求
 - 工具整合型内容（"Top 50 Claude Skills"）的传播力远超单一工具测评，说明"帮用户做选择"比"介绍工具"更有价值
+
+## 今日信号（2026-04-15）
+
+**HN 首页高频方向**：
+- `Claude Code Routines` 高位讨论，说明开发者开始把 AI 从“临时对话”推进到“固定工作流”
+- `Turn your best AI prompts into one-click tools in Chrome` 上榜，说明 `prompt -> tool` 正在从技巧变成产品形态
+- `for humans and agents` 的 framing 开始进入框架层和 infra 层，不再只是概念讨论
+- 用户补充的 `@claudeai` 当日产品更新也指向同一趋势：Claude Code 桌面端开始支持 `multiple sessions side by side` 与 sidebar 管理，产品形态已经明显在围绕“多任务工作流”演进
+
+**Product Hunt 今日前排**：
+- `Figma for Agents`
+- `CatDoes v4`
+- `Ovren`
+- `Open Agents`
+- `Hapax`
+- `ElevenAgents Guardrails 2.0`
+- `Caveman`
+- `Ghost Pepper`
+- `Opus 4.7 发布速评`（X.com 长文，2026-04-17）→ https://x.com/0xcybersmile/status/2044912904471040043
+
+**提炼**：
+- AI 工具赛道今天最热的 4 个词是：`agent`、`workflow`、`guardrails`、`local/private`
+- 市场关注点已经从“谁更像人聊天”切到“谁能接流程、降成本、保隐私”
+- 今天最值得写的，不是单条产品新闻，而是 `AI 工具正在从聊天框，变成真正能交付结果的工具`
 
 ## 持续关注的信号源
 

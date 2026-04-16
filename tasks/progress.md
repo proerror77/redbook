@@ -57,6 +57,262 @@
 - 新安装的 skill 需要重启 Codex 才会被新会话稳定发现。
 - 这次项目内只更新了任务记录，skill 本体安装在 `~/.codex/skills/`，不在当前仓库版本控制内。
 
+## [2026-04-15] 会话摘要：调研今天 Social Media 正在流行什么
+
+**完成了什么：**
+- 先复盘了 `tasks/lessons.md`、`wiki/index.md`、`wiki/选题/*` 与最近 `05-选题研究/` 里的 X / HN / Reddit 研究，确认当前账号近期最稳的受众方向仍是 `agent / AI 工具 ROI / 具体工作流`。
+- 建立了新的 harness run：
+  - `20260415-012459-2026-04-15-social-media-trends-a7d853`
+- 结合今天公开可见的 HN、Product Hunt、Reddit 榜单，生成研究报告：
+  - [社交媒体趋势-2026-04-15.md](/Users/proerror/Documents/redbook/05-选题研究/社交媒体趋势-2026-04-15.md)
+- 将今日可复用信号回写到：
+  - [AI工具与效率.md](/Users/proerror/Documents/redbook/wiki/选题/AI工具与效率.md)
+  - [内容创作与增长.md](/Users/proerror/Documents/redbook/wiki/选题/内容创作与增长.md)
+- 同步更新了：
+  - [wiki/index.md](/Users/proerror/Documents/redbook/wiki/index.md)
+  - [wiki/log.md](/Users/proerror/Documents/redbook/wiki/log.md)
+  - [tasks/todo.md](/Users/proerror/Documents/redbook/tasks/todo.md)
+
+**未完成 / 遗留：**
+- 这轮只做到趋势筛选和选题判断，还没有继续进入某个具体选题的提纲或初稿。
+
+**下次会话优先做：**
+- 从今天的 A 级题里挑 1 条直接进入写作：
+  - `AI 工具正在从聊天框，变成真正能交付结果的工具`
+  - `你以为自己在用 AI 提效，其实你只是多订了几个会员`
+  - `100K ARR 没你想的那么爽，真正难的是利润、定价和增长`
+
+**需要注意：**
+- 今天高热的是“结果更近、成本更真、案例更具体”，不建议退回到泛新闻搬运。
+
+## [2026-04-15] 会话摘要：安装 x-mentor skill
+
+**完成了什么：**
+- 检查了用户给出的 GitHub 仓库 `alchaincyf/x-mentor-skill`，确认它是一个根级 skill 仓库，根目录直接带有：
+  - `SKILL.md`
+  - `references/`
+  - `examples/`
+- 本地检查发现之前没有独立的 `~/.codex/skills/x-mentor` 安装位。
+- 先尝试使用系统 `skill-installer` 脚本安装，但脚本在临时目录阶段连续出现冲突错误，随后改为手动安装。
+- 最终已安装到：
+  - `~/.codex/skills/x-mentor`
+- 已验证：
+  - `SKILL.md` 可读
+  - `references/` 与 `examples/` 结构完整
+  - skill 内部的名称实际是 `x-mastery-mentor`
+- 已顺手清理安装目录里不应保留的：
+  - `.git`
+  - `.DS_Store`
+
+**未完成 / 遗留：**
+- 这轮只完成了本机 skill 安装，没有实际拿一个 X 选题去跑该 skill 的完整写作链。
+
+**下次会话优先做：**
+- 直接拿一条 X 选题调用 `/x-mastery-mentor` 做一次审稿或写作验证，确认新安装版本是否优于当前内置版本。
+
+**需要注意：**
+- redbook 现有工作流文档入口本来就写的是 `/x-mastery-mentor`，不需要改 `AGENTS.md / CLAUDE.md`。
+- 要让新安装的 skill 在新会话里稳定被发现，通常需要重启 Codex。
+
+## [2026-04-15] 会话摘要：把今天的优先选题跑成 X Thread
+
+**完成了什么：**
+- 选用了今天趋势研究里优先级最高的题：
+  - `AI工具正在从聊天框变成真正能交付结果的工具`
+- 建立了新的 harness run：
+  - `20260415-013904-ai工具正在从聊天框变成真正能交付结果的工具-a858e6`
+- 按 `x-mastery-mentor` 的场景 B/A 规则完成了一轮完整执行：
+  - 先锁定题目和目标受众
+  - 生成 3 个 hook 版本
+  - 选择推荐版本
+  - 给出发布时间建议和风险提醒
+  - 产出完整 Thread 草稿
+- 已保存草稿到：
+  - [AI工具正在从聊天框变成真正能交付结果的工具-X-thread.md](/Users/proerror/Documents/redbook/01-内容生产/01-待深化的选题/AI工具正在从聊天框变成真正能交付结果的工具-X-thread.md)
+- 草稿内已包含：
+  - 选题判断
+  - 3 个 hook
+  - x-mastery-mentor 审稿结论
+  - 8 条 X Thread 正文
+  - 备用短推文版
+  - 发布清单
+- 已把该题追加到：
+  - [AI工具与效率.md](/Users/proerror/Documents/redbook/wiki/选题/AI工具与效率.md)
+
+**未完成 / 遗留：**
+- 这轮只做到 draft，没有继续进入最终发布。
+
+**下次会话优先做：**
+- 对这条 Thread 再做一轮精修，或直接走 `/baoyu-post-to-x` 草稿发布链。
+
+**需要注意：**
+- 这版更适合 X Thread，不适合原封不动搬到小红书；小红书要把第一钩子改成更具体的工作场景。
+
+## [2026-04-15] 会话摘要：将 X Thread 压成更口语的终稿
+
+**完成了什么：**
+- 基于 `x-mastery-mentor` 的二次审稿逻辑，把 `AI工具正在从聊天框变成真正能交付结果的工具` 再压了一轮。
+- 本轮重点不是删字，而是把内容改得更像真实会发在 X 上的 thread：
+  - 第一条更像口语判断，而不是研究摘要
+  - 第 3-6 条减少解释腔，保留推进感
+  - 第 7-8 条把 CTA 收得更自然，更容易触发回复
+- 已将终稿直接覆盖回：
+  - [AI工具正在从聊天框变成真正能交付结果的工具-X-thread.md](/Users/proerror/Documents/redbook/01-内容生产/01-待深化的选题/AI工具正在从聊天框变成真正能交付结果的工具-X-thread.md)
+
+**未完成 / 遗留：**
+- 这轮仍未进入发布，仅完成“更适合发 X 的口语终稿”。
+
+**下次会话优先做：**
+- 如果确认内容不再改，直接走 `/baoyu-post-to-x` 做发帖草稿。
+
+**需要注意：**
+- 这版已经更接近 X 的真实语感，后续再改时，优先动第一条和 CTA，不要再把中段写回“说明文”。
+
+## [2026-04-15] 会话摘要：改成适合认证账号的单篇长帖
+
+**完成了什么：**
+- 用户明确纠正：当前 X 账号有认证，支持长帖，不希望把内容拆得过碎。
+- 已将该稿的主发布方案从 `thread` 改成 `单篇长帖`。
+- 已把原文件里的主成稿区改为：
+  - `最终发布版（单篇长帖）`
+- 同时保留了 `Thread 备用版` 说明，避免完全丢掉另一种载体可能性。
+- 已将这条偏好写入：
+  - [tasks/lessons.md](/Users/proerror/Documents/redbook/tasks/lessons.md)
+
+**未完成 / 遗留：**
+- 这轮仍未正式走发布，只是把载体策略改对了。
+
+**下次会话优先做：**
+- 直接用这版单篇长帖去走 `/baoyu-post-to-x`。
+
+**需要注意：**
+- 对这个账号，今后做 X 稿时不要先入为主拆 thread；优先判断单篇长帖是否更完整。
+
+## [2026-04-15] 会话摘要：x-mastery-mentor 终审 + X 发布预览
+
+**完成了什么：**
+- 按用户要求，继续走了 `X/Twitter运营全栈 x-mentor-skill` 的终审逻辑。
+- 最终判断：
+  - 这条内容对当前账号更适合 `单篇长帖`
+  - 不适合默认拆成多条 thread
+  - 当前最主要的质量点已经不是方向问题，而是载体选择和语感
+- 已将终稿整理为单篇长帖主方案，并保留 thread 作为备用版本。
+- 之后用 `/baoyu-post-to-x` 的 `x-browser.ts` 走了一次 **preview 模式**：
+  - 成功打开 X compose 页面
+  - 成功把单篇长帖填入编辑器
+  - 未带 `--submit`，没有自动发出
+- 预览日志关键信息：
+  - `[x-browser] Typing text...`
+  - `[x-browser] Post composed (preview mode). Add --submit to post.`
+
+**未完成 / 遗留：**
+- 这轮只做到预览草稿，还没有正式发出。
+
+**下次会话优先做：**
+- 如果内容确认不再改，直接用同一条长帖走 `--submit` 正式发布。
+
+**需要注意：**
+- 用户级 `baoyu-post-to-x` 配置里存在 `auto_submit: true`，但这次已显式走 preview，未误发。
+
+## [2026-04-15] 会话摘要：引用 Claude Code 视频推文正式发布 + 准备小红书版
+
+**完成了什么：**
+- 按用户要求，没有只发纯文字，而是采用了用户提供的 `Claude Code` 视频推文作为引用对象：
+  - `https://x.com/claudeai/status/2044131493966909862`
+- 使用 `/baoyu-post-to-x` 的 `x-quote.ts` 直接完成正式发布：
+  - 已成功打开原推文
+  - 已选择 Quote
+  - 已填入单篇长帖内容
+  - 已提交成功
+- 发布日志关键结果：
+  - `[x-quote] Typing comment...`
+  - `[x-quote] Submitting quote post...`
+  - `[x-quote] Quote post submitted!`
+- 同时已准备好小红书版本文稿：
+  - [AI工具正在从聊天框变成真正能交付结果的工具-小红书版.md](/Users/proerror/Documents/redbook/01-内容生产/02-制作中的选题/AI工具正在从聊天框变成真正能交付结果的工具-小红书版.md)
+- 因为这组内容现在是“X 已发，小红书待发”，已将相关稿件从 `01-待深化的选题/` 移动到：
+  - `01-内容生产/02-制作中的选题/`
+
+**未完成 / 遗留：**
+- 小红书目前只完成文稿准备，还没有出图和发布。
+
+**下次会话优先做：**
+- 用小红书版文稿继续做封面和发布图文。
+
+**需要注意：**
+- 这轮 X 已正式发出；后续如果要补查链接或数据，需要回 X 主页或通知页确认。
+
+## [2026-04-15] 会话摘要：把小红书版拆成可发布图文稿
+
+**完成了什么：**
+- 在已有小红书文稿基础上，继续拆成了标准的“小红书图文稿”格式：
+  - [AI工具正在从聊天框变成真正能交付结果的工具-小红书图文稿.md](/Users/proerror/Documents/redbook/01-内容生产/02-制作中的选题/AI工具正在从聊天框变成真正能交付结果的工具-小红书图文稿.md)
+- 这份图文稿已经包含：
+  - 标题
+  - 封面文案
+  - 完整正文
+  - 图片结构（7 页）
+  - 每页卡片文案
+  - 出图建议（`notion + balanced`）
+  - 发布清单
+- 当前状态已经从“有一篇小红书文稿”变成“可以直接接图文生成链”。
+
+**未完成 / 遗留：**
+- 这轮还没有真正生成图片，也还没有发布到小红书。
+
+**下次会话优先做：**
+- 直接用这份图文稿走 `/baoyu-xhs-images` 生成图组，或按这份卡片文案手动出图。
+
+**需要注意：**
+- 第一屏必须先打用户体感：`它开始替你干活了`，不要先露出 `agent / workflow` 这种抽象词。
+
+## [2026-04-15] 会话摘要：用 Tuzi 正式生成小红书图组
+
+**完成了什么：**
+- 按用户要求，生图链路改为只走 Tuzi。
+- 先核对了 Tuzi 文档，并确认 `baoyu-image-gen` 里的 `tuzi` provider 实现与文档不一致；已修正 provider 为文档模式。
+- 同时验证了仓库里历史成功链路：`v1beta/models/gemini-3-pro-image-preview:generateContent`。
+- 最终按这条链路顺序生成出了整组小红书图片，共 `7` 张：
+  - [01-cover-ai-tool-workflow-shift.png](/Users/proerror/Documents/redbook/xhs-images/ai-tool-workflow-shift/01-cover-ai-tool-workflow-shift.png)
+  - [02-change-ai-tool-workflow-shift.png](/Users/proerror/Documents/redbook/xhs-images/ai-tool-workflow-shift/02-change-ai-tool-workflow-shift.png)
+  - [03-signal-ai-tool-workflow-shift.png](/Users/proerror/Documents/redbook/xhs-images/ai-tool-workflow-shift/03-signal-ai-tool-workflow-shift.png)
+  - [04-core-ai-tool-workflow-shift.png](/Users/proerror/Documents/redbook/xhs-images/ai-tool-workflow-shift/04-core-ai-tool-workflow-shift.png)
+  - [05-value-ai-tool-workflow-shift.png](/Users/proerror/Documents/redbook/xhs-images/ai-tool-workflow-shift/05-value-ai-tool-workflow-shift.png)
+  - [06-product-ai-tool-workflow-shift.png](/Users/proerror/Documents/redbook/xhs-images/ai-tool-workflow-shift/06-product-ai-tool-workflow-shift.png)
+  - [07-ending-ai-tool-workflow-shift.png](/Users/proerror/Documents/redbook/xhs-images/ai-tool-workflow-shift/07-ending-ai-tool-workflow-shift.png)
+- 已把图组路径回写到：
+  - [AI工具正在从聊天框变成真正能交付结果的工具-小红书图文稿.md](/Users/proerror/Documents/redbook/01-内容生产/02-制作中的选题/AI工具正在从聊天框变成真正能交付结果的工具-小红书图文稿.md)
+
+**未完成 / 遗留：**
+- 图组已经生成，但还没有正式发布到小红书。
+
+**下次会话优先做：**
+- 直接用这 7 张图 + 现成标题正文走小红书发布链。
+
+**需要注意：**
+- 这轮验证下来，Tuzi 在这台机器上真正稳定的图片链路是 `v1beta + gemini-3-pro-image-preview`，不是最初错误实现里的 chat / image generations 组合。
+
+## [2026-04-16] 会话摘要：正式发布小红书图文
+
+**完成了什么：**
+- 重新确认了小红书创作者中心登录态，已登录。
+- 使用现成的标题、正文和 7 张本地图，走发布脚本正式提交。
+- 发布脚本关键结果：
+  - `FILL_STATUS: READY_TO_PUBLISH`
+  - `PUBLISH_STATUS: PUBLISHED`
+- 说明：
+  - 标题、正文、图片上传、话题选择、点击发布都已经完成
+  - 发布动作已经成功
+
+**未完成 / 遗留：**
+- 发布后回查 `note id / 内容数据` 的脚本调用不稳定，这轮没有拿到结构化 `note id`。
+
+**下次会话优先做：**
+- 回小红书内容列表补抓 `note id` 与基础数据。
+
+**需要注意：**
+- 当前应把这条内容视为“已发布但 note id 待补”的状态，而不是待发布。
+
 ## [2026-04-13] 会话摘要：interactive-browser 原型验证
 
 **完成了什么：**
@@ -1588,3 +1844,22 @@
 - 固定发帖时间（工作日9-11点）
 - 继续找AI赛道大号评论区留高质量回复
 - 「AI大脑萎缩」Thread版本可以考虑发
+
+## [2026-04-17] 会话摘要：工作流升级 + Opus 4.7 速评发布
+
+**完成了什么：**
+- 发布 Opus 4.7 基准数据分析长帖到 X.com（含基准图）
+- 修复 x-browser.ts 图片上传 bug（DOM.setFileInputFiles 替代剪贴板）
+- 设计并实施三条路径工作流（路径0每日研究/路径1计划内容/路径2热点速评）
+- 迁移 02-内容素材库 → wiki/素材/（金句库/案例库/框架库）
+- 更新 CLAUDE.md：三条路径架构、wiki 唯一知识底座、QA 改为自检清单
+- 创建早报模板（05-选题研究/早报模板.md）
+- 更新 daily.sh 输出格式和 wiki ingest 提醒
+
+**未完成 / 遗留：**
+- daily.sh 的 timeline 爆款抓取功能尚未实现（目前只有 HN/Reddit）
+- 对标账号定期抓取功能尚未实现
+
+**下次会话优先做：**
+- 升级 daily.sh：加入 X timeline 爆款抓取 + 对标账号动态
+- 用新工作流跑一次完整的计划内容（从早报选题到发布沉淀）

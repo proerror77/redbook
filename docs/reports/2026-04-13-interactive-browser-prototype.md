@@ -100,12 +100,40 @@ node tools/browser-core/interactive/boss-probe.mjs
 - `readyState: "complete"`
 - `loginExpired: true`
 - `securityCheck: false`
+- 用户后续观察到：如果把这个未登录页签继续留在真实 Chrome 里，页面会在首页/前页之间来回跳转
+- 连续 10 秒采样也确认了同一 target 会在以下状态间振荡：
+  - `https://www.zhipin.com/web/geek/chat?ka=header-message`
+  - `https://www.zhipin.com/web/user/`
+  - 短暂空 URL
 
 这说明：
 
 - 原型已经能在第二个真实业务域（BOSS）完成只读 probe
 - 但当前 BOSS 会话本身是“登录已失效”状态
+- 且登录升级态本身也不稳定
 - 所以它还不能进一步证明 dry-run apply parity
+
+## 新增验证：首页入口 vs 聊天入口
+
+我又做了一个对比实验：
+
+```bash
+node tools/browser-core/interactive/boss-probe.mjs --url https://www.zhipin.com/
+node tools/browser-core/interactive/boss-probe.mjs --url https://www.zhipin.com/web/geek/chat?ka=header-message
+```
+
+并对两条路径做了短时间连续观察。
+
+结果：
+
+- 首页入口会进入 `https://www.zhipin.com/shanghai/?seoRefer=index`
+- 在采样窗口里它比聊天页更稳定
+- 聊天入口则会在 `chat` 与 `/web/user/` 之间来回跳
+
+这说明：
+
+- 直接从消息页开始，确实更容易触发不稳定状态
+- 如果后续还要继续验证登录升级态，应该优先从首页入口开始，而不是直接跳消息页
 
 所以按当前规则：
 
@@ -114,7 +142,8 @@ node tools/browser-core/interactive/boss-probe.mjs
 
 ## 下一步建议
 
-1. 先在 BOSS 重新建立有效登录态后，再重跑同一个 `boss-probe` 原型
-2. 再补 BOSS `dry-run` apply parity
-3. 再拿它去跑 XHS 的点击/输入最小动作
-4. 只有都过了，才考虑替换 `opencli_apply_current_tab.js` 这类现有脚本的连接层
+1. 先从首页入口而不是聊天入口继续验证 BOSS 登录升级态
+2. 再在已登录的活跃 BOSS 页上重跑同一个 `boss-probe` 原型
+3. 再补 BOSS `dry-run` apply parity
+4. 再拿它去跑 XHS 的点击/输入最小动作
+5. 只有都过了，才考虑替换 `opencli_apply_current_tab.js` 这类现有脚本的连接层
