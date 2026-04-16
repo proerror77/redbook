@@ -18,5 +18,9 @@ if [ ! -f "$AUTO_X_RUNNER" ]; then
   exit 1
 fi
 
-exec /bin/bash "$AUTO_X_RUNNER" "$@"
+/bin/bash "$AUTO_X_RUNNER" "$@"
+
+echo ""
+echo "✅ 早报已生成：05-选题研究/早报-$(date +%Y-%m-%d).md"
+echo "📌 请执行 wiki ingest 将今日信号更新到 wiki/选题/ 相关页面"
 
