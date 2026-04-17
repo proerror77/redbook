@@ -115,12 +115,24 @@ def analyze_following(users: list, sample_size: int = DEFAULT_SAMPLE_SIZE) -> di
         for cat, count in cats.items():
             category_totals[cat] += count
 
+    # 提取高互动推文（爆款对标用）
+    hot_tweets = []
+    for t in all_tweets:
+        likes = t.get('likes', 0)
+        retweets = t.get('retweets', 0)
+        engagement = likes + retweets * 2
+        if likes > 20 or retweets > 5 or engagement > 50:
+            t['engagement'] = engagement
+            hot_tweets.append(t)
+    hot_tweets.sort(key=lambda t: t.get('engagement', 0), reverse=True)
+
     return {
         'total_users': len(sampled),
         'total_tweets': len(all_tweets),
         'word_freq': word_freq.most_common(20),
         'category_totals': category_totals.most_common(),
         'user_topics': user_topics,
+        'hot_tweets': hot_tweets[:10],
     }
 
 

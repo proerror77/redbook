@@ -97,6 +97,22 @@ def _count_pending_topics(record_path: Path) -> int:
     return content.count('- [ ]')
 
 
+# ── Timeline 爆款 Top 3（从关注者分析结果提取）─────────────
+
+def generate_hot_tweets_section(hot_tweets: list) -> str:
+    """从关注者分析的高互动推文生成早报 Top 3 区块"""
+    lines = ["## 🔥 Timeline 爆款 Top 3\n"]
+    lines.append("| 帖子摘要 | 账号 | 互动量 | 可借鉴点 |")
+    lines.append("|---------|------|--------|---------|")
+    for t in hot_tweets[:3]:
+        content = t.get('content', '').replace('\n', ' ')[:60]
+        author = t.get('handle') or t.get('author', '')
+        engagement = t.get('engagement', 0)
+        lines.append(f"| {content}... | @{author} | {engagement} | |")
+    lines.append("")
+    return '\n'.join(lines)
+
+
 # ── 数据回顾 ──────────────────────────────────────────────
 
 def generate_data_review() -> str:
@@ -199,6 +215,7 @@ def run_daily_research(
     )
 
     x_sections = []
+    hot_tweets_section = ""
     if browser_ok:
         if not skip_timeline:
             x_sections.append(run_timeline())
@@ -207,7 +224,14 @@ def run_daily_research(
         if not skip_search:
             x_sections.append(run_search(keywords))
         if not skip_following:
-            x_sections.append(run_analyze_following())
+            from analyze_following import load_following, analyze_following, generate_analysis_report
+            users = load_following()
+            if users:
+                result = analyze_following(users, sample_size=5)
+                hot_tweets_section = generate_hot_tweets_section(result.get('hot_tweets', []))
+                x_sections.append(generate_analysis_report(result))
+            else:
+                x_sections.append(run_analyze_following())
     else:
         if skip_x:
             x_sections.append("（按 --skip-x 已跳过 X.com 分析）\n")
@@ -222,7 +246,7 @@ def run_daily_research(
 
     report = '\n---\n\n'.join([s for s in (x_sections + external_sections) if s])
     topics_source = '\n---\n\n'.join([s for s in x_sections if browser_ok and s]) if browser_ok else ""
-    return report, topics_source
+    return report, topics_source, hot_tweets_section
 
 
 def main():
@@ -281,7 +305,8 @@ def main():
             print_colored("⚠️ 浏览器未连接：将跳过 X.com 研究，但仍会生成 HN/Reddit 部分", 'yellow')
 
         report_sections.append("## 🔍 每日研究\n\n")
-        research, topics_source = run_daily_research(
+        hot_tweets_section = ""
+        research, topics_source, hot_tweets_section = run_daily_research(
             args.keywords,
             args.subreddits,
             browser_ok=browser_ok,
@@ -296,6 +321,12 @@ def main():
             reddit_limit=args.reddit_limit,
         )
         report_sections.append(research)
+
+        # 注入 Timeline 爆款 Top 3（紧接在发布提醒之后）
+        if hot_tweets_section:
+            # report_sections[0]=发布提醒, [1]="---\n", 插在 index 2
+            report_sections.insert(2, "---\n")
+            report_sections.insert(2, hot_tweets_section)
 
         # 追加选题到记录（只使用 X.com 部分，避免噪音）
         if topics_source:
