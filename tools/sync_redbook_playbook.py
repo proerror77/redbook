@@ -13,7 +13,7 @@ from pathlib import Path
 
 START_MARKER = "<!-- BEGIN SHARED_RED_BOOK_PLAYBOOK -->"
 END_MARKER = "<!-- END SHARED_RED_BOOK_PLAYBOOK -->"
-SECTION_HEADER = "## 🎯 标准化内容生产工作流"
+SECTION_HEADER = "## 🎯 内容生产工作流（三条路径）"
 SHARED_PATH = Path("docs/shared/redbook-playbook.md")
 TARGETS = [Path("AGENTS.md"), Path("CLAUDE.md")]
 
