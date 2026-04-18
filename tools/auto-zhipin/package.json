@@ -5,8 +5,10 @@
   "description": "BOSS直聘消息监看、筛选投递与追踪原型",
   "main": "scripts/report.js",
   "scripts": {
-    "bootstrap": "node -e \"console.log('Use an already logged-in Google Chrome tab, then run chrome:collect / chrome:monitor / boss:apply.')\"",
-    "boss:apply": "node ../opencli/bin/redbook-opencli.js boss apply",
+    "bootstrap": "node scripts/playwright_login.js",
+    "boss:login": "node scripts/playwright_login.js",
+    "boss:apply": "node scripts/boss_apply_playwright.js",
+    "boss:apply-opencli": "node ../opencli/bin/redbook-opencli.js boss apply",
     "boss:apply-current": "node scripts/opencli_apply_current_tab.js",
     "chrome:collect": "node scripts/chrome_collect_queue.js",
     "chrome:monitor": "node scripts/chrome_monitor_queue.js",
@@ -18,6 +20,7 @@
     "pinchtab:reply": "node scripts/reply_worker.js --backend pinchtab",
     "scan": "node scripts/chrome_collect_queue.js",
     "reply": "node scripts/chrome_monitor_queue.js --once --send-drafts --run-actions",
+    "reply:playwright": "node scripts/reply_worker.js --backend playwright",
     "report": "node scripts/report.js",
     "funnel-report": "node scripts/funnel_report.js",
     "test": "node --test"

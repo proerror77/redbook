@@ -1,6 +1,35 @@
 const fs = require('node:fs');
 const { PROFILE_DIR } = require('./paths');
 
+const STEALTH_INIT_SCRIPT = `
+(() => {
+  try {
+    Object.defineProperty(navigator, 'webdriver', {
+      get: () => undefined,
+      configurable: true,
+    });
+  } catch {}
+
+  try {
+    window.chrome = window.chrome || { runtime: {} };
+  } catch {}
+
+  try {
+    Object.defineProperty(navigator, 'languages', {
+      get: () => ['zh-CN', 'zh', 'en-US', 'en'],
+      configurable: true,
+    });
+  } catch {}
+
+  try {
+    Object.defineProperty(navigator, 'plugins', {
+      get: () => [1, 2, 3, 4, 5],
+      configurable: true,
+    });
+  } catch {}
+})();
+`;
+
 let chromium = null;
 try {
   ({ chromium } = require('playwright'));
@@ -28,6 +57,7 @@ async function launchContext(config, options = {}) {
     slowMo,
     viewport: { width: 1440, height: 980 },
     locale: 'zh-CN',
+    ignoreDefaultArgs: ['--enable-automation'],
     args: ['--disable-blink-features=AutomationControlled'],
   };
   let context;
@@ -47,6 +77,7 @@ async function launchContext(config, options = {}) {
 
   context.setDefaultNavigationTimeout(Number(config.browser.navigationTimeoutMs || 30000));
   context.setDefaultTimeout(Number(config.browser.navigationTimeoutMs || 30000));
+  await context.addInitScript(STEALTH_INIT_SCRIPT);
   return context;
 }
 

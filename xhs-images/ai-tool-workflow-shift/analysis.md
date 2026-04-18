@@ -1,0 +1,24 @@
+# Analysis
+
+- topic: AI工具正在从聊天框变成真正能交付结果的工具
+- content_type: 干货 + 认知升级
+- language: zh-CN
+- target_audience:
+  - AI / tech 从业者
+  - 独立开发者
+  - 重度使用 AI 的知识工作者
+- hook_type: 反常识 + 用户体感
+- engagement_goal:
+  - 收藏：理解下一代 AI 产品趋势
+  - 评论：说出自己最想交给 AI 的重复动作
+  - 分享：转发给做产品或重度用 AI 的朋友
+- visual_strategy:
+  - use preference style `notion`
+  - use mostly balanced layout, with sparse cover and CTA
+  - emphasize "像同事" / "替你干活" instead of abstract words like agent/workflow on first screens
+- recommended_image_count: 7
+- selected_strategy: B
+- rationale:
+  - This topic is concept-heavy and benefits from structured explanation.
+  - The `notion` preset matches SaaS / productivity / tech knowledge sharing.
+  - A 7-page flow is enough to move from sensation -> signal -> explanation -> value -> interaction.

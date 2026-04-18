@@ -79,7 +79,7 @@ def run_timeline() -> str:
             analyze_xpro_topics,
             generate_xpro_report
         )
-        from x_utils import navigate, run_ab, extract_tweets
+        from x_utils import navigate, run_ab, extract_tweets, snapshot_has_x_unavailable_markers
 
         # 打开 X Pro AI Deck
         print_colored("\n打开 X Pro AI Deck...", 'yellow')
@@ -88,6 +88,9 @@ def run_timeline() -> str:
         # 识别列配置
         print_colored("\n识别 Deck 列配置...", 'yellow')
         initial_snapshot = run_ab('snapshot', timeout=30)
+        if snapshot_has_x_unavailable_markers(initial_snapshot):
+            print_colored("X Pro 当前未处于可用的已登录 deck 页面，跳过多列分析", 'yellow')
+            return "（X Pro 当前不可用：命中登录墙或不存在页，已跳过多列分析）\n"
         columns = identify_columns(initial_snapshot)
 
         if columns:

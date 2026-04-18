@@ -8,6 +8,7 @@ import subprocess
 import re
 import json
 import time
+import urllib.request
 from pathlib import Path
 from datetime import datetime
 from typing import List, Dict, Optional
@@ -19,6 +20,8 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 AUTO_X_DIR = Path(__file__).parent.parent
 DATA_DIR = AUTO_X_DIR / "data"
 DAILY_DIR = DATA_DIR / "daily"
+DEFAULT_CDP_PORT = 9222
+DEFAULT_TABNAME = os.environ.get("AUTO_X_AGENT_BROWSER_TABNAME", "redbook-autox")
 
 # 颜色输出
 COLORS = {
@@ -48,7 +51,8 @@ def run_abs_result(command: str, timeout: int = 30) -> dict:
             'returncode': int,
         }
     """
-    full_cmd = f"agent-browser-session {command}"
+    cdp_port = _detect_local_cdp_port()
+    full_cmd = _build_agent_browser_command(command, cdp_port)
     env = {**os.environ, 'PATH': f"/opt/homebrew/bin:{Path.home()}/.local/bin:{os.environ.get('PATH', '')}", 'AGENT_BROWSER_HEADED': os.environ.get('AGENT_BROWSER_HEADED', 'false')}
     try:
         result = subprocess.run(
@@ -101,6 +105,46 @@ def run_abs(command: str, timeout: int = 30) -> str:
     return run_abs_result(command, timeout=timeout)['stdout']
 
 
+def _detect_local_cdp_port() -> Optional[int]:
+    """
+    Prefer the user's already-logged-in Chrome session when a local CDP port is available.
+
+    Resolution order:
+    1. AUTO_X_AGENT_BROWSER_CDP_PORT / AGENT_BROWSER_CDP_PORT
+    2. default 9222 if reachable
+    """
+    raw_port = os.environ.get("AUTO_X_AGENT_BROWSER_CDP_PORT") or os.environ.get("AGENT_BROWSER_CDP_PORT")
+    candidates = []
+    if raw_port:
+        try:
+            candidates.append(int(raw_port))
+        except ValueError:
+            pass
+    candidates.append(DEFAULT_CDP_PORT)
+
+    seen = set()
+    for port in candidates:
+        if port in seen:
+            continue
+        seen.add(port)
+        try:
+            with urllib.request.urlopen(f"http://127.0.0.1:{port}/json/version", timeout=1.5) as resp:
+                if resp.status == 200:
+                    return port
+        except Exception:
+            continue
+    return None
+
+
+def _build_agent_browser_command(command: str, cdp_port: Optional[int]) -> str:
+    prefix = "agent-browser-session"
+    if cdp_port is not None:
+        prefix += f" --cdp {cdp_port}"
+        if DEFAULT_TABNAME:
+            prefix += f" --tabname {DEFAULT_TABNAME}"
+    return f"{prefix} {command}"
+
+
 # 向后兼容别名
 run_ab = run_abs
 
@@ -112,6 +156,10 @@ def ensure_browser() -> bool:
     Returns:
         True 如果连接正常
     """
+    cdp_port = _detect_local_cdp_port()
+    if cdp_port is not None:
+        print_colored(f"✓ 优先复用当前 Chrome 会话（CDP {cdp_port}）", 'green')
+
     snapshot = run_abs_result("snapshot -c -d 2", timeout=15)
     if _snapshot_looks_ready(snapshot['stdout']):
         print_colored("✓ agent-browser-session 已就绪", 'green')
@@ -160,6 +208,30 @@ def _snapshot_looks_ready(output: str) -> bool:
     return any(marker in normalized for marker in valid_markers)
 
 
+def snapshot_has_x_unavailable_markers(output: str) -> bool:
+    """
+    Detect X/Twitter pages that are technically rendered but not usable for research.
+
+    Typical cases:
+    - login wall / marketing landing page
+    - "this page doesn't exist" / deleted route
+    """
+    if not output:
+        return True
+
+    normalized = output.strip().lower()
+    markers = (
+        "新鲜事一网打尽",
+        "登录",
+        "注册",
+        "唔...该页面不存在",
+        "该页面不存在",
+        "page doesn't exist",
+        "try searching for something else",
+    )
+    return any(marker.lower() in normalized for marker in markers)
+
+
 def _is_recoverable_browser_failure(result: dict) -> bool:
     """
     判断是否是可通过重建 session 恢复的错误
@@ -178,8 +250,10 @@ def _recover_browser_session() -> bool:
     """
     尝试把 agent-browser-session 从坏掉的 frame / daemon 状态中拉回到稳定的 X 页面
     """
-    run_abs_result("kill", timeout=10)
-    time.sleep(1.0)
+    cdp_port = _detect_local_cdp_port()
+    if cdp_port is None:
+        run_abs_result("kill", timeout=10)
+        time.sleep(1.0)
 
     open_result = run_abs_result('open "https://x.com/home"', timeout=45)
     if not open_result['ok']:

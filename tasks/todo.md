@@ -27,6 +27,54 @@
   - 真实出图仍需用户自行配置 `GEMINI_API_KEY`
   - 新安装到 `~/.codex/skills` 的 skill 需要重启 Codex 后，后续新会话才会稳定发现
 
+## 新任务：将今天的优先选题跑一遍 x-mastery-mentor
+- 任务名称：把 `AI工具正在从聊天框变成真正能交付结果的工具` 跑成一版 X Thread 草稿，并按 x-mastery-mentor 规则过一遍审稿
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-15
+- 截止日期：2026-04-15
+- 优先级：P0
+- Harness Run：`20260415-013904-ai工具正在从聊天框变成真正能交付结果的工具-a858e6`
+
+### 执行清单
+- [x] 1. 基于今日趋势研究和 wiki 信号，锁定最适合先跑的题
+- [x] 2. 按 x-mastery-mentor 规则生成 3 个 hook 与推荐版本
+- [x] 3. 产出一版完整 X Thread 草稿
+- [x] 4. 保存到 `01-内容生产/01-待深化的选题/`
+- [x] 5. 生成发布清单并更新任务记录
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已建立该选题的 harness run
+  - 已按 `x-mastery-mentor` 的场景 A/B 规则，生成 3 个 hook、推荐版本、发布时间建议与风险提醒
+  - 已产出 8 条结构化 X Thread 草稿，并补一版备用短推文
+  - 已保存到 `01-内容生产/01-待深化的选题/AI工具正在从聊天框变成真正能交付结果的工具-X-thread.md`
+  - 已在草稿内附上发布清单，可继续进入发布链路
+
+## 新任务：安装 x-mentor skill
+- 任务名称：将 `alchaincyf/x-mentor-skill` 安装到当前 Codex skills 环境，并确认它与 redbook 现有 X 工作流入口兼容
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-15
+- 截止日期：2026-04-15
+- 优先级：P1
+- Harness Run：N/A（本机 skill 安装）
+
+### 执行清单
+- [x] 1. 检查 GitHub 仓库结构，确认这是一个根级 skill 仓库
+- [x] 2. 检查 redbook 当前 X 工作流入口，确认是否需要改文档映射
+- [x] 3. 安装到 `~/.codex/skills/x-mentor`
+- [x] 4. 校验 `SKILL.md`、references 目录与命名兼容性
+- [x] 5. 清理不应保留在 skill 目录内的仓库元数据
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已确认仓库根目录直接包含 `SKILL.md / references / examples`
+  - 已安装到 `~/.codex/skills/x-mentor`
+  - 已确认其内部 skill 名称为 `x-mastery-mentor`
+  - 已确认 redbook 现有文档入口本来就写的是 `/x-mastery-mentor`，因此不需要修改 `AGENTS.md / CLAUDE.md`
+  - 已清理安装目录中的 `.git` 与 `.DS_Store`
+
 ## 新任务：调研今天 Social Media 正在流行什么
 - 任务名称：结合外部实时榜单与仓库内历史研究，筛出 2026-04-15 值得写的社媒趋势选题
 - 负责人（Lead Agent）：Codex
@@ -170,6 +218,33 @@
   - 已将 `AGENTS.md / CLAUDE.md` 完整同步，并将同步规则写入 `tasks/lessons.md`
   - 第二轮整理已完成：内容资产、研究稿、wiki/tasks 沉淀、浏览器统一方案文档均已纳入 tracking / staging
   - 当前 `git status` 已收口到：
+
+## 新任务：将 BOSS 直聘工作流切回 Playwright CLI 主链
+- 任务名称：把 `tools/auto-zhipin` 从 current-tab / CDP 偏置收口到 Playwright CLI + 持久化 profile，并恢复可登录、可扫描、可投递的主路径
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-17
+- 截止日期：2026-04-17
+- 优先级：P0
+- Harness Run：N/A（浏览器自动化工作流修正）
+
+### 执行清单
+- [x] 1. 复盘 BOSS 反爬 / CDP 相关 lessons，确认这轮必须切到 Playwright CLI
+- [x] 2. 检查 `tools/auto-zhipin` 现有入口和脚本漂移情况
+- [x] 3. 新增 Playwright CLI 登录入口，并复用 `tools/auto-zhipin/.auth/profile`
+- [x] 4. 补齐 Playwright profile 版的 `chrome:collect` / `chrome:monitor` / `boss:apply`
+- [x] 5. 更新 `package.json` / README / bootstrap 提示，避免继续误导到 current-tab 主链
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - 已新增 `tools/auto-zhipin/scripts/playwright_login.js`，通过 `npx playwright open --user-data-dir ...` 打开可见浏览器并持久化登录态
+  - 已补齐缺失的 `scripts/chrome_collect_queue.js` 与 `scripts/chrome_monitor_queue.js`，改为 Playwright persistent profile 路径
+  - 已新增 `scripts/boss_apply_playwright.js`，让 `npm run boss:apply -- --url ...` 直接走 Playwright profile 主链
+  - 已更新 `tools/auto-zhipin/package.json`、`README.md`、`scripts/bootstrap_auth.js`
+  - 已实际执行 `node scripts/playwright_login.js --detached true`，把 BOSS 页面拉起到登录搜索页
+- 当前限制：
+  - `npm test` 仍被 `tests/_legacy/*` 里已经漂移的旧引用阻塞，不是这轮新增脚本的语法错误
+  - 这轮先收口登录 / 扫描 / 投递主链，没有继续清理所有 `_legacy` 测试和旧 current-tab 文档残留
     - `unstaged = 0`
     - `untracked = 0`
   - 剩余仅为一批已经 staged 的清晰改动，后续可以按批次提交
@@ -3419,3 +3494,31 @@
 - 使用前提：
   - 实际调用 Grok 模型还需要配置 xAI 的 Grok API Key
   - 仓库 README 说明推荐在现代终端中使用交互 TUI；无界面模式可直接用 `grok --prompt ...`
+
+## 新任务：发布一条 X 帖并盘点今日小红书候选
+- 任务名称：围绕指定 X 链接产出并发布一条中文 X 单帖，同时给出今天最适合发布的小红书候选
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-17
+- 截止日期：2026-04-17
+- 优先级：P0
+- Harness Run：N/A（社媒发布 + 选题盘点）
+
+### 执行清单
+- [x] 1. 读取指定 X 链接内容并产出候选文案
+- [x] 2. 选择推荐版本并推进到 X 发布动作前
+- [x] 3. 盘点今天最适合直接发的小红书内容
+- [x] 4. 更新任务记录与会话摘要
+
+### Review 结论
+- 已完成 X 发布；小红书新闻稿已成功进入审核队列
+- 当前已完成：
+  - 已确认目标 X 原帖公开正文仅为 `this flow`，语气是极简 demo 感
+  - 已用多代理并行完成：X 文案起草 + 今日小红书候选盘点
+  - 已按仓库要求做最小 `x-mastery-mentor` 审稿检查，并通过 `/baoyu-post-to-x` 走完 preview + submit
+  - 今日小红书候选已排出优先级：`别再闭门写代码了，先聊用户，再写产品` > `Opus 4.7` > `AI办公进入代做时代`
+  - 已将“最该发”的题落成小红书图文稿：`2026-04-17-别再闭门写代码了-先聊用户再写产品-小红书图文稿.md`
+  - 已通过小红书发布 skill 完成登录检查，当前账号处于已登录状态
+  - 已改走“小红书发新闻 + 夹判断”的新方向，并完成 `GPT Codex APP / computer use` 新闻稿与 5 张图
+- 当前限制：
+  - `content-data` 尚未刷新出这条新笔记；当前最强证据来自 `笔记管理 -> 审核中`
+  - 已补到 `note id`: `69e1eaf1000000002102c31c`

@@ -8,9 +8,22 @@ import sys
 from x_utils import (
     ensure_browser, navigate, get_snapshot, scroll_and_collect,
     extract_tweets, dedupe_tweets, save_report,
-    print_colored, today_str, now_str,
+    print_colored, today_str, now_str, snapshot_has_x_unavailable_markers,
     PROJECT_ROOT,
 )
+
+def _normalize_snapshot_line(line: str) -> str:
+    line = line.strip()
+    line = line.removeprefix("- text:").strip()
+    line = line.removeprefix("- link ").strip()
+    line = line.removeprefix("- 'link ").strip()
+    line = line.strip("'\"")
+    line = line.replace('" [ref=', ' [ref=')
+    line = line.split(" [ref=", 1)[0].strip()
+    line = line.removesuffix('":').strip()
+    line = line.removesuffix(':').strip()
+    line = line.strip("'\"")
+    return line
 
 
 def extract_trends(snapshot: str) -> list:
@@ -24,45 +37,64 @@ def extract_trends(snapshot: str) -> list:
     if not snapshot:
         return trends
 
+    import re
+
     lines = snapshot.split('\n')
-    current_trend = {}
+    trends = []
+    seen = set()
 
     for line in lines:
-        line = line.strip()
+        line = _normalize_snapshot_line(line)
         if not line:
             continue
 
-        # 趋势话题通常以 # 开头或包含 "Trending" 标记
+        # Current X Chinese explore structure examples:
+        # "美国 的趋势 Hornets 趋势 Magic，LaMelo Ball 更多"
+        # "娱乐 趋势 Darlene 更多"
+        # "科技 趋势 Apple TV 更多"
+        # "美国 的趋势 #SmackDown 趋势 Sami，Jordynne Grace 更多"
+        zh_match = re.match(r'^(?P<category>.+?)\s+(?:的趋势|趋势)\s+(?P<topic>.+?)(?:\s+更多)?$', line)
+        if zh_match:
+            category = zh_match.group('category').strip()
+            topic = zh_match.group('topic').strip()
+            topic = re.sub(r'\s+趋势.*$', '', topic).strip()
+            topic = topic.removesuffix('更多').strip()
+            key = (category, topic)
+            if topic and key not in seen:
+                seen.add(key)
+                trends.append({
+                    'name': topic,
+                    'category': category,
+                    'description': line,
+                })
+            continue
+
+        # Legacy English structure
         if line.startswith('#') and len(line) > 1:
-            if current_trend.get('name'):
-                trends.append(current_trend)
-            current_trend = {'name': line}
+            key = ('hashtag', line)
+            if key not in seen:
+                seen.add(key)
+                trends.append({'name': line, 'category': 'hashtag'})
             continue
 
-        # 检测推文数量（如 "12.3K posts"）
-        import re
+        en_match = re.match(r'^(?:Trending in |Trending )(?P<category>.+?)\s+(?P<topic>.+)$', line, re.IGNORECASE)
+        if en_match:
+            category = en_match.group('category').strip()
+            topic = en_match.group('topic').strip()
+            key = (category, topic)
+            if topic and key not in seen:
+                seen.add(key)
+                trends.append({
+                    'name': topic,
+                    'category': category,
+                    'description': line,
+                })
+            continue
+
+        # Optional post counts appended on some layouts
         count_match = re.search(r'([\d,.]+[KkMm]?)\s*(?:posts?|推文)', line)
-        if count_match and current_trend.get('name'):
-            current_trend['tweet_count'] = count_match.group(1)
-            continue
-
-        # 检测分类（如 "Trending in Technology"）
-        if 'trending' in line.lower():
-            cat = line.replace('Trending in ', '').replace('Trending', '').strip()
-            if cat:
-                current_trend['category'] = cat
-            elif not current_trend.get('name'):
-                # 下一行可能是话题名
-                pass
-            continue
-
-        # 收集描述文本
-        if current_trend.get('name') and len(line) > 5:
-            current_trend.setdefault('description', line)
-
-    # 保存最后一个
-    if current_trend.get('name'):
-        trends.append(current_trend)
+        if count_match and trends:
+            trends[-1].setdefault('tweet_count', count_match.group(1))
 
     return trends
 
@@ -79,6 +111,11 @@ def scrape_trending(top_n: int = 5) -> tuple:
     url = "https://x.com/explore/tabs/trending"
     print_colored(f"打开: {url}", 'yellow')
     navigate(url, wait=3.0)
+
+    initial_snapshot = get_snapshot()
+    if snapshot_has_x_unavailable_markers(initial_snapshot):
+        print_colored("X 热门趋势页当前不可用（登录墙/不存在页），跳过趋势抓取", 'yellow')
+        return [], {}
 
     print_colored("收集趋势数据...", 'yellow')
     snapshots = scroll_and_collect(times=2, wait=2.0)

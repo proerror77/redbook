@@ -10,7 +10,7 @@ from urllib.parse import quote_plus
 from x_utils import (
     ensure_browser, navigate, scroll_and_collect,
     extract_tweets, dedupe_tweets, save_report,
-    print_colored, today_str, now_str,
+    print_colored, today_str, now_str, get_snapshot, snapshot_has_x_unavailable_markers,
     PROJECT_ROOT, DAILY_DIR,
 )
 
@@ -42,6 +42,11 @@ def search_x_topic(query: str, scroll_times: int = 3) -> list:
     search_url = f"https://x.com/search?q={quote_plus(query)}&src=typed_query&f=top"
     print_colored(f"打开: {search_url}", 'yellow')
     navigate(search_url, wait=3.0)
+
+    initial_snapshot = get_snapshot()
+    if snapshot_has_x_unavailable_markers(initial_snapshot):
+        print_colored("X 搜索页当前不可用（登录墙/不存在页），跳过该关键词", 'yellow')
+        return []
 
     # 滚动收集
     print_colored(f"滚动收集数据（{scroll_times} 次）...", 'yellow')

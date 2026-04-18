@@ -556,3 +556,86 @@
 关键更新：
 - Opus 4.7 agentic coding +10.9%，visual reasoning +13%，Mythos Preview 神秘出现
 - 工作流升级为三条路径，wiki 成为唯一知识底座，素材库已归档
+
+## [2026-04-17] query | X 发帖文案与今日小红书候选盘点
+
+来源：`https://x.com/i/status/2044882275100250444` + `tasks/progress.md` + `01-内容生产/02-制作中的选题/` + `wiki/log.md`
+
+触及页面：3个
+- `tasks/todo.md` — 回填本轮任务的执行状态与 review 结论
+- `tasks/progress.md` — 记录本轮 X 草稿已就绪与小红书候选优先级
+- `wiki/log.md` — 记录本次 query 证据
+
+关键洞察：
+- 这条 X 原帖本身几乎没有论证，价值在于“flow 很顺”的体感，因此跟帖/转述文案更适合极简、强体感，而不是写成长解释。
+- 对今天的小红书发布，最佳选题和最低成本选题不是同一个：前者是 `别再闭门写代码了，先聊用户，再写产品`，后者是 `AI办公进入代做时代`。
+
+## [2026-04-17] ingest | 改回 skill 链路处理 X 发布与小红书待发准备
+
+来源：`/Users/proerror/Documents/redbook/.agents/skills/baoyu-post-to-x/SKILL.md` + `~/.codex/skills/xiaohongshu-skills/SKILL.md` + `01-内容生产/02-制作中的选题/2026-04-08-AI办公进入代做时代/*`
+
+触及页面：4个
+- `tasks/todo.md` — 回填 X 已发布、小红书待确认的状态
+- `tasks/progress.md` — 记录这轮 skill 发布结果
+- `wiki/log.md` — 记录本轮 ingest
+- `01-内容生产/02-制作中的选题/2026-04-17-别再闭门写代码了-先聊用户再写产品-小红书图文稿.md` — 新增最该发选题的小红书版
+
+关键洞察：
+- 对 X / 小红书这种站点写操作，仓库里已经有明确 skill 主链，不该再用 computer use 临时接管。
+- 今天的小红书如果追求“先发出去”，`AI办公进入代做时代` 是最短路径，因为文案、标题文件和 5 张最终图片都已存在。
+
+## [2026-04-17] query | 小红书后台核实旧稿已发，并准备含 Codex 例子的 V2
+
+来源：`python scripts/cdp_publish.py content-data`（创作者后台） + `01-内容生产/02-制作中的选题/2026-04-08-AI办公进入代做时代/*`
+
+触及页面：4个
+- `tasks/progress.md` — 追加后台核实结果与 V2 准备状态
+- `wiki/log.md` — 记录本轮 query 证据
+- `小红书-图文稿-v2.md` — 新增加入 `GPT Codex APP / computer use` 例子的升级版稿件
+- `xhs-title-v2.txt` / `xhs-content-v2.txt` — 新增可直接发布的 V2 输入文件
+
+关键洞察：
+- `AI办公进入代做时代` 不是待发稿，而是已经发过且拿到真实数据的旧稿。
+- 这次更合理的动作不是“补发旧稿”，而是发一个加入 `computer use` 新例子的 V2。
+
+## [2026-04-17] ingest | GPT Codex APP 新闻稿图组就绪
+
+来源：`xhs-images/gpt-codex-computer-use/*` + `2026-04-17-GPT-Codex-APP-computer-use-小红书图文稿.md`
+
+触及页面：5个
+- `xhs-images/gpt-codex-computer-use/analysis.md` — 完成内容分析
+- `xhs-images/gpt-codex-computer-use/outline*.md` — 完成三套策略与最终方案
+- `xhs-images/gpt-codex-computer-use/prompts/*` — 完成 5 张图的 prompt
+- `xhs-images/gpt-codex-computer-use/*.png` — 完成 5 张可发布图卡
+- `2026-04-17-GPT-Codex-APP-computer-use-xhs-title.txt` / `...-xhs-content.txt` — 完成发布输入文件
+
+关键洞察：
+- 这条内容更适合“新闻 + 判断”的小红书结构，而不是继续复用旧稿的长判断框架。
+- 外部 AI 出图后端当前不稳定，但这种 `notion 风` 信息卡完全可以 repo-native 生成，不必卡在外部额度。
+
+## [2026-04-17] ingest | Tuzi 文档路径验证完成，正式图组生成完毕
+
+来源：Tuzi Apifox 文档 + `xhs-images/gpt-codex-computer-use/tuzi/*`
+
+触及页面：4个
+- `baoyu-image-gen/scripts/providers/tuzi.ts` — 修复 Tuzi 旧模型别名兼容
+- `tasks/progress.md` — 记录 Tuzi 主链打通与 5 张图完成
+- `wiki/log.md` — 记录本轮 ingest
+- `xhs-images/gpt-codex-computer-use/tuzi/*.png` — 5 张正式图组
+
+关键洞察：
+- 这次不是余额问题，而是调用路径与环境模型配置不一致。
+- 一旦按文档切回 `images/generations + gemini-3.1-flash-image-preview`，Tuzi 主链是能稳定产图的。
+
+## [2026-04-17] ingest | GPT Codex 小红书新闻稿已提交审核
+
+来源：`publish_pipeline.py --auto-publish` + 创作者后台 `content-data`
+
+触及页面：3个
+- `tasks/todo.md` — 将本轮状态更新为已发布、待补数据
+- `tasks/progress.md` — 记录发布日志与验证缺口
+- `wiki/log.md` — 记录本轮 ingest
+
+关键洞察：
+- 标题长度确实是这次发布链路里的真实阻塞点，缩成 `AI 开始接手桌面工作了` 后，真实点击发布按钮可以进入成功页。
+- 最终强证据来自 `笔记管理`：新标题已出现，状态为 `审核中`，并已补到 `note id = 69e1eaf1000000002102c31c`。这比脚本 stdout 或统计面板更可靠。

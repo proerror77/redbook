@@ -44,6 +44,19 @@ export async function closePageTarget(endpoint = 'http://127.0.0.1:9222', target
   return response.text();
 }
 
+export async function waitForTargetById(endpoint = 'http://127.0.0.1:9222', targetId, timeoutMs = 5000) {
+  const startedAt = Date.now();
+  while (Date.now() - startedAt < timeoutMs) {
+    const targets = await listPageTargets(endpoint);
+    const target = targets.find((item) => item.id === targetId);
+    if (target?.webSocketDebuggerUrl) {
+      return target;
+    }
+    await delay(100);
+  }
+  throw new Error(`Timed out waiting for target ${targetId}`);
+}
+
 function toMessageText(data) {
   if (typeof data === 'string') {
     return data;
@@ -63,6 +76,7 @@ export class CDPTargetClient {
     this.ws = null;
     this.nextId = 0;
     this.pending = new Map();
+    this.eventHandlers = new Map();
   }
 
   async connect(timeoutMs = 5000) {
@@ -84,6 +98,18 @@ export class CDPTargetClient {
     ws.addEventListener('message', (event) => {
       try {
         const message = JSON.parse(toMessageText(event.data));
+        if (message?.method) {
+          const handlers = this.eventHandlers.get(message.method);
+          if (handlers) {
+            for (const handler of handlers) {
+              try {
+                handler(message.params ?? {});
+              } catch {
+                // Ignore user handler failures.
+              }
+            }
+          }
+        }
         if (message?.id) {
           const pending = this.pending.get(message.id);
           if (pending) {
@@ -106,6 +132,21 @@ export class CDPTargetClient {
         pending.reject(new Error(`CDP target connection closed (pending id=${id})`));
       }
     });
+  }
+
+  on(method, handler) {
+    if (!this.eventHandlers.has(method)) {
+      this.eventHandlers.set(method, new Set());
+    }
+    this.eventHandlers.get(method).add(handler);
+    return () => {
+      const handlers = this.eventHandlers.get(method);
+      if (!handlers) return;
+      handlers.delete(handler);
+      if (!handlers.size) {
+        this.eventHandlers.delete(method);
+      }
+    };
   }
 
   async send(method, params = {}, timeoutMs = 10000) {
@@ -183,6 +224,15 @@ export class CDPTargetClient {
       bodyPreview: document.body ? document.body.innerText.replace(/\\s+/g, ' ').trim().slice(0, ${Number(bodyLimit) || 600}) : ''
     }))()`;
     return this.evaluate(expression);
+  }
+
+  async enableNetwork() {
+    await this.send('Network.enable', {}, 3000).catch(() => {});
+  }
+
+  async getCookies(urls = []) {
+    const result = await this.send('Network.getCookies', urls.length ? { urls } : {}, 5000);
+    return Array.isArray(result?.cookies) ? result.cookies : [];
   }
 
   async close() {

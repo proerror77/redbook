@@ -1881,3 +1881,318 @@
 **下次会话优先做：**
 - 升级 daily.sh：加入 X timeline 爆款抓取 + 对标账号动态
 - 用新工作流跑一次完整的计划内容（从早报选题到发布沉淀）
+
+## [2026-04-17] 会话摘要：BOSS 工作流切回 Playwright CLI
+
+**完成了什么：**
+- 将 `tools/auto-zhipin` 的 BOSS 主链从 current-tab / CDP 偏置改回 `Playwright CLI + 持久化 profile`
+- 新增登录入口：
+  - [playwright_login.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/scripts/playwright_login.js)
+- 新增 Playwright profile 版扫描 / 监看 / 投递脚本：
+  - [chrome_collect_queue.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/scripts/chrome_collect_queue.js)
+  - [chrome_monitor_queue.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/scripts/chrome_monitor_queue.js)
+  - [boss_apply_playwright.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/scripts/boss_apply_playwright.js)
+- 更新了：
+  - [package.json](/Users/proerror/Documents/redbook/tools/auto-zhipin/package.json)
+  - [README.md](/Users/proerror/Documents/redbook/tools/auto-zhipin/README.md)
+  - [bootstrap_auth.js](/Users/proerror/Documents/redbook/tools/auto-zhipin/scripts/bootstrap_auth.js)
+- 已实际执行 `node scripts/playwright_login.js --detached true`，打开 BOSS AI Agent 搜索页，并把登录态写入：
+  - `/Users/proerror/Documents/redbook/tools/auto-zhipin/.auth/profile`
+
+**未完成 / 遗留：**
+- 这轮还没有继续清理 `tests/_legacy/*` 的历史漂移问题，所以 `npm test` 仍会被旧测试引用挡住。
+- 还没有执行真实岗位的 `boss:apply -- --dry-run true` 预检，等你登录完成后再接。
+
+**下次会话优先做：**
+- 你完成登录后，先跑一次：
+  - `cd /Users/proerror/Documents/redbook/tools/auto-zhipin && npm run chrome:collect`
+- 然后对目标岗位执行：
+  - `npm run boss:apply -- --url <job_url> --dry-run true`
+- 预检通过后再正式 apply。
+
+## [2026-04-17] 会话摘要：X 发帖草稿 + 今日小红书候选盘点
+
+**完成了什么：**
+- 针对用户给出的 X 链接 `https://x.com/i/status/2044882275100250444` 做了公开内容确认，原帖正文仅为 `this flow`，重点是极简 demo 感。
+- 用多代理并行完成两件事：
+  - 产出 3 个中文 X 单帖候选，并选出推荐版本
+  - 盘点今天最适合发布的小红书候选内容
+- 已在当前登录的 `@0xcybersmile` X 账号中打开 compose，并将推荐文案填入发帖框，当前停在最终点击前。
+- 已确认今日最值得做的小红书方向：
+  - 最该发：`别再闭门写代码了，先聊用户，再写产品`
+  - 最省力能发：`AI办公进入代做时代`
+
+**未完成 / 遗留：**
+- X 发帖最后一步未执行；这属于对外代表性发布动作，需在点击前拿到用户确认。
+- 小红书稿件本轮只做了候选排序，还没有继续改写成最终可发版本。
+
+**下次会话优先做：**
+- 若用户确认，立即点掉当前 X 草稿的 `发帖`。
+- 优先把 `别再闭门写代码了，先聊用户，再写产品` 改成小红书图文版；如果追求最低成本，直接补齐 `AI办公进入代做时代` 的配图并发出。
+
+## [2026-04-17] 会话摘要：按 skill 流程发布 X + 小红书待发准备
+
+**完成了什么：**
+- 已停止使用 computer use 作为 X / 小红书发布主链，改回 skill 工作流。
+- X 端按仓库流程走完：
+  - `/x-mastery-mentor` 最小审稿
+  - `/baoyu-post-to-x` preview
+  - `/baoyu-post-to-x` submit
+- `baoyu-post-to-x` 的提交结果为：
+  - `[x-browser] Post submitted!`
+- 小红书端已完成发布前准备：
+  - 确认 `AI办公进入代做时代` 这条已有完整图文稿、`xhs-title.txt / xhs-content.txt` 和 5 张最终图片
+  - 新增“最该发”版本图文稿：
+    - [2026-04-17-别再闭门写代码了-先聊用户再写产品-小红书图文稿.md](/Users/proerror/Documents/redbook/01-内容生产/02-制作中的选题/2026-04-17-别再闭门写代码了-先聊用户再写产品-小红书图文稿.md)
+  - 用小红书发布 skill 做了 `check-login`，当前账号已登录可发
+
+**未完成 / 遗留：**
+- 小红书还没正式发出。按 workflow，这一步要在最终采用的标题、正文和图片确定后做动作前确认。
+
+**下次会话优先做：**
+- 若用户要今天最省力直接发：用现成素材发布 `AI办公进入代做时代`
+- 若用户要今天最值得发：继续用新稿生成图，再走小红书发布 skill
+
+## [2026-04-17] 会话摘要：核实小红书旧稿已发 + 准备含 Codex 例子的 V2
+
+**完成了什么：**
+- 用小红书 skill 的 `content-data` 抓到了创作者后台一手数据，而不是只依赖仓库记录。
+- 已确认旧稿 `AI办公进入代做时代，别再卷提示词了` 确实发过，后台记录为：
+  - 发布时间：`2026-04-08 15:51`
+  - 曝光：`514`
+  - 观看：`36`
+  - 封面点击率：`6.80%`
+  - 评论：`1`
+  - 收藏：`1`
+  - `_id`：`69d608f600000000210384f5`
+- 已新增包含 `GPT Codex APP / computer use` 例子的 V2 文案文件：
+  - [小红书-图文稿-v2.md](/Users/proerror/Documents/redbook/01-内容生产/02-制作中的选题/2026-04-08-AI办公进入代做时代/小红书-图文稿-v2.md)
+  - [xhs-title-v2.txt](/Users/proerror/Documents/redbook/01-内容生产/02-制作中的选题/2026-04-08-AI办公进入代做时代/xhs-title-v2.txt)
+  - [xhs-content-v2.txt](/Users/proerror/Documents/redbook/01-内容生产/02-制作中的选题/2026-04-08-AI办公进入代做时代/xhs-content-v2.txt)
+
+**未完成 / 遗留：**
+- V2 还没有正式发。因为旧稿已经发过，V2 属于新的公开发布动作，需要用户在动作前确认。
+
+**下次会话优先做：**
+- 如果用户确认发 V2，就直接用现成 5 张图先走一版 skill 发布，再看是否需要补更贴近 `computer use` 的新版图组。
+
+## [2026-04-17] 会话摘要：切到“小红书发新闻 + 夹判断”的新方向
+
+**完成了什么：**
+- 已确认 `AI办公进入代做时代` 旧稿发过且数据一般，因此不再重复发布。
+- 按新的方向，已新建一条“新闻型 + 个人判断”的小红书正式稿：
+  - [2026-04-17-GPT-Codex-APP-computer-use-小红书图文稿.md](/Users/proerror/Documents/redbook/01-内容生产/02-制作中的选题/2026-04-17-GPT-Codex-APP-computer-use-小红书图文稿.md)
+- 这条新稿的结构已经固定为：
+  - 新闻事实：`GPT Codex APP` 的 `computer use`
+  - 你的判断：AI 工具开始从聊天层走向执行层
+
+**未完成 / 遗留：**
+- 这条新稿还没生成图，也还没走小红书发布 skill。
+
+**下次会话优先做：**
+- 直接给这条新闻稿做一版 5 页图文图组，然后按小红书 skill 发出去。
+
+## [2026-04-17] 会话摘要：GPT Codex APP 新闻稿图组已生成，待走小红书 skill 发布
+
+**完成了什么：**
+- 用小红书创作者后台 `content-data` 再次核实：`AI办公进入代做时代，别再卷提示词了` 旧稿确实已发，后台数据为：
+  - 发布时间：`2026-04-08 15:51`
+  - 曝光：`514`
+  - 观看：`36`
+  - 封面点击率：`6.80%`
+  - 评论：`1`
+  - 收藏：`1`
+- 为新方向 `GPT Codex APP / computer use` 完成整套发布素材：
+  - 正式文稿：[2026-04-17-GPT-Codex-APP-computer-use-小红书图文稿.md](/Users/proerror/Documents/redbook/01-内容生产/02-制作中的选题/2026-04-17-GPT-Codex-APP-computer-use-小红书图文稿.md)
+  - 发布输入文件：
+    - [2026-04-17-GPT-Codex-APP-computer-use-xhs-title.txt](/Users/proerror/Documents/redbook/01-内容生产/02-制作中的选题/2026-04-17-GPT-Codex-APP-computer-use-xhs-title.txt)
+    - [2026-04-17-GPT-Codex-APP-computer-use-xhs-content.txt](/Users/proerror/Documents/redbook/01-内容生产/02-制作中的选题/2026-04-17-GPT-Codex-APP-computer-use-xhs-content.txt)
+  - `xhs-images/gpt-codex-computer-use/` 下的 `analysis / outline / prompts`
+  - 5 张实际生成的图卡：
+    - `01-cover-codex-update.png`
+    - `02-content-what-changed.png`
+    - `03-content-execution-layer.png`
+    - `04-content-user-experience.png`
+    - `05-ending-workflow-judgment.png`
+- 额外验证到外部 AI 出图后端当前不可依赖：
+  - Tuzi：`Invalid Token`
+  - Google：`429 quota exceeded`
+  - 已改用本地脚本生成 `notion` 风信息卡，绕开外部额度问题
+
+**未完成 / 遗留：**
+- 这条新闻稿还没有正式发布到小红书。
+
+**下次会话优先做：**
+- 若用户确认，直接用小红书发布 skill 发这 5 张图和对应正文。
+
+## [2026-04-17] 会话摘要：Tuzi 图片接口文档核对与最小修正
+
+**完成了什么：**
+- 已按用户提供的 Tuzi 文档核对出正确图片接口：
+  - `POST https://api.tu-zi.com/v1/images/generations`
+  - 模型：`gemini-3.1-flash-image-preview`
+- 验证结论：
+  - 之前失败不是“Tuzi 没余额”，而是我前面走错了 Gemini/Tuzi 路径
+  - 用你提供的 key 走正确接口，已经成功拿到图片响应
+- 已修正 `baoyu-image-gen` 的 Tuzi provider 兼容：
+  - [providers/tuzi.ts](/Users/proerror/Documents/redbook/.agents/skills/baoyu-image-gen/scripts/providers/tuzi.ts)
+  - 新增对 `data[0].url` 中“直接返回 base64 图像数据”的兼容解析
+- 已用修正后的 provider 直调真实 prompt，成功生成图片文件：
+  - [01-cover-codex-update-provider.png](/Users/proerror/Documents/redbook/xhs-images/gpt-codex-computer-use/01-cover-codex-update-provider.png)
+
+**未完成 / 遗留：**
+- `baoyu-image-gen/scripts/main.ts` 这一层 CLI 包装还存在不一致现象：provider 直调成功，但通过 `main.ts` 同 prompt 仍返回 `No image data in response`。
+
+**下次会话优先做：**
+- 如果要彻底收口 Tuzi 工作流，继续修 `main.ts` / CLI 这一层，确保不只能直调 provider，也能从统一入口稳定生成。
+
+## [2026-04-17] 会话摘要：Tuzi 主链收口，GPT Codex 小红书图组已就绪
+
+**完成了什么：**
+- 继续沿着 Tuzi 文档主链收口问题，确认真正的关键不是余额，而是：
+  - 当前环境里的 `TUZI_IMAGE_MODEL=nano-banana-2`
+  - 而文档实测可用模型是 `gemini-3.1-flash-image-preview`
+- 已在 `baoyu-image-gen` 的 Tuzi provider 中加入模型别名兼容：
+  - `nano-banana-2 -> gemini-3.1-flash-image-preview`
+- 用修正后的主链 + 用户提供的新 key，成功通过 `main.ts` 连续生成 5 张正式图：
+  - [01-cover-codex-update.png](/Users/proerror/Documents/redbook/xhs-images/gpt-codex-computer-use/tuzi/01-cover-codex-update.png)
+  - [02-content-what-changed.png](/Users/proerror/Documents/redbook/xhs-images/gpt-codex-computer-use/tuzi/02-content-what-changed.png)
+  - [03-content-execution-layer.png](/Users/proerror/Documents/redbook/xhs-images/gpt-codex-computer-use/tuzi/03-content-execution-layer.png)
+  - [04-content-user-experience.png](/Users/proerror/Documents/redbook/xhs-images/gpt-codex-computer-use/tuzi/04-content-user-experience.png)
+  - [05-ending-workflow-judgment.png](/Users/proerror/Documents/redbook/xhs-images/gpt-codex-computer-use/tuzi/05-ending-workflow-judgment.png)
+
+**未完成 / 遗留：**
+- 小红书新闻稿还没有正式发出。素材已经齐了，只差最终发布动作。
+
+**下次会话优先做：**
+- 若用户确认，直接用小红书发布 skill 发这 5 张 Tuzi 图组和对应正文。
+
+## [2026-04-17] 会话摘要：小红书新闻稿已提交并进入审核中
+
+**完成了什么：**
+- 根据用户指出的标题超限截图，将标题压短为：
+  - `AI 开始接手桌面工作了`
+- 重新走小红书 skill 的一体化发布链：
+  - `publish_pipeline.py --auto-publish`
+- 本轮发布日志关键结果：
+  - `FILL_STATUS: READY_TO_PUBLISH`
+  - `PUBLISH_STATUS: PUBLISHED`
+- 使用的素材为：
+  - 标题文件：[2026-04-17-GPT-Codex-APP-computer-use-xhs-title.txt](/Users/proerror/Documents/redbook/01-内容生产/02-制作中的选题/2026-04-17-GPT-Codex-APP-computer-use-xhs-title.txt)
+  - 正文文件：[2026-04-17-GPT-Codex-APP-computer-use-xhs-content.txt](/Users/proerror/Documents/redbook/01-内容生产/02-制作中的选题/2026-04-17-GPT-Codex-APP-computer-use-xhs-content.txt)
+  - 5 张 Tuzi 图组：`xhs-images/gpt-codex-computer-use/tuzi/*.png`
+
+**验证结果：**
+- 发布脚本层：最初返回过 `PUBLISHED`，但不能单独作为成功标准
+- 直接在发布页抓真实 `发布` 按钮后，页面跳转到 `publish/success`，正文明确出现 `发布成功`
+- 随后进入 `笔记管理` 页面，确认出现新条目：
+  - 标题：`AI 开始接手桌面工作了`
+  - 时间：`2026年04月17日 16:10`
+  - 状态：`审核中`
+- 已从 `笔记管理` 条目属性中补抓到：
+  - `note id`: `69e1eaf1000000002102c31c`
+- `content-data` 仍未刷新出这条新笔记，因此当前还没拿到统计面板数据和 `note id`
+
+**未完成 / 遗留：**
+- `content-data` 还未刷新出这条新笔记，因此曝光/点击等数据待补
+- 小红书 skill 的自动发布验收标准仍然偏弱：需要 `笔记管理/审核中/已发布` 这类平台态证据才能算真正成功
+
+**下次会话优先做：**
+- 稍后回查 `content-data`，补抓这条新闻稿的首轮数据
+- 修小红书 skill 的最终发布验收逻辑，不再把脚本返回值当成成功标准
+
+## [2026-04-18] 会话摘要：重跑 today research，并产出 fresh 选题 shortlist
+
+**完成了什么：**
+- 确认昨天给你的选题“显得旧”并不是错觉，而是因为当时只有 `2026-04-17` 的完整研究稿可用。
+- 直接重跑了 `2026-04-18` 的 today research：
+  - `X-每日日程-2026-04-18.md`
+  - `HN-每日热点-2026-04-18.md`
+  - `Reddit-每日监控-2026-04-18.md`
+- 顺手把 auto-x 的一个关键问题修了：
+  - 当 `X Pro / 搜索 / trending` 命中登录墙或不存在页时，现在会快速跳过，不再继续滚动 30 次后产出 `0 条推文 / 0 个话题`
+- 基于 fresh 的 `HN + Reddit + 已有关注者话题`，输出了今天的选题 shortlist：
+  - [选题建议-2026-04-18.md](/Users/proerror/Documents/redbook/05-选题研究/选题建议-2026-04-18.md)
+
+**今天最值得做的 3 个题：**
+- `AI agent 不是越来越便宜，而是越来越像团队成本`
+- `经典 SaaS 真的快到头了吗？下一代是 dashboard 还是 agents`
+- `Claude Design 不是 Figma 替代品，它更像“表达意图的中间层”`
+
+**未完成 / 遗留：**
+- 今天的 X fresh signal 仍然不可靠，因为 `agent-browser-session` 没拿到你的真实已登录 X 会话；现在只是从“假成功”修到了“快速跳过无效页”。
+
+**下次会话优先做：**
+- 如果要继续提升 daily 质量，下一步是把 `X Pro / search / trending` 改成使用当前真实登录 Chrome 会话，或者显式切到你当前登录的 X timeline 做 research。
+
+## [2026-04-18] 会话摘要：修复 auto-x 的 X 登录会话问题
+
+**完成了什么：**
+- 已定位到 `X Pro 多列分析 0 条推文 / 0 个话题` 的根因：
+  - 之前 `agent-browser-session` 默认起的是匿名浏览器上下文
+  - 打开 `pro.x.com/i/decks/...` 时实际命中了未登录/不存在页
+  - 所以后续的“滚动 30 次”只是对错误页面做空操作
+- 已在 [x_utils.py](/Users/proerror/Documents/redbook/tools/auto-x/scripts/x_utils.py) 做主链修复：
+  - `auto-x` 现在会优先检测并复用本机当前 Chrome 的 `CDP 9222` 会话
+  - 只有连不上当前 Chrome 时，才退回旧的 `agent-browser-session` 独立会话
+  - 恢复逻辑也已调整：如果走当前 Chrome CDP，不再直接 `kill` 浏览器
+- 已补充无效 X 页检测并在以下脚本里接入：
+  - [daily_research.py](/Users/proerror/Documents/redbook/tools/auto-x/scripts/daily_research.py)
+  - [trending_topics.py](/Users/proerror/Documents/redbook/tools/auto-x/scripts/trending_topics.py)
+  - [search_x.py](/Users/proerror/Documents/redbook/tools/auto-x/scripts/search_x.py)
+  - 命中登录墙 / 不存在页时，现在会快速跳过，而不是继续产出假的 0/0 结果
+
+**验证结果：**
+- `agent-browser-session --cdp 9222` 已能直接连接到你当前已登录的 X 会话
+- `scrape_timeline.py --scrolls 2` 实测结果：
+  - 成功提取 `25` 条推文
+  - 成功识别 `2` 个热门话题
+  - 成功发现 `4` 条高互动推文
+  - 已保存到 [X-Timeline-2026-04-18.md](/Users/proerror/Documents/redbook/05-选题研究/X-Timeline-2026-04-18.md)
+- `search_x.py 'AI tools'` 也已恢复到非零结果：
+  - 成功提取 `12` 条推文
+  - 成功识别 `1` 条痛点推文
+  - 已保存到 [X-搜索-AI tools-2026-04-18.md](/Users/proerror/Documents/redbook/05-选题研究/X-搜索-AI%20tools-2026-04-18.md)
+- `trending_topics.py 3` 已恢复到非零结果：
+  - 成功识别 `32` 个趋势话题
+  - 已保存到 [X-每日热点-2026-04-18.md](/Users/proerror/Documents/redbook/05-选题研究/X-每日热点-2026-04-18.md)
+- `X-每日日程-2026-04-18.md` 已刷新为包含非零 X 研究结果的版本：
+  - `Deck 列数 = 6`
+  - `抓取推文数 = 27`
+  - `识别话题 = 2`
+  - 搜索 `AI tools / solopreneur` 已有非零结果
+- 进一步贴近真实 daily 的验证中：
+  - `daily_schedule.py --skip-hn --skip-reddit --skip-following`
+  - 当前已经成功识别出 `6` 列，不再是“未识别到任何列”
+
+**未完成 / 遗留：**
+- `trending_topics.py` 虽然已恢复到非零，但输出文本仍有少量描述噪音（如末尾 `更多`），后续可继续精修 parser
+- `daily_schedule.py` 的长滚动验证仍在后台继续跑
+
+**下次会话优先做：**
+- 精修 `trending_topics.py` 的中文结构清洗，减少趋势条目里的残余噪音
+
+## [2026-04-18] 会话摘要：对比 Playwright CLI 与当前 auto-x 主链
+
+**完成了什么：**
+- 用你当前已登录的 Chrome 会话做了两种底座对比：
+  - `agent-browser-session --cdp 9222`
+  - `Playwright connectOverCDP('http://127.0.0.1:9222')`
+- 结论不是“Playwright 一定更好”，而是：
+  - 对当前这个 X 研究任务，`agent-browser-session + CDP 9222 + 固定 tabname` 更稳
+  - Playwright over CDP 能连上已登录会话，但在 `search` 这种导航场景里也会出现 `ERR_ABORTED` / 页面落回别的 tab 的现象
+- 用 Playwright 的最小探针结果：
+  - `home`：能读到已登录主页
+  - `trending`：能读到真实趋势页内容
+  - `search`：`goto` 出现 `ERR_ABORTED`，最终页面并不稳定落在搜索结果页
+
+**为什么当前主链更合适：**
+- 现在 `auto-x` 已经具备：
+  - 优先复用当前 Chrome 已登录会话
+  - 固定 `tabname`
+  - timeline/search/trending 三条链路都跑出非零结果
+- 如果硬切 Playwright CLI，不但没有明显收益，还得额外处理 tab 选择、导航落点和结果解析适配
+
+**当前建议：**
+- 保留 `agent-browser-session + CDP 9222` 作为 X 研究主链
+- 把 Playwright CLI 保留为对照探针 / fallback，而不是立即替换主链

@@ -4,6 +4,7 @@ import {
   CDPTargetClient,
   closePageTarget,
   createPageTarget,
+  waitForTargetById,
 } from './chrome-cdp.mjs';
 
 const DEFAULT_ENDPOINT = 'http://127.0.0.1:9222';
@@ -88,8 +89,9 @@ const BOSS_PROBE_SCRIPT = `(() => {
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
-  const target = await createPageTarget(args.endpoint, 'about:blank');
-  const targetId = target.id;
+  const created = await createPageTarget(args.endpoint, 'about:blank');
+  const targetId = created.id;
+  const target = await waitForTargetById(args.endpoint, targetId);
   const client = new CDPTargetClient(target);
 
   try {

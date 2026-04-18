@@ -9,14 +9,18 @@
 
 ## 运行模型
 
-### 1. 默认后端是「当前前台 Chrome 标签页」
+### 1. 默认后端是「Playwright CLI + 持久化 profile」
 
-现在这套主路径不再依赖 Playwright 持久化 profile，而是直接复用你已经登录好的前台 Google Chrome：
+当前推荐主路径是：
 
-1. 手动打开 Google Chrome 并登录 BOSS 直聘
-2. 保持目标标签页在前台
-3. 运行 `chrome:collect` / `chrome:monitor` / `boss:apply-current`
-4. 所有动作都按单标签页串行执行，避免串写和风控放大
+1. 用 Playwright CLI 打开 BOSS 页面，并把登录态写入 `tools/auto-zhipin/.auth/profile`
+2. 后续扫描 / 监看 / 投递都复用同一个 Playwright 持久化 profile
+3. 只有在明确要兼容旧链路时，才回退到 `boss:apply-current` 这类 current-tab / CDP 入口
+
+这样做的原因是：
+- 比 current-tab / 外部 CDP 更适合处理 BOSS 的反爬 / 风控波动
+- 登录一次后，后续 Playwright 脚本可直接复用同一 profile
+- 扫描、消息监看和投递都能收口到同一套浏览器上下文
 
 如果页面出现登录失效、滑块或 `访问受限 / 异常访问行为`，先人工处理，再重新运行脚本。
 
@@ -50,7 +54,7 @@ cd tools/auto-zhipin
 npm install
 ```
 
-不需要再安装 Playwright 浏览器。主链路直接走当前前台 Google Chrome。
+项目内已经带了 `playwright` 依赖。主链路建议直接使用仓库里的 Playwright CLI / 持久化 profile。
 
 ## 配置
 
@@ -87,16 +91,19 @@ cp config.example.json config.local.json
 
 ## 使用方法
 
-### 1. 手动准备当前标签页
+### 1. 登录并准备浏览器上下文
 
 ```bash
 npm run bootstrap
+npm run boss:login
 ```
 
-这条命令现在只会提示你：
-- 手动在前台 Google Chrome 登录 BOSS
-- 打开职位列表页或聊天页
-- 再运行下面的 current-tab 命令
+这条命令会：
+- 通过 Playwright CLI 打开可见浏览器
+- 复用 `tools/auto-zhipin/.auth/profile`
+- 默认落到第一条搜索页（如果配置了 `jobs.searchUrls`）
+
+登录完成后直接关闭窗口即可；后续脚本会复用这个 profile。
 
 ### 2. 监看消息
 
@@ -108,7 +115,7 @@ npm run reply
 ```
 
 默认行为：
-- 把前台标签切到聊天页
+- 打开持久化 profile 下的聊天页
 - 检测是否命中登录失效 / 风控
 - 轮询会话列表和当前会话消息
 - 按保守节奏轮询，避免过于频繁刷新
@@ -131,36 +138,35 @@ npm run scan
 ```
 
 默认行为：
-- 如果未传 `--url`，按 `config.jobs.searchUrls` 顺序切前台标签页
+- 如果未传 `--url`，按 `config.jobs.searchUrls` 顺序打开搜索页
 - 抽取职位卡片
 - 按规则打标签：`matched` / `skipped`
 - 把理由写入 ledger
 
 ### 4. 自动投递
 
-如果你已经把目标岗位打开在当前前台 BOSS 页里，优先用 current-tab 入口：
+Playwright profile 主路径：
+
+```bash
+cd tools/auto-zhipin
+npm run boss:apply -- --url https://www.zhipin.com/job_detail/xxx.html --dry-run true
+npm run boss:apply -- --url https://www.zhipin.com/job_detail/xxx.html
+```
+
+说明：
+- 会复用 `tools/auto-zhipin/.auth/profile`
+- `--dry-run true` 只点击首个投递动作，不继续发送后续问候
+- 真正需要兼容旧的 current-tab / CDP 流程时，再手动运行 `boss:apply-current`
+
+旧入口保留为 fallback：
 
 ```bash
 cd tools/auto-zhipin
 npm run boss:apply-current -- --probe true
-npm run boss:apply-current
-npm run boss:apply-current -- --dry-run true
+npm run boss:apply-opencli -- --url https://www.zhipin.com/job_detail/xxx.html
 ```
 
-说明：
-- `--probe true` 只读取当前聚焦的 BOSS 页，不点击按钮
-- 默认会优先选中当前聚焦/可见的 BOSS 页，再直接对当前已展开的岗位执行 `立即沟通`
-- 这条路径不会再先 `goto(job_url)` 再按 URL 重选职位卡，适合搜索结果右侧详情已展开的场景
-- 如果页面已经落在 `verify.html`，脚本会暂停等待人工完成验证，不会自动点验证按钮
-
-只有在你已经确认“当前页没有稳定展开目标岗位，但有可靠职位 URL”时，才退回旧入口：
-
-```bash
-cd tools/auto-zhipin
-npm run boss:apply -- --url https://www.zhipin.com/job_detail/xxx.html
-```
-
-旧的 URL 入口仍可用，但更容易命中 `job_card_not_found`，所以不再作为当前页投递的首选。
+如果 BOSS 对 current-tab / CDP 路线触发了更强检测，优先回到 Playwright profile 主链，不要继续硬试旧入口。
 
 ### 5. PinchTab 动作层（实验）
 
@@ -231,7 +237,7 @@ npm run pinchtab:apply -- --url https://www.zhipin.com/job_detail/xxx.html
 ## 已知限制
 
 - 首登和登录失效恢复仍然要人工参与
-- 这套主链路依赖“当前前台 Chrome 标签页”，因此任何并发运行都会互相踩状态
+- 这套主链路依赖同一个 Playwright 持久化 profile，因此不要并发运行多个写入型脚本
 - 若已经触发 `访问受限`，继续重试只会放大风险；这类状态必须视为硬停机
 - 原型会把最近一次站点健康状态写入 `ledger.json`；命中过 `restricted` 后会触发本地 circuit breaker
 - DOM 选择器可能变化，所以抽取逻辑用了较多候选选择器和文本兜底
@@ -240,10 +246,10 @@ npm run pinchtab:apply -- --url https://www.zhipin.com/job_detail/xxx.html
 
 ## 建议的真实使用顺序
 
-1. 手动在前台 Google Chrome 登录 BOSS，并打开职位列表或聊天页
+1. `npm run boss:login`，先把登录态写进 Playwright profile
 2. `npm run chrome:collect` 先看过滤效果
 3. 调整 `filters`
-4. 真正投递前，如果目标岗位已经在当前页展开，先用 `npm run boss:apply-current -- --probe true` 验证脚本是否看见当前页
-5. 确认读取无误后，使用 `npm run boss:apply-current` 执行当前页投递
-6. 只有当前页无法稳定展开岗位时，才退回 `npm run boss:apply -- --url ...`
+4. 真正投递前，先用 `npm run boss:apply -- --url ... --dry-run true` 做预检
+5. 确认无误后，使用 `npm run boss:apply -- --url ...` 正式投递
+6. 只有 Playwright profile 路线失效时，才退回 `npm run boss:apply-current` 或 `npm run boss:apply-opencli`
 7. 需要消息处理时再运行 `npm run chrome:monitor` 或 `npm run reply`
