@@ -1,0 +1,12 @@
+Vercel 这次最该警惕的，不是“又一家平台出事了”。
+
+而是 AI 开发工具、托管平台、框架推荐，正在把大家收敛到同一套默认组合里。
+
+平时这叫效率。
+出事时，这叫 blast radius。
+
+很多团队以后先出事，不会是模型不够强。
+而是模型外面那圈他们默认信任的东西。
+
+新闻链接：
+https://www.bleepingcomputer.com/news/security/vercel-confirms-breach-as-hackers-claim-to-be-selling-stolen-data/

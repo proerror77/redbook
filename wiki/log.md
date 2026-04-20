@@ -639,3 +639,29 @@
 关键洞察：
 - 标题长度确实是这次发布链路里的真实阻塞点，缩成 `AI 开始接手桌面工作了` 后，真实点击发布按钮可以进入成功页。
 - 最终强证据来自 `笔记管理`：新标题已出现，状态为 `审核中`，并已补到 `note id = 69e1eaf1000000002102c31c`。这比脚本 stdout 或统计面板更可靠。
+
+## [2026-04-18] ingest | Claude Design 双平台执行结果
+
+来源：`baoyu-post-to-x` + 小红书发布 skill + 平台侧回查
+
+触及页面：3个
+- `tasks/progress.md` — 记录这轮双平台执行的最终状态
+- `wiki/log.md` — 记录本轮 ingest
+- `Claude Design` 相关内容稿 / 图组 — 保持为可重试资产
+
+关键洞察：
+- X 端这条 `Claude Design` quote-post 已成功发出。
+- 小红书端这条内容不是“延迟未刷新”，而是平台端没有真正接收提交；重复点击并不能解决，需要回到页面校验和平台限制去排查。
+
+## [2026-04-20] ingest | Vercel 托管平台安全风险转评已发出
+
+来源：`baoyu-post-to-x/scripts/x-browser.ts` + `https://vercel.com/kb/bulletin/vercel-april-2026-security-incident`
+
+触及页面：3个
+- `01-内容生产/02-制作中的选题/2026-04-20-Vercel-托管平台安全风险-X转评.txt` — 最终发布文案
+- `tasks/progress.md` — 记录本轮发布与验证结果
+- `wiki/log.md` — 记录本轮 ingest
+
+关键洞察：
+- 这条内容延续了既有判断：AI 工作流真正脆弱的，往往不是模型，而是模型外面那圈默认信任的基础设施。
+- 本轮发布强证据不是脚本 stdout，而是个人主页顶部已出现新帖，状态链接为 `https://x.com/0xcybersmile/status/2046049866112233653`。

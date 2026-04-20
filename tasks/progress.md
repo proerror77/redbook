@@ -2196,3 +2196,151 @@
 **当前建议：**
 - 保留 `agent-browser-session + CDP 9222` 作为 X 研究主链
 - 把 Playwright CLI 保留为对照探针 / fallback，而不是立即替换主链
+
+## [2026-04-18] 会话摘要：Claude Design 双平台发布执行结果
+
+**完成了什么：**
+- X 端：
+  - 已按 `baoyu-post-to-x` 的 `x-quote.ts` 重新提交一次，且这次使用了文件中的真实换行文本，不再出现字面量 `\\n`
+  - 脚本返回：`[x-quote] Quote post submitted!`
+  - 账号页回查已命中 Claude Design 文案，说明 X 端已发出
+- 小红书端：
+  - 已准备好标题、正文和 5 张图卡
+  - 多次将页面填到 `READY_TO_PUBLISH`
+  - 已精确定位真实 `发布` 按钮，并分别尝试：
+    - skill 内部 `--auto-publish`
+    - CDP 真点击
+    - `JS click()`
+    - 长等待后再次点击
+
+**验证结果：**
+- X：成功
+- 小红书：失败，且已做 fresh verification
+  - 发布页始终停留在 `publish/publish`
+  - 未进入 success 页
+  - `笔记管理` 中没有 `Claude Design 真正替代的，不是设计师`
+  - 已额外排除一个干扰项：页面上的 `请先输入并搜索地点` 浮层不是根因，关闭后再点发布仍无效
+  - 已进一步确认：点击真实 `发布` 按钮后，前端没有发出任何发布相关 API 请求（Network 捕获为空），说明当前是前端直接拦截 / no-op，不是接口层报错
+
+**未完成 / 遗留：**
+- 小红书这条 `Claude Design` 图文尚未成功发布
+- 当前结论是：平台端没有真正接收这次提交，不是“后台刷新慢”
+
+**下次会话优先做：**
+- 针对小红书发布页做更细的提交流程排查（例如表单校验 / 处理完成信号 / 平台文案限制），而不是继续重复点击
+
+## [2026-04-18] 会话摘要：将 Claude Design 小红书切换为人工发布
+
+**完成了什么：**
+- 在 harness run `20260418-041458-claude-design-不是-figma-替代品-而是表达意图的中间层-a0f730` 中记录了正式 incident：
+  - `tool_transient`
+  - 摘要：`小红书账号因平台风控处于自动化受限窗口，Claude Design 图文改为人工手动发布`
+- 已确认：
+  - `X` 端 Claude Design 这条已成功发出
+  - `小红书` 端本周内不再继续自动化重试
+- 已保留并核对最新手动发布包：
+  - 标题文件
+  - 正文文件
+  - 5 张图卡
+  - 话题标签
+  - 暂停窗口说明
+
+**未完成 / 遗留：**
+- Claude Design 的小红书仍需要人工手动发布
+
+**下次会话优先做：**
+- 用户手动发布后，自动化只负责补抓 `note id / 审核状态 / 首轮数据`
+
+## [2026-04-18] 会话摘要：建立小红书自动化暂停窗口与手动发布包
+
+**完成了什么：**
+- 根据账号处罚截图，明确把小红书自动化发布暂停到：
+  - `2026-04-25 09:51:36 CST`
+- 新增手动发布说明：
+  - [2026-04-18-xiaohongshu-manual-publish-freeze.md](/Users/proerror/Documents/redbook/docs/reports/2026-04-18-xiaohongshu-manual-publish-freeze.md)
+- 该文档已经把 `Claude Design` 这条内容需要的标题、正文、图组和话题全部整理成了手动发布包
+- 同时把 `Claude Design` 这条 X run 在 harness 里补到闭环：
+  - `published = true`
+  - `progress_updated = true`
+  - `wiki_logged = true`
+  - `lessons_reviewed = true`
+
+**未完成 / 遗留：**
+- 小红书这条 `Claude Design` 仍需人工手动发
+- 自动化恢复要等处罚窗口结束后再做低风险试发验证
+
+**下次会话优先做：**
+- 如果用户确认要发小红书，就按手动发布包执行
+- 等处罚窗口结束后，再设计一次小红书自动化恢复测试
+
+## [2026-04-18] 会话摘要：为小红书自动化增加仓库内保护层
+
+**完成了什么：**
+- 新增仓库内 guard：
+  - [xhs_publish_guard.py](/Users/proerror/Documents/redbook/tools/safety/xhs_publish_guard.py)
+- 作用：
+  - 在 `2026-04-25 09:51:36 CST` 前，阻止自动化小红书发布
+  - 并明确提示去看手动发布包：
+    - [2026-04-18-xiaohongshu-manual-publish-freeze.md](/Users/proerror/Documents/redbook/docs/reports/2026-04-18-xiaohongshu-manual-publish-freeze.md)
+- 已做最小验证：
+  - `python3 tools/safety/xhs_publish_guard.py --allow-after-freeze --title 'test'`
+  - 返回正确拦截结果
+
+**意义：**
+- 这周内即使误执行发布脚本，也会先被仓库 guard 拦住
+- 不再完全依赖人工记忆“这几天不要自动发小红书”
+
+## [2026-04-19] 会话摘要：转评 Android 官方 Agent/CLI 更新到 X
+
+**完成了什么：**
+- 已确认 Android 官方对应 X 帖存在：
+  - `https://x.com/AndroidDev/status/2044834011277668674`
+- 已按“新闻转发 + 个人判断”的结构写好中文转评：
+  - [2026-04-19-Android-CLI-agent-X转评.txt](/Users/proerror/Documents/redbook/01-内容生产/02-制作中的选题/2026-04-19-Android-CLI-agent-X转评.txt)
+- 已通过 `baoyu-post-to-x` 的 `x-quote.ts` 正式发出
+
+**验证结果：**
+- 发布脚本返回：`[x-quote] Quote post submitted!`
+
+## [2026-04-19] 会话摘要：安装命理相关 skills
+
+**完成了什么：**
+- 已安装以下 skills 到 `~/.codex/skills/`：
+  - `numerologist-bazi`（来自 `FANzR-arch/Numerologist_skills/bazi`）
+  - `qimen-dunjia`（来自 `FANzR-arch/Numerologist_skills/qimen-dunjia`）
+  - `ziwei-doushu`（来自 `FANzR-arch/Numerologist_skills/ziwei-doushu`）
+  - `bazi-skill`（来自 `jinchenma94/bazi-skill`）
+- 已确认每个目录都存在 `SKILL.md`
+- 已继续处理 name 冲突：
+  - `numerologist-bazi` 保留为 `name: bazi`
+  - `bazi-skill` 改成 `name: bazi-guided`
+- 已再次验证内部 name 唯一：
+  - `bazi`
+  - `bazi-guided`
+  - `qimen-dunjia`
+  - `ziwei-doushu`
+
+**需要注意：**
+- 需要重启 Codex，新的 skills 才会在后续会话里稳定被发现
+
+## [2026-04-20] 会话摘要：发布 Vercel 托管平台安全风险转评
+
+**完成了什么：**
+- 基于今天的 `Vercel April 2026 security incident` 新闻，按既有口径将判断收束为：
+  - 核心不是“又一家平台出事”
+  - 而是 AI 工具链、托管平台与默认推荐栈正在把行业收敛到同一套脆弱基础设施上
+- 已将最终文案保存到：
+  - [2026-04-20-Vercel-托管平台安全风险-X转评.txt](/Users/proerror/Documents/redbook/01-内容生产/02-制作中的选题/2026-04-20-Vercel-托管平台安全风险-X转评.txt)
+- 已使用 `baoyu-post-to-x` skill 完成 preview 与正式提交
+- 已在个人主页确认新帖出现在顶部，状态链接为：
+  - `https://x.com/0xcybersmile/status/2046049866112233653`
+
+**未完成 / 遗留：**
+- 暂未补录后续互动数据（回复 / 转帖 / 喜欢 / 点击）
+
+**下次会话优先做：**
+- 观察这条内容的互动表现，判断“供应链 / blast radius / 默认工具链”这组表达是否值得继续放大
+
+**需要注意：**
+- 本次 `x-browser.ts --submit` 第一次因 `Chrome debug port not ready` 失败，第二次重试成功
+- 发布证据不能只看 skill stdout；已额外在个人主页顶部核对成功落帖
