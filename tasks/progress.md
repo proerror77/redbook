@@ -2384,3 +2384,30 @@
 - 本次 `x-browser.ts --submit` 第一次同样撞到 `Chrome debug port not ready`
 - 在清理 `x-browser-profile` 残留后，第二次重试成功
 - 成功证据仍以“主页顶帖 + 状态页链接”为准，不只看脚本 stdout
+
+## [2026-04-21] 会话摘要：手动补跑今日 daily 工作流
+
+**完成了什么：**
+- 已手动执行 `bash tools/daily.sh` 生成 2026-04-21 的 HN / Reddit / 总报告。
+- 首次运行时 Chrome CDP 9222 没有可用页面，X 研究被跳过；随后用 CDP 打开 `https://x.com/home` 并确认 `agent-browser-session` snapshot 可读到已登录主页。
+- 已重新执行 `bash tools/daily.sh --skip-following`，补上 X 公共趋势和关键词搜索：
+  - `AI tools`：提取 6 条推文
+  - `solopreneur`：提取 7 条推文
+  - `crypto alpha`：提取 7 条推文
+- 已生成 / 覆盖今日研究文件：
+  - [X-每日日程-2026-04-21.md](/Users/proerror/Documents/redbook/05-选题研究/X-每日日程-2026-04-21.md)
+  - [HN-每日热点-2026-04-21.md](/Users/proerror/Documents/redbook/05-选题研究/HN-每日热点-2026-04-21.md)
+  - [Reddit-每日监控-2026-04-21.md](/Users/proerror/Documents/redbook/05-选题研究/Reddit-每日监控-2026-04-21.md)
+- Harness 已记录今日 wiki ingest / lint run：
+  - `20260421-040831-llm-wiki-ingest-2026-04-21-d3b53c`
+  - `20260421-040831-llm-wiki-lint-2026-04-21-6ed44e`
+
+**未完成 / 遗留：**
+- X Pro deck 仍不可用，报告里显示“命中登录墙或不存在页，已跳过多列分析”。
+- Claude CLI wiki ingest 仍失败：`Invalid API key · Please run /login`；harness 记录已创建，但真实 wiki 内容写入未完成。
+- `com.redbook.daily-x` 当前不在 `launchctl list` 中，说明自动定时任务还需要重新加载或排查。
+
+**下次会话优先做：**
+- 修复 / reload `com.redbook.daily-x` launch agent，避免明天继续漏跑。
+- 修复 Claude CLI 登录态后重跑 wiki ingest。
+- 今日最值得写的选题优先看 `Kimi K2.6 / Qwen3.6 / 开源 coding model 价格战`，其次是 `AI slop 让社区开始反自推广` 和 `Vercel 事件后的环境变量安全`。
