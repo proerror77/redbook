@@ -2484,3 +2484,23 @@
 
 **需要注意：**
 - 本轮发布环境处于沙盒限制状态，`npx -y bun` 因 npm registry 网络不可达失败；改用本机已安装 `/Users/proerror/.bun/bin/bun` 并申请沙盒外权限完成。
+
+## [2026-04-22] 会话摘要：查看今日 X timeline 并筛选题
+
+**完成了什么：**
+- 已按用户要求先查看当前登录态 X timeline / X Pro，而不是复用旧日报。
+- 已生成今日 timeline 报告：
+  - [X-Pro-2026-04-22.md](/Users/proerror/Documents/redbook/05-选题研究/X-Pro-2026-04-22.md)
+  - [X-Timeline-2026-04-22.md](/Users/proerror/Documents/redbook/05-选题研究/X-Timeline-2026-04-22.md)
+- 已确认今天高频关键词为 `GPT / AI / code`，高互动大帖里政治 / 国际关系噪音较多，不适合直接跟。
+- 已查 OpenAI 官方发布和 Release Notes，确认 `ChatGPT Images 2.0 / ImageGen 2.0` 是今天最值得接账号主线的热点。
+- 已保存今日选题建议：
+  - [选题建议-2026-04-22.md](/Users/proerror/Documents/redbook/05-选题研究/选题建议-2026-04-22.md)
+
+**推荐优先级：**
+1. `GPT Image 2 + Codex：视觉工作流开始 agent 化`
+2. `OpenAI Images 2.0 Thinking：图像模型开始做视觉研究和规划`
+3. `Linus / Elon：工程现实主义反打 hype`
+
+**未完成 / 遗留：**
+- 尚未进入写稿 / 发布链路。
