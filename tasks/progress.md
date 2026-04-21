@@ -2411,3 +2411,21 @@
 - 修复 / reload `com.redbook.daily-x` launch agent，避免明天继续漏跑。
 - 修复 Claude CLI 登录态后重跑 wiki ingest。
 - 今日最值得写的选题优先看 `Kimi K2.6 / Qwen3.6 / 开源 coding model 价格战`，其次是 `AI slop 让社区开始反自推广` 和 `Vercel 事件后的环境变量安全`。
+
+## [2026-04-21] 会话摘要：研究 Kimi K2.6 选题
+
+**完成了什么：**
+- 已核对 Kimi 官方发布页、Kimi API Platform、Kimi Code、Hugging Face 许可和本地 2026-04-21 日报。
+- 已确认 Kimi K2.6 的可写重点不是“国产模型追上闭源”，而是：
+  - coding agent 底层模型正在商品化
+  - 开放权重模型正在压缩 AI 编程产品的模型层溢价
+  - 真正护城河会转向 repo 上下文、权限边界、测试验证、团队协作和交付闭环
+- 已保存研究文件：
+  - [Kimi-K2.6-选题研究-2026-04-21.md](/Users/proerror/Documents/redbook/05-选题研究/Kimi-K2.6-选题研究-2026-04-21.md)
+
+**未完成 / 遗留：**
+- 尚未实测 Kimi Code CLI 或 API。
+- 尚未展开 K2.6 license 与 Cursor / Kimi K2.5 争议链。
+
+**下次会话优先做：**
+- 如果要发布，优先走 X 单帖：`Kimi K2.6 真正打中的，不是 Claude，而是“只会包模型的 AI 产品”`。
