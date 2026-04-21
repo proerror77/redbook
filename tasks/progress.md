@@ -2504,3 +2504,17 @@
 
 **未完成 / 遗留：**
 - 尚未进入写稿 / 发布链路。
+
+## [2026-04-22] 会话摘要：补充 GPT Image 2 vs Nano Banana 对比角度
+
+**完成了什么：**
+- 已按用户建议补查 Google `Nano Banana Pro / Gemini 3 Pro Image` 和近期 `Nano Banana + Gemini Personal Intelligence / Google Photos` 相关资料。
+- 已将今天首选题从单独写 `GPT Image 2 + Codex` 扩展为：
+  - `GPT Image 2 vs Nano Banana：谁先吃掉视觉工作流`
+- 已更新：
+  - [选题建议-2026-04-22.md](/Users/proerror/Documents/redbook/05-选题研究/选题建议-2026-04-22.md)
+
+**当前判断：**
+- OpenAI 更像在做 `ChatGPT / Codex / agent workflow` 里的视觉生产链。
+- Google 更像在做 `Google Photos / Personal Intelligence / Workspace / Ads` 里的个性化和分发层。
+- 真正值得写的不是“谁画得更好”，而是“图像模型竞争正在从画质竞争变成工作流入口竞争”。
