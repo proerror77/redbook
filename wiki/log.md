@@ -693,3 +693,17 @@
 - 本轮发布强证据是个人主页顶部已出现新帖，状态链接为 `https://x.com/0xcybersmile/status/2046453935163195457`。
 - 当前主帖未配图、未放链接；更适合把 Kimi 官方新闻链接放在第一条回复，而不是塞进主帖。
 - 已补官方链接回复，回复链接为 `https://x.com/0xcybersmile/status/2046553016028078209`。
+
+## [2026-04-21] ingest | Cloudflare Agent Cloud runtime X 长帖已发出
+
+来源：Cloudflare 官方 `Project Think` / `Browser Run` / `Registrar API` / `AI Gateway` / OpenAI Agent Cloud 资料 + `baoyu-post-to-x/scripts/x-browser.ts`
+
+触及页面：3个
+- `01-内容生产/02-制作中的选题/2026-04-21-Cloudflare-Agent-Cloud-runtime-X长帖.md` — 发布所用终稿与状态链接
+- `tasks/progress.md` — 记录本轮发布、审稿与验证结果
+- `wiki/log.md` — 记录本轮 ingest
+
+关键洞察：
+- Cloudflare 这轮不是单点 agent 功能，而是在补一整套 agent production runtime：持久执行、记忆、浏览器、人类接管、沙箱、模型网关、域名注册和 OpenAI sandbox 集成。
+- 本轮按用户要求将官方 `Project Think` 链接放进主帖主体。
+- 本轮发布强证据是个人主页顶部已出现新帖，状态链接为 `https://x.com/0xcybersmile/status/2046579124765139445`。
