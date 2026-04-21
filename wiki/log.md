@@ -692,3 +692,4 @@
 - Kimi K2.6 更值得写的不是 benchmark 排名，而是长链路、长时间运行与 Agent Swarm 将 AI 编程竞争从 `chat` 推向 `run`。
 - 本轮发布强证据是个人主页顶部已出现新帖，状态链接为 `https://x.com/0xcybersmile/status/2046453935163195457`。
 - 当前主帖未配图、未放链接；更适合把 Kimi 官方新闻链接放在第一条回复，而不是塞进主帖。
+- 已补官方链接回复，回复链接为 `https://x.com/0xcybersmile/status/2046553016028078209`。
