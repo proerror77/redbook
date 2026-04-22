@@ -707,3 +707,17 @@
 - Cloudflare 这轮不是单点 agent 功能，而是在补一整套 agent production runtime：持久执行、记忆、浏览器、人类接管、沙箱、模型网关、域名注册和 OpenAI sandbox 集成。
 - 本轮按用户要求将官方 `Project Think` 链接放进主帖主体。
 - 本轮发布强证据是个人主页顶部已出现新帖，状态链接为 `https://x.com/0xcybersmile/status/2046579124765139445`。
+
+## [2026-04-22] ingest | GPT Image 2 vs Nano Banana X 长帖已发出
+
+来源：`05-选题研究/选题建议-2026-04-22.md` + OpenAI 官方发布页 + Google Nano Banana Pro 资料 + `baoyu-post-to-x/scripts/x-browser.ts`
+
+触及页面：3个
+- `01-内容生产/02-制作中的选题/2026-04-22-GPT-Image-2-vs-Nano-Banana-X长帖.md` — 发布所用终稿与状态链接
+- `tasks/progress.md` — 记录本轮发布、审稿与验证结果
+- `wiki/log.md` — 记录本轮 ingest
+
+关键洞察：
+- 这条内容不比较“谁画图更好”，而是比较 OpenAI 和 Google 谁更接近视觉工作流入口。
+- OpenAI 路线偏 `ChatGPT / Codex / agent workflow`；Google 路线偏 `Google Photos / Personal Intelligence / Workspace / Ads`。
+- 本轮发布强证据是个人主页顶部已出现新帖，状态链接为 `https://x.com/0xcybersmile/status/2046749045771903444`。

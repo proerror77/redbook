@@ -2518,3 +2518,21 @@
 - OpenAI 更像在做 `ChatGPT / Codex / agent workflow` 里的视觉生产链。
 - Google 更像在做 `Google Photos / Personal Intelligence / Workspace / Ads` 里的个性化和分发层。
 - 真正值得写的不是“谁画得更好”，而是“图像模型竞争正在从画质竞争变成工作流入口竞争”。
+
+## [2026-04-22] 会话摘要：发布 GPT Image 2 vs Nano Banana X 长帖
+
+**完成了什么：**
+- 已将今日首选题写成 X 长帖，主线为：
+  - `GPT Image 2 和 Nano Banana 的竞争，不是“谁画图更好”，而是谁先吃掉视觉工作流`
+- 已按 `x-mastery-mentor` 做发布前四层审稿：
+  - 算法层：主帖带 OpenAI 官方链接，有触达风险但符合本轮主体带链接要求
+  - Hook 层：通过
+  - 内容层：通过
+  - CTA 层：偏弱但可接受
+- 已保存终稿：
+  - [2026-04-22-GPT-Image-2-vs-Nano-Banana-X长帖.md](/Users/proerror/Documents/redbook/01-内容生产/02-制作中的选题/2026-04-22-GPT-Image-2-vs-Nano-Banana-X长帖.md)
+- 已用 `baoyu-post-to-x` preview + submit 发布，并在主页顶部确认新帖出现，状态链接：
+  - https://x.com/0xcybersmile/status/2046749045771903444
+
+**需要注意：**
+- 主帖包含 OpenAI 官方链接与预览卡片；没有另配图片。
