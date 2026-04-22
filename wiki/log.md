@@ -721,3 +721,17 @@
 - 这条内容不比较“谁画图更好”，而是比较 OpenAI 和 Google 谁更接近视觉工作流入口。
 - OpenAI 路线偏 `ChatGPT / Codex / agent workflow`；Google 路线偏 `Google Photos / Personal Intelligence / Workspace / Ads`。
 - 本轮发布强证据是个人主页顶部已出现新帖，状态链接为 `https://x.com/0xcybersmile/status/2046749045771903444`。
+
+## [2026-04-22] ingest | SpaceX / Cursor 合作新闻 X 转评已发出
+
+来源：SpaceX 官方 X 原帖 + Reuters / TechCrunch / Cursor 官方合作说明
+
+触及页面：3个
+- `01-内容生产/02-制作中的选题/2026-04-22-SpaceX-Cursor-X转评.md` — 发布所用中文转述、短评与状态链接
+- `tasks/progress.md` — 记录本轮发布、审稿与验证结果
+- `wiki/log.md` — 记录本轮 ingest
+
+关键洞察：
+- 这条新闻最值得写的不是 `$60B` 本身，而是 Cursor 和 xAI / SpaceX 的互补：Cursor 补模型和算力，xAI 补专业工程师工作流入口。
+- AI coding 竞争正在从 IDE 体验升级成 `入口 + 算力 + 模型 + 真实工程数据` 的整合战。
+- 本轮发布强证据是个人主页顶部已出现新帖，状态链接为 `https://x.com/0xcybersmile/status/2046752723664818287`。
