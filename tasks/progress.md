@@ -2552,3 +2552,111 @@
   - [2026-04-22-SpaceX-Cursor-X转评.md](/Users/proerror/Documents/redbook/01-内容生产/02-制作中的选题/2026-04-22-SpaceX-Cursor-X转评.md)
 - 已用 `baoyu-post-to-x` quote preview + submit 发布，并在主页顶部确认新帖出现，状态链接：
   - https://x.com/0xcybersmile/status/2046752723664818287
+
+## [2026-04-22] 会话摘要：修正发布 Skill 浏览器默认执行姿态
+
+**完成了什么：**
+- 已检查 `docs/standards/browser-modes.md`、X 发布 skill 和小红书发布 skill 的浏览器启动逻辑。
+- 已把 X 常规帖、视频帖、转评、长线程、长文脚本改为默认 `headless`，并新增 `--headed` / `--headless` 显式开关。
+- 已把小红书 `publish_pipeline.py` 与 `cdp_publish.py` 改为默认后台运行，登录 / 重新登录 / 切账号仍强制有头。
+- 已修复 `x-article.ts` 导入 `md-to-html.ts` 时被对方 CLI 抢先执行的问题。
+- 已更新 `tasks/todo.md` 记录本次修正与验证结果。
+
+**验证：**
+- X 脚本 help smoke：`x-browser.ts`、`x-video.ts`、`x-quote.ts`、`x-article.ts`、`md-to-html.ts`。
+- `x-thread.ts` 无参数用法检查。
+- 小红书脚本 `py_compile` 通过。
+- 直接检查 X / XHS 默认解析结果均为 headless。
+
+**遗留：**
+- X Article 如果正文里有内文图片，目前仍依赖系统剪贴板粘贴，默认 headless 下会明确要求改用 `--headed`；后续可以继续把这段替换成纯 CDP/DOM 上传插入。
+
+## [2026-04-22] 会话摘要：Obscura 浏览器方案隔离测试
+
+**完成了什么：**
+- 已下载 `h4ckf0r0day/obscura` v0.1.0 macOS arm64 release 到 `tmp/obscura-test/`。
+- 已完成 CLI smoke：
+  - `obscura --help` 正常
+  - `obscura fetch https://example.com --eval 'document.title'` 返回 `Example Domain`
+  - `obscura fetch https://news.ycombinator.com --dump links --quiet` 可抽取 HN 链接
+- 已用独立端口 `9333` 启动 CDP server，避免影响真实 Chrome 的 `9222`。
+- 已用 raw CDP 验证：
+  - `Browser.getVersion` 可用
+  - `Target.createTarget` / `Target.attachToTarget` 可用
+  - `Runtime.evaluate` 可用
+  - `Page.enable` / `DOM.enable` / `Network.enable` 基础调用可用
+
+**关键失败项：**
+- `Input.insertText` 返回 `Unknown Input method: insertText`
+- `DOM.setFileInputFiles` 返回 `Unknown DOM method: setFileInputFiles`
+- `Network.getResponseBody` 返回 `Unknown Network method: getResponseBody`
+- `Page.captureScreenshot` 返回 `Unknown Page method: captureScreenshot`
+- `Browser.close` 没有关闭 server，测试进程已手动 Ctrl-C 停止
+
+**结论：**
+- Obscura 可作为无登录网页抓取 / 轻量 eval 的候选后端。
+- 不能替换当前 X / 小红书发布主链，因为发布链依赖文本输入、文件上传、网络响应抓取和截图验证。
+
+## [2026-04-22] 会话摘要：修正 X Pro 与普通 Timeline 重复抓取
+
+**完成了什么：**
+- 已确认旧版 `scrape_timeline.py` 实际打开的是 `https://pro.x.com/i/decks/2022466575597736041`，因此 `X-Timeline` 与 `X-Pro` 报告天然重复。
+- 已将普通 timeline 入口改为 `https://x.com/home`，保留 X Pro 多列分析独立走 Deck。
+- 已增强 `scroll_and_collect()`：支持 `distance`、连续无新增推文提前停止，并基于 `handle + content` 统计新增推文。
+- `scrape_timeline.py` 新增：
+  - `--scroll-distance`，默认 `1600`
+  - `--max-stale-rounds`，默认 `6`
+- 已补测试覆盖滚动距离和 stale-stop 行为。
+
+**验证：**
+- `python3 tools/auto-x/tests/test_x_utils.py` 通过。
+- `python3 -m py_compile tools/auto-x/scripts/x_utils.py tools/auto-x/scripts/scrape_timeline.py tools/auto-x/scripts/scrape_xpro_columns.py` 通过。
+- 真实 smoke：`python3 tools/auto-x/scripts/scrape_timeline.py --scrolls 3 --scroll-distance 1600 --output tmp/x-timeline-home-smoke.md` 成功。
+- smoke 结果：3 次滚动提取 15 条普通 home timeline 推文；handle 集合与旧 X Pro 不同。
+
+**判断：**
+- 之前的问题不是用户感觉错了，而是代码真的把普通 timeline 指到了 X Pro Deck。
+- 普通 timeline 后续仍可能受 `agent-browser-session scroll` 能力限制；如果要更深，可再把滚动实现下沉到原生 CDP `Runtime.evaluate(window.scrollBy)`。
+
+## [2026-04-22] 会话摘要：安装 huashu-design skill
+
+**完成了什么：**
+- 已按 `skill-installer` 工作流安装 GitHub 仓库 `alchaincyf/huashu-design`。
+- 仓库默认分支为 `master`，根目录包含 `SKILL.md`，按根级 skill 安装。
+- 安装位置：`/Users/proerror/.codex/skills/huashu-design`。
+- 已确认安装内容包含：`SKILL.md`、`assets/`、`references/`、`scripts/`、`demos/`。
+- 已补脚本执行权限。
+
+**验证：**
+- `python3 -m py_compile /Users/proerror/.codex/skills/huashu-design/scripts/verify.py` 通过。
+- `node --check render-video.js` 与 `node --check html2pptx.js` 通过。
+- `python3 /Users/proerror/.codex/skills/huashu-design/scripts/verify.py --help` 正常输出。
+
+**遗留：**
+- 新安装 skill 需要重启 Codex 后才会稳定出现在可用 skill 列表。
+- Playwright / ffmpeg / pptxgenjs / sharp 等依赖按具体设计任务需要在项目目录里安装，不在本次全局强装。
+
+## [2026-04-22] 会话摘要：补齐 huashu-design 工具链依赖
+
+**完成了什么：**
+- 已从 `huashu-design` 的 `scripts/` 与 `references/` 提取实际工具链依赖。
+- 已确认本机已有：Node `v24.11.1`、npm `11.12.1`、Python `3.14.3`、`ffmpeg 8.1`。
+- 已在 `/Users/proerror/.codex/skills/huashu-design` 安装 Node 依赖：
+  - `playwright@1.59.1`
+  - `pdf-lib@1.17.1`
+  - `pptxgenjs@4.0.1`
+  - `sharp@0.34.5`
+- 已安装 Python `playwright` 到用户 site-packages。
+- 已安装 Playwright Chromium / Headless Shell 到 `~/Library/Caches/ms-playwright`。
+- 已通过 Homebrew 安装 `yt-dlp 2026.03.17`；Homebrew 同时安装了 `deno 2.7.12` 作为依赖。
+
+**验证：**
+- Python Playwright headless Chromium 可启动并读取页面内容。
+- `verify.py tmp/huashu-toolchain-smoke.html --viewports 960x540 --output tmp/huashu-verify-smoke` 成功，生成截图且无 JS/console 错误。
+- `export_deck_pdf.mjs` 成功生成 `tmp/huashu-slides-smoke.pdf`。
+- `export_deck_pptx.mjs` 成功生成 `tmp/huashu-slides-smoke.pptx`。
+- `render-video.js` 成功生成 `tmp/huashu-toolchain-smoke.mp4`。
+
+**备注：**
+- 本次使用 Playwright 是 huashu-design 自身验证/导出链路要求，不改变 redbook 浏览器主链仍以真实 Chrome/CDP、headless-first 为默认的规则。
+- smoke 产物位于 ignored `tmp/` 下，不进入 Git tracking。

@@ -1,5 +1,112 @@
 # Task Todo
 
+## 新任务：补齐 huashu-design 工具链依赖
+- 任务名称：安装并验证 huashu-design 的 Playwright / ffmpeg / PPTX / PDF / 视频导出工具链
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-22
+- 优先级：P1
+- Harness Run：N/A（本机工具链安装）
+
+### 执行清单
+- [x] 1. 从 huashu-design 脚本和 references 中提取实际依赖
+- [x] 2. 检查本机已有 Node / Python / ffmpeg / yt-dlp 状态
+- [x] 3. 在 skill 根目录安装 Node 依赖：`playwright`、`pdf-lib`、`pptxgenjs`、`sharp`
+- [x] 4. 安装 Python `playwright` 与 Playwright Chromium
+- [x] 5. 安装 `yt-dlp`，确认 `ffmpeg` 可用
+- [x] 6. 跑截图、PDF、PPTX、MP4 端到端 smoke
+
+### Review 结论
+- 已完成
+- 安装位置：
+  - Node packages：`/Users/proerror/.codex/skills/huashu-design/node_modules`
+  - Playwright browsers：`/Users/proerror/Library/Caches/ms-playwright`
+  - `yt-dlp`：Homebrew
+- 验证结果：
+  - Python Playwright 可 headless 启动 Chromium
+  - `verify.py` 生成 PNG 截图且无 JS/console 错误
+  - `export_deck_pdf.mjs` 成功生成 PDF
+  - `export_deck_pptx.mjs` 成功生成可编辑 PPTX
+  - `render-video.js` 成功生成 MP4
+  - `ffmpeg 8.1` 可用，`yt-dlp 2026.03.17` 可用
+
+## 新任务：安装 huashu-design skill
+- 任务名称：将 `alchaincyf/huashu-design` 安装到当前 Codex skills 环境
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-22
+- 优先级：P1
+- Harness Run：N/A（本机 skill 安装）
+
+### 执行清单
+- [x] 1. 读取 `skill-installer` 安装规则
+- [x] 2. 检查 GitHub 仓库默认分支与根级 `SKILL.md`
+- [x] 3. 安装到 `~/.codex/skills/huashu-design`
+- [x] 4. 验证 `SKILL.md`、`assets/`、`references/`、`scripts/` 完整
+- [x] 5. 验证脚本语法与 `verify.py --help`
+
+### Review 结论
+- 已完成
+- 安装位置：`/Users/proerror/.codex/skills/huashu-design`
+- 验证结果：
+  - 根级 `SKILL.md` 已存在，name 为 `huashu-design`
+  - `assets/`、`references/`、`scripts/`、`demos/` 已安装
+  - `python3 -m py_compile scripts/verify.py` 通过
+  - `node --check scripts/render-video.js` / `html2pptx.js` 通过
+  - `scripts/verify.py --help` 正常输出
+- 剩余提示：
+  - 新 skill 需要重启 Codex 后才会稳定出现在可用 skill 列表
+  - 高级导出能力会按具体项目需要依赖 Playwright / ffmpeg / pptxgenjs / sharp 等工具链
+
+## 新任务：修正 X Pro 与 X Timeline 抓取重复和普通 timeline 滚动过浅
+- 任务名称：让普通 `X-Timeline` 真正抓 `x.com/home`，并提升滚动采集深度
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-22
+- 优先级：P0
+- Harness Run：N/A（auto-x 抓取链路修正）
+
+### 执行清单
+- [x] 1. 确认 `X-Pro` 与 `X-Timeline` 是否抓了同一个入口
+- [x] 2. 将普通 timeline 入口从 X Pro Deck 改为 `https://x.com/home`
+- [x] 3. 将 timeline 滚动距离参数化，并把默认距离从 800 提升到 1600
+- [x] 4. 增加新增推文检测，连续多轮无新增时提前停止
+- [x] 5. 补单元测试、编译检查和真实小规模 smoke
+
+### Review 结论
+- 已完成
+- 证据：
+  - 旧 `X-Pro-2026-04-22.md` 与旧 `X-Timeline-2026-04-22.md` 的 handle 集合一致，确认重复
+  - 新 smoke 输出 `tmp/x-timeline-home-smoke.md`，3 次滚动提取 15 条推文，handle 集合与 X Pro 不同
+  - `python3 tools/auto-x/tests/test_x_utils.py` 通过
+  - `python3 -m py_compile tools/auto-x/scripts/x_utils.py tools/auto-x/scripts/scrape_timeline.py tools/auto-x/scripts/scrape_xpro_columns.py` 通过
+
+## 新任务：修正发布 Skill 的浏览器执行姿态
+- 任务名称：让 X / 小红书发布与检索默认后台无头运行，只在登录、验证码、人工预览时有头
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-22
+- 优先级：P0
+- Harness Run：N/A（skill 脚本与工作流修正）
+
+### 执行清单
+- [x] 1. 复盘浏览器模式标准与近期 lessons，确认不能再默认抢焦点
+- [x] 2. 检查 X / 小红书发布 skill 的浏览器启动入口
+- [x] 3. 将默认执行姿态改为 headless，并保留显式 headed/login 路径
+- [x] 4. 更新 skill 文档，明确后台运行与登录升级规则
+- [x] 5. 跑语法与 help 级 smoke checks
+
+### Review 结论
+- 已完成
+- 当前已完成：
+  - X 常规帖、视频帖、转评、长线程、长文脚本已支持默认 headless，并新增 `--headed` / `--headless`
+  - 小红书 `publish_pipeline.py` 与 `cdp_publish.py` 已改为默认 headless，保留 `--headed` 和 `login/re-login/switch-account` 有头入口
+  - X Article 的内文图片粘贴路径仍依赖系统剪贴板；现在默认 headless 下会明确失败并要求 `--headed`，避免静默抢焦点
+  - 已修复 `x-article.ts` 被 `md-to-html.ts` 顶层 CLI 抢先执行的问题
+- 验证：
+  - `x-browser.ts --help`、`x-video.ts --help`、`x-quote.ts --help`、`x-article.ts --help`、`md-to-html.ts --help`
+  - `x-thread.ts` 无参数用法检查
+  - `python3 -m py_compile publish_pipeline.py cdp_publish.py`
+  - 直接检查 X / XHS 默认 headless 解析结果
+- 剩余风险：
+  - X Article 含内文图片仍不能后台完成，后续需要替换掉剪贴板粘贴实现
+
 ## 新任务：安装并接入 document-illustrator skill
 - 任务名称：将 `op7418/Document-illustrator-skill` 安装到当前 Codex skills 环境，并补齐到 redbook 内容生产工作流
 - 负责人（Lead Agent）：Codex
