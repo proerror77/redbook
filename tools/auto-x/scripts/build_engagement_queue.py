@@ -93,6 +93,7 @@ class Candidate:
     retweets: int
     query: str
     search_url: str
+    language: str
     score: int
     reasons: list[str]
     risks: list[str]
@@ -101,6 +102,12 @@ class Candidate:
 
 def clean_text(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
+
+
+def detect_language(text: str) -> str:
+    cjk = len(re.findall(r"[\u4e00-\u9fff]", text))
+    ascii_letters = len(re.findall(r"[A-Za-z]", text))
+    return "zh" if cjk >= ascii_letters else "en"
 
 
 def engagement_score(likes: int, retweets: int) -> int:
@@ -150,8 +157,36 @@ def conversation_space(content: str) -> tuple[int, list[str]]:
     return min(score, 20), reasons
 
 
-def make_comments(content: str) -> list[str]:
+def make_comments(content: str, language: str) -> list[str]:
     lower = content.lower()
+
+    if language == "en":
+        if "cursor" in lower or "coding" in lower or "code" in lower:
+            return [
+                "This matters more than IDE UX.\n\nAI coding won't be won by faster autocomplete alone. It will be won by whoever owns the feedback loop inside real engineering workflows.",
+                "The real line is whether coding agents can enter real repos, CI, and review flows.\n\nIf they stay in demo land, model gains will get commoditized fast.",
+                "This is bigger than model benchmarks.\n\nThe winner is whoever controls the daily entry point for developers and turns that into workflow data.",
+            ]
+        if "memory" in lower or "context" in lower:
+            return [
+                "The valuable part is not \"saving tokens\".\n\nOnce agents enter real work, memory becomes the layer that preserves decisions, context, and responsibility.",
+                "I think memory is slowly moving from feature to infrastructure.\n\nWithout searchable, auditable, recoverable context, agents won't really make it into production.",
+            ]
+        if "agent" in lower or "workflow" in lower:
+            return [
+                "This is really the shift from personal tool to workflow role.\n\nThe question is no longer just whether the model is smart, but whether it has permissions, memory, context, and delivery boundaries.",
+                "What still feels underrated here is runtime.\n\nAgents don't enter production just by answering well. They need recovery, observability, handoff, and auditability.",
+                "This feels like the transition from chatbot to coworker.\n\nThe difference isn't UI. It's whether the agent can stay inside a goal long enough to actually move it forward.",
+            ]
+        if "image" in lower or "visual" in lower:
+            return [
+                "The competition here is no longer pure image quality.\n\nThe bigger question is whether image generation plugs into a full visual workflow: research, copy, layout, assets, publish.",
+                "Single-shot generation is already table stakes.\n\nThe real product layer is the ability to run an entire visual production chain consistently.",
+            ]
+        return [
+            "This feels more important than the headline itself.\n\nThe real change is that the capability is starting to become part of a reusable workflow, not just a one-off feature.",
+            "I think the interesting part here is structural.\n\nEntry point, context, and workflow are starting to matter more than isolated capability.",
+        ]
 
     if "cursor" in lower or "coding" in lower or "code" in lower or "编程" in content:
         return [
@@ -190,6 +225,7 @@ def score_tweet(tweet: dict, query: str) -> Candidate:
     likes = int(tweet.get("likes", 0) or 0)
     retweets = int(tweet.get("retweets", 0) or 0)
     handle = tweet.get("handle", "?")
+    language = detect_language(content)
 
     theme, theme_reasons = theme_score(content)
     engagement = engagement_score(likes, retweets)
@@ -206,10 +242,11 @@ def score_tweet(tweet: dict, query: str) -> Candidate:
         retweets=retweets,
         query=query,
         search_url=f"https://x.com/search?q={quote_plus(query)}&src=typed_query&f=top",
+        language=language,
         score=score,
         reasons=reasons,
         risks=risks,
-        comments=make_comments(content),
+        comments=make_comments(content, language),
     )
 
 
@@ -252,6 +289,7 @@ def render_markdown(candidates: list[Candidate]) -> str:
                 "",
                 f"- 来源关键词：`{item.query}`",
                 f"- 搜索链接：{item.search_url}",
+                f"- 语言：`{item.language}`",
                 f"- 互动：❤️ {item.likes} / 🔁 {item.retweets}",
                 f"- 风险：{risk_text}",
                 f"- 推荐理由：{reason_text}",
