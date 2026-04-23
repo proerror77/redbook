@@ -2607,6 +2607,30 @@
 **需要注意：**
 - 当前可见数据：1 喜欢、2 次观看（刚发布后截图时点）。
 
+## [2026-04-23] 会话摘要：建立 X 半自动互动工作流
+
+**完成了什么：**
+- 已建立 X 互动工作流文档：
+  - [2026-04-23-x-engagement-workflow.md](/Users/proerror/Documents/redbook/docs/reports/2026-04-23-x-engagement-workflow.md)
+- 已新增半自动互动队列脚本：
+  - [build_engagement_queue.py](/Users/proerror/Documents/redbook/tools/auto-x/scripts/build_engagement_queue.py)
+- 脚本行为：
+  - 搜索 AI agent / coding agent / Claude Code / Codex / Cursor AI 等关键词
+  - 按账号主线、互动量、评论空间和风险打分
+  - 生成候选帖和 2-3 条“活人感”评论草稿
+  - 输出 markdown + json
+  - 不自动发布评论
+- 已试跑：
+  - `python3 tools/auto-x/scripts/build_engagement_queue.py --query 'AI agent' --limit 3 --scrolls 1 --min-score 35`
+- 已生成队列：
+  - [X-互动队列-2026-04-23.md](/Users/proerror/Documents/redbook/05-选题研究/X-互动队列-2026-04-23.md)
+  - [X-互动队列-2026-04-23.json](/Users/proerror/Documents/redbook/05-选题研究/X-互动队列-2026-04-23.json)
+
+**当前策略：**
+- 每天 2-3 轮，每轮筛 3-5 个高价值帖子。
+- 默认人工确认后评论，不自动发。
+- 评论结构优先：一句态度 + 一句反直觉判断 + 一句为什么。
+
 ## [2026-04-22] 会话摘要：修正发布 Skill 浏览器默认执行姿态
 
 **完成了什么：**

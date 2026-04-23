@@ -1,0 +1,77 @@
+[
+  {
+    "handle": "OpenAI",
+    "content": "Introducing workspace agents in ChatGPT—shared agents that can handle complex tasks and long-running workflows across tools and teams.",
+    "likes": 13153,
+    "retweets": 1822,
+    "query": "AI agent",
+    "search_url": "https://x.com/search?q=AI+agent&src=typed_query&f=top",
+    "score": 78,
+    "reasons": [
+      "主题匹配:agent",
+      "主题匹配:agents",
+      "主题匹配:workflow",
+      "主题匹配:workflows",
+      "主题匹配:tool",
+      "主题匹配:tools",
+      "互动分:20",
+      "评论空间:8"
+    ],
+    "risks": [],
+    "comments": [
+      "这点其实说明 agent 正在从“个人工具”变成“工作流角色”。\n\n关键不只是模型更聪明，而是它有没有权限、记忆、上下文和交付边界。",
+      "我觉得真正被低估的是运行时。\n\nagent 要进生产，不是能回答就够了，还得能恢复、观察、接管、审计。",
+      "这方向很像从 chatbot 到 coworker 的过渡。\n\n差别不是 UI，而是它能不能长期待在一个目标里持续推进。"
+    ]
+  },
+  {
+    "handle": "iamtonyzhu",
+    "content": "才发力1 个月，Codex 宣布有 400 万用户了， 直接挑战 Claude code， 又爆马克思xAI 正在收购 Cursor，这种一站式 AI agent系统 将会取代网页版，成为人们新的工作入口。 所以独立企业 AI 赛道应该有独角兽出现。 大多数企业不是缺 AI，而是缺“让 AI 进入组织”的那一层。 今天很多企业老板会说： \"@yuyy614893671\" 太惨了，应该是一家阿根廷的有60人的创业公司，被Anthropic封掉了Claude的全部账户…… 创始人说公司可能“无限期停摆”，并提醒那些用别人的AI基座模型创业的软件公司：不要把“鸡蛋放在同一个篮子里” （我的问题是中国来源模型是不是更有市场了呢？来源模型公司怎么赚钱呢？）",
+    "likes": 41,
+    "retweets": 10,
+    "query": "AI agent",
+    "search_url": "https://x.com/search?q=AI+agent&src=typed_query&f=top",
+    "score": 76,
+    "reasons": [
+      "主题匹配:agent",
+      "主题匹配:code",
+      "主题匹配:cursor",
+      "主题匹配:codex",
+      "主题匹配:claude",
+      "主题匹配:模型",
+      "互动分:6",
+      "评论空间:20",
+      "有问题/讨论入口",
+      "有反差判断可接",
+      "信息密度足够"
+    ],
+    "risks": [],
+    "comments": [
+      "这点其实比 IDE 体验更关键。\n\nAI coding 最后拼的不是谁补全更快，而是谁能拿到真实工程流里的反馈数据。\n\n入口只是第一层，workflow data 才是护城河。",
+      "我觉得这里真正的分水岭是：coding agent 能不能进真实 repo、真实 CI、真实 review 流程。\n\n只停在 demo 里，模型再强也很快会被追平。",
+      "这事不能只看模型 benchmark。\n\n谁掌握工程师每天工作的入口，谁才更接近下一代 coding platform。"
+    ]
+  },
+  {
+    "handle": "WY_mask",
+    "content": "这个太牛逼了！Github 81万收藏！！！ 一个能把全世界的岗位变成AI员工的存储库，它包含了20+职能分类、140+岗位，而且每一个都是专家级别 只需要把想要的身份喂给Agent就可以拥有一个专属的专家级AI助手，还可以多个Agents分头工作、各自执行 \"@WY_mask\" 玩龙虾的强烈建议去收藏一下 OpenClaw 的精彩应用案例 github.com/hesamsheikh/aw 这是一个收集了OpenClaw真实应用案例的社区合集，收录了几十个真实可落地的自动化案例，每一个都有详细配置和实操截图，按照教程复制粘贴就可以拥有自己的超级AI助手",
+    "likes": 1974,
+    "retweets": 511,
+    "query": "AI agent",
+    "search_url": "https://x.com/search?q=AI+agent&src=typed_query&f=top",
+    "score": 64,
+    "reasons": [
+      "主题匹配:agent",
+      "主题匹配:agents",
+      "互动分:17",
+      "评论空间:12",
+      "信息密度足够"
+    ],
+    "risks": [],
+    "comments": [
+      "这点其实说明 agent 正在从“个人工具”变成“工作流角色”。\n\n关键不只是模型更聪明，而是它有没有权限、记忆、上下文和交付边界。",
+      "我觉得真正被低估的是运行时。\n\nagent 要进生产，不是能回答就够了，还得能恢复、观察、接管、审计。",
+      "这方向很像从 chatbot 到 coworker 的过渡。\n\n差别不是 UI，而是它能不能长期待在一个目标里持续推进。"
+    ]
+  }
+]
