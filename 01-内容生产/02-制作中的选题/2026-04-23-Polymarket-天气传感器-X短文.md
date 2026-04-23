@@ -2,11 +2,11 @@
 
 ## x-mastery-mentor 发布前审稿
 
-- 算法层：建议主帖带新闻链接，作为荒诞事件的可信来源；如果担心触达，可 quote 或放第一条回复。
+- 算法层：主帖带新闻链接，作为荒诞事件的可信来源；有触达风险但可接受。
 - Hook 层：通过。吹风机 / 机场传感器 / 3.4 万美元具备天然好奇缺口。
 - 内容层：通过。核心判断不是“好笑”，而是单一 oracle / 物理传感器成为金融攻击面。
 - CTA 层：弱，但短评型内容可接受。
-- 结论：可作为短帖发布。
+- 结论：可发布。
 
 ## 版本 A：更活人感
 
@@ -50,3 +50,10 @@ Polymarket 巴黎天气市场这事，比很多 oracle 风险文章都直观。
 
 - Bitcoin.com: `https://news.bitcoin.com/a-hair-dryer-may-have-gamed-a-paris-weather-sensor-for-34000-on-polymarket/`
 - GNcrypto: `https://www.gncrypto.news/news/hair-dryer-suspected-paris-airport-sensor-34000-payout/`
+
+## 发布记录
+
+- 状态：已发布
+- 使用版本：版本 A + Bitcoin.com 主帖链接
+- 状态链接：https://x.com/0xcybersmile/status/2047135340281176398
+- 验证：已在个人主页顶部确认新帖出现，主帖内显示 `news.bitcoin.com` 链接和预览卡片
