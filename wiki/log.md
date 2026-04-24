@@ -749,3 +749,17 @@
 - 这条内容的传播点不是“吹风机很荒诞”，而是预测市场的结算 oracle 如果绑定单一物理传感器，传感器本身就会变成金融攻击面。
 - 本轮按用户要求给主帖配新闻链接。
 - 本轮发布强证据是个人主页顶部已出现新帖，状态链接为 `https://x.com/0xcybersmile/status/2047135340281176398`。
+
+## [2026-04-24] ingest | “Agent 进入执行层”X 长帖已发出
+
+来源：`05-选题研究/选题建议-2026-04-24.md` + `baoyu-post-to-x/scripts/x-browser.ts`
+
+触及页面：3个
+- `01-内容生产/02-制作中的选题/2026-04-24-Agent-进入执行层-X长帖.md` — 发布所用长帖与状态链接
+- `tasks/progress.md` — 记录本轮发布、审稿与验证结果
+- `wiki/log.md` — 记录本轮 ingest
+
+关键洞察：
+- 这条内容把 OpenAI Codex Auto-review、Claude Managed Agents Memory、腾讯 Cube Sandbox 收束成一个更强的判断：agent 正在从工具层进入执行层。
+- 重点不是“更聪明”，而是能不能在更长流程里自己 review、自己记忆、自己跑完。
+- 本轮发布强证据是个人主页顶部已出现新帖，状态链接为 `https://x.com/0xcybersmile/status/2047473284732838313`。
