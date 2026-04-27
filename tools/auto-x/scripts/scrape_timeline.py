@@ -270,6 +270,10 @@ def main():
     parser = argparse.ArgumentParser(description='抓取 X.com Timeline 并分析热门话题')
     parser.add_argument('--scrolls', type=int, default=30,
                        help='滚动次数（默认 30 次，约 150-200 条推文）')
+    parser.add_argument('--scroll-distance', type=int, default=1600,
+                       help='每次向下滚动的像素距离（默认 1600，比旧版 800 更深）')
+    parser.add_argument('--max-stale-rounds', type=int, default=6,
+                       help='连续多少轮没有新增推文后提前停止（默认 6）')
     parser.add_argument('--output', type=str,
                        help='输出文件路径（默认：05-选题研究/X-Timeline-{日期}.md）')
 
@@ -283,13 +287,23 @@ def main():
     if not ensure_browser():
         return
 
-    # 2. 打开 Timeline（使用 X Pro AI Deck）
-    print_colored("\n打开 X Pro AI Deck...", 'yellow')
-    navigate("https://pro.x.com/i/decks/2022466575597736041", wait=3.0)
+    # 2. 打开真正的 x.com Home Timeline。
+    # 不再复用 X Pro Deck；否则 X-Timeline 与 X-Pro 报告会重复。
+    print_colored("\n打开 X.com Home Timeline...", 'yellow')
+    navigate("https://x.com/home", wait=3.0)
 
     # 3. 滚动并收集推文
-    print_colored(f"\n滚动收集数据（{args.scrolls} 次）...", 'yellow')
-    snapshots = scroll_and_collect(times=args.scrolls, wait=2.5)
+    print_colored(
+        f"\n滚动收集数据（{args.scrolls} 次，每次 {args.scroll_distance}px）...",
+        'yellow',
+    )
+    snapshots = scroll_and_collect(
+        times=args.scrolls,
+        wait=2.5,
+        distance=args.scroll_distance,
+        stop_when_stale=True,
+        max_stale_rounds=args.max_stale_rounds,
+    )
 
     # 4. 解析推文
     print_colored("\n解析推文数据...", 'yellow')

@@ -291,23 +291,61 @@ def get_snapshot() -> str:
     return run_abs("snapshot", timeout=15)
 
 
-def scroll_and_collect(times: int = 3, wait: float = 2.0) -> List[str]:
+def _tweet_key(tweet: Dict) -> str:
+    """Return a stable-enough key for de-duplicating timeline snapshots."""
+    handle = tweet.get('handle', '')
+    content = tweet.get('content', '')[:80]
+    return f"{handle}:{content}"
+
+
+def scroll_and_collect(
+    times: int = 3,
+    wait: float = 2.0,
+    distance: int = 800,
+    stop_when_stale: bool = False,
+    max_stale_rounds: int = 5,
+) -> List[str]:
     """
     滚动页面并收集每次滚动后的 snapshot
 
     Args:
         times: 滚动次数
         wait: 每次滚动后等待时间（秒）
+        distance: 每次向下滚动的像素距离
+        stop_when_stale: 若连续多轮没有新增推文，提前停止
+        max_stale_rounds: 允许连续无新增推文的最大轮数
 
     Returns:
         所有 snapshot 文本的列表
     """
     snapshots = []
+    seen_tweet_keys = set()
+    stale_rounds = 0
     for i in range(times):
         snapshot = get_snapshot()
         if snapshot:
             snapshots.append(snapshot)
-        run_abs('scroll down 800')
+            tweets = extract_tweets(snapshot)
+            new_count = 0
+            for tweet in tweets:
+                key = _tweet_key(tweet)
+                if key and key not in seen_tweet_keys:
+                    seen_tweet_keys.add(key)
+                    new_count += 1
+
+            if stop_when_stale:
+                if new_count == 0:
+                    stale_rounds += 1
+                else:
+                    stale_rounds = 0
+                if stale_rounds >= max_stale_rounds:
+                    print_colored(
+                        f"连续 {stale_rounds} 轮没有新增推文，提前停止滚动",
+                        'yellow',
+                    )
+                    break
+
+        run_abs(f'scroll down {distance}')
         time.sleep(wait)
     # 最后一次滚动后再取一次
     final = get_snapshot()

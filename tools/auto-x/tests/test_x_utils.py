@@ -71,6 +71,44 @@ class SnapshotValidationTests(unittest.TestCase):
         self.assertEqual(tweets[1]["likes"], 101)
         self.assertNotIn("用户 来自任何人", tweets[1]["content"])
 
+    def test_tweet_key_uses_handle_and_content_prefix(self) -> None:
+        key = x_utils._tweet_key({
+            "handle": "shao__meng",
+            "content": "该用 Skills 还是 MCP？如果你也有这个困惑，可以看看",
+        })
+
+        self.assertEqual(key, "shao__meng:该用 Skills 还是 MCP？如果你也有这个困惑，可以看看")
+
+
+class ScrollCollectionTests(unittest.TestCase):
+    @patch("x_utils.time.sleep")
+    @patch("x_utils.run_abs")
+    @patch("x_utils.get_snapshot")
+    def test_scroll_and_collect_accepts_distance_and_stops_when_stale(
+        self,
+        mock_get_snapshot,
+        mock_run_abs,
+        _mock_sleep,
+    ) -> None:
+        snapshot = """
+    - region "你的主页时间线" [ref=e29]:
+      - article "meng shao @shao__meng 2月4日 1 回复、7 次转帖、21 喜欢" [ref=e48]:
+        - link "@shao__meng" [ref=e50]:
+        - text: 该用 Skills 还是 MCP？如果你也有这个困惑，可以看看
+        """.strip()
+        mock_get_snapshot.side_effect = [snapshot, snapshot, snapshot]
+
+        snapshots = x_utils.scroll_and_collect(
+            times=10,
+            wait=0,
+            distance=1600,
+            stop_when_stale=True,
+            max_stale_rounds=1,
+        )
+
+        self.assertEqual(len(snapshots), 3)
+        mock_run_abs.assert_called_once_with("scroll down 1600")
+
 
 class EnsureBrowserTests(unittest.TestCase):
     @patch("x_utils.print_colored")
