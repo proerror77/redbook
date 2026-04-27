@@ -2648,6 +2648,18 @@
 **未完成 / 遗留：**
 - 尚未发布。
 
+## [2026-04-24] 会话摘要：补写 Claude 工具链扩散与企业 AI 导入两篇 X 稿
+
+**完成了什么：**
+- 已补写第 2 个题：
+  - [2026-04-24-Claude-工具链扩散-X长帖.md](/Users/proerror/Documents/redbook/01-内容生产/02-制作中的选题/2026-04-24-Claude-工具链扩散-X长帖.md)
+- 已补写第 3 个题：
+  - [2026-04-24-企业AI导入-X长帖.md](/Users/proerror/Documents/redbook/01-内容生产/02-制作中的选题/2026-04-24-企业AI导入-X长帖.md)
+- 两篇都已做 `x-mastery-mentor` 发布前四层审稿，并保持“活人感”判断式写法。
+
+**当前状态：**
+- 这两篇已写完，但尚未发布。
+
 ## [2026-04-24] 会话摘要：发布“Agent 进入执行层”X 长帖
 
 **完成了什么：**
@@ -2789,3 +2801,41 @@
 **备注：**
 - 本次使用 Playwright 是 huashu-design 自身验证/导出链路要求，不改变 redbook 浏览器主链仍以真实 Chrome/CDP、headless-first 为默认的规则。
 - smoke 产物位于 ignored `tmp/` 下，不进入 Git tracking。
+
+## [2026-04-27] 会话摘要：2026-04-28 Timeline 选题 - Agent 入口迁移
+
+**完成了什么：**
+- 复查并继续抓取当前登录 X Timeline，生成 `05-选题研究/X-Timeline-2026-04-28-continued-051251.md`。
+- 从 Timeline 信号中筛出可写选题：`Agent 入口从聊天框迁移到邮箱 / 浏览器 / IDE / 本地代码图谱 / 后台任务队列`。
+- 已产出 X 长帖草稿、3 个 Hook、短推备选、第一条回复素材和 x-mastery-mentor 审稿：
+  - `01-内容生产/02-制作中的选题/2026-04-28-Agent-入口从聊天框进入工作流/X长帖.md`
+  - `01-内容生产/02-制作中的选题/2026-04-28-Agent-入口从聊天框进入工作流/QA报告.md`
+  - `01-内容生产/02-制作中的选题/2026-04-28-Agent-入口从聊天框进入工作流/发布清单.md`
+- Harness run `20260427-211943-agent-入口从聊天框进入工作流-279e9f` 已通过 research、draft、review gate，并推进到 publish 阶段等待用户确认。
+
+**验证：**
+- `check-gates` research 通过：研究报告含来源、结论、结构和长度要求。
+- `check-gates` draft 通过：草稿含发布清单，结构与长度要求合格。
+- `check-gates` review 通过：QA 报告和发布清单均被 verifier 识别。
+
+**遗留：**
+- 尚未发布。需要用户明确说“发布”或“直接发”后，才执行 X 发布和平台侧状态 URL 验证。
+
+## [2026-04-27] 会话摘要：gpt-realtime-1.5 voice control X 短评已发布
+
+**完成了什么：**
+- 核对 OpenAI `realtime-voice-component` GitHub 仓库和 `gpt-realtime-1.5` model docs。
+- 产出并发布中文 X 短评，核心判断是：语音不是“聊天能力”，而是受约束的 App 状态控制层。
+- 已保存研究、草稿和发布记录：
+  - `05-选题研究/gpt-realtime-voice-control-2026-04-28.md`
+  - `01-内容生产/02-制作中的选题/2026-04-28-gpt-realtime-voice-control-短评/X短评.md`
+  - `01-内容生产/02-制作中的选题/2026-04-28-gpt-realtime-voice-control-短评/发布记录.md`
+
+**验证：**
+- 发布脚本返回 `Post submitted!`。
+- 个人主页顶部第一条已显示该帖。
+- 独立状态页可打开并显示完整正文：`https://x.com/0xcybersmile/status/2048880394821660814`
+- 状态页显示发布时间：2026年4月28日 上午5:42；初始数据为 `2 查看`。
+
+**遗留：**
+- 未做 git commit；当前 worktree 存在较多其他未提交变更，本次不混入提交。

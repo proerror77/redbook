@@ -763,3 +763,33 @@
 - 这条内容把 OpenAI Codex Auto-review、Claude Managed Agents Memory、腾讯 Cube Sandbox 收束成一个更强的判断：agent 正在从工具层进入执行层。
 - 重点不是“更聪明”，而是能不能在更长流程里自己 review、自己记忆、自己跑完。
 - 本轮发布强证据是个人主页顶部已出现新帖，状态链接为 `https://x.com/0xcybersmile/status/2047473284732838313`。
+
+## [2026-04-27] query | Agent 入口从聊天框进入工作流
+
+来源：`05-选题研究/X-Timeline-2026-04-28-continued-051251.md` + `wiki/选题/AI工具与效率.md` + `wiki/素材/金句库.md`
+
+触及页面：4个
+- `05-选题研究/X-Timeline-2026-04-28-continued-051251.md` — 今日 Timeline 研究报告与选题判断
+- `wiki/选题/AI工具与效率.md` — 账号主线与 AI 工具 ROI / workflow 相关素材
+- `wiki/素材/金句库.md` — “聊天框 vs 工作流”“回答 vs 交付”等表达锚点
+- `01-内容生产/02-制作中的选题/2026-04-28-Agent-入口从聊天框进入工作流/X长帖.md` — 本轮草稿产物
+
+关键洞察：
+- 今天值得写的不是单个工具，而是 Agent 入口迁移：从聊天框进入邮箱、浏览器、IDE、本地代码图谱和后台任务队列。
+- “聊天框解决回答，工作流解决交付”可以作为本文核心表达。
+- 本轮只完成到发布候选，尚未发布；需要用户明确确认后再进入 X 发布和状态 URL 验证。
+
+## [2026-04-27] ingest | gpt-realtime-1.5 voice control X 短评已发出
+
+来源：OpenAI `realtime-voice-component` GitHub + OpenAI `gpt-realtime-1.5` model docs + `baoyu-post-to-x/scripts/x-browser.ts`
+
+触及页面：4个
+- `05-选题研究/gpt-realtime-voice-control-2026-04-28.md` — 来源核对与选题判断
+- `01-内容生产/02-制作中的选题/2026-04-28-gpt-realtime-voice-control-短评/X短评.md` — 发布所用短评与审稿
+- `01-内容生产/02-制作中的选题/2026-04-28-gpt-realtime-voice-control-短评/发布记录.md` — 状态 URL 和可见性证据
+- `tasks/progress.md` — 本轮发布验证摘要
+
+关键洞察：
+- `realtime-voice-component` 不应被写成正式 production UI kit；它更像 OpenAI 给出的 React/browser voice controls 参考实现。
+- 这条更值得写的判断是：语音正在从聊天入口变成 App 状态控制层，核心是窄工具、状态所有权和可见变化。
+- 本轮发布强证据是个人主页顶部已出现新帖，状态链接为 `https://x.com/0xcybersmile/status/2048880394821660814`。

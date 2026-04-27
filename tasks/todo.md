@@ -3629,3 +3629,51 @@
 - 当前限制：
   - `content-data` 尚未刷新出这条新笔记；当前最强证据来自 `笔记管理 -> 审核中`
   - 已补到 `note id`: `69e1eaf1000000002102c31c`
+
+---
+
+## 新任务：2026-04-28 Timeline 选题 - Agent 入口迁移
+- 任务名称：从当前 X Timeline 中筛选并落成“Agent 入口从聊天框进入工作流”X 长帖候选
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-28
+- 优先级：P1
+- Harness Run：`20260427-211943-agent-入口从聊天框进入工作流-279e9f`
+
+### 执行清单
+- [x] 1. 继续查看当前已登录 X Timeline，并生成研究报告
+- [x] 2. 从 Timeline 信号筛出可写选题
+- [x] 3. 产出 X 长帖、Hook、短推备选与第一条回复素材
+- [x] 4. 完成 x-mastery-mentor 审稿和 QA 报告
+- [x] 5. 生成发布清单并推进到 publish 阶段
+- [ ] 6. 等用户明确确认后发布并回填状态 URL
+
+### Review 结论
+- 当前选题判断：值得写。核心不是单个工具，而是 Agent 入口从聊天框迁移到邮箱、浏览器、IDE、本地代码图谱和后台任务队列。
+- 已产出文件：
+  - `01-内容生产/02-制作中的选题/2026-04-28-Agent-入口从聊天框进入工作流/X长帖.md`
+  - `01-内容生产/02-制作中的选题/2026-04-28-Agent-入口从聊天框进入工作流/QA报告.md`
+  - `01-内容生产/02-制作中的选题/2026-04-28-Agent-入口从聊天框进入工作流/发布清单.md`
+- Harness 状态：research、draft、review gate 已通过；当前停在 publish 阶段，缺真实发布记录和 `published=true`。
+- 发布边界：用户只是确认“可以”，未明确说“发布”，因此未执行 X 发布。
+
+---
+
+## 新任务：gpt-realtime-1.5 voice control X 短评发布
+- 任务名称：针对 OpenAI realtime voice component 新闻发布一条中文 X 短评
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-28
+- 优先级：P0
+- Harness Run：`20260427-213906-gpt-realtime-1-5-voice-control-short-comment-ac9387`
+
+### 执行清单
+- [x] 1. 核对 OpenAI GitHub 与 model docs 来源
+- [x] 2. 产出中文短评和最小审稿
+- [x] 3. 发布到 X
+- [x] 4. 验证主页顶部可见和独立状态页可打开
+- [x] 5. 回填发布记录、progress 和 wiki log
+
+### Review 结论
+- 已发布：`https://x.com/0xcybersmile/status/2048880394821660814`
+- 发布时间：2026年4月28日 上午5:42
+- 强验证：个人主页顶部第一条可见；独立状态页显示完整正文和 GitHub card。
+- 内容边界：保留外链，因为本条是新闻短评且用户给了来源链接；后续如扩写，不应把 reference implementation 说成正式生产级 UI kit。
