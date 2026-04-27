@@ -182,13 +182,13 @@ wiki/                 # LLM 维护的知识库（唯一知识底座，见下方 
 
 ### 3. 执行顺序（固定流程）
 1. Lead Agent 建立 `tasks/todo.md`（可勾选步骤）
-2. Research Agent 先完成素材检索，再交给 Writing Agent
+2. Research Agent 先完成 `wiki/` 与历史文稿检索，再交给 Writing Agent
 3. Writing Agent 产出主稿后，Platform Agent 生成多平台版本
 4. QA Agent 完成校验后，Lead Agent 决定是否进入发布
 5. 完成后更新 `tasks/todo.md` 与 `tasks/lessons.md`
 
 ### 4. Skills 触发规则（按意图自动选择）
-- 每日研究 / 早报生成：`tools/daily.sh`（自动）
+- 每日研究报告生成：`tools/daily.sh`（自动）
 - 选题 wiki query：直接读 `wiki/index.md` 找相关页面
 - X 写作方法论 / 内容诊断 / 审稿关卡：`/x-mastery-mentor`
 - 创作 X 内容（可选辅助）：`/x-create`
@@ -201,7 +201,7 @@ wiki/                 # LLM 维护的知识库（唯一知识底座，见下方 
 - URL 转文稿素材：`/baoyu-url-to-markdown`
 
 ### 5. Skills 组合模板（推荐）
-- 选题研究链路：`tools/daily.sh`（早报）-> `wiki query` -> `记录选题` -> `深化选题`
+- 选题研究链路：`tools/daily.sh`（每日研究报告）-> `wiki query` -> `记录选题` -> `深化选题`
 - X 发布链路：`/x-mastery-mentor`（审稿，必须通过）-> `/x-create`（可选辅助）-> 自检清单 -> `/baoyu-post-to-x`（发布）
 - 长文配图链路：`深化选题` -> `/document-illustrator` -> `排版 / 平台适配`
 - 小红书链路：`深化选题` -> `/baoyu-xhs-images` -> `/post-to-xhs`
@@ -281,19 +281,19 @@ wiki/                 # LLM 维护的知识库（唯一知识底座，见下方 
 1. 抓取 X timeline 爆款（关注账号高互动帖）
 2. 抓取 HN / Reddit 热点
 3. 对标账号动态更新（存入 `wiki/创作者/`）
-4. Wiki ingest：新信号写入 `wiki/选题/` 相关页面，更新 `wiki/index.md`，追加 `wiki/log.md`
+4. Wiki ingest：新信号写入 `wiki/选题/`、`wiki/方法论/`、`wiki/素材/` 相关页面，更新 `wiki/index.md`，追加 `wiki/log.md`
 
-**输出**：`05-选题研究/早报-YYYY-MM-DD.md`（含 timeline 爆款 Top3、热点信号、推荐选题 3-5 个）
+**输出**：`05-选题研究/X-每日日程-YYYY-MM-DD.md`（含 timeline 爆款 Top3、热点信号、推荐选题 3-5 个）
 
 ---
 
 ### 路径 1：计划内容（完整流程）
 
-**触发**：看完早报，选定计划内容方向
+**触发**：看完每日研究报告，选定计划内容方向
 
-1. **选题确认** — 从早报或 `01-内容生产/选题管理/00-选题记录.md` 取
+1. **选题确认** — 从 `X-每日日程-YYYY-MM-DD.md` 或 `01-内容生产/选题管理/00-选题记录.md` 取
 2. **Wiki query** — 查 `wiki/选题/`、`wiki/方法论/`、`wiki/素材/`，提炼可用角度和金句
-3. **爆款对标** — 从早报 timeline 爆款找结构最近的 1-2 篇，分析 Hook/节奏/CTA
+3. **爆款对标** — 从每日研究报告的 timeline 爆款找结构最近的 1-2 篇，分析 Hook/节奏/CTA
 4. **创作主稿** — 嵌入 3-5 个人工素材（案例/数据/个人经历），AI 占比 ≤30%
 5. **x-mastery-mentor 审稿** — 四层诊断（算法层 + Hook层 + 内容层 + CTA层），全部通过才继续
 6. **用户确认发布**（强制）— 展示最终稿 + 审稿结论，等用户明确说「发布」才执行发布动作
@@ -307,7 +307,7 @@ wiki/                 # LLM 维护的知识库（唯一知识底座，见下方 
 
 ### 路径 2：热点速评（轻量流程）
 
-**触发**：早报标注「速评机会」，或发现时效性热点
+**触发**：每日研究报告标注「速评机会」，或发现时效性热点
 
 **门槛检查**（必做）：跟「中国独立开发者 + AI 工具」定位相关吗？不相关直接跳过。
 
@@ -350,7 +350,7 @@ wiki/                 # LLM 维护的知识库（唯一知识底座，见下方 
 ## 📦 工具说明
 
 ### 主要 Skills（推荐使用）
-- **每日早报**：`tools/daily.sh` - 自动抓取 X timeline 爆款 + HN/Reddit 热点，输出早报
+- **每日研究**：`tools/daily.sh` - 自动抓取 X timeline 爆款 + HN/Reddit 热点，输出 `X-每日日程-YYYY-MM-DD.md`
 - **X.com 创作（可选辅助）**：`/x-create` - 病毒式推文生成，不是强制步骤
 - **X.com 发布**：`/baoyu-post-to-x` - 自动发布推文
 - **文档配图**：`/document-illustrator` - 按主稿内容自动生成封面图和文内配图
@@ -362,8 +362,9 @@ wiki/                 # LLM 维护的知识库（唯一知识底座，见下方 
 **每日自动化**（已配置 launchd 定时任务）：
 - 入口：`tools/daily.sh`
 - 运行时间：每日 7:00 AM
-- 输出：`05-选题研究/早报-{日期}.md`
+- 输出：`05-选题研究/X-每日日程-{日期}.md`
 - 手动运行：`bash tools/daily.sh`
+- 关注列表全量巡检默认不跑；需要时显式运行：`bash tools/daily.sh --with-following-audit`
 
 **Reddit 痛点挖掘**：
 - 位置：`tools/reddit_hack.py`
@@ -534,7 +535,7 @@ wiki/                 # LLM 维护的知识库（唯一知识底座，见下方 
 **映射表**：
 - 文章文稿 → `01-内容生产/02-制作中的选题/`
 - 选题想法 → `01-内容生产/选题管理/`
-- 素材资源 → `02-内容素材库/`
+- 素材资源 → `wiki/素材/`
 - 已发布内容 → `01-内容生产/03-已发布的选题/`
 - 方法论 → `记忆库/语义记忆/`
 - 强制规则 → `记忆库/强制规则/`

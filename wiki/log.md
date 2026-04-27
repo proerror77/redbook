@@ -793,3 +793,19 @@
 - `realtime-voice-component` 不应被写成正式 production UI kit；它更像 OpenAI 给出的 React/browser voice controls 参考实现。
 - 这条更值得写的判断是：语音正在从聊天入口变成 App 状态控制层，核心是窄工具、状态所有权和可见变化。
 - 本轮发布强证据是个人主页顶部已出现新帖，状态链接为 `https://x.com/0xcybersmile/status/2048880394821660814`。
+
+## [2026-04-28] ingest | X 每日选题分流与账号主线修正
+
+来源：用户对账号主线和每日资讯结构的明确要求
+
+触及页面：5个
+- `wiki/方法论/X每日选题分流与知识沉淀.md` — 新增每日选题分流规则、AI/Crypto 时事边界和 LLM Wiki 沉淀流程
+- `wiki/选题/AI Agent企业导入与协作.md` — 新增账号主线选题页
+- `wiki/选题/Crypto与AI时事评论.md` — 新增 Crypto / AI x Crypto 轻量时事评论边界
+- `wiki/选题/AI工具与效率.md` — 补充账号定位修正和相关页面
+- `wiki/index.md` / `wiki/overview.md` — 更新索引和知识库状态
+
+关键洞察：
+- `@0xcybersmile` 的主线应稳定围绕 AI Agent、企业导入、协作方式、workflow 和小技巧。
+- AI 与 Crypto 资讯需要保留，但不能变成泛资讯搬运；AI 时事要回到 agent / workflow / 企业导入，Crypto 时事要回到 oracle / 权限 / 自动化 / 结算 / 风控。
+- 每日 LLM Wiki 的价值不是存新闻，而是把每天的新信号沉淀成长期选题页、方法论页、框架和案例。

@@ -3720,3 +3720,34 @@
   - `05-选题研究/X-Timeline高互动结构样本-2026-04-28.md`
   - `05-选题研究/X-Timeline高互动帖子结构研究-2026-04-28.md`
 - 核心修正：后续不是直接写趋势结论，而是优先用“具体损耗 / 新工具现场 / 亲测翻车 / 缺失层命名 / 哲学分歧”这几类结构。
+
+---
+
+## 新任务：X 每日选题分流与 LLM Wiki 沉淀规则
+- 任务名称：将账号主线修正为 AI Agent / 企业导入 / 协作方式，并保留 AI 与 Crypto 时事评论入口
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-28
+- 优先级：P1
+- Harness Run：N/A（内容策略与 Wiki 规则）
+
+### 执行清单
+- [x] 1. 明确账号主线：AI Agent、企业导入、协作方式、workflow、小技巧
+- [x] 2. 定义每日选题分流：主线、AI 时事、Crypto / AI x Crypto、轻量互动
+- [x] 3. 新增 Wiki 页面承接主线与 Crypto 时事边界
+- [x] 4. 更新共享 playbook，并同步到 `AGENTS.md` / `CLAUDE.md`
+- [x] 5. 更新 Wiki index / overview / log 和 progress
+
+### Review 结论
+- 已完成规则沉淀。
+- 新增：
+  - `wiki/方法论/X每日选题分流与知识沉淀.md`
+  - `wiki/选题/AI Agent企业导入与协作.md`
+  - `wiki/选题/Crypto与AI时事评论.md`
+- 更新：
+  - `docs/shared/redbook-playbook.md`
+  - `AGENTS.md`
+  - `CLAUDE.md`
+  - `wiki/index.md`
+  - `wiki/overview.md`
+  - `wiki/选题/AI工具与效率.md`
+  - `wiki/log.md`
