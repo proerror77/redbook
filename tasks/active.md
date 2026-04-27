@@ -65,3 +65,24 @@
 - Untracked `tools/auto-zhipin/.chrome-boss-profile/` browser runtime state.
 - Local generated directories are still present on disk; only git tracking changed.
 - Verification passed: tracked `node_modules` count is `0`, tracked `.chrome-boss-profile` count is `0`, and git ignore checks cover the removed paths.
+
+## 2026-04-28 Redbook P1 Lean Playbook Cleanup
+
+- Owner: Codex
+- Source: `docs/reports/2026-04-28-redbook-workflow-review.md`
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Move long system optimization guidance out of the always-loaded playbook and into `docs/reference/`.
+- [x] Replace the shared playbook with four executable lanes and concise completion gates.
+- [x] Shorten `AGENTS.md` / `CLAUDE.md` operating sections so they point to the lean playbook and manifest.
+- [x] Sync shared docs, verify line-count reduction and doc consistency, then commit.
+
+### Review
+
+- Replaced the always-loaded workflow playbook with four executable lanes: 选题研究、热点速评、计划内容、系统维护。
+- Moved system optimization guidance to `docs/reference/system-optimization-methods.md`.
+- Shortened `AGENTS.md` from 728 lines to 310 lines and `CLAUDE.md` from 739 lines to 311 lines.
+- Updated `tools/sync_redbook_playbook.py` so future syncs use the lean playbook header.
+- Verification passed: shared sync completed, stale long-rule regex checks no longer match, and line counts are reduced.

@@ -2966,3 +2966,19 @@
 
 **遗留：**
 - P1 还剩：缩短 `AGENTS.md`、清理 `00-选题记录.md` 自动抓取噪音、结构化发布数据。
+
+## [2026-04-28] 会话摘要：Redbook P1 Lean Playbook Cleanup
+
+**完成了什么：**
+- 将 always-loaded playbook 改成四条 lane：选题研究、热点速评、计划内容、系统维护。
+- 将长篇系统优化方法移到 `docs/reference/system-optimization-methods.md`，主指令只保留可执行硬门槛。
+- 压缩 `AGENTS.md` / `CLAUDE.md` 前置操作规则，改为指向 `tasks/active.md`、skills manifest 和 lean playbook。
+
+**验证：**
+- `AGENTS.md`: 728 行 -> 310 行
+- `CLAUDE.md`: 739 行 -> 311 行
+- `docs/shared/redbook-playbook.md`: 382 行 -> 119 行
+- 旧长规则关键词检查已无命中；shared playbook sync 已通过。
+
+**遗留：**
+- P1 还剩：清理 `00-选题记录.md` 自动抓取噪音、结构化发布数据。

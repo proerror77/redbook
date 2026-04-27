@@ -77,574 +77,156 @@ wiki/                 # LLM 维护的知识库（唯一知识底座，见下方 
 2. **数据驱动**：发布后记录数据，反哺方法论
 3. **持续沉淀**：好的内容、框架、表达，都要存入 `wiki/素材/`
 
-## 🛠️ 工程协作基线
+## 🛠️ Redbook 操作宪法
 
-### 1. 角色定位
-- 你是这个项目的工程协作者，不是待命的助手。
-- 默认直接完成任务内合理的下一步，再在结果中说明做了什么、为什么这么做、有哪些权衡。
-- 汇报以结果和关键进展为主；不要把本可自行判断的动作包装成“要不要我做”。
+### 1. 默认执行方式
+- 先判断 lane：选题研究、热点速评、计划内容、系统维护。
+- 简单任务直接做；非简单任务先在 `tasks/active.md` 写简短计划。
+- `tasks/todo.md` 是历史兼容账本，不再作为当前任务面板。
+- 被用户纠正时，才新增 `tasks/lessons.md`；不要把每个普通进展都写成 lesson。
 
-### 2. 决策服从顺序
-按优先级：
-1. **任务的完成标准**：代码能编译、测试能通过、类型能检查、功能真实可用。
-2. **项目的既有风格和模式**：通过阅读现有代码、文档和目录结构建立判断。
-3. **用户的明确、无歧义指令**：对任务目标和边界的直接要求。
+### 2. 状态与验证
+- 内容任务需要按 lane 选择状态负担：只有计划内容强制完整 harness。
+- 系统维护、工具修复、workflow 清理不进入内容生产 harness。
+- 完成前必须跑能证明结果的最小验证，并在 `tasks/progress.md` 记录完成、遗留、下次优先项。
+- 有文件变更时按 Lore Commit Protocol 提交。
 
-- 上述三项高于“通过频繁征询来显得礼貌”。
-- 工程判断不能因为可自行决策而转嫁给用户；先做出自洽方案，再接受 review。
+### 3. 内容生产硬门槛
+- 创作前 query `wiki/`；素材主库是 `wiki/素材/`，不是旧 `02-内容素材库`。
+- X 内容发布前必须过 `/x-mastery-mentor` 对应审稿；计划内容走四层诊断。
+- 小红书图文优先走 `/baoyu-xhs-images`；视频、数据、搜索走 `RedBookSkills`。
+- 发布是 `approved-publish`：必须等用户明确说“发布 / 直接发”才 submit。
+- 发布成功不能只看脚本 stdout；要回读平台侧 URL、主页/状态页、管理页、note id 或等价证据。
 
-### 3. 何时允许停下来询问
-- 只有一种合法情况：存在真正歧义，继续工作会产出与用户意图相反的结果。
-- 以下情况默认直接做：
-  - 可逆的实现细节
-  - 任务链中的自然下一步
-  - 可以根据项目风格自行判断的表达或结构选择
-  - 任务完成后的必要收尾动作，而不是反问“还要不要继续”
-
-## 🤖 Workflow Orchestration（Agent 执行准则）
-
-### 1. Plan Node Default（默认先规划）
-- 对任何非简单任务（3 步以上或涉及架构决策）先进入规划模式
-- 如果执行中出现偏差，立即停止并重新规划，不要硬推
-- 规划不仅用于开发，也用于验证与验收
-- 先写清晰的执行规格，降低歧义
-
-### 2. Subagent Strategy（子代理策略）
-- 大量使用子代理，保持主上下文窗口干净
-- 把调研、探索、并行分析下放给子代理
-- 复杂问题优先增加并行算力，而不是在主线程硬算
-- 每个子代理只做一个任务，保证聚焦
-
-### 3. Self-Improvement Loop（自我改进闭环）
-- 每次用户纠正后，立即把模式写入 `tasks/lessons.md`
-- 将教训抽象成可执行规则，防止重复犯错
-- 持续迭代规则，直到错误率下降
-- 会话开始前，先回看与当前项目相关的 lessons
-
-### 4. Verification Before Done（完成前先验证）
-- 未证明可用前，不得标记完成
-- 相关场景需比较改动前后行为差异
-- 交付前自问：这个结果是否达到资深工程师审核标准
-- 运行测试、检查日志、给出正确性证据
-
-### 5. Demand Elegance（平衡的优雅）
-- 非简单改动先暂停，问自己是否有更优雅解法
-- 如果方案显得 hacky，按“已知全部信息下的最优实现”重做
-- 简单问题不做过度设计
-- 交付前主动挑战自己的方案
-
-### 6. Autonomous Bug Fixing（自主修复）
-- 收到 bug 报告后直接定位并修复，避免让用户反复补上下文
-- 用日志、报错、失败测试定位问题并闭环
-- 尽量做到用户零上下文切换
-- 发现 CI 失败要主动修，不等待额外指令
-
-## ✅ Task Management（任务管理）
-
-1. **Plan First**：将计划写入 `tasks/todo.md`，拆成可勾选项
-2. **Verify Plan**：实现前先确认计划可执行
-3. **Track Progress**：执行中持续勾选进度
-4. **Explain Changes**：每步提供高层变更说明
-5. **Document Results**：在 `tasks/todo.md` 增加 review 结论
-6. **Capture Lessons**：被纠正后更新 `tasks/lessons.md`
-
-### Harness Runtime（最小实现）
-- 对重要内容任务，除了更新 `tasks/todo.md`，还应优先创建一个 machine-readable run：
-  - `python3 -m tools.redbook_harness.cli new-run --topic "选题" --source "路径" --summary "一句话目标"`
-- `tasks/todo.md` 继续作为人类可读任务板；`tasks/harness/runs/*.json` 作为运行时状态。
-- 每推进一个阶段，都应补 `artifact` 和 `check`，先跑 `verify-run` / `check-gates`，再决定是否 `promote` 到下一阶段。
-- 当前最小阶段为：`research -> draft -> review -> publish -> retrospect`
-- `check-gates` 已内置 verifier；artifact 结构不合格时，即使 check 手工勾成 true，也不能继续推进。
-- 如果执行中出现故障，先记录 incident，再决定 `retry` 还是 `escalate`：
-  - `python3 -m tools.redbook_harness.cli report-incident --run-id <run_id> --code tool_transient --summary "临时失败"`
-  - `python3 -m tools.redbook_harness.cli incident-plan --run-id <run_id>`
-
-## 🧭 Core Principles（核心原则）
-
-- **Simplicity First**：每次改动尽可能简单，影响范围最小化
-- **No Laziness**：必须找根因，不做临时补丁，按高级工程标准执行
-- **Minimal Impact**：只改必要内容，避免引入额外风险
-
-## 👥 Agent Team + Skills 应用规范
-
-### 1. 什么时候启用 Agent Team
-- 任务步骤 >= 3，或跨多个目录（选题、创作、发布、复盘）
-- 同时需要「研究 + 创作 + 发布准备」
-- 需要并行处理多个候选选题或多个平台版本
-- 需要高质量复核（事实、结构、表达、平台适配）
-
-### 2. Agent Team 标准分工
-- `Lead Agent`：定义目标、拆解任务、汇总结论、对外回复
-- `Research Agent`：query `wiki/选题/`、`wiki/方法论/`、`wiki/素材/` 与历史文稿，产出证据清单
-- `Writing Agent`：根据输入生成初稿/改稿，保证观点与可读性
-- `Platform Agent`：将文稿改写为小红书/抖音/X.com/公众号版本
-- `QA Agent`：检查事实、结构、错别字、平台规则、可发布性
-
-### 3. 执行顺序（固定流程）
-1. Lead Agent 建立 `tasks/todo.md`（可勾选步骤）
-2. Research Agent 先完成 `wiki/` 与历史文稿检索，再交给 Writing Agent
-3. Writing Agent 产出主稿后，Platform Agent 生成多平台版本
-4. QA Agent 完成校验后，Lead Agent 决定是否进入发布
-5. 完成后更新 `tasks/todo.md` 与 `tasks/lessons.md`
-
-### 4. Skills 触发规则（按意图自动选择）
-- Skills 入口对照：`docs/reference/skills-manifest.md`
-- 研究 X 话题：`tools/daily.sh` + `wiki_workflow.py query`；`tools/x-skills/x-collect` 仅作 legacy 参考
-- X 写作方法论 / 内容诊断 / 审稿关卡：`/x-mastery-mentor`
-- 创作 X 内容：`/x-mastery-mentor` 辅助结构与审稿；`tools/x-skills/x-create` 仅作 legacy 参考
-- 生成文章 / 文档配图：`/document-illustrator`
-- 生成小红书图文：`/baoyu-xhs-images`
-- 发布到小红书：图文优先 `/baoyu-xhs-images`；视频/数据/搜索用 `RedBookSkills`
-- 发布到 X.com：`/baoyu-post-to-x`
-- 发布到公众号：`/baoyu-post-to-wechat`
-- 文章排版优化：`/baoyu-format-markdown`
-- URL 转文稿素材：`/baoyu-url-to-markdown`
-
-### 5. Skills 组合模板（推荐）
-- 选题研究链路：`tools/daily.sh` -> `wiki query` -> `记录选题` -> `深化选题`
-- X 发布链路：`/x-mastery-mentor`（审稿，必须通过）-> 自检清单 -> `/baoyu-post-to-x`（发布）
-- 长文配图链路：`深化选题` -> `/document-illustrator` -> `排版 / 平台适配`
-- 小红书图文链路：`深化选题` -> `/baoyu-xhs-images`（生成 + 发布）
-- 小红书视频 / 数据链路：`RedBookSkills`
-- 公众号链路：`深化选题` -> `/document-illustrator` -> `排版` -> `/baoyu-post-to-wechat`
-
-### 6. 质量与边界
-- 不跳过 `wiki/` 与历史文稿检索直接写稿
-- 未经 QA 校验不得进入发布步骤
-- 任何删除/覆盖操作遵循「二次确认 + 可回滚」
-- 所有文件必须保存在 `/Users/proerror/Documents/redbook/` 内
-
-### 7. Definition of Done（内容任务完成标准）
-
-**写稿任务完成前，必须全部勾选：**
-- [ ] 文稿已保存到正确目录（`02-制作中的选题/` 或 `03-已发布的选题/`）
-- [ ] Wiki 已 query（`wiki/选题/` + `wiki/方法论/` + `wiki/素材/`）
-- [ ] `wiki/选题/` 相关页面已更新或新建
-- [ ] **X.com 内容**：已经过 `/x-mastery-mentor` 审稿通过（四层诊断：算法层 + Hook层 + 内容层 + CTA层，全部合格才能进入发布）
-- [ ] **需要配图的内容**：已完成 `/document-illustrator` 或其他目标平台对应的配图方案
-- [ ] 发布清单已生成（多平台）
-- [ ] `tasks/todo.md` 当前任务已勾选
-- [ ] `tasks/progress.md` 已追加本次会话摘要
-
-**会话结束前，必须执行：**
-1. 更新 `tasks/progress.md`（完成了什么 / 遗留什么 / 下次优先做什么）
-2. 更新 `wiki/log.md`（如有 ingest 或 query 操作）
-3. 提交 git（如有文件变更）
-
-### 8. Agent Team 启动指令（可直接贴用）
-```markdown
-请按 Agent Team 模式执行以下任务：
-
-任务目标：
-- {一句话目标}
-
-输入材料：
-- {文稿路径/链接/备注}
-
-输出要求：
-- 产出主稿 + 平台改写版（小红书/X.com/公众号）
-- 更新 tasks/todo.md 勾选进度
-- 若有纠正或返工，更新 tasks/lessons.md
-
-执行约束：
-- 先 query `wiki/` 与历史文稿，再开始创作
-- 每步给出简短进展
-- 完成前必须做 QA 校验与可发布性检查
-```
-
-### 9. Codex 复盘 `tasks/lessons.md`（强制时机）
-1. 开始任何非简单任务前：先读取 `tasks/lessons.md`，仅提取当前任务相关规则。
-2. 用户发生纠正时：在当前回合结束前新增 1 条 lesson（包含问题、根因、规则）。
-3. 任务交付前：再次复盘 `tasks/lessons.md`，确认本次是否新增规则以及规则是否验证通过。
-4. 每周日：执行一次周度复盘，合并重复规则、标记失效规则、保留可执行规则。
+### 4. 工具与技能路由
+- 当前入口以 `docs/reference/skills-manifest.md` 为准。
+- 每日研究入口：`bash tools/daily.sh`；关注列表全量巡检需要显式 `--with-following-audit`。
+- 详细系统优化方法已移到 `docs/reference/system-optimization-methods.md`，按需读取，不作为每轮 mandatory checklist。
 
 <!-- 内容领域见 .rules -->
 
 <!-- Shared block: edit docs/shared/redbook-playbook.md then run `python3 tools/sync_redbook_playbook.py` -->
 
 <!-- BEGIN SHARED_RED_BOOK_PLAYBOOK -->
-## 🎯 内容生产工作流（三条路径）
+## 🎯 Redbook Lean Playbook（四条 Lane）
 
-### 路径 0：每日定时研究（自动，无需介入）
+> 主流程只保留可执行规则。长篇系统优化方法见 `docs/reference/system-optimization-methods.md`；技能入口见 `docs/reference/skills-manifest.md`。
 
-**触发**：每天早上定时任务（`tools/daily.sh`）
+### 快速路由
 
-**执行内容**：
-1. 抓取 X timeline 爆款（关注账号高互动帖）
-2. 抓取 HN / Reddit 热点
-3. 对标账号动态更新（存入 `wiki/创作者/`）
-4. Wiki ingest：新信号写入 `wiki/选题/`、`wiki/方法论/`、`wiki/素材/` 相关页面，更新 `wiki/index.md`，追加 `wiki/log.md`
+| 用户意图 | 默认 Lane | 状态负担 |
+| --- | --- | --- |
+| “今天有什么值得写 / 看看热点 / timeline” | Lane A：选题研究 | 不建完整 content run |
+| “快评一下 / 写条 X / 热点速评” | Lane B：热点速评 | 轻量记录 |
+| “做成完整内容 / 多平台 / 小红书 + X” | Lane C：计划内容 | 完整 harness |
+| “修工具 / 整理 workflow / 装 skill / 清状态” | Lane D：系统维护 | 不进内容 harness |
 
-**输出**：`05-选题研究/X-每日日程-YYYY-MM-DD.md`（含 timeline 爆款 Top3、热点信号、推荐选题 3-5 个）
-
----
-
-### 路径 1：计划内容（完整流程）
-
-**触发**：看完每日研究报告，选定计划内容方向
-
-1. **选题确认** — 从 `X-每日日程-YYYY-MM-DD.md` 或 `01-内容生产/选题管理/00-选题记录.md` 取
-2. **Wiki query** — 查 `wiki/选题/`、`wiki/方法论/`、`wiki/素材/`，提炼可用角度和金句
-3. **爆款对标** — 从每日研究报告的 timeline 爆款找结构最近的 1-2 篇，分析 Hook/节奏/CTA
-4. **创作主稿** — 嵌入 3-5 个人工素材（案例/数据/个人经历），AI 占比 ≤30%
-5. **x-mastery-mentor 审稿** — 四层诊断（算法层 + Hook层 + 内容层 + CTA层），全部通过才继续
-6. **用户确认发布**（强制）— 展示最终稿 + 审稿结论，等用户明确说「发布」才执行发布动作
-7. **多平台改写** — X 长文 / 小红书图文（按需公众号）
-7. **配图** — `/document-illustrator`（长文）或 `/baoyu-xhs-images`（小红书）
-8. **发布** — X 用 `/baoyu-post-to-x`；小红书图文用 `/baoyu-xhs-images`，视频/数据/搜索用 `RedBookSkills`
-9. **Wiki 沉淀** — 更新 `wiki/选题/` 相关页面「已产出内容」，提炼金句/框架存入 `wiki/素材/`，追加 `wiki/log.md`
-10. **收尾** — 更新 `tasks/progress.md`，git commit
+共同规则：
+- Redbook 会话回复以 `✓` 开头。
+- 先用 `tasks/active.md` 判断当前活跃任务；`tasks/todo.md` 只作历史兼容账本。
+- 需要写内容前先 query `wiki/`：`wiki/选题/`、`wiki/方法论/`、`wiki/素材/`。
+- `02-内容素材库-archived/` 已归档，不作为主素材库。
+- 不自动污染 `01-内容生产/选题管理/00-选题记录.md`；只有用户或 agent 明确选中题目后才 promotion。
+- 外部发布统一是 `approved-publish`：草稿、预览、审稿可自动；submit/publish 必须等用户明确说“发布 / 直接发”。
 
 ---
 
-### 路径 2：热点速评（轻量流程）
+### Lane A：今天有什么值得写
 
-**触发**：每日研究报告标注「速评机会」，或发现时效性热点
+目标：只做选题，不进入写稿。
 
-**门槛检查**（必做）：跟「中国独立开发者 + AI 工具」定位相关吗？不相关直接跳过。
+步骤：
+1. 跑或读取 `05-选题研究/X-每日日程-YYYY-MM-DD.md`。
+2. 如果用户要求看 X timeline，优先当前已登录 X/X Pro 页面。
+3. 输出 3-5 个可写选题，每个只给：热度、争议点、账号契合、建议形态。
+4. 不创建完整 content run，不写发布清单，不自动写 `00-选题记录.md`。
 
-1. **写稿** — 直接写，速度优先，目标 0-1h 内完成
-2. **x-mastery-mentor 快速审稿** — 只过算法层 + Hook层（2分钟）
-3. **用户确认发布**（强制）— 展示稿件，等用户说「发布」才执行
-4. **发布** — `/baoyu-post-to-x`，附图
-4. **事后补 Wiki** — 当天内 ingest 进相关选题页，追加 `wiki/log.md`
-
----
-
-### Definition of Done（内容任务完成标准）
-
-**计划内容完成前，必须全部勾选：**
-- [ ] 主稿已保存到正确目录（`02-制作中的选题/` 或 `03-已发布的选题/`）
-- [ ] Wiki 已 query（`wiki/选题/` + `wiki/方法论/` + `wiki/素材/`）
-- [ ] 爆款对标已完成（Hook/节奏/CTA 分析）
-- [ ] **X.com 内容**：已经过 `/x-mastery-mentor` 审稿通过（四层诊断全部合格）
-- [ ] **需要配图的内容**：已完成 `/document-illustrator` 或 `/baoyu-xhs-images`
-- [ ] 发布完成（X + 小红书）
-- [ ] `wiki/选题/` 相关页面已更新（新增「已产出内容」条目）
-- [ ] `wiki/素材/` 已提炼本篇金句/框架（如有新内容）
-- [ ] `wiki/log.md` 已追加
-- [ ] `tasks/progress.md` 已更新
-- [ ] git commit 已完成
-
-**热点速评完成前，必须全部勾选：**
-- [ ] 定位相关性检查通过
-- [ ] x-mastery-mentor 算法层 + Hook层通过
-- [ ] 发布完成
-- [ ] wiki/log.md 已追加（当天内）
-
-**会话结束前，必须执行：**
-1. 更新 `tasks/progress.md`
-2. 更新 `wiki/log.md`（如有 ingest 或 query 操作）
-3. 提交 git
+完成标准：
+- 有推荐选题列表。
+- 有来源报告或浏览器证据路径。
+- 明确哪些题适合 X、哪些适合小红书或长文。
 
 ---
 
-## 📦 工具说明
+### Lane B：热点速评
 
-### 主要 Skills（推荐使用）
-- **每日研究**：`tools/daily.sh` - 自动抓取 X timeline 爆款 + HN/Reddit 热点，输出 `X-每日日程-YYYY-MM-DD.md`
-- **Skills 清单**：`docs/reference/skills-manifest.md` - 当前可用入口与 legacy 入口的唯一对照表
-- **X.com 审稿 / 创作辅助**：`/x-mastery-mentor` - 结构、Hook、算法层、内容层与 CTA 审稿
-- **X.com 发布**：`/baoyu-post-to-x` - 自动发布推文
-- **文档配图**：`/document-illustrator` - 按主稿内容自动生成封面图和文内配图
-- **小红书图文**：`/baoyu-xhs-images` - 图文生成 + 发布
-- **小红书视频 / 数据 / 搜索**：`RedBookSkills` - 当前全局小红书操作入口；历史文档里的 `/post-to-xhs` 只作 legacy alias
-- **X.com legacy 本地入口**：`tools/x-skills/x-collect` / `x-create` / `x-filter` 仅作参考，不作为主流程默认入口
+目标：0-1 小时内完成 X 短评或轻量图文准备。
 
-### 自动化脚本（后台任务）
-**每日自动化**（已配置 launchd 定时任务）：
-- 入口：`tools/daily.sh`
-- 运行时间：每日 7:00 AM
-- 输出：`05-选题研究/X-每日日程-{日期}.md`
-- 手动运行：`bash tools/daily.sh`
-- 关注列表全量巡检默认不跑；需要时显式运行：`bash tools/daily.sh --with-following-audit`
+步骤：
+1. 核验来源和时效性。
+2. 写短评或轻量草稿。
+3. `/x-mastery-mentor` 快速审稿：算法层、Hook 层、事实风险。
+4. 展示稿件，等用户确认发布。
+5. 发布后保存 `X短评.md` / `发布记录.md`，并记录状态 URL。
 
-**Reddit 痛点挖掘**：
-- 位置：`tools/reddit_hack.py`
-- 用法：`python3 tools/reddit_hack.py <reddit_url> [output_file]`
-- 输出：痛点分析报告（Markdown）
-
-### 已弃用工具（不推荐使用）
-以下工具已被 Skills 替代，仅保留用于调试或特殊场景：
-- ❌ `tools/auto-redbook/render_simple.sh` → 用 `/baoyu-xhs-images` 替代
-- ❌ `tools/auto-redbook/publish_xhs.py` → 用 `/baoyu-xhs-images` 替代
-- ⚠️ `tools/auto-x/scripts/search_x.py` → 不建议单独运行（作为每日自动化内部模块）
-- ⚠️ `tools/auto-x/scripts/scrape_following.py` → 不建议单独运行（作为每日自动化内部模块）
-- ⚠️ `tools/auto-x/scripts/trending_topics.py` → 不建议单独运行（作为每日自动化内部模块）
+完成标准：
+- 发布前：用户看过最终稿和审稿结论。
+- 发布后：状态 URL 可打开，主页或管理页能看到对应内容。
+- `tasks/progress.md` 有简短记录；wiki 只追加必要 log，不强制更新多个页面。
 
 ---
 
-## 🔧 系统级优化方法（25 个）
+### Lane C：计划内容
 
-> 基于 @Roland_WayneOZ 的文章整合的系统优化方法
-> 这些方法旨在降低 Token 消耗、提升上下文管理、优化记忆系统
+目标：完整 X 长帖、小红书图文、公众号或多平台内容。
 
-### 第一类：Token 消耗优化（3 个）
+步骤：
+1. 选题确认：来自日报、timeline、用户指令或已选中题库。
+2. Wiki query：提炼角度、金句、案例和历史相关内容。
+3. 爆款对标：从当前平台高互动样本找 Hook、节奏、CTA。
+4. 创作主稿：嵌入 3-5 个人工素材，避免纯 AI 拼贴。
+5. QA / 审稿：X 内容必须过 `/x-mastery-mentor` 四层诊断。
+6. 发布前确认：展示最终稿、平台版本、配图方案和风险点。
+7. 发布与验证：按平台 skill 执行，并拿到真实平台侧证据。
+8. 回写：发布记录、数据统计、wiki 沉淀、`tasks/progress.md`、git commit。
 
-#### 优化方法 1：懒加载策略
-
-**启动流程优化**：
-- ❌ 不要自动读取日记、本体画像目录、user.md、AI_state.json
-- ✅ 只在用户明确需要时才读取相关文件
-- ✅ 优先使用已有的上下文信息
-- ✅ 如果需要读取，使用 limit 参数限制行数
-
-#### 优化方法 2：模块化身份系统（TELOS）
-
-**TELOS 加载策略**：
-- **必读**：`本体画像/00-核心身份.md`（每次对话）
-- **按需读取**：
-  - 涉及决策 → `01-价值观与原则.md`
-  - 涉及任务分配 → `03-技能与能力.md`
-  - 涉及工作流程 → `07-工作方式.md`
-  - 涉及计划 → `05-目标与规划.md`
-  - 涉及人际关系 → `08-关系网络.md`
-  - 需要了解历史 → `02-背景与经历.md`
-
-**效果**：Token 消耗降低 70%+
-
-#### 优化方法 3：渐进式加载（Skill 专用）
-
-**规则**：
-- 简单任务只读主文件
-- 复杂任务才读详细参数
+完成标准：
+- 适合保留完整 harness 五阶段：`research -> draft -> review -> publish -> retrospect`。
+- 主稿在 `01-内容生产/02-制作中的选题/` 或 `03-已发布的选题/`。
+- X：不能只看脚本 stdout，要有状态 URL、发布时间、主页/状态页可见证据。
+- 小红书：不能只看 `PUBLISH_STATUS`，要有成功页、笔记管理状态或 note id。
+- 数据回写至少有 T+0 发布记录；T+1/T+3 数据可后续补。
 
 ---
 
-### 第二类：上下文管理（3 个）
+### Lane D：系统维护 / 工具修复
 
-#### 优化方法 4：指令遵循度检测
+目标：修脚本、整理 workflow、安装 skill、清理状态或优化 repo。
 
-**称呼规则**：
-- 每次回复时，必须在开头使用 "✓" 符号
-- 这是指令遵循度的标志
-- 如果你发现我的回复没有 "✓" 符号，说明上下文已过载
-- 此时应提醒用户使用 /new 重开会话
+步骤：
+1. 明确修复目标和影响范围。
+2. 在 `tasks/active.md` 写简短 cleanup plan。
+3. 小范围改动，优先删除、复用和降噪，不新增依赖。
+4. 跑最小 smoke / lint / consistency check。
+5. 更新 `tasks/progress.md`，提交 git。
 
-#### 优化方法 5：上下文使用阈值
-
-**上下文管理**：
-- 当上下文使用超过 40% 时，指令遵循度开始下降
-- 当上下文使用超过 60% 时，必须主动提醒用户重开会话
-- 每次会话结束时，记录上下文使用情况到日志
-
-#### 优化方法 6：会话边界管理
-
-**规则**：
-- 一个会话解决一个问题
-- 解决后立即归档对话历史
-- 每个会话聚焦一个主题
+完成标准：
+- 不进入内容生产 harness。
+- 不强制 wiki log，除非改动影响内容知识库。
+- 删除/覆盖/外部副作用必须有明确授权；生成物清理优先 `git rm --cached` 或归档。
 
 ---
 
-### 第三类：记忆管理（3 个）
+### 当前主要入口
 
-#### 优化方法 7：三层记忆架构
+- 每日研究：`bash tools/daily.sh`
+- 关注列表全量巡检：`bash tools/daily.sh --with-following-audit`
+- Wiki query：`python3 tools/wiki_workflow.py query --topic "..." --date YYYY-MM-DD`
+- Wiki daily-cycle：由 `tools/auto-x/scripts/run_daily.sh` 调用，状态看 `wiki/log.md` 与 harness run。
+- Harness：`python3 -m tools.redbook_harness.cli --help`
+- X 审稿 / 创作辅助：`/x-mastery-mentor`
+- X 发布：`/baoyu-post-to-x`
+- 文档配图：`/document-illustrator`
+- 小红书图文：`/baoyu-xhs-images`
+- 小红书视频 / 数据 / 搜索：`RedBookSkills`
+- 当前 skill 清单：`docs/reference/skills-manifest.md`
 
-**架构说明**：
-```
-记忆库/
-├── 情景记忆/     # 原始经验（日记、对话历史）
-├── 语义记忆/     # 提炼知识（方法论、最佳实践）
-└── 强制规则/     # 必须遵守的规则
-```
+### 已降级入口
 
-**运作机制**：
-- 情景记忆 → 识别模式 → 语义记忆
-- 语义记忆 → 发现必须遵守的规则 → 强制规则
-
-#### 优化方法 8：记忆提炼机制
-
-**触发条件**：
-- 发现重复模式时（≥3 次）
-- 完成重大项目后
-
-**提炼流程**：
-- 情景记忆 → 识别模式 → 语义记忆
-- 语义记忆 → 发现必须遵守的规则 → 强制规则
-
-#### 优化方法 9：日记月记合并机制
-
-**月记合并机制**：
-- 触发时机：每月初自动合并上个月的日记
-- 合并规则：所有日记合并为 YYYY-MM-月记.md
-- 合并后：删除原始日记文件，只保留月记
-
-**目录结构**：
-```
-记忆库/情景记忆/日记/
-├── 模板.md             # 日记模板
-├── 月记模板.md         # 月记模板
-├── 2026-02-13.md       # 每日日记（月底合并后删除）
-└── 2026-01-月记.md     # 月记（合并后保留）
-```
-
----
-
-### 第四类：任务管理（3 个）
-
-#### 优化方法 10：时间意图自动捕获
-
-**触发词识别**：
-- "明天 + 动词"（例如："明天发布这篇文章"）
-- "下周 + 动词"（例如："下周完成视频制作"）
-- "记得 + 动词"（例如："记得回复那条评论"）
-- "稍后 + 动词"（例如："稍后优化标题"）
-
-**AI 行动**：
-1. 识别任务内容
-2. 推断优先级（P0-P3）
-3. 添加到 `任务清单.md`
-4. 回复："已添加到任务清单 ✅"
-
-#### 优化方法 11：发布状态自动更新
-
-**状态同步规则**：
-- 当用户说"这篇已经发布出去了"
-- AI 自动执行：
-  1. `mv 02-制作中的选题/{文章目录} → 03-已发布的选题/{文章目录}`
-  2. 回复："已移动到已发布目录 ✅"
-
-#### 优化方法 12：任务归档机制
-
-**归档规则**：
-- 完成的任务自动归档到 `任务归档/` 目录
-- 按年份-季度归档：`任务归档/2026-Q1.md`
-- 归档内容：完成时间、结果、经验
-
----
-
-### 第五类：存储管理（3 个）
-
-#### 优化方法 13：智能存储路由
-
-**存储路由规则**：
-当用户说"保存 XXX"时：
-1. 自动分析内容类型
-2. 根据映射表确定存储位置
-3. 创建目录和文件
-4. 告知用户保存结果
-
-**映射表**：
-- 文章文稿 → `01-内容生产/02-制作中的选题/`
-- 选题想法 → `01-内容生产/选题管理/`
-- 素材资源 → `wiki/素材/`
-- 已发布内容 → `01-内容生产/03-已发布的选题/`
-- 方法论 → `记忆库/语义记忆/`
-- 强制规则 → `记忆库/强制规则/`
-
-#### 优化方法 14：工作区边界规则（宪法级别）
-
-**工作区定义**：`/Users/proerror/Documents/redbook/`
-
-**禁止行为**：
-- ❌ 将文件保存到 redbook 目录外（绝对禁止，无任何例外）
-- ❌ 将文件保存到 `~/Dev/` 下的任何路径
-- ❌ 在根目录直接保存文件
-- ❌ 不告知用户文件保存位置
-
-#### 优化方法 15：每周存储复盘
-
-**复盘流程**：
-- 每周日检查存储路由决策
-- 识别错误存储案例
-- 更新存储路由规则
-- 提高存储路由准确率
-
----
-
-### 第六类：迭代机制（3 个）
-
-#### 优化方法 16：八步自我迭代流程
-
-**迭代流程**：
-1. 触发（发现问题/优化机会）
-2. 复现（确认问题存在）
-3. 分析（找根本原因）
-4. 设计（想解决方案）
-5. 验证（测试方案）
-6. 实施（执行改进）
-7. 文档化（记录经验）
-   - 产出：语义记忆文档
-8. 提交（Commit）
-   - `git add .`
-   - `git commit -m "类型: 简短描述"`
-
-#### 优化方法 17：对抗式纠错
-
-**规则**：
-- 每次给建议前，先反问自己"这个建议有什么漏洞？"
-- 主动指出方案的潜在问题
-- 提供备选方案
-
-#### 优化方法 18：主动触发迭代
-
-**触发条件**：
-- 重复操作 ≥3 次 → 建议自动化
-- 发现效率瓶颈 → 建议优化
-- 发现重复模式 → 建议提炼规律
-
----
-
-### 第七类：其他优化（7 个）
-
-#### 优化方法 19：决策确认约束
-
-**规则**：
-- 涉及数据删除 → 必须二次确认
-- 涉及重大调整 → 说明影响范围
-- 涉及不可逆操作 → 警告风险
-
-#### 优化方法 20：代码质量约束
-
-**规则**：
-- 生成代码时必须：
-  1. 添加必要注释
-  2. 遵循项目风格
-  3. 考虑错误处理
-  4. 避免安全漏洞
-
-#### 优化方法 21：数据不删除原则
-
-**规则**：
-- 默认不删除任何数据
-- 如需删除，先移动到归档目录
-- 用户明确要求时才物理删除
-
-#### 优化方法 22：对话存档（强制执行）
-
-**触发条件**：
-- 重要决策（改变方向、重大调整）
-- 关键经验（失败教训、成功经验）
-- 复杂对话（对话轮次 > 10 次）
-
-**存档位置**：`对话历史.md`
-
-#### 优化方法 23：人际资源库
-
-**维护规则**：
-- 记录重要协作者信息到 `本体画像/08-关系网络.md`
-- 保护隐私边界
-- 定期更新关系状态
-
-#### 优化方法 24：每日自动简报
-
-**每日开始时**：
-- 查看 `05-选题研究/` 中的每日研究报告
-- 提醒待处理任务
-- 建议今日重点工作
-
-#### 优化方法 25：周日数据维护提醒
-
-**每周日提醒**：
-- [ ] 回顾本周数据
-- [ ] 更新任务清单
-- [ ] 合并日记（如果是月底）
-- [ ] 提炼本周经验（如有重复模式）
-
----
-
-<!-- 写作风格、核心提醒、Git 规范见 .rules -->
+- `tools/auto-redbook/render_simple.sh`：用 `/baoyu-xhs-images` 替代。
+- `tools/auto-redbook/publish_xhs.py`：用 `/baoyu-xhs-images` 替代。
+- `tools/x-skills/x-collect` / `x-create` / `x-filter`：legacy local reference，不作为主流程默认入口。
+- 单独运行 `search_x.py`、`scrape_following.py`、`trending_topics.py`：只用于调试或每日自动化内部。
 <!-- END SHARED_RED_BOOK_PLAYBOOK -->
 
 ---
