@@ -55,6 +55,8 @@ class DailyIngestWorkflowTests(unittest.TestCase):
 
             self.assertIn("docs/reports/wiki-ingest-2026-04-08.md", artifact_paths)
             self.assertTrue(runtime.stage_gate_report(run)["ready"])
+            self.assertEqual(run["status"], "done")
+            self.assertIn("closed_at", run)
 
 
 if __name__ == "__main__":

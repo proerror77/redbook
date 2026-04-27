@@ -6,6 +6,7 @@
 #   bash run_daily.sh              # 完整运行
 #   bash run_daily.sh --skip-research  # 只看提醒和回顾
 #   bash run_daily.sh --keywords "AI agent" "web3"
+#   bash run_daily.sh --with-following-audit  # 额外启动关注列表全量巡检
 
 set -euo pipefail
 
@@ -26,10 +27,27 @@ log() {
 log "========== X.com 每日日程启动 =========="
 log "使用 agent-browser-session $(agent-browser-session --version 2>/dev/null || echo '未知版本')"
 
+SHOULD_RUN_FOLLOWING_AUDIT="false"
+DAILY_ARGS=()
+for arg in "$@"; do
+    case "$arg" in
+        --with-following-audit)
+            SHOULD_RUN_FOLLOWING_AUDIT="true"
+            ;;
+        --skip-research|--skip-x|--skip-following)
+            SHOULD_RUN_FOLLOWING_AUDIT="false"
+            DAILY_ARGS+=("$arg")
+            ;;
+        *)
+            DAILY_ARGS+=("$arg")
+            ;;
+    esac
+done
+
 # 运行每日日程
 log "运行每日日程脚本..."
 cd "$SCRIPT_DIR"
-PYTHONUNBUFFERED=1 python3 -u daily_schedule.py "$@" 2>&1 | tee -a "$LOG_FILE"
+PYTHONUNBUFFERED=1 python3 -u daily_schedule.py "${DAILY_ARGS[@]}" 2>&1 | tee -a "$LOG_FILE"
 
 TODAY="$(date +%Y-%m-%d)"
 log "运行 LLM Wiki 每日维护周期（ingest + lint）..."
@@ -50,15 +68,6 @@ if [ -f "$WIKI_INGEST_RUNNER" ]; then
     fi
 fi
 
-SHOULD_RUN_FOLLOWING_AUDIT="true"
-for arg in "$@"; do
-    case "$arg" in
-        --skip-research|--skip-x|--skip-following)
-            SHOULD_RUN_FOLLOWING_AUDIT="false"
-            ;;
-    esac
-done
-
 if [ "$SHOULD_RUN_FOLLOWING_AUDIT" = "true" ]; then
     log "后台启动 following 全量巡检..."
     (
@@ -73,7 +82,7 @@ if [ "$SHOULD_RUN_FOLLOWING_AUDIT" = "true" ]; then
     ) >/dev/null 2>&1 &
     log "following 巡检已后台启动，日志: $FOLLOWING_AUDIT_LOG_FILE"
 else
-    log "按当前参数跳过 following 全量巡检"
+    log "默认跳过 following 全量巡检；如需运行，请显式传入 --with-following-audit"
 fi
 
 log "========== 每日日程结束 =========="

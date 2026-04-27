@@ -2914,3 +2914,22 @@
 **结论：**
 - 每日选题输出应分成：主线候选 2-3 个、AI 时事候选 1-2 个、Crypto / AI x Crypto 候选 0-1 个、今日最推荐 1 个、Wiki 待沉淀点 3-5 条。
 - LLM Wiki 的目标不是存新闻，而是把每日新信号沉淀成长期选题页、方法论页、框架和案例。
+
+## [2026-04-28] 会话摘要：Redbook P0 工作流降噪修正
+
+**完成了什么：**
+- 修正 `tools/daily.sh` 收尾提示，改为真实输出文件 `05-选题研究/X-每日日程-YYYY-MM-DD.md`，并提示查看 daily log 判断 wiki daily-cycle 状态。
+- 修正 `tools/auto-x/scripts/run_daily.sh`，following 全量巡检默认不再后台启动，只有显式传入 `--with-following-audit` 才运行。
+- 为 harness 增加 `close-run`，并让 wiki ingest/query/lint 这类 research-only 维护 run 自动关闭为 `done`。
+- 将旧 LLM Wiki maintenance run 批量 terminalize；当前统计为全部 47 个 run 中 31 个 `done`，LLM Wiki 类 28 个全部 `done`。
+- 新增 `tasks/active.md` 作为轻量当前任务面板，并把本轮 P0 清单收尾到完成态。
+- 复核主流程文档：当前 `AGENTS.md` / `CLAUDE.md` / `docs/shared/redbook-playbook.md` 已将 `02-内容素材库/` 旧入口收敛到 `wiki/素材/`，并统一使用 `X-每日日程-*`。
+
+**验证：**
+- `bash -n tools/daily.sh tools/auto-x/scripts/run_daily.sh`
+- `python3 -m py_compile tools/wiki_workflow.py tools/redbook_harness/cli.py tools/redbook_harness/runtime.py`
+- `python3 -m unittest discover -s tools/redbook_harness/tests`
+- `python3 tools/wiki_workflow.py --help`
+
+**遗留：**
+- P1 仍建议另起一轮做：缩短 `AGENTS.md`、清理 `00-选题记录.md` 噪音、建立 skills manifest、结构化发布数据、untrack 已跟踪的 generated artifacts。

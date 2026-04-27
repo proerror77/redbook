@@ -193,6 +193,11 @@ def ensure_daily_ingest_run(date_str: str) -> dict:
             )
         runtime.set_check(run["run_id"], check_name="materials_queried", value=True)
         runtime.set_check(run["run_id"], check_name="research_complete", value=True)
+        runtime.close_run(
+            run["run_id"],
+            status="done",
+            note="Daily wiki ingest is a research-only maintenance run.",
+        )
 
     final_run = runtime.load_run(run["run_id"])
     return {
@@ -301,9 +306,13 @@ def query_wiki(topic: str, *, date_str: str, attach_run_id: str | None = None) -
         description=f"Wiki query report for topic: {topic}",
         stage="research",
     )
-    if matches:
-        runtime.set_check(run["run_id"], check_name="materials_queried", value=True)
-        runtime.set_check(run["run_id"], check_name="research_complete", value=True)
+    runtime.set_check(run["run_id"], check_name="materials_queried", value=True)
+    runtime.set_check(run["run_id"], check_name="research_complete", value=True)
+    runtime.close_run(
+        run["run_id"],
+        status="done",
+        note="Wiki query is a research-only maintenance run.",
+    )
 
     attached_run: dict[str, object] | None = None
     if attach_run_id is not None:
@@ -470,6 +479,11 @@ def lint_wiki(*, date_str: str) -> dict:
         )
     runtime.set_check(run["run_id"], check_name="materials_queried", value=True)
     runtime.set_check(run["run_id"], check_name="research_complete", value=True)
+    runtime.close_run(
+        run["run_id"],
+        status="done",
+        note="Wiki lint is a research-only maintenance run.",
+    )
     final_run = runtime.load_run(run["run_id"])
     return {
         "run_id": final_run["run_id"],

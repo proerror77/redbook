@@ -7,9 +7,9 @@
   "owner": "Codex",
   "priority": "P1",
   "current_stage": "research",
-  "status": "in_progress",
+  "status": "done",
   "created_at": "2026-04-11T03:20:23+00:00",
-  "updated_at": "2026-04-11T03:20:23+00:00",
+  "updated_at": "2026-04-27T23:00:43+00:00",
   "artifacts": [
     {
       "id": "5951e09b85",
@@ -124,6 +124,18 @@
         "check_name": "research_complete",
         "value": true
       }
+    },
+    {
+      "at": "2026-04-27T23:00:43+00:00",
+      "type": "run_closed",
+      "stage": "research",
+      "message": "Run closed with status: done",
+      "meta": {
+        "status": "done",
+        "note": "Closed as completed wiki maintenance during 2026-04-28 workflow cleanup.",
+        "closed_at": "2026-04-27T23:00:43+00:00"
+      }
     }
-  ]
+  ],
+  "closed_at": "2026-04-27T23:00:43+00:00"
 }

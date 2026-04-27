@@ -3,8 +3,8 @@
 # - Manual:  bash tools/daily.sh
 # - Scheduled (launchd): point ProgramArguments here
 #
-# This delegates to auto-x's run_daily.sh, which manages headless Chrome/actionbook
-# and runs the daily report generator.
+# This delegates to auto-x's run_daily.sh, which runs the daily report generator
+# and records the wiki maintenance cycle.
 
 set -euo pipefail
 
@@ -20,7 +20,8 @@ fi
 
 /bin/bash "$AUTO_X_RUNNER" "$@"
 
-echo ""
-echo "✅ 早报已生成：05-选题研究/早报-$(date +%Y-%m-%d).md"
-echo "📌 请执行 wiki ingest 将今日信号更新到 wiki/选题/ 相关页面"
+TODAY="$(date +%Y-%m-%d)"
 
+echo ""
+echo "✅ 每日日程已生成：05-选题研究/X-每日日程-${TODAY}.md"
+echo "📌 Wiki daily-cycle 已自动记录；内容写回状态见 tools/auto-x/data/logs/${TODAY}.log"

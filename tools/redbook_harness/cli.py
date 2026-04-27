@@ -79,6 +79,11 @@ def build_parser() -> argparse.ArgumentParser:
     promote = subparsers.add_parser("promote", help="Promote the current stage if gates pass.")
     promote.add_argument("--run-id", required=True)
 
+    close_run = subparsers.add_parser("close-run", help="Close a run without requiring full content-pipeline promotion.")
+    close_run.add_argument("--run-id", required=True)
+    close_run.add_argument("--status", choices=["done", "closed_stale", "cancelled"], default="done")
+    close_run.add_argument("--note", default="")
+
     describe = subparsers.add_parser("describe", help="Print stage and check definitions.")
     describe.add_argument("--format", choices=["json", "text"], default="text")
 
@@ -210,6 +215,19 @@ def main(argv: list[str] | None = None) -> int:
                     "run_id": run["run_id"],
                     "current_stage": run["current_stage"],
                     "status": run["status"],
+                    "updated_at": run["updated_at"],
+                }
+            )
+            return 0
+
+        if args.command == "close-run":
+            run = runtime.close_run(args.run_id, status=args.status, note=args.note)
+            print_json(
+                {
+                    "run_id": run["run_id"],
+                    "current_stage": run["current_stage"],
+                    "status": run["status"],
+                    "closed_at": run.get("closed_at"),
                     "updated_at": run["updated_at"],
                 }
             )

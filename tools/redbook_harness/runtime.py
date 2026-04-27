@@ -197,6 +197,24 @@ class HarnessRuntime:
 
         return self._mutate_run(run_id, mutate)
 
+    def close_run(self, run_id: str, *, status: str = "done", note: str = "") -> dict[str, Any]:
+        if status not in {"done", "closed_stale", "cancelled"}:
+            raise ValueError(f"Unsupported close status: {status}")
+
+        def mutate(run: dict[str, Any]) -> dict[str, Any]:
+            closed_at = utc_now()
+            run["status"] = status
+            run["closed_at"] = closed_at
+            self.append_event(
+                run,
+                event_type="run_closed",
+                message=f"Run closed with status: {status}",
+                meta={"status": status, "note": note, "closed_at": closed_at},
+            )
+            return run
+
+        return self._mutate_run(run_id, mutate)
+
     def stage_gate_report(self, run: dict[str, Any], stage: str | None = None) -> dict[str, Any]:
         current_stage = stage or run["current_stage"]
         if current_stage not in STAGE_GATES:
