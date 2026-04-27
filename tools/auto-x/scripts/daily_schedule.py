@@ -199,11 +199,11 @@ def run_daily_research(
     reddit_limit: int = 25,
 ) -> tuple[str, str]:
     """
-    运行每日研究，返回 (report, topics_source_for_append)。
+    运行每日研究，返回 (report, topics_source_for_optional_append)。
 
     - X.com 分析依赖浏览器（agent-browser-session）
     - Hacker News / Reddit 分析不依赖浏览器
-    - 追加到选题池时，只使用 X.com 相关部分，避免外部内容噪音
+    - 默认不写入选题池；用户或 agent 明确选中后再 promotion
     """
     from daily_research import (
         run_timeline,
@@ -265,6 +265,8 @@ def main():
     parser.add_argument('--subreddits', nargs='+', default=DEFAULT_SUBREDDITS, help='监控的 subreddits')
     parser.add_argument('--skip-research', action='store_true',
                         help='跳过研究，只生成提醒和回顾')
+    parser.add_argument('--append-topics-to-record', action='store_true',
+                        help='兼容旧流程：把 X.com 候选追加到 00-选题记录.md（默认不追加）')
     parser.add_argument('--keywords', nargs='+',
                         default=DEFAULT_KEYWORDS)
     args = parser.parse_args()
@@ -328,10 +330,13 @@ def main():
             report_sections.insert(2, "---\n")
             report_sections.insert(2, hot_tweets_section)
 
-        # 追加选题到记录（只使用 X.com 部分，避免噪音）
+        # 选题候选默认只保存在日报内，避免污染人工选题池。
         if topics_source:
-            from daily_research import append_topics_to_record
-            append_topics_to_record(topics_source)
+            if args.append_topics_to_record:
+                from daily_research import append_topics_to_record
+                append_topics_to_record(topics_source)
+            else:
+                print_colored("ℹ️ 选题候选已保留在日报内；未自动写入 00-选题记录.md", 'cyan')
 
     # 保存报告
     full_report = '\n'.join(report_sections)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 X/Twitter 每日研究主流程
-一键执行所有研究任务，生成综合报告并更新选题记录
+一键执行所有研究任务，生成综合报告；默认不更新选题记录
 """
 
 import sys
@@ -334,6 +334,8 @@ def main():
     parser.add_argument('--reddit-limit', type=int, default=25, help='每个 subreddit 帖子数量（默认 25）')
     parser.add_argument('--subreddits', nargs='+', default=DEFAULT_SUBREDDITS, help='监控的 subreddits')
     parser.add_argument('--keywords', nargs='+', default=DEFAULT_KEYWORDS, help='搜索关键词')
+    parser.add_argument('--append-topics-to-record', action='store_true',
+                        help='兼容旧流程：把候选追加到 00-选题记录.md（默认不追加）')
     args = parser.parse_args()
 
     print_colored("\n🚀 X.com 每日研究启动", 'green')
@@ -423,8 +425,11 @@ def main():
     archive_path = str(DAILY_DIR / f"{today_str()}.md")
     save_report(full_report, archive_path)
 
-    # 追加选题到记录
-    append_topics_to_record(full_report)
+    # 选题候选默认只保存在日报内，避免污染人工选题池。
+    if args.append_topics_to_record:
+        append_topics_to_record(full_report)
+    else:
+        print_colored("ℹ️ 选题候选已保留在日报内；未自动写入 00-选题记录.md", 'cyan')
 
     print_colored("\n✅ 每日研究完成！", 'green')
     print_colored(f"报告: {report_path}", 'cyan')

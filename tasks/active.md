@@ -86,3 +86,24 @@
 - Shortened `AGENTS.md` from 728 lines to 310 lines and `CLAUDE.md` from 739 lines to 311 lines.
 - Updated `tools/sync_redbook_playbook.py` so future syncs use the lean playbook header.
 - Verification passed: shared sync completed, stale long-rule regex checks no longer match, and line counts are reduced.
+
+## 2026-04-28 Redbook P1 Topic Pool Cleanup
+
+- Owner: Codex
+- Source: `docs/reports/2026-04-28-redbook-workflow-review.md`
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Archive existing `X 每日研究发现` scrape-noise sections from `00-选题记录.md`.
+- [x] Keep the main topic pool limited to manually selected or explicitly promoted topics.
+- [x] Stop daily scripts from auto-appending research keywords to the topic pool by default.
+- [x] Update docs, verify no scrape-noise remains in the live topic pool, then commit.
+
+### Review
+
+- Moved 127 non-empty lines of `X 每日研究发现` scrape noise into `01-内容生产/选题管理/archive/2026-04-28-X每日研究发现-自动抓取噪音归档.md`.
+- Left `00-选题记录.md` with only manually meaningful pending/deepened topics plus an archive pointer.
+- Added explicit `--append-topics-to-record` compatibility flags to `daily_schedule.py` and `daily_research.py`; default daily runs no longer write candidates into the topic pool.
+- Updated `tools/auto-x/README.md` to state that recommendations stay in the daily report until explicitly promoted.
+- Verification passed: Python compile, both CLI help outputs include the new flag, live topic pool has no `X 每日研究` rows, archive contains the old rows, and diff whitespace check passed.

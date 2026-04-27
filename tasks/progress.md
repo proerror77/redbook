@@ -2982,3 +2982,20 @@
 
 **遗留：**
 - P1 还剩：清理 `00-选题记录.md` 自动抓取噪音、结构化发布数据。
+
+## [2026-04-28] 会话摘要：Redbook P1 Topic Pool Cleanup
+
+**完成了什么：**
+- 将 `00-选题记录.md` 里的 `X 每日研究发现` 自动抓取噪音归档到 `01-内容生产/选题管理/archive/2026-04-28-X每日研究发现-自动抓取噪音归档.md`。
+- `00-选题记录.md` 现在只保留人工选题和已深化选题，并留下归档指针。
+- `daily_schedule.py` / `daily_research.py` 默认不再写入选题池；需要旧行为时必须显式加 `--append-topics-to-record`。
+- 更新 `tools/auto-x/README.md`，说明推荐选题保留在日报，选中后再 promotion。
+
+**验证：**
+- `python3 -m py_compile tools/auto-x/scripts/daily_schedule.py tools/auto-x/scripts/daily_research.py`
+- `daily_schedule.py --help` / `daily_research.py --help` 都显示 `--append-topics-to-record`
+- live topic pool 中 `X 每日研究` 行数为 0；归档中保留 127 条旧噪音行。
+- `git diff --check` 通过。
+
+**遗留：**
+- P1 还剩：结构化发布数据。
