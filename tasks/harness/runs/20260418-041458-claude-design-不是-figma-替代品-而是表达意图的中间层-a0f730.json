@@ -1,0 +1,249 @@
+{
+  "run_id": "20260418-041458-claude-design-不是-figma-替代品-而是表达意图的中间层-a0f730",
+  "kind": "content_pipeline",
+  "topic": "Claude Design 不是 Figma 替代品，而是表达意图的中间层",
+  "summary": "基于 4/18 fresh HN/X 信号，写一条新闻转发 + 判断型 X 内容",
+  "source": "05-选题研究/HN-每日热点-2026-04-18.md",
+  "owner": "Codex",
+  "priority": "P1",
+  "current_stage": "research",
+  "status": "retry_pending",
+  "created_at": "2026-04-18T04:14:58+00:00",
+  "updated_at": "2026-04-18T14:59:41+00:00",
+  "artifacts": [
+    {
+      "id": "4bbdd5fca9",
+      "type": "note",
+      "path": "01-内容生产/02-制作中的选题/2026-04-18-Claude-Design-不是-Figma-替代品-X稿.md",
+      "description": "X quote-post 稿：新闻转发 + 个人判断，含引用目标链接",
+      "stage": "draft",
+      "created_at": "2026-04-18T04:15:52+00:00"
+    },
+    {
+      "id": "27b883f1b5",
+      "type": "note",
+      "path": "05-选题研究/发布队列-2026-04-18.md",
+      "description": "今日发布队列：新闻转发 + 判断的推荐顺序",
+      "stage": "research",
+      "created_at": "2026-04-18T04:16:59+00:00"
+    },
+    {
+      "id": "dbfecd079c",
+      "type": "note",
+      "path": "01-内容生产/02-制作中的选题/2026-04-18-Claude-Design-不是-Figma-替代品-小红书图文稿.md",
+      "description": "小红书新闻图文稿：Claude Design + 表达意图成本",
+      "stage": "draft",
+      "created_at": "2026-04-18T05:04:41+00:00"
+    },
+    {
+      "id": "1610c18557",
+      "type": "note",
+      "path": "xhs-images/claude-design-intent-layer/01-cover-claude-design.png",
+      "description": "小红书图组封面，图组目录下其余 4 张已生成",
+      "stage": "draft",
+      "created_at": "2026-04-18T05:04:41+00:00"
+    },
+    {
+      "id": "5d15d59980",
+      "type": "note",
+      "path": "01-内容生产/02-制作中的选题/2026-04-18-Claude-Design-不是-Figma-替代品-x-quote.txt",
+      "description": "X quote-post 最终发出版本（实际换行文本）",
+      "stage": "publish",
+      "created_at": "2026-04-18T06:20:28+00:00"
+    }
+  ],
+  "checks": {
+    "materials_queried": true,
+    "research_complete": true,
+    "outline_locked": true,
+    "draft_written": true,
+    "facts_checked": false,
+    "platform_ready": true,
+    "published": true,
+    "progress_updated": true,
+    "wiki_logged": true,
+    "lessons_reviewed": true
+  },
+  "incidents": [
+    {
+      "id": "84605750e6",
+      "code": "tool_transient",
+      "summary": "小红书账号因平台风控处于自动化受限窗口，Claude Design 图文改为人工手动发布",
+      "details": "",
+      "stage": "research",
+      "status": "open",
+      "recommended_action": "retry",
+      "max_retries": 2,
+      "retry_count": 0,
+      "created_at": "2026-04-18T14:59:41+00:00",
+      "updated_at": "2026-04-18T14:59:41+00:00"
+    }
+  ],
+  "events": [
+    {
+      "at": "2026-04-18T04:14:58+00:00",
+      "type": "run_created",
+      "stage": "research",
+      "message": "Run created for topic: Claude Design 不是 Figma 替代品，而是表达意图的中间层",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-18T04:15:52+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: note",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-04-18-Claude-Design-不是-Figma-替代品-X稿.md",
+        "artifact_id": "4bbdd5fca9"
+      }
+    },
+    {
+      "at": "2026-04-18T04:15:52+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-18T04:15:52+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check research_complete set to True",
+      "meta": {
+        "check_name": "research_complete",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-18T04:15:52+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check outline_locked set to True",
+      "meta": {
+        "check_name": "outline_locked",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-18T04:15:52+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check draft_written set to True",
+      "meta": {
+        "check_name": "draft_written",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-18T04:16:59+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: note",
+      "meta": {
+        "path": "05-选题研究/发布队列-2026-04-18.md",
+        "artifact_id": "27b883f1b5"
+      }
+    },
+    {
+      "at": "2026-04-18T04:16:59+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check platform_ready set to True",
+      "meta": {
+        "check_name": "platform_ready",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-18T05:04:41+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: note",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-04-18-Claude-Design-不是-Figma-替代品-小红书图文稿.md",
+        "artifact_id": "dbfecd079c"
+      }
+    },
+    {
+      "at": "2026-04-18T05:04:41+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: note",
+      "meta": {
+        "path": "xhs-images/claude-design-intent-layer/01-cover-claude-design.png",
+        "artifact_id": "1610c18557"
+      }
+    },
+    {
+      "at": "2026-04-18T06:20:28+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check published set to True",
+      "meta": {
+        "check_name": "published",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-18T06:20:28+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check progress_updated set to True",
+      "meta": {
+        "check_name": "progress_updated",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-18T06:20:28+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: note",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-04-18-Claude-Design-不是-Figma-替代品-x-quote.txt",
+        "artifact_id": "5d15d59980"
+      }
+    },
+    {
+      "at": "2026-04-18T06:20:28+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check wiki_logged set to True",
+      "meta": {
+        "check_name": "wiki_logged",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-18T06:20:28+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check lessons_reviewed set to True",
+      "meta": {
+        "check_name": "lessons_reviewed",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-18T14:59:41+00:00",
+      "type": "incident_reported",
+      "stage": "research",
+      "message": "Incident reported: tool_transient",
+      "meta": {
+        "incident_id": "84605750e6",
+        "code": "tool_transient",
+        "description": "工具调用临时失败，可优先自动重试",
+        "recommended_action": "retry",
+        "retry_count": 0,
+        "max_retries": 2,
+        "retry_remaining": 2,
+        "status": "open",
+        "summary": "小红书账号因平台风控处于自动化受限窗口，Claude Design 图文改为人工手动发布",
+        "details": ""
+      }
+    }
+  ]
+}

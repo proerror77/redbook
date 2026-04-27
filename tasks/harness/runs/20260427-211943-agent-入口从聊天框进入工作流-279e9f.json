@@ -1,0 +1,302 @@
+{
+  "run_id": "20260427-211943-agent-入口从聊天框进入工作流-279e9f",
+  "kind": "content_pipeline",
+  "topic": "Agent 入口从聊天框进入工作流",
+  "summary": "基于今日 Timeline 信号，产出 Agent 从聊天框迁移到邮箱/浏览器/代码图谱/后台任务的 X 长帖草稿",
+  "source": "05-选题研究/X-Timeline-2026-04-28-continued-051251.md",
+  "owner": "Codex",
+  "priority": "P1",
+  "current_stage": "publish",
+  "status": "in_progress",
+  "created_at": "2026-04-27T21:19:43+00:00",
+  "updated_at": "2026-04-27T21:49:03+00:00",
+  "artifacts": [
+    {
+      "id": "b41f4c2802",
+      "type": "source",
+      "path": "05-选题研究/X-Timeline-2026-04-28-continued-051251.md",
+      "description": "今日继续抓取的 X Timeline 原始研究报告",
+      "stage": "research",
+      "created_at": "2026-04-27T21:20:03+00:00"
+    },
+    {
+      "id": "a439082768",
+      "type": "draft",
+      "path": "01-内容生产/02-制作中的选题/2026-04-28-Agent-入口从聊天框进入工作流/X长帖.md",
+      "description": "X 长帖草稿、Hook、审稿和发布清单",
+      "stage": "draft",
+      "created_at": "2026-04-27T21:20:04+00:00"
+    },
+    {
+      "id": "6ff929de32",
+      "type": "research_report",
+      "path": "05-选题研究/X-Timeline-2026-04-28-continued-051251.md",
+      "description": "今日 Timeline 研究报告，支持本稿选题判断",
+      "stage": "research",
+      "created_at": "2026-04-27T21:20:42+00:00"
+    },
+    {
+      "id": "2f06ec6086",
+      "type": "qa_report",
+      "path": "01-内容生产/02-制作中的选题/2026-04-28-Agent-入口从聊天框进入工作流/QA报告.md",
+      "description": "X Thread 发布前 QA 报告",
+      "stage": "review",
+      "created_at": "2026-04-27T21:26:22+00:00"
+    },
+    {
+      "id": "6fc0e82c1d",
+      "type": "publish_checklist",
+      "path": "01-内容生产/02-制作中的选题/2026-04-28-Agent-入口从聊天框进入工作流/发布清单.md",
+      "description": "X Thread 发布清单，等待用户确认发布",
+      "stage": "review",
+      "created_at": "2026-04-27T21:26:22+00:00"
+    },
+    {
+      "id": "5284cafcc3",
+      "type": "progress_log",
+      "path": "tasks/progress.md",
+      "description": "本轮会话进度记录",
+      "stage": "retrospect",
+      "created_at": "2026-04-27T21:27:14+00:00"
+    },
+    {
+      "id": "403909cb22",
+      "type": "wiki_log",
+      "path": "wiki/log.md",
+      "description": "本轮 wiki query 记录",
+      "stage": "retrospect",
+      "created_at": "2026-04-27T21:27:14+00:00"
+    },
+    {
+      "id": "79717afc2f",
+      "type": "research_report",
+      "path": "docs/reports/wiki-query-agent-入口从聊天框进入工作流-2026-04-28.md",
+      "description": "Wiki query report attached for topic: Agent 入口从聊天框进入工作流",
+      "stage": "research",
+      "created_at": "2026-04-27T21:49:03+00:00"
+    }
+  ],
+  "checks": {
+    "materials_queried": true,
+    "research_complete": true,
+    "outline_locked": true,
+    "draft_written": true,
+    "facts_checked": true,
+    "platform_ready": true,
+    "published": false,
+    "progress_updated": true,
+    "wiki_logged": true,
+    "lessons_reviewed": true
+  },
+  "incidents": [],
+  "events": [
+    {
+      "at": "2026-04-27T21:19:43+00:00",
+      "type": "run_created",
+      "stage": "research",
+      "message": "Run created for topic: Agent 入口从聊天框进入工作流",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-27T21:20:02+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-27T21:20:03+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: source",
+      "meta": {
+        "path": "05-选题研究/X-Timeline-2026-04-28-continued-051251.md",
+        "artifact_id": "b41f4c2802"
+      }
+    },
+    {
+      "at": "2026-04-27T21:20:03+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check research_complete set to True",
+      "meta": {
+        "check_name": "research_complete",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-27T21:20:04+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: draft",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-04-28-Agent-入口从聊天框进入工作流/X长帖.md",
+        "artifact_id": "a439082768"
+      }
+    },
+    {
+      "at": "2026-04-27T21:20:04+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check outline_locked set to True",
+      "meta": {
+        "check_name": "outline_locked",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-27T21:20:06+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check draft_written set to True",
+      "meta": {
+        "check_name": "draft_written",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-27T21:20:06+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check facts_checked set to True",
+      "meta": {
+        "check_name": "facts_checked",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-27T21:20:06+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check platform_ready set to True",
+      "meta": {
+        "check_name": "platform_ready",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-27T21:20:07+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check lessons_reviewed set to True",
+      "meta": {
+        "check_name": "lessons_reviewed",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-27T21:20:42+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: research_report",
+      "meta": {
+        "path": "05-选题研究/X-Timeline-2026-04-28-continued-051251.md",
+        "artifact_id": "6ff929de32"
+      }
+    },
+    {
+      "at": "2026-04-27T21:25:15+00:00",
+      "type": "stage_promoted",
+      "stage": "draft",
+      "message": "Stage promoted to draft",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-27T21:25:29+00:00",
+      "type": "stage_promoted",
+      "stage": "review",
+      "message": "Stage promoted to review",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-27T21:26:22+00:00",
+      "type": "artifact_added",
+      "stage": "review",
+      "message": "Artifact added: qa_report",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-04-28-Agent-入口从聊天框进入工作流/QA报告.md",
+        "artifact_id": "2f06ec6086"
+      }
+    },
+    {
+      "at": "2026-04-27T21:26:22+00:00",
+      "type": "artifact_added",
+      "stage": "review",
+      "message": "Artifact added: publish_checklist",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-04-28-Agent-入口从聊天框进入工作流/发布清单.md",
+        "artifact_id": "6fc0e82c1d"
+      }
+    },
+    {
+      "at": "2026-04-27T21:26:36+00:00",
+      "type": "stage_promoted",
+      "stage": "publish",
+      "message": "Stage promoted to publish",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-27T21:27:14+00:00",
+      "type": "artifact_added",
+      "stage": "publish",
+      "message": "Artifact added: progress_log",
+      "meta": {
+        "path": "tasks/progress.md",
+        "artifact_id": "5284cafcc3"
+      }
+    },
+    {
+      "at": "2026-04-27T21:27:14+00:00",
+      "type": "artifact_added",
+      "stage": "publish",
+      "message": "Artifact added: wiki_log",
+      "meta": {
+        "path": "wiki/log.md",
+        "artifact_id": "403909cb22"
+      }
+    },
+    {
+      "at": "2026-04-27T21:27:24+00:00",
+      "type": "check_updated",
+      "stage": "publish",
+      "message": "Check wiki_logged set to True",
+      "meta": {
+        "check_name": "wiki_logged",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-27T21:27:24+00:00",
+      "type": "check_updated",
+      "stage": "publish",
+      "message": "Check progress_updated set to True",
+      "meta": {
+        "check_name": "progress_updated",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-27T21:49:03+00:00",
+      "type": "artifact_added",
+      "stage": "publish",
+      "message": "Artifact added: research_report",
+      "meta": {
+        "path": "docs/reports/wiki-query-agent-入口从聊天框进入工作流-2026-04-28.md",
+        "artifact_id": "79717afc2f"
+      }
+    },
+    {
+      "at": "2026-04-27T21:49:03+00:00",
+      "type": "check_updated",
+      "stage": "publish",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
+    }
+  ]
+}

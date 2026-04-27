@@ -1,0 +1,12 @@
+这条更新值得看的，不是「3x faster」这个数字。
+
+而是 Android 官方开始明确支持：
+用任何 agent / LLM / tool 来开发 App。
+
+一旦 Android CLI 这种工程接口稳定，
+AI 开发 Android 就不再只是聊天生成几段代码，
+而是能真正接进 build、debug、test、迭代的完整流程。
+
+这意味着一件事：
+
+agent 正在从 demo，变成正式开发入口。

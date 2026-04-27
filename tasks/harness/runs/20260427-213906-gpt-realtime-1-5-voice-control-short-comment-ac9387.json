@@ -1,0 +1,336 @@
+{
+  "run_id": "20260427-213906-gpt-realtime-1-5-voice-control-short-comment-ac9387",
+  "kind": "content_pipeline",
+  "topic": "gpt-realtime-1.5 voice control short comment",
+  "summary": "针对 OpenAI realtime-voice-component / gpt-realtime-1.5 发布中文 X 短评",
+  "source": "https://github.com/openai/realtime-voice-component/",
+  "owner": "Codex",
+  "priority": "P1",
+  "current_stage": "retrospect",
+  "status": "done",
+  "created_at": "2026-04-27T21:39:06+00:00",
+  "updated_at": "2026-04-27T21:50:39+00:00",
+  "artifacts": [
+    {
+      "id": "74573b36a6",
+      "type": "draft",
+      "path": "01-内容生产/02-制作中的选题/2026-04-28-gpt-realtime-voice-control-短评/X短评.md",
+      "description": "X 中文短评草稿和审稿",
+      "stage": "draft",
+      "created_at": "2026-04-27T21:39:53+00:00"
+    },
+    {
+      "id": "6a7f0715fc",
+      "type": "research_report",
+      "path": "05-选题研究/gpt-realtime-voice-control-2026-04-28.md",
+      "description": "OpenAI realtime voice control 短评研究",
+      "stage": "research",
+      "created_at": "2026-04-27T21:39:53+00:00"
+    },
+    {
+      "id": "237d1751fd",
+      "type": "publish_checklist",
+      "path": "01-内容生产/02-制作中的选题/2026-04-28-gpt-realtime-voice-control-短评/X短评.md",
+      "description": "短评发布清单",
+      "stage": "review",
+      "created_at": "2026-04-27T21:41:28+00:00"
+    },
+    {
+      "id": "c0930147e1",
+      "type": "qa_report",
+      "path": "01-内容生产/02-制作中的选题/2026-04-28-gpt-realtime-voice-control-短评/X短评.md",
+      "description": "短评内置 x-mastery 快速审稿",
+      "stage": "review",
+      "created_at": "2026-04-27T21:41:28+00:00"
+    },
+    {
+      "id": "992a009dc4",
+      "type": "publish_record",
+      "path": "01-内容生产/02-制作中的选题/2026-04-28-gpt-realtime-voice-control-短评/发布记录.md",
+      "description": "X 发布记录和状态页验证",
+      "stage": "publish",
+      "created_at": "2026-04-27T21:44:22+00:00"
+    },
+    {
+      "id": "07c20d0be8",
+      "type": "wiki_log",
+      "path": "wiki/log.md",
+      "description": "本轮发布 wiki ingest 记录",
+      "stage": "retrospect",
+      "created_at": "2026-04-27T21:44:32+00:00"
+    },
+    {
+      "id": "d879ecfded",
+      "type": "progress_log",
+      "path": "tasks/progress.md",
+      "description": "本轮发布会话摘要",
+      "stage": "retrospect",
+      "created_at": "2026-04-27T21:44:32+00:00"
+    },
+    {
+      "id": "40aa3fad44",
+      "type": "research_report",
+      "path": "docs/reports/wiki-query-gpt-realtime-voice-control-2026-04-28.md",
+      "description": "Wiki query report attached for topic: gpt-realtime voice control",
+      "stage": "research",
+      "created_at": "2026-04-27T21:49:03+00:00"
+    }
+  ],
+  "checks": {
+    "materials_queried": true,
+    "research_complete": true,
+    "outline_locked": true,
+    "draft_written": true,
+    "facts_checked": true,
+    "platform_ready": true,
+    "published": true,
+    "progress_updated": true,
+    "wiki_logged": true,
+    "lessons_reviewed": true
+  },
+  "incidents": [],
+  "events": [
+    {
+      "at": "2026-04-27T21:39:06+00:00",
+      "type": "run_created",
+      "stage": "research",
+      "message": "Run created for topic: gpt-realtime-1.5 voice control short comment",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-27T21:39:53+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: draft",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-04-28-gpt-realtime-voice-control-短评/X短评.md",
+        "artifact_id": "74573b36a6"
+      }
+    },
+    {
+      "at": "2026-04-27T21:39:53+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-27T21:39:53+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: research_report",
+      "meta": {
+        "path": "05-选题研究/gpt-realtime-voice-control-2026-04-28.md",
+        "artifact_id": "6a7f0715fc"
+      }
+    },
+    {
+      "at": "2026-04-27T21:39:53+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check research_complete set to True",
+      "meta": {
+        "check_name": "research_complete",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-27T21:39:53+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check outline_locked set to True",
+      "meta": {
+        "check_name": "outline_locked",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-27T21:39:54+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check draft_written set to True",
+      "meta": {
+        "check_name": "draft_written",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-27T21:39:54+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check facts_checked set to True",
+      "meta": {
+        "check_name": "facts_checked",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-27T21:39:54+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check platform_ready set to True",
+      "meta": {
+        "check_name": "platform_ready",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-27T21:39:55+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check lessons_reviewed set to True",
+      "meta": {
+        "check_name": "lessons_reviewed",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-27T21:40:19+00:00",
+      "type": "stage_promoted",
+      "stage": "draft",
+      "message": "Stage promoted to draft",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-27T21:41:19+00:00",
+      "type": "stage_promoted",
+      "stage": "review",
+      "message": "Stage promoted to review",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-27T21:41:28+00:00",
+      "type": "artifact_added",
+      "stage": "review",
+      "message": "Artifact added: publish_checklist",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-04-28-gpt-realtime-voice-control-短评/X短评.md",
+        "artifact_id": "237d1751fd"
+      }
+    },
+    {
+      "at": "2026-04-27T21:41:28+00:00",
+      "type": "artifact_added",
+      "stage": "review",
+      "message": "Artifact added: qa_report",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-04-28-gpt-realtime-voice-control-短评/X短评.md",
+        "artifact_id": "c0930147e1"
+      }
+    },
+    {
+      "at": "2026-04-27T21:41:33+00:00",
+      "type": "stage_promoted",
+      "stage": "publish",
+      "message": "Stage promoted to publish",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-27T21:44:22+00:00",
+      "type": "artifact_added",
+      "stage": "publish",
+      "message": "Artifact added: publish_record",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-04-28-gpt-realtime-voice-control-短评/发布记录.md",
+        "artifact_id": "992a009dc4"
+      }
+    },
+    {
+      "at": "2026-04-27T21:44:22+00:00",
+      "type": "check_updated",
+      "stage": "publish",
+      "message": "Check published set to True",
+      "meta": {
+        "check_name": "published",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-27T21:44:22+00:00",
+      "type": "check_updated",
+      "stage": "publish",
+      "message": "Check progress_updated set to True",
+      "meta": {
+        "check_name": "progress_updated",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-27T21:44:22+00:00",
+      "type": "check_updated",
+      "stage": "publish",
+      "message": "Check wiki_logged set to True",
+      "meta": {
+        "check_name": "wiki_logged",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-27T21:44:26+00:00",
+      "type": "stage_promoted",
+      "stage": "retrospect",
+      "message": "Stage promoted to retrospect",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-27T21:44:32+00:00",
+      "type": "artifact_added",
+      "stage": "retrospect",
+      "message": "Artifact added: wiki_log",
+      "meta": {
+        "path": "wiki/log.md",
+        "artifact_id": "07c20d0be8"
+      }
+    },
+    {
+      "at": "2026-04-27T21:44:32+00:00",
+      "type": "artifact_added",
+      "stage": "retrospect",
+      "message": "Artifact added: progress_log",
+      "meta": {
+        "path": "tasks/progress.md",
+        "artifact_id": "d879ecfded"
+      }
+    },
+    {
+      "at": "2026-04-27T21:44:45+00:00",
+      "type": "run_completed",
+      "stage": "retrospect",
+      "message": "Run completed; final stage already reached.",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-27T21:49:03+00:00",
+      "type": "artifact_added",
+      "stage": "retrospect",
+      "message": "Artifact added: research_report",
+      "meta": {
+        "path": "docs/reports/wiki-query-gpt-realtime-voice-control-2026-04-28.md",
+        "artifact_id": "40aa3fad44"
+      }
+    },
+    {
+      "at": "2026-04-27T21:49:03+00:00",
+      "type": "check_updated",
+      "stage": "retrospect",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-27T21:50:39+00:00",
+      "type": "check_updated",
+      "stage": "retrospect",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
+    }
+  ]
+}
