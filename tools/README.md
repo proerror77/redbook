@@ -6,10 +6,11 @@
 
 | 功能 | 推荐方式 | 备选方式 | 状态 |
 |------|---------|---------|------|
-| **X.com 研究** | `/x-collect` skill | `bash tools/daily.sh` (自动化) | ✅ 主推 |
-| **X.com 创作** | `/x-create` skill | 手动写作 | ✅ 主推 |
+| **X.com 研究** | `bash tools/daily.sh` + `wiki_workflow.py query` | `tools/x-skills/x-collect` legacy local reference | ✅ 主推 |
+| **X.com 创作** | `/x-mastery-mentor` + 账号风格手写/改写 | `tools/x-skills/x-create` legacy local reference | ✅ 主推 |
 | **X.com 发布** | `/baoyu-post-to-x` skill | ❌ ~~`auto-x/publish_x.sh`~~ | ✅ 唯一 |
 | **小红书图文** | `/baoyu-xhs-images` skill | ❌ ~~`auto-redbook/render_simple.sh`~~ | ✅ 唯一 |
+| **小红书视频/数据/搜索** | `RedBookSkills` | 历史 `/post-to-xhs` 文档 | ✅ 主推 |
 | **跨站点只读抓取 / 环境验证** | `tools/opencli/` | 现有 skills / 手工浏览器 | ✅ 辅助层 |
 | **内部工作台自然语言试点** | `tools/page-agent-console/` | 无 | ✅ 试点 |
 | **Reddit 痛点** | `reddit_hack.py` | 无 | ✅ 唯一 |
@@ -53,9 +54,9 @@ tools/
 │   └── README.md
 │
 ├── x-skills/             # X.com Claude Skills
-│   ├── x-collect/        ✅ 研究工具（交互式）
-│   ├── x-create/         ✅ 创作工具
-│   ├── x-filter/         ✅ 筛选工具
+│   ├── x-collect/        ⚠️ legacy local reference（主流程不用）
+│   ├── x-create/         ⚠️ legacy local reference（主流程不用）
+│   ├── x-filter/         ⚠️ legacy local reference（主流程不用）
 │   └── x-publish/        ⚠️ 已被 /baoyu-post-to-x 替代
 │
 ├── reddit_hack.py        ✅ Reddit 痛点挖掘（唯一）
@@ -69,19 +70,19 @@ tools/
 
 ### 1. X.com 工具链
 
-#### ✅ **推荐：Skills 方式**（交互式）
+#### ✅ **推荐：当前主流程**
 
-**`/x-collect`** - 研究收集
-- **用途**：话题搜索、趋势分析、痛点提取
-- **优势**：交互式、实时反馈、灵活调整
-- **适用场景**：需要深度挖掘某个话题时
-- **调用方式**：直接说「研究 X」或「X 话题研究」
+当前可用入口以 [`docs/reference/skills-manifest.md`](../docs/reference/skills-manifest.md) 为准。
 
-**`/x-create`** - 内容创作
-- **用途**：生成病毒式推文、Thread、长文
-- **优势**：智能优化、自动排版
-- **适用场景**：需要创作高质量推文时
-- **调用方式**：说「写推文」或「创作 X 内容」
+**研究**：
+- 默认入口：`bash tools/daily.sh`
+- 显式 wiki 查询：`python3 tools/wiki_workflow.py query --topic "主题" --date YYYY-MM-DD`
+- `tools/x-skills/x-collect` 仅作为 legacy local reference，不再作为默认 skill 入口。
+
+**创作 / 审稿**：
+- 默认入口：`/x-mastery-mentor`
+- 用它做 Hook、结构、算法层、内容层、CTA 层审稿。
+- `tools/x-skills/x-create` 仅作为 legacy local reference，不再作为默认 skill 入口。
 
 **`/baoyu-post-to-x`** - 发布推文
 - **用途**：自动发布推文（文本/图片/视频）
@@ -102,7 +103,7 @@ tools/
   - `bash tools/daily.sh --skip-x`：无浏览器模式（仅 HN/Reddit，适合 GitHub Actions/CI）
 - **输出位置**：
   - 综合报告：`05-选题研究/X-每日日程-{日期}.md`
-  - 自动追加到：`01-内容生产/选题管理/00-选题记录.md`
+  - 推荐选题保留在日报内；用户或 agent 明确选中后再写入 `01-内容生产/选题管理/00-选题记录.md`
 - **手动运行**：
   ```bash
   bash tools/daily.sh
@@ -276,16 +277,19 @@ http://127.0.0.1:4318
 需要做什么？
 ├─ 研究 X.com 话题
 │  ├─ 定时自动化 → ✅ bash tools/daily.sh（已配置）
-│  └─ 手动深挖 → ✅ /x-collect skill
+│  └─ 手动深挖 → ✅ tools/wiki_workflow.py query + 当前 X Timeline 检索
 │
 ├─ 创作 X 推文
-│  └─ ✅ /x-create skill
+│  └─ ✅ /x-mastery-mentor + 账号风格手写/改写
 │
 ├─ 发布到 X.com
 │  └─ ✅ /baoyu-post-to-x skill
 │
 ├─ 制作小红书图文
 │  └─ ✅ /baoyu-xhs-images skill
+│
+├─ 小红书视频 / 数据 / 搜索
+│  └─ ✅ RedBookSkills
 │
 ├─ 跨站点只读抓取 / 环境验证
 │  └─ ✅ tools/opencli/
@@ -324,11 +328,11 @@ http://127.0.0.1:4318
 
 **研究阶段**：
 - 自动：等待每日 7:00 AM 的研究报告
-- 手动：说「研究 X」调用 `/x-collect`
+- 手动：用 `tools/wiki_workflow.py query` 查询 wiki，并按需查看当前 X Timeline
 - Reddit：`python3 tools/reddit_hack.py <url>`
 
 **创作阶段**：
-- X 推文：说「创作 X 内容」
+- X 推文：用 `/x-mastery-mentor` 做结构、Hook 和审稿
 - 小红书图文：说「生成小红书图文」
 
 **发布阶段**：

@@ -2933,3 +2933,21 @@
 
 **遗留：**
 - P1 仍建议另起一轮做：缩短 `AGENTS.md`、清理 `00-选题记录.md` 噪音、建立 skills manifest、结构化发布数据、untrack 已跟踪的 generated artifacts。
+
+## [2026-04-28] 会话摘要：Redbook P1 Skills Manifest 修正
+
+**完成了什么：**
+- 新增 `docs/reference/skills-manifest.md`，把当前可用入口分成 `active`、`active-global`、`active-script`、`legacy-local`、`deprecated`。
+- 明确 `/x-collect`、`/x-create`、`/x-filter` 是 `tools/x-skills/` 下的 legacy local reference，不再作为主流程默认入口。
+- 将 X 研究默认收敛到 `tools/daily.sh` + `tools/wiki_workflow.py query` + 当前 X Timeline 检索；X 创作/审稿默认收敛到 `/x-mastery-mentor`。
+- 将小红书默认路由改为：图文用 `/baoyu-xhs-images`，视频/数据/搜索用全局 `RedBookSkills`；`/post-to-xhs` 只作为历史 alias 文档保留。
+- 更新 `.rules`、`AGENTS.md`、`CLAUDE.md`、`docs/shared/redbook-playbook.md`、`tools/README.md`、`tools/post-to-xhs-使用指南.md`。
+
+**验证：**
+- `python3 tools/sync_redbook_playbook.py`
+- `git diff --check`
+- manifest 中关键路径存在性检查通过
+- stale default-entry regex checks returned no matches
+
+**遗留：**
+- P1 还剩：缩短 `AGENTS.md`、清理 `00-选题记录.md` 自动抓取噪音、结构化发布数据、untrack generated artifacts。

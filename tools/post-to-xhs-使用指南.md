@@ -1,5 +1,8 @@
 # post-to-xhs Skill 使用指南
 
+> 当前状态：legacy alias / historical guide。
+> 当前 Codex 环境没有独立 `post-to-xhs/SKILL.md`，小红书图文优先使用 `/baoyu-xhs-images`，视频、数据、搜索、评论等站点操作使用全局 `RedBookSkills`。统一入口表见 `docs/reference/skills-manifest.md`。
+
 ## 功能概述
 
 `/post-to-xhs` skill 提供小红书内容发布和数据分析功能，基于 Chrome CDP 自动化。
@@ -154,10 +157,10 @@
 ## 推荐使用策略
 
 1. **图文内容**：优先用 `/baoyu-xhs-images`（视觉效果更好）
-2. **视频内容**：用 `/post-to-xhs`（唯一选择）
-3. **多账号发布**：用 `/post-to-xhs`
-4. **数据分析**：用 `/post-to-xhs`（独有功能）
-5. **竞品分析**：用 `/post-to-xhs` 搜索 + 详情
+2. **视频内容**：用 `RedBookSkills`
+3. **多账号发布**：用 `RedBookSkills`
+4. **数据分析**：用 `RedBookSkills`
+5. **竞品分析**：用 `RedBookSkills` 搜索 + 详情
 
 ## 注意事项
 

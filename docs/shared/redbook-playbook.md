@@ -26,7 +26,7 @@
 6. **用户确认发布**（强制）— 展示最终稿 + 审稿结论，等用户明确说「发布」才执行发布动作
 7. **多平台改写** — X 长文 / 小红书图文（按需公众号）
 7. **配图** — `/document-illustrator`（长文）或 `/baoyu-xhs-images`（小红书）
-8. **发布** — `/baoyu-post-to-x` + `/post-to-xhs`
+8. **发布** — X 用 `/baoyu-post-to-x`；小红书图文用 `/baoyu-xhs-images`，视频/数据/搜索用 `RedBookSkills`
 9. **Wiki 沉淀** — 更新 `wiki/选题/` 相关页面「已产出内容」，提炼金句/框架存入 `wiki/素材/`，追加 `wiki/log.md`
 10. **收尾** — 更新 `tasks/progress.md`，git commit
 
@@ -78,12 +78,13 @@
 
 ### 主要 Skills（推荐使用）
 - **每日研究**：`tools/daily.sh` - 自动抓取 X timeline 爆款 + HN/Reddit 热点，输出 `X-每日日程-YYYY-MM-DD.md`
-- **X.com 创作（可选辅助）**：`/x-create` - 病毒式推文生成，不是强制步骤
+- **Skills 清单**：`docs/reference/skills-manifest.md` - 当前可用入口与 legacy 入口的唯一对照表
+- **X.com 审稿 / 创作辅助**：`/x-mastery-mentor` - 结构、Hook、算法层、内容层与 CTA 审稿
 - **X.com 发布**：`/baoyu-post-to-x` - 自动发布推文
 - **文档配图**：`/document-illustrator` - 按主稿内容自动生成封面图和文内配图
 - **小红书图文**：`/baoyu-xhs-images` - 图文生成 + 发布
-- **小红书发布**：`/post-to-xhs` - 图文/视频发布 + 数据分析
-- **筛选话题**：`/x-filter` - 选题评分和过滤（按需使用）
+- **小红书视频 / 数据 / 搜索**：`RedBookSkills` - 当前全局小红书操作入口；历史文档里的 `/post-to-xhs` 只作 legacy alias
+- **X.com legacy 本地入口**：`tools/x-skills/x-collect` / `x-create` / `x-filter` 仅作参考，不作为主流程默认入口
 
 ### 自动化脚本（后台任务）
 **每日自动化**（已配置 launchd 定时任务）：

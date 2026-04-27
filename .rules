@@ -15,9 +15,9 @@
 - **公众号**：可以深度，但要有结构
 
 ## 核心提醒
-1. **先检索，再创作**：每次写新内容前，先搜索素材库
+1. **先检索，再创作**：每次写新内容前，先 query `wiki/`（`wiki/选题/` + `wiki/方法论/` + `wiki/素材/`）
 2. **数据驱动**：发布后记录数据，反哺方法论
-3. **持续沉淀**：好的内容、框架、表达，都要存入素材库
+3. **持续沉淀**：好的内容、框架、表达，都要存入 `wiki/素材/`
 
 ## 视觉风格偏好
 
@@ -66,6 +66,7 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 
 项目配置了以下常用 skills，优先使用这些 skill：
 
+- **skills manifest** - `docs/reference/skills-manifest.md` 是当前可用入口与 legacy 入口的唯一对照表
 - **baoyu-post-to-x** - 发布推文到 X.com（支持文本、图片、视频、长文章）
 - **baoyu-post-to-wechat** - 发布到微信公众号
 - **document-illustrator** - 为文章 / 文档自动生成封面图和文内配图

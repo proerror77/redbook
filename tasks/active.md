@@ -23,3 +23,24 @@
 - Wiki maintenance runs now close through `close-run`; current LLM Wiki harness runs are terminalized as `done`.
 - Primary workflow docs now route reusable material to `wiki/素材/` and use the real daily report filename.
 - Verification passed: shell syntax, Python compile, wiki workflow help, and redbook harness unit tests.
+
+## 2026-04-28 Redbook P1 Skill Manifest Cleanup
+
+- Owner: Codex
+- Source: `docs/reports/2026-04-28-redbook-workflow-review.md`
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Inventory current repo-local and global Redbook-relevant skill entrypoints.
+- [x] Create `docs/reference/skills-manifest.md` as the canonical skill routing table.
+- [x] Update primary workflow docs to reference the manifest and demote missing/legacy skill names.
+- [x] Run doc consistency checks and commit the scoped changes.
+
+### Review
+
+- Added `docs/reference/skills-manifest.md` with active, active-global, script, legacy-local, and deprecated entrypoints.
+- Demoted `x-collect` / `x-create` / `x-filter` to legacy local references and routed current X work through `tools/daily.sh`, `wiki_workflow.py query`, and `/x-mastery-mentor`.
+- Replaced default 小红书 `/post-to-xhs` routing with `/baoyu-xhs-images` for图文 and `RedBookSkills` for video/data/search.
+- Updated `.rules`, `AGENTS.md`, `CLAUDE.md`, `docs/shared/redbook-playbook.md`, `tools/README.md`, and `tools/post-to-xhs-使用指南.md`.
+- Verification passed: shared playbook sync was unchanged after edits, manifest paths exist, diff whitespace check passed, and stale default-entry regex checks returned no matches.
