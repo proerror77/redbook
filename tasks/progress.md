@@ -2876,6 +2876,19 @@
 - 后续风格研究优先级：当前 X Timeline 高互动帖 -> X 搜索 Top -> 关注列表目标圈层账号 -> 英文 AI/coding 创作者 -> 站外文本平台。
 - Tumblr 只保留为表达启发，不再作为 X 风格主依据。
 
+## [2026-04-28] 会话摘要：Redbook 工作流全面 Review
+
+**完成了什么：**
+- 审查了 Redbook 的主规则、daily 入口、wiki workflow、harness run 状态、任务记录、选题池、发布数据和工具文档。
+- 已保存完整审计报告：`docs/reports/2026-04-28-redbook-workflow-review.md`。
+
+**核心结论：**
+- 当前主要问题不是缺流程，而是流程过重、入口不一致、状态不闭环。
+- 最优先修的是 daily 输出口径、following 全量巡检默认后台启动、stale harness run、旧素材库引用、`tasks/todo.md` 噪音。
+
+**遗留：**
+- 本轮未直接修改主流程脚本；建议下一轮按报告的 P0 清单做小步改造。
+
 ## [2026-04-28] 会话摘要：X Timeline 高互动帖子结构研究
 
 **完成了什么：**
