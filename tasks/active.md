@@ -44,3 +44,24 @@
 - Replaced default 小红书 `/post-to-xhs` routing with `/baoyu-xhs-images` for图文 and `RedBookSkills` for video/data/search.
 - Updated `.rules`, `AGENTS.md`, `CLAUDE.md`, `docs/shared/redbook-playbook.md`, `tools/README.md`, and `tools/post-to-xhs-使用指南.md`.
 - Verification passed: shared playbook sync was unchanged after edits, manifest paths exist, diff whitespace check passed, and stale default-entry regex checks returned no matches.
+
+## 2026-04-28 Redbook P1 Generated Artifact Cleanup
+
+- Owner: Codex
+- Source: `docs/reports/2026-04-28-redbook-workflow-review.md`
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Confirm tracked generated artifacts targeted in this pass are dependency folders and browser runtime state.
+- [x] Add ignore rules for `node_modules/` and package-manager caches.
+- [x] Untrack generated dependency files with `git rm --cached` while preserving local files.
+- [x] Verify no tracked `node_modules` remain and commit the scoped cleanup.
+
+### Review
+
+- Added `.gitignore` rules for `node_modules/`, package-manager caches, and `tools/auto-zhipin/.chrome-boss-profile/`.
+- Untracked generated dependencies in `docs/plans/pptx-build/node_modules/` and `tools/auto-zhipin/node_modules/`.
+- Untracked `tools/auto-zhipin/.chrome-boss-profile/` browser runtime state.
+- Local generated directories are still present on disk; only git tracking changed.
+- Verification passed: tracked `node_modules` count is `0`, tracked `.chrome-boss-profile` count is `0`, and git ignore checks cover the removed paths.

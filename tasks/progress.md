@@ -2951,3 +2951,18 @@
 
 **遗留：**
 - P1 还剩：缩短 `AGENTS.md`、清理 `00-选题记录.md` 自动抓取噪音、结构化发布数据、untrack generated artifacts。
+
+## [2026-04-28] 会话摘要：Redbook P1 Generated Artifacts Untrack
+
+**完成了什么：**
+- 在 `.gitignore` 增加 `node_modules/`、package-manager cache、`tools/auto-zhipin/.chrome-boss-profile/` 规则。
+- 使用 `git rm --cached` 取消跟踪 `docs/plans/pptx-build/node_modules/`、`tools/auto-zhipin/node_modules/`、`tools/auto-zhipin/.chrome-boss-profile/`。
+- 本地目录仍保留在磁盘上，只是不再进入 git。
+
+**验证：**
+- tracked `node_modules` count: `0`
+- tracked `.chrome-boss-profile` count: `0`
+- `git check-ignore` 覆盖 pptx-build node_modules、auto-zhipin node_modules、auto-zhipin Chrome profile。
+
+**遗留：**
+- P1 还剩：缩短 `AGENTS.md`、清理 `00-选题记录.md` 自动抓取噪音、结构化发布数据。

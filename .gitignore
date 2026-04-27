@@ -16,6 +16,12 @@ ENV/
 dist/
 build/
 
+# JavaScript / Node generated dependencies
+node_modules/
+.npm/
+.pnpm-store/
+.yarn/cache/
+
 # 测试文件和输出
 test_output/
 test_*.md
@@ -24,6 +30,7 @@ test_*.md
 tools/auto-redbook/.auth/
 tools/auto-redbook/venv/
 tools/auto-zhipin/.auth/
+tools/auto-zhipin/.chrome-boss-profile/
 tools/auto-zhipin/data/*.json
 tools/auto-zhipin/data/*.jsonl
 tools/auto-zhipin/data/*.ndjson
