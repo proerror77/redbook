@@ -107,3 +107,24 @@
 - Added explicit `--append-topics-to-record` compatibility flags to `daily_schedule.py` and `daily_research.py`; default daily runs no longer write candidates into the topic pool.
 - Updated `tools/auto-x/README.md` to state that recommendations stay in the daily report until explicitly promoted.
 - Verification passed: Python compile, both CLI help outputs include the new flag, live topic pool has no `X 每日研究` rows, archive contains the old rows, and diff whitespace check passed.
+
+## 2026-04-28 Redbook P1 Structured Publish Data
+
+- Owner: Codex
+- Source: `docs/reports/2026-04-28-redbook-workflow-review.md`
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Add a canonical JSONL publish ledger with T+0/T+1/T+3 schema.
+- [x] Add a small CLI to append validated publish records without hand-editing markdown tables.
+- [x] Seed the ledger from the latest verified X publish record.
+- [x] Update docs/playbook pointers, verify the CLI, then commit.
+
+### Review
+
+- Added `04-内容数据统计/publish-records.jsonl` as the canonical publish ledger and `publish-records.schema.md` as the field/stage contract.
+- Seeded the ledger with the verified 2026-04-28 X.com T+0 record for the gpt-realtime voice-control short comment.
+- Added `tools/record_publish.py` to append validated T+0/T+1/T+3 records with duplicate protection.
+- Updated `数据统计表.md`, `docs/shared/redbook-playbook.md`, `AGENTS.md`, `CLAUDE.md`, and `tools/README.md` to point publishing data back to the JSONL ledger.
+- Verification passed: script compiles, dry-run emits valid JSON, ledger parses, shared playbook sync is stable, references are present, and diff whitespace check passed.

@@ -11,6 +11,7 @@
 | **X.com 发布** | `/baoyu-post-to-x` skill | ❌ ~~`auto-x/publish_x.sh`~~ | ✅ 唯一 |
 | **小红书图文** | `/baoyu-xhs-images` skill | ❌ ~~`auto-redbook/render_simple.sh`~~ | ✅ 唯一 |
 | **小红书视频/数据/搜索** | `RedBookSkills` | 历史 `/post-to-xhs` 文档 | ✅ 主推 |
+| **发布数据记录** | `record_publish.py` + `publish-records.jsonl` | `04-内容数据统计/数据统计表.md` 手工补视图 | ✅ 主推 |
 | **跨站点只读抓取 / 环境验证** | `tools/opencli/` | 现有 skills / 手工浏览器 | ✅ 辅助层 |
 | **内部工作台自然语言试点** | `tools/page-agent-console/` | 无 | ✅ 试点 |
 | **Reddit 痛点** | `reddit_hack.py` | 无 | ✅ 唯一 |
@@ -60,6 +61,7 @@ tools/
 │   └── x-publish/        ⚠️ 已被 /baoyu-post-to-x 替代
 │
 ├── reddit_hack.py        ✅ Reddit 痛点挖掘（唯一）
+├── record_publish.py     ✅ 发布数据 JSONL 主账本追加工具
 │
 └── aws-proxy/            ✅ 代理基础设施（独立项目）
 ```
@@ -128,6 +130,24 @@ bash tools/morning_sync.sh
 - 只在 worktree 干净时执行 `git pull --ff-only`
 - 同步后列出当天日报路径
 
+### 2. 发布数据记录
+
+**`tools/record_publish.py`** - 追加结构化发布记录
+- 主账本：`04-内容数据统计/publish-records.jsonl`
+- Schema：`04-内容数据统计/publish-records.schema.md`
+- 阶段：`T+0` 记录状态 URL / note id / 初始 views；`T+1` 和 `T+3` 追加后续指标与复盘结论。
+
+示例：
+```bash
+python3 tools/record_publish.py \
+  --stage T+0 \
+  --platform x.com \
+  --title "short title" \
+  --published-at "2026-04-28T05:42:00+08:00" \
+  --status-url "https://x.com/..." \
+  --views 2
+```
+
 #### ⚠️ **已集成/弃用**（仅用于调试）
 
 以下脚本已集成到每日自动化中，**不建议单独使用**：
@@ -139,7 +159,7 @@ bash tools/morning_sync.sh
 
 ---
 
-### 2. 小红书工具链
+### 3. 小红书工具链
 
 #### ✅ **唯一推荐：`/baoyu-xhs-images` Skill**
 
@@ -168,7 +188,7 @@ bash tools/morning_sync.sh
 
 ---
 
-### 3. Reddit 工具
+### 4. Reddit 工具
 
 #### ✅ **`reddit_hack.py`** - 痛点挖掘工具
 
@@ -198,7 +218,7 @@ python3 tools/reddit_hack.py \
 
 ---
 
-### 4. OpenCLI 适配层
+### 5. OpenCLI 适配层
 
 #### ✅ **`tools/opencli/`** - Browser Bridge 辅助层 + BOSS 统一核心
 
@@ -236,7 +256,7 @@ node tools/opencli/scripts/verify.js
 - 主 Chrome 里必须手动安装 `opencli Browser Bridge`
 - 小红书 `creator.xiaohongshu.com` 和 `www.xiaohongshu.com` 需要分别登录
 
-### 5. Page Agent 内部工作台试点
+### 6. Page Agent 内部工作台试点
 
 #### ✅ **`tools/page-agent-console/`** - 内部控制台 + 自然语言代理试点
 

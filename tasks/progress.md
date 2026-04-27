@@ -2999,3 +2999,22 @@
 
 **遗留：**
 - P1 还剩：结构化发布数据。
+
+## [2026-04-28] 会话摘要：Redbook P1 Structured Publish Data
+
+**完成了什么：**
+- 新增 `04-内容数据统计/publish-records.jsonl` 作为发布数据主账本，按 `T+0 / T+1 / T+3` 追加。
+- 新增 `04-内容数据统计/publish-records.schema.md`，定义字段、阶段和 CLI 用法。
+- 新增 `tools/record_publish.py`，用于追加结构化发布记录，避免长期手改 markdown 表。
+- 将 2026-04-28 已验证的 gpt-realtime X 短评发布记录写入 JSONL，并在 `数据统计表.md` 的 X.com 区块增加 T+0 视图行。
+- 同步更新 playbook、AGENTS、CLAUDE 和 tools README。
+
+**验证：**
+- `python3 -m py_compile tools/record_publish.py`
+- `tools/record_publish.py --dry-run ... | python3 -m json.tool`
+- `publish-records.jsonl` 可逐行 JSON 解析，当前 1 条记录。
+- `python3 tools/sync_redbook_playbook.py` 显示 AGENTS/CLAUDE unchanged。
+- `git diff --check` 通过。
+
+**遗留：**
+- P1 清单已完成；后续可进入 P2：`redbookctl` / dashboard。
