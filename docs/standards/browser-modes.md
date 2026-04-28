@@ -71,6 +71,7 @@
 - 优先无头执行
 - 不默认新起可见私有浏览器
 - 不默认要求扩展桥接
+- 进入业务动作前，先用 `tools/redbookctl browser` 或 `node tools/browser-core/interactive/session.mjs` 读取现有 CDP tabs；只有没有可复用 tab 时才允许创建新 tab。
 
 备注：
 
@@ -162,6 +163,7 @@
 2. 自己维护一套新的 profile 发现逻辑
 3. 自己维护一套新的通用 CDP transport
 4. 把兼容层写成默认入口
+5. 在没有先检查现有 CDP tabs 的情况下直接 `open` 新页面
 
 ## 当前默认判断
 

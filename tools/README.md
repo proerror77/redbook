@@ -7,6 +7,7 @@
 | 功能 | 推荐方式 | 备选方式 | 状态 |
 |------|---------|---------|------|
 | **工作流看板 / 控制面** | `tools/redbookctl status` | 直接读 `tasks/active.md` / harness JSON | ✅ 主推 |
+| **浏览器登录态检查** | `tools/redbookctl browser` | 只读当前 Chrome/CDP tabs，不开新页 | ✅ 主推 |
 | **X.com 研究** | `tools/redbookctl daily` + `wiki_workflow.py query` | `bash tools/daily.sh` / `tools/x-skills/x-collect` legacy local reference | ✅ 主推 |
 | **X.com 创作** | `/x-mastery-mentor` + 账号风格手写/改写 | `tools/x-skills/x-create` legacy local reference | ✅ 主推 |
 | **X.com 发布** | `/baoyu-post-to-x` skill | ❌ ~~`auto-x/publish_x.sh`~~ | ✅ 唯一 |
@@ -77,6 +78,7 @@ tools/
 
 **`tools/redbookctl`** - 日常 workflow 统一入口
 - 默认看板：`tools/redbookctl status`
+- 浏览器会话：`tools/redbookctl browser`，先检查 X / 小红书 / 微信 / BOSS 是否已有可复用登录 tab
 - 跑每日研究：`tools/redbookctl daily`，需要全量关注列表巡检时加 `--with-following-audit`
 - 从日报 promotion 题目：`tools/redbookctl pick --topic "题目" --source "来源"`
 - 创建完整内容 run：`tools/redbookctl draft --topic "题目" --source "日报/链接/路径" --summary "一句话目标"`
@@ -117,7 +119,7 @@ tools/
   2. 回顾最近发布数据（从数据统计表提取）
   3. 生成每日研究（X.com + HN/Reddit）
 - **运行模式**：
-  - `bash tools/daily.sh`：本机完整模式（需要 Chrome + actionbook + X 登录态）
+  - `bash tools/daily.sh`：本机完整模式（先用 `tools/redbookctl browser` 确认 Chrome/CDP + X 登录态）
   - `bash tools/daily.sh --skip-x`：无浏览器模式（仅 HN/Reddit，适合 GitHub Actions/CI）
 - **输出位置**：
   - 综合报告：`05-选题研究/X-每日日程-{日期}.md`

@@ -2,6 +2,28 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-04-28 Redbook Browser Session Reuse Review
+
+- Owner: Codex
+- Source: User concern about repeated new browser pages and repeated login/session work
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Inventory browser login/session routes and identify paths still launching new Chrome/profile/page by default.
+- [x] Add a lightweight browser-session inspection entrypoint that reads existing CDP tabs without opening new pages.
+- [x] Move the main X regular-post script toward current Chrome/CDP reuse before launching an isolated profile.
+- [x] Update workflow docs and run static verification.
+
+### Review
+
+- Added `tools/redbookctl browser` backed by `tools/browser-core/interactive/session.mjs`; it reads existing Chrome/CDP tabs and does not open new pages.
+- Updated browser-mode docs, playbook, skill manifest, and tools README to make browser session inspection the first step before X/XHS/WeChat/BOSS workflows.
+- Updated local `/baoyu-post-to-x` regular post script so it reuses `X_BROWSER_CDP_ENDPOINT` / `127.0.0.1:9222` and an existing X tab before falling back to a new isolated Chrome/profile.
+- Wrote `docs/reports/2026-04-28-browser-session-reuse-review.md` with findings and remaining migration targets.
+- Verification passed: `python3 -m py_compile tools/redbookctl.py`, `node --check tools/browser-core/interactive/session.mjs`, `tools/redbookctl browser --json | python3 -m json.tool`, and `bun .agents/skills/baoyu-post-to-x/scripts/x-browser.ts --help`.
+- Current live check shows `127.0.0.1:9222` is unavailable, so this run did not inspect a live logged-in Chrome tab.
+
 ## 2026-04-28 Redbook Media And Timeline Flow Audit
 
 - Owner: Codex

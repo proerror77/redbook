@@ -11,6 +11,7 @@
 - X / 小红书发布成功不能只看脚本 stdout；必须回查状态 URL、主页/管理页、发布时间、note id 等平台侧证据。
 - 配图 / 图文生成默认模型是 Tuzi/兔子 `gpt-image-2.0`；Nano Banana / Gemini 只能作为用户明确指定的 fallback。
 - 长文配图默认 balanced density：正文 3-5 张，约每 600-900 中文字或每 2-3 个主要小节 1 张；小红书卡片系列可放宽到 5-7 张，除非用户明确要更多。
+- 浏览器类任务先用 `tools/redbookctl browser` 检查当前 Chrome/CDP 登录态；发布和账号操作优先复用已有 tab，避免重复开新页面和新 profile。
 
 ## Active Entrypoints
 
@@ -34,6 +35,7 @@
 | 入口 | 状态 | 位置 | 用途 | 备注 |
 | --- | --- | --- | --- | --- |
 | `bash tools/daily.sh` | active-script | `tools/daily.sh` | 每日研究报告主入口 | 输出 `05-选题研究/X-每日日程-YYYY-MM-DD.md` |
+| `tools/redbookctl browser` | active-script | `tools/redbookctl.py` + `tools/browser-core/interactive/session.mjs` | 只读检查当前 Chrome/CDP tabs 与登录态 | X/XHS/微信/BOSS 动作前 |
 | `python3 tools/wiki_workflow.py daily-cycle --date YYYY-MM-DD` | active-script | `tools/wiki_workflow.py` | Wiki ingest + lint 维护 run | research-only run 会自动关闭 |
 | `python3 tools/wiki_workflow.py query --topic ... --date YYYY-MM-DD` | active-script | `tools/wiki_workflow.py` | 显式 wiki query 并留 harness 证据 | 内容创作前优先使用 |
 | `python3 -m tools.redbook_harness.cli close-run --run-id ...` | active-script | `tools/redbook_harness/cli.py` | 关闭非完整内容 pipeline 的 run | 支持 `done` / `closed_stale` / `cancelled` |

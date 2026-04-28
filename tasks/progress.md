@@ -3104,3 +3104,24 @@
 
 **遗留：**
 - 本轮没有实际消耗额度生成图片，也没有现场抓 timeline；修的是默认路由、提示词、文档和静态可执行性。
+
+## [2026-04-28] 会话摘要：Redbook 浏览器登录态与重复开页修正
+
+**完成了什么：**
+- 新增 `tools/browser-core/interactive/session.mjs`，只读检查当前 Chrome/CDP tabs，不打开新页面。
+- 新增 `tools/redbookctl browser`，作为 X / 小红书 / 微信 / BOSS 工作流前的统一会话检查入口。
+- 更新 `docs/standards/browser-modes.md`、shared playbook、skills manifest 和 `tools/README.md`：浏览器任务先检查现有登录 tab，再决定是否需要登录升级态。
+- 更新本地 `/baoyu-post-to-x` regular post 脚本：默认尝试复用 `X_BROWSER_CDP_ENDPOINT` 或 `127.0.0.1:9222`，优先复用已有 X tab；只有 CDP 不可用、显式 `--new-browser` 或传入 `--profile` 时才启动独立 Chrome/profile。
+- 生成检视报告：`docs/reports/2026-04-28-browser-session-reuse-review.md`。
+
+**验证：**
+- `python3 -m py_compile tools/redbookctl.py`
+- `node --check tools/browser-core/interactive/session.mjs`
+- `node tools/browser-core/interactive/session.mjs --json | python3 -m json.tool`
+- `tools/redbookctl browser --json | python3 -m json.tool`
+- `bun .agents/skills/baoyu-post-to-x/scripts/x-browser.ts --help`
+- `python3 tools/sync_redbook_playbook.py`
+
+**遗留：**
+- 当前 `127.0.0.1:9222` 不可用，所以本轮没有读取到真实已登录 tab；新检查入口会明确提示不可用，而不是继续开新 profile。
+- X video / quote / article 和 WeChat browser 脚本仍有私有 Chrome launcher，下一步应迁到同一个 current-CDP resolver。

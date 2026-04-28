@@ -15,12 +15,24 @@
 
 - [chrome-cdp.mjs](/Users/proerror/Documents/redbook/tools/browser-core/interactive/chrome-cdp.mjs)
 - [smoke.mjs](/Users/proerror/Documents/redbook/tools/browser-core/interactive/smoke.mjs)
+- [session.mjs](/Users/proerror/Documents/redbook/tools/browser-core/interactive/session.mjs)
 
 当前结论：
 
 - 原型已在当前真实 Chrome 的小红书页签上通过 smoke
 - 这证明 `interactive-browser` 最小核心可以先走原生 CDP，不必默认依赖 Playwright
 - 但它还没有替换任何现有业务脚本
+
+## 会话检查
+
+先检查当前真实 Chrome / CDP 里有没有可复用登录态，再决定是否进入业务 workflow：
+
+```bash
+node tools/browser-core/interactive/session.mjs
+node tools/browser-core/interactive/session.mjs --json
+```
+
+这个命令只读取现有 tab，不打开新页面。它会汇总 X、小红书、微信公众号、BOSS 的 tab 数量和登录态信号。
 
 约束：
 

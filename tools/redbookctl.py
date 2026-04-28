@@ -416,6 +416,18 @@ def command_publish_record(args: argparse.Namespace) -> int:
     return run_passthrough([sys.executable, str(ROOT / "tools" / "record_publish.py"), *passthrough_args]).code
 
 
+def command_browser(args: argparse.Namespace) -> int:
+    command = [
+        "node",
+        str(ROOT / "tools" / "browser-core" / "interactive" / "session.mjs"),
+        "--endpoint",
+        args.endpoint,
+    ]
+    if args.json:
+        command.append("--json")
+    return run_passthrough(command).code
+
+
 def command_close_run(args: argparse.Namespace) -> int:
     return run_passthrough(
         [
@@ -471,6 +483,10 @@ def build_parser() -> argparse.ArgumentParser:
     )
     publish_record.add_argument("args", nargs=argparse.REMAINDER)
 
+    browser = subparsers.add_parser("browser", help="Inspect existing Chrome/CDP tabs without opening new pages.")
+    browser.add_argument("--endpoint", default="http://127.0.0.1:9222")
+    browser.add_argument("--json", action="store_true")
+
     close_run = subparsers.add_parser("close-run", help="Close a harness run.")
     close_run.add_argument("--run-id", required=True)
     close_run.add_argument("--status", choices=["done", "closed_stale", "cancelled"], default="done")
@@ -510,6 +526,8 @@ def main(argv: list[str] | None = None) -> int:
         return command_publish(args)
     if args.command == "publish-record":
         return command_publish_record(args)
+    if args.command == "browser":
+        return command_browser(args)
     if args.command == "close-run":
         return command_close_run(args)
 

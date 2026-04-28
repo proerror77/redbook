@@ -130,6 +130,7 @@ wiki/                 # LLM 维护的知识库（唯一知识底座，见下方 
 - 外部发布统一是 `approved-publish`：草稿、预览、审稿可自动；submit/publish 必须等用户明确说“发布 / 直接发”。
 - 图片生成统一优先走 Tuzi/兔子 `gpt-image-2.0`；不要再把 Nano Banana / Gemini 写成默认图像模型。
 - 长文配图使用 balanced visual arc：封面可选，正文默认 3-5 张，约每 600-900 中文字或每 2-3 个主要小节 1 张，除小红书卡片系列外最多 6 张。
+- 浏览器工作先跑 `tools/redbookctl browser` 检查现有 Chrome/CDP tabs；优先复用已登录 tab，不默认新开 profile、空白页或可见窗口。
 
 ---
 
@@ -213,6 +214,7 @@ wiki/                 # LLM 维护的知识库（唯一知识底座，见下方 
 ### 当前主要入口
 
 - 工作流看板：`tools/redbookctl status`
+- 浏览器会话检查：`tools/redbookctl browser`（只读现有 Chrome/CDP，不开新页）
 - 每日研究：`tools/redbookctl daily`（等价于 `bash tools/daily.sh`）
 - 关注列表全量巡检：`tools/redbookctl daily --with-following-audit`
 - 选中日报题目：`tools/redbookctl pick --topic "..." --source "..."`
