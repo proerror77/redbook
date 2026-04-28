@@ -2,6 +2,26 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-04-28 Redbook P2.1 Dashboard State Cleanup
+
+- Owner: Codex
+- Source: `tools/redbookctl status`
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Convert today's live topic research into the canonical daily report path.
+- [x] Close stale harness runs as `closed_stale` instead of leaving them active forever.
+- [x] Keep only recent publish confirmations in the active dashboard.
+- [x] Verify the dashboard reaches a clean current-state view.
+
+### Review
+
+- Added `05-选题研究/X-每日日程-2026-04-28.md` as the standard daily report generated from the live X/HN/Reddit topic-selection files.
+- Closed 15 stale harness runs with status `closed_stale` and a cleanup note; remaining active harness run is the real 2026-04-28 publish-confirmation item.
+- Adjusted `tools/redbookctl.py` so stale old publish checklists no longer appear as current pending confirmations.
+- Verification passed: `tools/redbookctl status` now shows today's report exists, `stale_count = 0`, and exactly 1 active pending publish confirmation.
+
 ## 2026-04-28 Redbook P2 Control Surface
 
 - Owner: Codex

@@ -105,11 +105,12 @@ def read_publish_ledger() -> list[dict[str, Any]]:
     return records
 
 
-def find_pending_publish_confirmations(limit: int) -> list[dict[str, str]]:
+def find_pending_publish_confirmations(limit: int, recent_days: int) -> list[dict[str, str]]:
     if not IN_PROGRESS_DIR.exists():
         return []
 
     pending = []
+    cutoff = datetime.now().timestamp() - recent_days * 24 * 60 * 60
     candidates = sorted(
         {
             path.parent
@@ -126,13 +127,13 @@ def find_pending_publish_confirmations(limit: int) -> list[dict[str, str]]:
             continue
 
         files = [path for path in directory.iterdir() if path.is_file()]
-        reason = ""
+        reason_path: Path | None = None
         for path in files:
             if path.name in trigger_names:
-                reason = path.name
+                reason_path = path
                 break
 
-        if not reason:
+        if not reason_path:
             for path in files:
                 if path.suffix.lower() not in {".md", ".txt"}:
                     continue
@@ -141,11 +142,11 @@ def find_pending_publish_confirmations(limit: int) -> list[dict[str, str]]:
                 except OSError:
                     continue
                 if any(phrase in text for phrase in trigger_phrases):
-                    reason = path.name
+                    reason_path = path
                     break
 
-        if reason:
-            pending.append({"path": rel(directory), "reason": reason})
+        if reason_path and reason_path.stat().st_mtime >= cutoff:
+            pending.append({"path": rel(directory), "reason": reason_path.name})
 
     return pending[:limit]
 
@@ -259,7 +260,7 @@ def collect_status(stale_days: int, limit: int, recent_days: int) -> dict[str, A
                 for run in stale_runs[:limit]
             ],
         },
-        "pending_publish_confirmations": find_pending_publish_confirmations(limit),
+        "pending_publish_confirmations": find_pending_publish_confirmations(limit, recent_days),
         "publish_ledger": {
             "path": rel(PUBLISH_LEDGER),
             "record_count": len(publish_records),

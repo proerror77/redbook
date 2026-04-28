@@ -3056,6 +3056,21 @@
 **遗留：**
 - Dashboard 暴露出 15 个 stale harness runs 和 2 个待确认发布项；后续可单独做 P2.1 状态终态化。
 
+## [2026-04-28] 会话摘要：Redbook P2.1 Dashboard State Cleanup
+
+**完成了什么：**
+- 将今日 live 选题研究收敛成标准日报：`05-选题研究/X-每日日程-2026-04-28.md`。
+- 批量关闭 15 个超过 7 天无进展的 harness run，状态统一为 `closed_stale`，并保留 cleanup note。
+- 调整 `tools/redbookctl.py` 的待发布扫描，只显示近期 publish confirmation，避免 4 月 8 日旧发布清单继续污染当前看板。
+
+**验证：**
+- `tools/redbookctl status` 显示今日日报 `exists`。
+- `tools/redbookctl status --json --limit 50` 显示 `active_count = 1`、`stale_count = 0`。
+- 当前唯一保留的待确认发布项是 `2026-04-28-Agent-入口从聊天框进入工作流`，状态仍然需要用户明确确认发布。
+
+**遗留：**
+- 剩余 1 个 active run 是真实发布门槛，不应自动发布；等用户明确说“发布 / 直接发”后再进入 `/baoyu-post-to-x`。
+
 ## [2026-04-28] 会话摘要：Andrew Ng AI-native teams X 互动修正
 
 **完成了什么：**

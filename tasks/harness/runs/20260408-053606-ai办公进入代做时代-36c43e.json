@@ -7,9 +7,9 @@
   "owner": "Codex",
   "priority": "P1",
   "current_stage": "research",
-  "status": "in_progress",
+  "status": "closed_stale",
   "created_at": "2026-04-08T05:36:06+00:00",
-  "updated_at": "2026-04-08T05:36:06+00:00",
+  "updated_at": "2026-04-28T00:50:43+00:00",
   "artifacts": [],
   "checks": {
     "materials_queried": false,
@@ -31,6 +31,18 @@
       "stage": "research",
       "message": "Run created for topic: AI办公进入代做时代",
       "meta": {}
+    },
+    {
+      "at": "2026-04-28T00:50:43+00:00",
+      "type": "run_closed",
+      "stage": "research",
+      "message": "Run closed with status: closed_stale",
+      "meta": {
+        "status": "closed_stale",
+        "note": "Closed during P2.1 dashboard cleanup after more than 7 days without active progress.",
+        "closed_at": "2026-04-28T00:50:43+00:00"
+      }
     }
-  ]
+  ],
+  "closed_at": "2026-04-28T00:50:43+00:00"
 }
