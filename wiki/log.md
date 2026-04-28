@@ -809,3 +809,17 @@
 - `@0xcybersmile` 的主线应稳定围绕 AI Agent、企业导入、协作方式、workflow 和小技巧。
 - AI 与 Crypto 资讯需要保留，但不能变成泛资讯搬运；AI 时事要回到 agent / workflow / 企业导入，Crypto 时事要回到 oracle / 权限 / 自动化 / 结算 / 风控。
 - 每日 LLM Wiki 的价值不是存新闻，而是把每天的新信号沉淀成长期选题页、方法论页、框架和案例。
+
+## [2026-04-28] ingest | Andrew Ng AI-native teams X 互动修正
+
+来源：Andrew Ng X 原帖 + `x-mastery-mentor` 审核修正 + X 发布验证
+
+触及页面：3个
+- `01-内容生产/02-制作中的选题/2026-04-28-Andrew-Ng-AI-native-teams-X互动/发布记录.md` — 记录 reply / quote repost 文案、旧回复删除、新状态链接和审核结论
+- `tasks/progress.md` — 记录本轮发布修正与验证
+- `wiki/log.md` — 记录本轮 ingest
+
+关键洞察：
+- AI-native 团队的传播切口不能只写“agent 让 coding 更快”，更应该写 coding 加速后暴露出的产品判断、用户解释、review ownership 和 verification 瓶颈。
+- 本轮旧文案的问题是过度使用 `not just / hard part` 式抽象结论；修正版改成从 PR 变快后的真实工作摩擦切入。
+- 后续 X 互动和 quote repost 发布前必须先过 X mentor 审核，避免“先发后审”。

@@ -3055,3 +3055,19 @@
 
 **遗留：**
 - Dashboard 暴露出 15 个 stale harness runs 和 2 个待确认发布项；后续可单独做 P2.1 状态终态化。
+
+## [2026-04-28] 会话摘要：Andrew Ng AI-native teams X 互动修正
+
+**完成了什么：**
+- 针对 Andrew Ng 关于 AI-native software engineering teams 的原帖，完成英文 reply 和 quote repost。
+- 根据用户反馈补跑 `x-mastery-mentor` 审核，确认初版过于结论化，并修正为“具体工程现场 -> 新瓶颈 -> 判断”的结构。
+- 删除旧回复 `https://x.com/0xcybersmile/status/2048923401528721436`，重发新回复。
+- 编辑 quote repost，生成新版本状态页。
+
+**验证：**
+- 新回复状态页：`https://x.com/0xcybersmile/status/2048926979215544573`
+- 修正后的 quote repost 状态页：`https://x.com/0xcybersmile/status/2048924615666544938`
+- 原帖页面显示新回复正文；quote repost 独立页显示 Andrew Ng 原帖引用。
+
+**遗留：**
+- 需要将“发布前必须先过 X mentor 审核”继续作为 X 发布硬门槛执行，避免再次先发后审。
