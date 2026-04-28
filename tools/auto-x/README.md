@@ -1,22 +1,25 @@
 # X/Twitter 自动化工具
 
-基于 actionbook（Chrome CDP）的 X/Twitter 研究与数据分析工具集。
+X/Twitter 研究与数据分析工具集。当前主入口是 `tools/redbookctl daily` / `bash tools/daily.sh`。
 
 ## Browser Mode Position
 
 - Standard: [docs/standards/browser-modes.md](/Users/proerror/Documents/redbook/docs/standards/browser-modes.md)
 - Current status: legacy / compatibility path
 - `actionbook` / `agent-browser` / `agent-browser-session` are historical browser stacks retained for compatibility. They are no longer the recommended foundation for new browser-facing work in this repo.
+- Timeline 抓取优先复用当前已登录 Chrome/CDP（默认 9222）；无 CDP 时才走 `agent-browser-session` adapter。
+- 默认 `AGENT_BROWSER_HEADED=false`。只有登录、验证码、风控或用户明确要求看可见页面时，才临时 headed。
 
 ## 推荐入口（唯一正确路径）
 
 定时/手动都使用同一个入口：
 ```bash
-bash tools/daily.sh
+tools/redbookctl daily
 ```
 
 - 输出：`05-选题研究/X-每日日程-{日期}.md`
 - 推荐选题只保存在日报内；用户或 agent 明确选中后再写入 `01-内容生产/选题管理/00-选题记录.md`
+- 兼容入口：`bash tools/daily.sh`
 
 其余脚本主要作为内部模块或调试工具，不建议作为日常入口。
 
@@ -42,23 +45,20 @@ bash tools/daily.sh
 
 ## 安装
 
-确保已安装 actionbook：
+确保已安装 agent-browser-session：
 ```bash
 # 检查是否已安装
-actionbook --version
+agent-browser-session --version
 ```
 
-**前置条件**：使用前需要启动 Chrome 调试模式并连接 actionbook：
+**推荐前置条件**：如果要读取当前登录态，启动或复用带 CDP 的 Chrome：
 ```bash
-# 1. 启动 Chrome
 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
   --remote-debugging-port=9222 \
-  --user-data-dir="$HOME/.local/share/chrome-debug-profile" \
-  --no-first-run &
-
-# 2. 连接 actionbook
-actionbook browser connect 9222
+  --no-first-run
 ```
+
+如果 `127.0.0.1:9222` 不可用，脚本会退回 `agent-browser-session` adapter，且默认保持 headless。
 
 ## 使用方法
 
@@ -187,7 +187,7 @@ python tools/auto-x/scripts/daily_research.py --keywords "AI agent" "web3"
 4. 记录数据到统计表
 
 ### 内容研究流程
-1. 运行每日自动化入口: `bash tools/daily.sh`
+1. 运行每日自动化入口: `tools/redbookctl daily`
 2. 查看生成的报告: `05-选题研究/X-每日日程-{日期}.md`
 3. 筛选有价值的选题
 4. 使用「记录选题」保存灵感
@@ -195,10 +195,10 @@ python tools/auto-x/scripts/daily_research.py --keywords "AI agent" "web3"
 ## 注意事项
 
 - 首次使用需要在浏览器中登录 X.com
-- actionbook 会复用本地 Chrome profile 保存登录状态
+- Timeline 抓取优先复用已登录 Chrome/CDP；不要默认新开可见浏览器抢焦点
 - 推文内容会自动复制到剪贴板（macOS）
 - 图片需要手动上传
-- 所有研究脚本的数据提取依赖 actionbook snapshot 的 accessibility tree 解析，实际效果可能因页面结构变化而需要调整
+- 所有研究脚本的数据提取依赖 accessibility snapshot 解析，实际效果可能因页面结构变化而需要调整
 
 ## 与其他工具对比
 

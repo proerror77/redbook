@@ -3086,3 +3086,21 @@
 
 **遗留：**
 - 需要将“发布前必须先过 X mentor 审核”继续作为 X 发布硬门槛执行，避免再次先发后审。
+
+## [2026-04-28] 会话摘要：Redbook 图片模型、插图密度与 Timeline 流程修正
+
+**完成了什么：**
+- 将主 playbook 和 skill manifest 明确为：配图 / 图文生成默认走 Tuzi/兔子 `gpt-image-2.0`，Nano Banana / Gemini 只作为用户明确指定或未配置 Tuzi 时的 fallback。
+- 修正本地 `.agents/skills/document-illustrator`、`baoyu-article-illustrator`、`baoyu-xhs-images` 的提示词和说明，避免实际生成时被旧模型文案带偏。
+- 同步修正全局 `/Users/proerror/.codex/skills/document-illustrator`，保证当前 Codex skill 调用和 repo-local skill 一致。
+- 把长文插图策略收敛为 balanced visual arc：封面可选，正文默认 3-5 张，短评 2-3 张，长文每 600-900 中文字或每 2-3 个主要小节 1 张，默认最多 6 张。
+- 修正 auto-x timeline 文档和启动脚本说明：优先当前已登录 Chrome/CDP，缺 CDP 时走 headless adapter，默认 `AGENT_BROWSER_HEADED=false`。
+
+**验证：**
+- `python3 -m py_compile tools/auto-x/scripts/x_utils.py .agents/skills/document-illustrator/scripts/generate_single_image.py .agents/skills/document-illustrator/scripts/generate_illustrations.py /Users/proerror/.codex/skills/document-illustrator/scripts/generate_single_image.py /Users/proerror/.codex/skills/document-illustrator/scripts/generate_illustrations.py`
+- `bash -n tools/auto-x/scripts/run_daily.sh`
+- `python3 tools/sync_redbook_playbook.py`
+- stale wording search for Nano Banana/Gemini defaults and old `3-10` density advice returned no matches in active image skills.
+
+**遗留：**
+- 本轮没有实际消耗额度生成图片，也没有现场抓 timeline；修的是默认路由、提示词、文档和静态可执行性。

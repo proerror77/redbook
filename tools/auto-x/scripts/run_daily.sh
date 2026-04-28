@@ -1,6 +1,6 @@
 #!/bin/bash
 # X.com 每日日程 - 启动脚本
-# 使用 agent-browser-session（持久 profile，无需手动连接）
+# 使用当前已登录 Chrome/CDP 优先；无 CDP 时落到 agent-browser-session headless adapter
 #
 # 用法:
 #   bash run_daily.sh              # 完整运行
@@ -11,6 +11,7 @@
 set -euo pipefail
 
 export PATH="/opt/homebrew/bin:$HOME/.local/bin:$PATH"
+export AGENT_BROWSER_HEADED="${AGENT_BROWSER_HEADED:-false}"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/../../.." && pwd)"
@@ -26,6 +27,7 @@ log() {
 
 log "========== X.com 每日日程启动 =========="
 log "使用 agent-browser-session $(agent-browser-session --version 2>/dev/null || echo '未知版本')"
+log "浏览器姿态 AGENT_BROWSER_HEADED=$AGENT_BROWSER_HEADED（默认 headless；登录/验证码/人工确认才临时 headed）"
 
 SHOULD_RUN_FOLLOWING_AUDIT="false"
 DAILY_ARGS=()

@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 """
-X/Twitter 自动化工具 - 共享工具模块
-提供 agent-browser-session 浏览器交互封装、数据解析、报告生成等通用功能
+X/Twitter 自动化工具 - 共享工具模块。
+
+浏览器策略：
+- 优先复用用户已登录的本机 Chrome CDP 会话（默认 127.0.0.1:9222）。
+- 如果没有可用 CDP，再落到 agent-browser-session adapter。
+- 默认强制 AGENT_BROWSER_HEADED=false；只有登录、验证码或人工视觉确认才应切 headed。
 """
 
 import subprocess
@@ -53,7 +57,11 @@ def run_abs_result(command: str, timeout: int = 30) -> dict:
     """
     cdp_port = _detect_local_cdp_port()
     full_cmd = _build_agent_browser_command(command, cdp_port)
-    env = {**os.environ, 'PATH': f"/opt/homebrew/bin:{Path.home()}/.local/bin:{os.environ.get('PATH', '')}", 'AGENT_BROWSER_HEADED': os.environ.get('AGENT_BROWSER_HEADED', 'false')}
+    env = {
+        **os.environ,
+        'PATH': f"/opt/homebrew/bin:{Path.home()}/.local/bin:{os.environ.get('PATH', '')}",
+        'AGENT_BROWSER_HEADED': os.environ.get('AGENT_BROWSER_HEADED', 'false'),
+    }
     try:
         result = subprocess.run(
             full_cmd,
@@ -158,7 +166,9 @@ def ensure_browser() -> bool:
     """
     cdp_port = _detect_local_cdp_port()
     if cdp_port is not None:
-        print_colored(f"✓ 优先复用当前 Chrome 会话（CDP {cdp_port}）", 'green')
+        print_colored(f"✓ browser mode: logged-in Chrome/CDP {cdp_port}; headed only if that Chrome is already visible", 'green')
+    else:
+        print_colored("✓ browser mode: agent-browser-session adapter with AGENT_BROWSER_HEADED=false", 'green')
 
     snapshot = run_abs_result("snapshot -c -d 2", timeout=15)
     if _snapshot_looks_ready(snapshot['stdout']):

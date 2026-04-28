@@ -2,6 +2,27 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-04-28 Redbook Media And Timeline Flow Audit
+
+- Owner: Codex
+- Source: User question about Tuzi image model, image density, and timeline headless mode
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Verify current image-generation paths and remove stale Nano Banana / Gemini defaults from active workflow prompts.
+- [x] Add explicit image-density rules for long articles and multi-platform content.
+- [x] Clarify X timeline capture mode: logged-in Chrome/CDP first, headless adapter fallback, no focus-stealing headed browser by default.
+- [x] Run static checks and commit the scoped workflow fixes.
+
+### Review
+
+- Workflow docs now state Tuzi/兔子 `gpt-image-2.0` as the default image model and require image model/count/insert positions in publish checklists.
+- `document-illustrator`, `baoyu-article-illustrator`, and `baoyu-xhs-images` local skills no longer steer prompts toward Nano Banana/Gemini defaults; global `~/.codex/skills/document-illustrator` was updated too.
+- Longform image density is now balanced by default: optional cover, 3-5 body images, about every 600-900 Chinese chars or every 2-3 major sections, max 6 unless explicitly richer.
+- X timeline docs/scripts now log and prefer logged-in Chrome/CDP first, then headless `agent-browser-session` fallback with `AGENT_BROWSER_HEADED=false`.
+- Verification passed: Python compile, shell syntax check, shared playbook sync, stale default wording search, and diff whitespace check.
+
 ## 2026-04-28 Redbook P2.1 Dashboard State Cleanup
 
 - Owner: Codex

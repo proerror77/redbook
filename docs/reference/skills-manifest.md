@@ -9,6 +9,8 @@
 - `status=legacy-local` 只作为参考资料，不作为默认执行入口。
 - 发布类 skill 仍遵守用户确认规则：生成、预览、审稿可以自动推进；提交发布必须等用户明确说“发布/直接发”。
 - X / 小红书发布成功不能只看脚本 stdout；必须回查状态 URL、主页/管理页、发布时间、note id 等平台侧证据。
+- 配图 / 图文生成默认模型是 Tuzi/兔子 `gpt-image-2.0`；Nano Banana / Gemini 只能作为用户明确指定的 fallback。
+- 长文配图默认 balanced density：正文 3-5 张，约每 600-900 中文字或每 2-3 个主要小节 1 张；小红书卡片系列可放宽到 5-7 张，除非用户明确要更多。
 
 ## Active Entrypoints
 
@@ -18,13 +20,13 @@
 | `/baoyu-post-to-x` | active | `.agents/skills/baoyu-post-to-x/SKILL.md` | 发布 X 普通帖、图片/视频帖、长文 | 用户明确确认发布后 |
 | `/baoyu-xhs-images` | active | `.agents/skills/baoyu-xhs-images/SKILL.md` | 生成小红书图文卡片，并支持图文发布链路 | 小红书图文内容 |
 | `RedBookSkills` | active-global | `~/.codex/skills/xiaohongshu-skills/SKILL.md` and `~/.codex/skills/XiaohongshuSkills/SKILL.md` | 小红书发布、视频、搜索、详情、评论、数据表 | 视频、多账号、数据回查、竞品/搜索 |
-| `/document-illustrator` | active | `.agents/skills/document-illustrator/SKILL.md` and `~/.codex/skills/document-illustrator/SKILL.md` | 为文章生成封面和文内配图 | 长文配图、多图叙事 |
+| `/document-illustrator` | active | `.agents/skills/document-illustrator/SKILL.md` and `~/.codex/skills/document-illustrator/SKILL.md` | 用 Tuzi `gpt-image-2.0` 为文章生成封面和文内配图 | 长文配图、多图叙事 |
 | `/baoyu-url-to-markdown` | active | `.agents/skills/baoyu-url-to-markdown/SKILL.md` | URL 转 Markdown | 保存网页素材 |
 | `/baoyu-danger-x-to-markdown` | active | `.agents/skills/baoyu-danger-x-to-markdown/SKILL.md` | X 帖/长文转 Markdown | 保存 X 来源，需注意 reverse-engineered API 风险 |
 | `/baoyu-format-markdown` | active | `.agents/skills/baoyu-format-markdown/SKILL.md` | Markdown 排版 | 文章排版与整理 |
 | `/baoyu-markdown-to-html` | active | `.agents/skills/baoyu-markdown-to-html/SKILL.md` | Markdown 转 HTML | 公众号/网页排版 |
 | `/baoyu-post-to-wechat` | active | `.agents/skills/baoyu-post-to-wechat/SKILL.md` | 发布到微信公众号 | 用户明确确认发布后 |
-| `/baoyu-image-gen` | active | `.agents/skills/baoyu-image-gen/SKILL.md` | 通用 AI 图片生成 | 非小红书专用图像 |
+| `/baoyu-image-gen` | active | `.agents/skills/baoyu-image-gen/SKILL.md` | 通用 AI 图片生成，Tuzi 优先且默认 `gpt-image-2.0` | 非小红书专用图像 |
 | `/baoyu-infographic` | active | `.agents/skills/baoyu-infographic/SKILL.md` | 信息图生成 | 单张视觉总结 |
 
 ## Script Entrypoints
