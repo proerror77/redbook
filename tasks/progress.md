@@ -2915,6 +2915,20 @@
 - 每日选题输出应分成：主线候选 2-3 个、AI 时事候选 1-2 个、Crypto / AI x Crypto 候选 0-1 个、今日最推荐 1 个、Wiki 待沉淀点 3-5 条。
 - LLM Wiki 的目标不是存新闻，而是把每日新信号沉淀成长期选题页、方法论页、框架和案例。
 
+## [2026-04-28] 会话摘要：今日 live 选题筛选
+
+**完成了什么：**
+- 抓取当前已登录 X Timeline：`05-选题研究/X-Timeline-2026-04-28-topic-selection-live.md`，共 48 条，主要话题为 AI / GPT / agent / Claude / code。
+- 抓取 HN Top 30：`05-选题研究/HN-每日热点-2026-04-28-live.md`，AI/ML 相关 6 条。
+- 抓取 Reddit 175 条：`05-选题研究/Reddit-每日监控-2026-04-28-live.md`，AI/ML 相关 26 条。
+- 生成今日分流选题建议：`05-选题研究/选题建议-2026-04-28-live.md`。
+
+**结论：**
+- 今日最推荐写 `GitHub Copilot 用量计费：AI 编程工具的补贴时代结束了`。
+- 备选主线：`Agent 进入浏览器`、`写给 AI 看：内容成为 agent 上下文`。
+- AI 时事备选：`Microsoft / OpenAI 解绑`、`Mercor 语音样本泄露`。
+- Crypto / AI x Crypto 今日只做素材观察，不建议主写。
+
 ## [2026-04-28] 会话摘要：Redbook P0 工作流降噪修正
 
 **完成了什么：**
