@@ -2,6 +2,27 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-04-28 Redbook P2 Control Surface
+
+- Owner: Codex
+- Source: `docs/reports/2026-04-28-redbook-workflow-review.md`
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Add a lightweight `redbookctl` entrypoint for daily, pick, draft, publish, close-run, and status.
+- [x] Make the default dashboard show today's report, active harness runs, pending publish confirmations, publish ledger state, and stale runs.
+- [x] Update the primary tool docs/playbook to route daily operations through `redbookctl`.
+- [x] Run smoke checks and commit the scoped change.
+
+### Review
+
+- Added `tools/redbookctl.py` and executable wrapper `tools/redbookctl` as the unified daily control surface.
+- `status` now shows today's daily report, active tasks, harness active/stale runs, pending publish confirmations, publish ledger latest record, due follow-ups, and recent publish records missing JSONL.
+- `daily` and `publish-record` delegate to existing canonical tools; `pick`, `draft`, `publish`, and `close-run` provide safe workflow shortcuts without replacing approved-publish rules.
+- Updated `docs/shared/redbook-playbook.md`, `AGENTS.md`, `CLAUDE.md`, and `tools/README.md` so daily operations point to `redbookctl`.
+- Verification passed: Python compile, help/status/JSON/pick/draft/publish/publish-record smokes, shared playbook sync, and `git diff --check`.
+
 ## 2026-04-28 Redbook P0 Workflow Cleanup
 
 - Owner: Codex

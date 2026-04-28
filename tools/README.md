@@ -6,12 +6,13 @@
 
 | 功能 | 推荐方式 | 备选方式 | 状态 |
 |------|---------|---------|------|
-| **X.com 研究** | `bash tools/daily.sh` + `wiki_workflow.py query` | `tools/x-skills/x-collect` legacy local reference | ✅ 主推 |
+| **工作流看板 / 控制面** | `tools/redbookctl status` | 直接读 `tasks/active.md` / harness JSON | ✅ 主推 |
+| **X.com 研究** | `tools/redbookctl daily` + `wiki_workflow.py query` | `bash tools/daily.sh` / `tools/x-skills/x-collect` legacy local reference | ✅ 主推 |
 | **X.com 创作** | `/x-mastery-mentor` + 账号风格手写/改写 | `tools/x-skills/x-create` legacy local reference | ✅ 主推 |
 | **X.com 发布** | `/baoyu-post-to-x` skill | ❌ ~~`auto-x/publish_x.sh`~~ | ✅ 唯一 |
 | **小红书图文** | `/baoyu-xhs-images` skill | ❌ ~~`auto-redbook/render_simple.sh`~~ | ✅ 唯一 |
 | **小红书视频/数据/搜索** | `RedBookSkills` | 历史 `/post-to-xhs` 文档 | ✅ 主推 |
-| **发布数据记录** | `record_publish.py` + `publish-records.jsonl` | `04-内容数据统计/数据统计表.md` 手工补视图 | ✅ 主推 |
+| **发布数据记录** | `tools/redbookctl publish-record -- ...` + `publish-records.jsonl` | `record_publish.py` 直接调用 | ✅ 主推 |
 | **跨站点只读抓取 / 环境验证** | `tools/opencli/` | 现有 skills / 手工浏览器 | ✅ 辅助层 |
 | **内部工作台自然语言试点** | `tools/page-agent-console/` | 无 | ✅ 试点 |
 | **Reddit 痛点** | `reddit_hack.py` | 无 | ✅ 唯一 |
@@ -61,6 +62,8 @@ tools/
 │   └── x-publish/        ⚠️ 已被 /baoyu-post-to-x 替代
 │
 ├── reddit_hack.py        ✅ Reddit 痛点挖掘（唯一）
+├── redbookctl            ✅ Redbook 日常控制面 wrapper
+├── redbookctl.py         ✅ Redbook 日常控制面实现
 ├── record_publish.py     ✅ 发布数据 JSONL 主账本追加工具
 │
 └── aws-proxy/            ✅ 代理基础设施（独立项目）
@@ -70,6 +73,19 @@ tools/
 
 ## 🔧 工具详解
 
+### 0. Redbook 控制面
+
+**`tools/redbookctl`** - 日常 workflow 统一入口
+- 默认看板：`tools/redbookctl status`
+- 跑每日研究：`tools/redbookctl daily`，需要全量关注列表巡检时加 `--with-following-audit`
+- 从日报 promotion 题目：`tools/redbookctl pick --topic "题目" --source "来源"`
+- 创建完整内容 run：`tools/redbookctl draft --topic "题目" --source "日报/链接/路径" --summary "一句话目标"`
+- 发布前检查：`tools/redbookctl publish`
+- 发布后补结构化账本：`tools/redbookctl publish-record -- --stage T+0 ...`
+- 关闭 run：`tools/redbookctl close-run --run-id <run_id> --status done`
+
+看板会汇总今日日报、`tasks/active.md`、harness active/stale runs、待确认发布项、发布账本最新记录和缺口。
+
 ### 1. X.com 工具链
 
 #### ✅ **推荐：当前主流程**
@@ -77,7 +93,7 @@ tools/
 当前可用入口以 [`docs/reference/skills-manifest.md`](../docs/reference/skills-manifest.md) 为准。
 
 **研究**：
-- 默认入口：`bash tools/daily.sh`
+- 默认入口：`tools/redbookctl daily`
 - 显式 wiki 查询：`python3 tools/wiki_workflow.py query --topic "主题" --date YYYY-MM-DD`
 - `tools/x-skills/x-collect` 仅作为 legacy local reference，不再作为默认 skill 入口。
 
@@ -94,7 +110,7 @@ tools/
 
 #### ✅ **推荐：自动化方式**（定时任务）
 
-**`tools/daily.sh`** - 每日自动化唯一入口
+**`tools/daily.sh`** - 每日自动化底层入口
 - **运行时间**：每日 7:00 AM（launchd 自动）
 - **执行内容**：
   1. 生成发布提醒（扫描待深化/制作中）
@@ -108,6 +124,8 @@ tools/
   - 推荐选题保留在日报内；用户或 agent 明确选中后再写入 `01-内容生产/选题管理/00-选题记录.md`
 - **手动运行**：
   ```bash
+  tools/redbookctl daily
+  tools/redbookctl daily --skip-x
   bash tools/daily.sh
   bash tools/daily.sh --skip-x
   ```
@@ -132,14 +150,14 @@ bash tools/morning_sync.sh
 
 ### 2. 发布数据记录
 
-**`tools/record_publish.py`** - 追加结构化发布记录
+**`tools/redbookctl publish-record` / `tools/record_publish.py`** - 追加结构化发布记录
 - 主账本：`04-内容数据统计/publish-records.jsonl`
 - Schema：`04-内容数据统计/publish-records.schema.md`
 - 阶段：`T+0` 记录状态 URL / note id / 初始 views；`T+1` 和 `T+3` 追加后续指标与复盘结论。
 
 示例：
 ```bash
-python3 tools/record_publish.py \
+tools/redbookctl publish-record -- \
   --stage T+0 \
   --platform x.com \
   --title "short title" \

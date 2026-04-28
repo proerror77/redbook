@@ -3018,3 +3018,26 @@
 
 **遗留：**
 - P1 清单已完成；后续可进入 P2：`redbookctl` / dashboard。
+
+## [2026-04-28] 会话摘要：Redbook P2 Control Surface
+
+**完成了什么：**
+- 新增 `tools/redbookctl.py` 和可执行 wrapper `tools/redbookctl`，把日常操作收敛到一个入口。
+- `tools/redbookctl status` 现在汇总今日日报、`tasks/active.md`、harness active/stale runs、待确认发布、发布账本最新记录、T+1/T+3 缺口和近期未进 JSONL 的发布记录。
+- 增加 `daily`、`pick`、`draft`、`publish`、`publish-record`、`close-run` 子命令；写操作都复用现有 canonical 工具或只做显式 promotion。
+- 更新 shared playbook、AGENTS、CLAUDE、`tools/README.md`，把主入口改成 `tools/redbookctl`。
+
+**验证：**
+- `python3 -m py_compile tools/redbookctl.py tools/record_publish.py tools/redbook_harness/cli.py`
+- `tools/redbookctl --help`
+- `tools/redbookctl status`
+- `tools/redbookctl status --json | python3 -m json.tool`
+- `tools/redbookctl pick --dry-run ...`
+- `tools/redbookctl draft`
+- `tools/redbookctl publish`
+- `tools/redbookctl publish-record -- ... --dry-run | python3 -m json.tool`
+- `python3 tools/sync_redbook_playbook.py`
+- `git diff --check`
+
+**遗留：**
+- Dashboard 暴露出 15 个 stale harness runs 和 2 个待确认发布项；后续可单独做 P2.1 状态终态化。

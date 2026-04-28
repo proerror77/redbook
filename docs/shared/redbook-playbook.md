@@ -99,8 +99,14 @@
 
 ### 当前主要入口
 
-- 每日研究：`bash tools/daily.sh`
-- 关注列表全量巡检：`bash tools/daily.sh --with-following-audit`
+- 工作流看板：`tools/redbookctl status`
+- 每日研究：`tools/redbookctl daily`（等价于 `bash tools/daily.sh`）
+- 关注列表全量巡检：`tools/redbookctl daily --with-following-audit`
+- 选中日报题目：`tools/redbookctl pick --topic "..." --source "..."`
+- 创建完整内容 run：`tools/redbookctl draft --topic "..." --source "..." --summary "..."`
+- 发布前/发布后缺口：`tools/redbookctl publish`
+- 发布数据记录：`tools/redbookctl publish-record -- --stage T+0 ...`
+- 关闭 harness run：`tools/redbookctl close-run --run-id ... --status done`
 - Wiki query：`python3 tools/wiki_workflow.py query --topic "..." --date YYYY-MM-DD`
 - Wiki daily-cycle：由 `tools/auto-x/scripts/run_daily.sh` 调用，状态看 `wiki/log.md` 与 harness run。
 - Harness：`python3 -m tools.redbook_harness.cli --help`
