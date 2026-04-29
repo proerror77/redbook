@@ -2558,3 +2558,24 @@
   3) 只有用户明确要求切换技术路线时，才允许使用 CDP/Playwright/新标签页。
 - 下次触发信号：用户说“不要新开”“当前浏览器”“就用这个页面”“别跳页面”。
 - 验证结果：本轮已记录规则；后续继续投递只用当前 Chrome 页面。
+
+### Lesson 112
+- 日期：2026-04-29
+- 场景：X 发布后用户指出我用错 Chrome profile，应该使用 `Shih`；我最初用自动化脚本默认 profile 判断发布状态，导致误以为帖子可能未发。
+- 问题：
+  1) `baoyu-post-to-x` 脚本默认使用独立 profile `/Users/proerror/.local/share/x-browser-profile`，不是用户当前 Chrome 的 `Shih`。
+  2) 用错误 profile 或未登录视图验证 X，会出现“看不到新帖”的假阴性。
+  3) 用户已经在 Chrome profile 菜单明确指出正确 profile 是 `Shih`，后续不能再回到默认自动化 profile。
+- 根因：
+  1) 把脚本 stdout 当成主要线索后，没有先核对当前真实 Chrome profile。
+  2) 没有把 `Shih = ~/Library/Application Support/Google/Chrome/Default` 固化为 X 发布/验证默认会话。
+- 修正动作：
+  1) X 发布和发布验证优先使用当前 Chrome 的 `Shih` profile。
+  2) 只有在明确确认自动化 profile 与 Shih 登录态一致时，才允许用脚本结果辅助判断。
+  3) 发布完成必须回到 Shih profile 的个人主页或状态页验证 URL、顶部可见性和发布时间。
+- 预防规则（Rule）：
+  1) 处理 `@0xcybersmile` 的 X 发帖/验证时，默认 profile 是 `Shih`，不是 `sonic`，也不是 `.local/share/x-browser-profile`。
+  2) 不得用错误 profile 的 X 页面作为“未发布”结论。
+  3) 强证据必须来自 Shih profile 可见的状态 URL 或个人主页顶部新帖。
+- 下次触发信号：用户说“用错 profile”“Shih”“X 没发出”“检查登录”。
+- 验证结果：已在 Shih profile 看到帖子 `https://x.com/0xcybersmile/status/2049311953957634056`，账号显示正常登录。
