@@ -4,6 +4,31 @@
 
 ---
 
+## [2026-04-29] 会话摘要：稳定 X 登录检查入口
+
+**完成了什么：**
+- 新增稳定入口：
+  - `tools/redbookctl x-login`
+- 默认行为：headless 检查 `/baoyu-post-to-x` 当前配置 profile 的 X composer，不输入内容、不发布。
+- 人工恢复模式：
+  - `tools/redbookctl x-login --headed --login-wait-ms 600000`
+- 更新了 `tools/README.md`、`docs/shared/redbook-playbook.md`，并同步到 `AGENTS.md` / `CLAUDE.md`。
+- 验证通过：
+  - `python3 -m py_compile tools/redbookctl.py`
+  - `tools/redbookctl x-login --help`
+  - `tools/redbookctl x-login`
+  - 输出账号：`Smileyface @0xcybersmile`
+
+**未完成 / 遗留：**
+- 没有跑真实 X submit，避免误发。
+- 当前普通 Chrome `Shih` profile 仍不是 HTTP CDP 启动；`redbookctl browser` 与 `redbookctl x-login` 是两个入口：前者查当前 CDP tabs，后者查发布 profile。
+
+**下次会话优先做：**
+- X 发布前先跑 `tools/redbookctl x-login`。
+- 如果失败，再跑 `tools/redbookctl x-login --headed --login-wait-ms 600000` 做人工登录恢复。
+
+---
+
 ## [2026-04-29] 会话摘要：X 登录 profile 修复
 
 **完成了什么：**

@@ -2,6 +2,26 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-04-29 Stable X Login Command
+
+- Owner: Codex
+- Source: User asked for a more stable way to handle X.com login
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Add a stable `redbookctl` wrapper for X login/composer checks.
+- [x] Document the stable path and manual recovery mode in the tools guide.
+- [x] Verify the wrapper against the configured `@0xcybersmile` profile.
+- [x] Commit the small workflow hardening change.
+
+### Review
+
+- Added `tools/redbookctl x-login` as the stable preflight for the `/baoyu-post-to-x` publishing profile.
+- Default mode is headless and non-publishing; `--headed --login-wait-ms 600000` is the manual recovery mode.
+- Updated the shared playbook and tools guide so X publishing routes through `x-login` before publish.
+- Verification passed: `python3 -m py_compile tools/redbookctl.py`, `tools/redbookctl x-login --help`, `tools/redbookctl x-login`, `git diff --check`, and no launched Chrome process remained.
+
 ## 2026-04-29 X Login Profile Recovery Fix
 
 - Owner: Codex

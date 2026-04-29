@@ -20,7 +20,7 @@
 - 外部发布统一是 `approved-publish`：草稿、预览、审稿可自动；submit/publish 必须等用户明确说“发布 / 直接发”。
 - 图片生成统一优先走 Tuzi/兔子 `gpt-image-2.0`；不要再把 Nano Banana / Gemini 写成默认图像模型。
 - 长文配图使用 balanced visual arc：封面可选，正文默认 3-5 张，约每 600-900 中文字或每 2-3 个主要小节 1 张，除小红书卡片系列外最多 6 张。
-- 浏览器工作先跑 `tools/redbookctl browser` 检查现有 Chrome/CDP tabs；优先复用已登录 tab，不默认新开 profile、空白页或可见窗口。
+- 浏览器工作先跑 `tools/redbookctl browser` 检查现有 Chrome/CDP tabs；X 发布 profile 先跑 `tools/redbookctl x-login` 检查 composer；优先复用已登录 tab 或已配置 profile，不默认新开未登录 profile、空白页或可见窗口。
 
 ---
 
@@ -105,6 +105,7 @@
 
 - 工作流看板：`tools/redbookctl status`
 - 浏览器会话检查：`tools/redbookctl browser`（只读现有 Chrome/CDP，不开新页）
+- X 发布 profile 检查：`tools/redbookctl x-login`（只检查 composer，不输入、不发布；`--headed` 用于人工登录恢复）
 - 每日研究：`tools/redbookctl daily`（等价于 `bash tools/daily.sh`）
 - 关注列表全量巡检：`tools/redbookctl daily --with-following-audit`
 - 选中日报题目：`tools/redbookctl pick --topic "..." --source "..."`
@@ -119,7 +120,7 @@
 - Wiki daily-cycle：由 `tools/auto-x/scripts/run_daily.sh` 调用，状态看 `wiki/log.md` 与 harness run。
 - Harness：`python3 -m tools.redbook_harness.cli --help`
 - X 审稿 / 创作辅助：`/x-mastery-mentor`
-- X 发布：`/baoyu-post-to-x`
+- X 发布：`/baoyu-post-to-x`（发帖前先 `tools/redbookctl x-login`）
 - 文档配图：`/document-illustrator`
 - 小红书图文：`/baoyu-xhs-images`
 - 小红书视频 / 数据 / 搜索：`RedBookSkills`

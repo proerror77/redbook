@@ -21,6 +21,7 @@ TOPIC_RECORD = ROOT / "01-内容生产" / "选题管理" / "00-选题记录.md"
 IN_PROGRESS_DIR = ROOT / "01-内容生产" / "02-制作中的选题"
 PUBLISHED_DIR = ROOT / "01-内容生产" / "03-已发布的选题"
 PUBLISH_LEDGER = ROOT / "04-内容数据统计" / "publish-records.jsonl"
+X_BROWSER_SCRIPT = ROOT / ".agents" / "skills" / "baoyu-post-to-x" / "scripts" / "x-browser.ts"
 TERMINAL_RUN_STATUSES = {"done", "closed_stale", "cancelled"}
 
 
@@ -428,6 +429,20 @@ def command_browser(args: argparse.Namespace) -> int:
     return run_passthrough(command).code
 
 
+def command_x_login(args: argparse.Namespace) -> int:
+    command = ["bun", str(X_BROWSER_SCRIPT), "--check-login"]
+    if args.profile:
+        command.extend(["--profile", args.profile])
+    if args.cdp_endpoint:
+        command.extend(["--cdp-endpoint", args.cdp_endpoint])
+    if args.new_browser:
+        command.append("--new-browser")
+    command.append("--headed" if args.headed else "--headless")
+    if args.login_wait_ms is not None:
+        command.extend(["--login-wait-ms", str(args.login_wait_ms)])
+    return run_passthrough(command).code
+
+
 def command_content_loop(mode: str, args: argparse.Namespace) -> int:
     command = [
         sys.executable,
@@ -502,6 +517,13 @@ def build_parser() -> argparse.ArgumentParser:
     browser.add_argument("--endpoint", default="http://127.0.0.1:9222")
     browser.add_argument("--json", action="store_true")
 
+    x_login = subparsers.add_parser("x-login", help="Verify or recover the X publishing browser profile.")
+    x_login.add_argument("--profile", help="Override the configured X browser profile directory.")
+    x_login.add_argument("--cdp-endpoint", help="Reuse an existing Chrome CDP endpoint instead of launching the configured profile.")
+    x_login.add_argument("--new-browser", action="store_true", help="Force launching the configured/profile browser instead of CDP reuse.")
+    x_login.add_argument("--headed", action="store_true", help="Open a visible browser and wait for manual login/verification recovery.")
+    x_login.add_argument("--login-wait-ms", type=int, help="How long headed mode waits for manual login recovery.")
+
     for mode, help_text in [
         ("challenge", "Generate challenge questions from local corpus."),
         ("emerge", "Mine implicit ideas and frame candidates from local corpus."),
@@ -553,6 +575,8 @@ def main(argv: list[str] | None = None) -> int:
         return command_publish_record(args)
     if args.command == "browser":
         return command_browser(args)
+    if args.command == "x-login":
+        return command_x_login(args)
     if args.command == "challenge":
         return command_content_loop("challenge", args)
     if args.command == "emerge":
