@@ -887,3 +887,19 @@
   - `https://x.com/0xcybersmile/status/2049324878344634711`
   - `https://x.com/0xcybersmile/status/2049323510531764349`
   - `https://x.com/0xcybersmile/status/2049322589332590728`
+
+## [2026-04-29] ingest | X 自动化漏图闸门与 GPT Image 2.0 图片标准
+
+来源：用户反馈“自动化漏图 + 生图审美太糟糕” + OpenAI image generation docs / Cookbook + GPT Image 2.0 prompt 资料检索 + 本地脚本修复验证
+
+触及页面：5个
+- `.agents/skills/baoyu-post-to-x/scripts/x-browser.ts` — 增加图片文件、composer media、发布后 status/photo 验证硬闸
+- `.agents/skills/baoyu-image-gen/scripts/main.ts` — 增加 X/blog editorial prompt preset
+- `.agents/skills/document-illustrator/styles/editorial-tech.md` — 增加技术评论配图审美基线
+- `docs/standards/gpt-image-2-editorial-prompts.md` — 新增 GPT Image 2 X/blog prompt 标准
+- `tasks/lessons.md` — 新增生图审美规则
+
+关键洞察：
+- X 发布成功不能只看 toast 或 stdout；图文内容必须验证状态 URL、正文和 `photo`/media 同时存在。
+- GPT Image 2.0 prompt 的核心不是堆风格词，而是声明 artifact、读者、投放位置、构图、文字角色和避免项。
+- 对本账号来说，AI Agent / 企业导入 / workflow 主题配图应贴近真实工作界面和 operator 场景，默认排除泛紫蓝发光、机器人、bokeh 和假 logo。

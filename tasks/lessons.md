@@ -2601,3 +2601,25 @@
   3) 强证据必须来自 Shih profile 可见的状态 URL 或个人主页顶部新帖。
 - 下次触发信号：用户说“用错 profile”“Shih”“X 没发出”“检查登录”。
 - 验证结果：已在 Shih profile 看到帖子 `https://x.com/0xcybersmile/status/2049311953957634056`，账号显示正常登录。
+
+### Lesson 113
+- 日期：2026-04-29
+- 场景：X 三帖图文重发后，用户指出自动化生成的配图审美太糟糕，需要修复 GPT Image 2.0 的提示词与默认风格。
+- 问题：
+  1) 生图 prompt 过度依赖泛化风格词，容易生成“紫蓝发光 AI 海报”“随机机器人”“Dribbble 3D 装饰”。
+  2) 图片没有明确投放位置、读者、构图、文字角色和避免项，所以模型只能按默认 AI 审美补全。
+  3) X/blog 图片如果只是装饰，无法服务 Hook，也会拉低内容专业感。
+- 根因：
+  1) 工具链没有把 X card / blog hero 当成明确 artifact。
+  2) 缺少统一 editorial tech 审美基线和负面约束。
+  3) 发布流程只检查“有没有图”，没有同时检查“图是否适合时间线和文章场景”。
+- 修正动作：
+  1) 新增 `x-card` / `blog-hero` / `x-blog-editorial` prompt preset。
+  2) 新增 `editorial-tech` 风格，默认面向 AI Agent、企业导入、工作流、技术评论场景。
+  3) 新增 GPT Image 2 editorial prompt 标准文档，要求写清 Goal / Audience / Placement / Composition / Text / Avoid。
+- 预防规则（Rule）：
+  1) X/blog 配图不得只写“科技感/未来感/AI感”；必须写成品用途、目标读者、构图和避免项。
+  2) 默认禁止 generic blue-purple AI glow、机器人吉祥物、bokeh orbs、glossy 3D blobs、假 logo、水印和小字段落。
+  3) 生图验收标准是“能解释观点、缩略图可读、像严肃 editorial visual”，不是“看起来很炫”。
+- 下次触发信号：用户说“图太丑”“审美太糟糕”“用于 X.com/blog 生图”“GPT Image 2.0 prompt”。
+- 验证结果：已新增 prompt preset、editorial-tech 风格、标准文档；脚本 help 和 Python 编译通过。

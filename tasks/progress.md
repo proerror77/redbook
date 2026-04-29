@@ -3213,3 +3213,29 @@
 
 **遗留：**
 - 小红书仍未发布；本轮按用户要求先完成 X.com 修复。
+
+## [2026-04-29] 会话摘要：X 自动化漏图闸门与 GPT Image 2.0 审美修复
+
+**完成了什么：**
+- 修复 `baoyu-post-to-x` 普通发帖链路：
+  - `--image` 文件不存在时立即中止，避免纯文字误发。
+  - 图片上传后必须在 composer 里看到同数量 media，才允许 `--submit`。
+  - 发布后必须拿到 status URL，并在状态页验证正文和图片 / photo 链接，才报告成功。
+- 升级 `baoyu-image-gen`：
+  - 新增 `--preset raw|x-card|blog-hero|x-blog-editorial`。
+  - `x-card` / `blog-hero` 会自动包一层 X/blog editorial art direction 和 anti-slop 约束。
+- 升级 `document-illustrator`：
+  - 新增 `editorial-tech` 风格，面向 X.com、blog、newsletter、AI Agent / SaaS / Crypto 评论配图。
+  - 单图生成脚本统一包 GPT Image 2.0 prompt 结构，避免退化成泛科技感海报。
+- 新增项目标准：`docs/standards/gpt-image-2-editorial-prompts.md`。
+
+**验证：**
+- `git diff --check`
+- `bun .agents/skills/baoyu-post-to-x/scripts/x-browser.ts --help`
+- `bun .agents/skills/baoyu-image-gen/scripts/main.ts --help`
+- `python3 -m py_compile .agents/skills/document-illustrator/scripts/generate_single_image.py`
+- 缺失图片 dry run 已确认会阻断：`Image file(s) not found; refusing to continue because this would risk a text-only X post`
+
+**遗留：**
+- 本轮未实际调用 GPT Image 2.0 生成样张，避免未确认前消耗 API 额度。
+- Tuzi 的 `16:9` compact size enum 暂未硬传，只作为 prompt 布局指令；等确认 provider 支持后再加参数映射。

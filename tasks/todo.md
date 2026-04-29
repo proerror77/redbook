@@ -3774,3 +3774,26 @@
 - 已完成内容包：`01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/`
 - 小红书仅保存本地草稿，未调用发布工具、未发出。
 - 推荐优先发布顺序：Agent 入口迁移 → Claude 进入创意工具 → AI 裁员陷阱。
+
+---
+
+## 新任务：X 发布自动化与 GPT Image 2.0 图片审美修复
+- 任务名称：修复 X 图文发布自动化漏图风险，并升级 GPT Image 2.0 面向 X/blog 的生成提示词
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-29
+- 优先级：P0
+- Harness Run：N/A（工具链修复）
+
+### 执行清单
+- [x] 1. 复盘漏图事故 lesson，确认发布完成证据门槛
+- [x] 2. 检索 GPT Image 2.0 / ChatGPT Images 2.0 prompt 方法和官方限制
+- [x] 3. 修复 X 自动化：图片缺失或未挂载时阻断发布，发布后验证状态页图像
+- [x] 4. 优化图片生成：新增 X/blog editorial prompt preset，替换低质“泛科技感”默认审美
+- [x] 5. 更新技能文档、发布规则、progress/wiki/lesson
+- [x] 6. 运行静态检查和最小命令验证
+
+### Review 结论
+- 已完成工具链修复与最小验证。
+- X 发布链路现在对缺失图片、未挂载 media、发布后无图片状态页都做阻断。
+- 生图链路新增 X/blog editorial preset、`editorial-tech` 风格和 `docs/standards/gpt-image-2-editorial-prompts.md` 标准。
+- 本轮未实际调用 GPT Image 2.0 生成样张，避免未确认前消耗 API 额度。
