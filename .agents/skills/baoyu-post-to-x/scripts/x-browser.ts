@@ -9,8 +9,10 @@ import {
   copyImageToClipboard,
   findChromeExecutable,
   getDefaultProfileDir,
+  getExpectedXHandle,
   getFreePort,
   maybeGetBrowserWebSocketUrl,
+  normalizeXHandle,
   parseHeadlessFlag,
   resolveHeadlessMode,
   pasteFromClipboard,
@@ -28,6 +30,7 @@ interface XBrowserOptions {
   loginWaitMs?: number;
   keepOpenOnLoginRequired?: boolean;
   checkLogin?: boolean;
+  expectedHandle?: string;
   profileDir?: string;
   chromePath?: string;
   headless?: boolean;
@@ -295,6 +298,9 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
     const editorFound = await waitForEditor();
     if (!editorFound) {
       if (headless) {
+        if (options.checkLogin) {
+          throw new Error('X editor not found during login check. Run tools/redbookctl x-login --headed --login-wait-ms 600000 for manual recovery.');
+        }
         if (ownsBrowser && launchedProfileDir && launchedChromePath) {
           console.log('[x-browser] Headless mode cannot recover login. Opening a headed Chrome with the same profile for manual recovery...');
           try { await cdp!.send('Browser.close', {}, { timeoutMs: 5_000 }); } catch {}
@@ -328,6 +334,12 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
 
     if (options.checkLogin) {
       const snapshot = await readLoginSnapshot();
+      const expectedHandle = options.expectedHandle
+        ? normalizeXHandle(options.expectedHandle)
+        : getExpectedXHandle();
+      if (expectedHandle && !String(snapshot.accountText || '').toLowerCase().includes(expectedHandle)) {
+        throw new Error(`X login check saw the wrong account. Expected ${expectedHandle}; saw ${snapshot.accountText || snapshot.title || snapshot.url || 'no account text'}.`);
+      }
       console.log(`[x-browser] Login check passed: ${snapshot.accountText || snapshot.title || snapshot.url || 'X composer visible'}`);
       return;
     }
@@ -427,6 +439,8 @@ Options:
   --headed         Open a visible browser for login/manual preview
   --headless       Force background mode (default; can also set X_BROWSER_HEADLESS=0)
   --check-login    Verify X composer/login state only; do not type or submit
+  --expected-handle <handle>  Require the logged-in X account to match this handle
+  --timeout-ms <ms>  How long to wait for the X composer before failing (default: 120000)
   --login-wait-ms <ms>  How long headed mode waits for manual login recovery (default: 600000)
   --close-on-login-required  Close launched browser even when login recovery times out
   --help           Show this help
@@ -448,9 +462,11 @@ async function main(): Promise<void> {
   let profileDir: string | undefined;
   let cdpEndpoint: string | undefined;
   let newBrowser = false;
+  let timeoutMs: number | undefined;
   let loginWaitMs: number | undefined;
   let keepOpenOnLoginRequired = true;
   let checkLogin = false;
+  let expectedHandle: string | undefined;
   const headless = parseHeadlessFlag(args);
   const textParts: string[] = [];
 
@@ -469,6 +485,14 @@ async function main(): Promise<void> {
       newBrowser = true;
     } else if (arg === '--check-login') {
       checkLogin = true;
+    } else if (arg === '--expected-handle' && args[i + 1]) {
+      expectedHandle = args[++i];
+    } else if (arg === '--timeout-ms' && args[i + 1]) {
+      timeoutMs = Number(args[++i]);
+      if (!Number.isFinite(timeoutMs) || timeoutMs < 0) {
+        console.error(`Error: Invalid --timeout-ms: ${args[i]}`);
+        process.exit(1);
+      }
     } else if (arg === '--login-wait-ms' && args[i + 1]) {
       loginWaitMs = Number(args[++i]);
       if (!Number.isFinite(loginWaitMs) || loginWaitMs < 0) {
@@ -495,6 +519,7 @@ async function main(): Promise<void> {
     text,
     images,
     submit,
+    timeoutMs,
     profileDir,
     headless,
     cdpEndpoint,
@@ -502,6 +527,7 @@ async function main(): Promise<void> {
     loginWaitMs,
     keepOpenOnLoginRequired,
     checkLogin,
+    expectedHandle,
   });
 }
 

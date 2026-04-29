@@ -2,6 +2,27 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-04-29 X Login Workflow Review Fix
+
+- Owner: Codex
+- Source: Review found x-login preflight was not strongly bound to the publish profile/account
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Force `tools/redbookctl x-login` to inspect the configured publishing profile unless a CDP endpoint is explicitly requested.
+- [x] Add expected-handle validation so composer visibility alone cannot pass the preflight.
+- [x] Make check-only headless failures fail closed instead of opening a headed recovery browser.
+- [x] Surface `x-login` as a publish helper gate and verify positive/negative cases.
+
+### Review
+
+- `tools/redbookctl x-login` now adds `--new-browser` by default, so it checks the configured publish profile instead of opportunistically reusing `9222`.
+- `x-browser.ts --check-login` now validates `expected_handle` from config/env or `--expected-handle`; wrong-account checks fail.
+- Headless `--check-login` no longer opens headed Chrome on failure; `tools/redbookctl x-login` uses a bounded composer wait and manual recovery stays explicit through `tools/redbookctl x-login --headed --login-wait-ms 600000`.
+- User config now includes `expected_handle: @0xcybersmile`.
+- Verification passed: Python compile, x-browser help, positive x-login, wrong-handle failure, logged-out-profile failure without headed recovery, publish helper gate text, and diff whitespace check.
+
 ## 2026-04-29 Article Visual Metaphor Workflow
 
 - Owner: Codex

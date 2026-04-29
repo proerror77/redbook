@@ -4,6 +4,31 @@
 
 ---
 
+## [2026-04-29] 会话摘要：X 登录 workflow review 修正
+
+**完成了什么：**
+- 修正 review 中发现的强绑定问题：`tools/redbookctl x-login` 现在默认强制走发布 profile，而不是优先复用 `127.0.0.1:9222`。
+- `x-browser.ts --check-login` 现在会校验 `expected_handle`；本机配置已增加：
+  - `expected_handle: @0xcybersmile`
+- `--check-login --headless` 找不到 composer 时会 fail closed，不再自动打开 headed Chrome；`tools/redbookctl x-login` 默认用 45 秒 composer 等待上限；人工恢复仍使用：
+  - `tools/redbookctl x-login --headed --login-wait-ms 600000`
+- `tools/redbookctl publish` 已提示 X 发布前门槛：
+  - `tools/redbookctl x-login 必须通过`
+
+**验证：**
+- `python3 -m py_compile tools/redbookctl.py`
+- `bun .agents/skills/baoyu-post-to-x/scripts/x-browser.ts --help`
+- `tools/redbookctl x-login`
+- `tools/redbookctl x-login --expected-handle @wrong-handle` 失败，证明账号校验生效
+- `bun .agents/skills/baoyu-post-to-x/scripts/x-browser.ts --check-login --profile "$HOME/.local/share/x-browser-profile" --headless` 失败且没有自动打开 headed recovery
+- `tools/redbookctl publish`
+- `git diff --check`
+
+**未完成 / 遗留：**
+- 没有跑真实 X submit，避免误发。
+
+---
+
 ## [2026-04-29] 会话摘要：文章配图 visual metaphor workflow
 
 **完成了什么：**

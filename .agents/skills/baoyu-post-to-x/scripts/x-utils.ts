@@ -120,6 +120,20 @@ export function getDefaultProfileDir(): string {
   return path.join(base, 'x-browser-profile');
 }
 
+export function normalizeXHandle(value: string): string {
+  const trimmed = value.trim().toLowerCase();
+  return trimmed.startsWith('@') ? trimmed : `@${trimmed}`;
+}
+
+export function getExpectedXHandle(): string | undefined {
+  const configuredHandle = process.env.X_BROWSER_EXPECTED_HANDLE?.trim()
+    || readExtendSetting('expected_handle')
+    || readExtendSetting('x_handle')
+    || readExtendSetting('expected_account');
+
+  return configuredHandle ? normalizeXHandle(configuredHandle) : undefined;
+}
+
 export function resolveHeadlessMode(explicit?: boolean): boolean {
   if (typeof explicit === 'boolean') return explicit;
 

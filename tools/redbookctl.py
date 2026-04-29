@@ -391,6 +391,7 @@ def command_publish(args: argparse.Namespace) -> int:
     status = collect_status(stale_days=args.stale_days, limit=args.limit, recent_days=args.recent_days)
     print("Approved-publish helper")
     print("- submit/publish 仍需用户明确说“发布 / 直接发”。")
+    print("- X 发布前门槛: tools/redbookctl x-login 必须通过。")
     print("- X 发布主链: /baoyu-post-to-x")
     print("- 小红书图文主链: /baoyu-xhs-images")
     print("- 发布后补账: tools/redbookctl publish-record -- --stage T+0 ...")
@@ -433,11 +434,14 @@ def command_x_login(args: argparse.Namespace) -> int:
     command = ["bun", str(X_BROWSER_SCRIPT), "--check-login"]
     if args.profile:
         command.extend(["--profile", args.profile])
+    if args.expected_handle:
+        command.extend(["--expected-handle", args.expected_handle])
     if args.cdp_endpoint:
         command.extend(["--cdp-endpoint", args.cdp_endpoint])
-    if args.new_browser:
+    if args.new_browser or not args.cdp_endpoint:
         command.append("--new-browser")
     command.append("--headed" if args.headed else "--headless")
+    command.extend(["--timeout-ms", str(args.timeout_ms)])
     if args.login_wait_ms is not None:
         command.extend(["--login-wait-ms", str(args.login_wait_ms)])
     return run_passthrough(command).code
@@ -519,9 +523,11 @@ def build_parser() -> argparse.ArgumentParser:
 
     x_login = subparsers.add_parser("x-login", help="Verify or recover the X publishing browser profile.")
     x_login.add_argument("--profile", help="Override the configured X browser profile directory.")
+    x_login.add_argument("--expected-handle", help="Override the configured expected X handle.")
     x_login.add_argument("--cdp-endpoint", help="Reuse an existing Chrome CDP endpoint instead of launching the configured profile.")
     x_login.add_argument("--new-browser", action="store_true", help="Force launching the configured/profile browser instead of CDP reuse.")
     x_login.add_argument("--headed", action="store_true", help="Open a visible browser and wait for manual login/verification recovery.")
+    x_login.add_argument("--timeout-ms", type=int, default=45_000, help="How long to wait for the X composer before failing.")
     x_login.add_argument("--login-wait-ms", type=int, help="How long headed mode waits for manual login recovery.")
 
     for mode, help_text in [

@@ -64,7 +64,7 @@ test -f "$HOME/.baoyu-skills/baoyu-post-to-x/EXTEND.md" && echo "user"
 │ Not found │ Use defaults                                                              │
 └───────────┴───────────────────────────────────────────────────────────────────────────┘
 
-**EXTEND.md Supports**: Default Chrome profile (`default_profile`) | Auto-submit preference
+**EXTEND.md Supports**: Default Chrome profile (`default_profile`) | Expected X handle (`expected_handle`) | Auto-submit preference
 
 ## Prerequisites
 
@@ -100,6 +100,8 @@ npx -y bun ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png --subm
 | `--headed` | Open a visible browser for login or manual preview |
 | `--headless` | Force background mode (default) |
 | `--check-login` | Verify X composer/login state only; do not type or submit |
+| `--expected-handle <handle>` | Require the logged-in X account to match this handle |
+| `--timeout-ms <ms>` | How long to wait for the X composer before failing |
 | `--login-wait-ms <ms>` | In headed mode, wait for manual login/verification recovery before failing (default: 600000) |
 | `--close-on-login-required` | Close the launched browser even if login recovery times out |
 
@@ -110,7 +112,7 @@ npx -y bun ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png --subm
 - Do not report a post as published from script stdout alone; include the status URL or explain the verification blocker.
 
 **Login recovery gate**:
-- Before posting from an uncertain session, run `npx -y bun ${SKILL_DIR}/scripts/x-browser.ts --check-login`.
+- Before posting from an uncertain session, run `tools/redbookctl x-login`; it forces the configured publish profile and checks `expected_handle`.
 - If headless mode cannot find a composer in a browser it launched, it opens a headed Chrome with the same profile for manual recovery and leaves it open.
 - If headless mode cannot recover the active browser itself, rerun with `--headed`; the script will wait for login/verification and never submit until the composer is visible.
 - If headed mode times out while waiting for login recovery, the launched browser stays open by default. Finish login manually, then rerun the same command.
