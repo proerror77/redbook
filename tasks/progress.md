@@ -3168,3 +3168,48 @@
 **遗留：**
 - 小红书配图尚未生成。
 - 如用户确认发布 X，优先发布 `选题5-Agent入口迁移-X文案.md` 的版本 A。
+
+## [2026-04-29] 会话摘要：X 三帖漏图事故修正准备
+
+**完成了什么：**
+- 在 Chrome `Shih` profile 的 `@0xcybersmile` 主页确认三条 X 文字版都已发出：
+  - Agent 入口迁移：`https://x.com/0xcybersmile/status/2049311953957634056`
+  - Claude 进入创意工具：`https://x.com/0xcybersmile/status/2049317566691332232`
+  - AI 裁员陷阱：`https://x.com/0xcybersmile/status/2049318068464316892`
+- 根据用户反馈确认发布事故：三条都漏掉已经生成的配图。
+- 补齐发布记录、发布清单和 lesson，准备图文重发包。
+
+**验证：**
+- 三张应附封面图均存在，且尺寸均为 `2160x2880`：
+  - `xhs-online/选题5-Agent入口迁移/cover.png`
+  - `xhs-online/选题1-Claude进入创意工具/cover.png`
+  - `xhs-online/选题3-AI裁员陷阱/cover.png`
+
+**遗留：**
+- 删除旧 X 帖属于云端删除动作，需要用户确认后再执行。
+- 确认后应删除三条文字版旧帖，并用同文案 + 对应封面图重发。
+
+## [2026-04-29] 会话摘要：X 三帖图文重发完成
+
+**完成了什么：**
+- 使用 Chrome `Shih` profile / `@0xcybersmile` 完成三条 X 图文重发：
+  - AI 裁员陷阱：`https://x.com/0xcybersmile/status/2049324878344634711`
+  - Claude 进入创意工具：`https://x.com/0xcybersmile/status/2049323510531764349`
+  - Agent 入口迁移：`https://x.com/0xcybersmile/status/2049322589332590728`
+- 在新帖验证通过后删除三条旧文字版：
+  - `https://x.com/0xcybersmile/status/2049311953957634056`
+  - `https://x.com/0xcybersmile/status/2049317566691332232`
+  - `https://x.com/0xcybersmile/status/2049318068464316892`
+- 更新发布记录、发布清单和 lesson，补上“X 发布必须验证正文 + 图像链接”的规则。
+
+**验证：**
+- 个人主页顶部三条均为新图文帖，且每条都显示 `图像` 链接：
+  - `https://x.com/0xcybersmile/status/2049324878344634711/photo/1`
+  - `https://x.com/0xcybersmile/status/2049323510531764349/photo/1`
+  - `https://x.com/0xcybersmile/status/2049322589332590728/photo/1`
+- 删除旧文字版时 X 返回 `你的 帖子 已删除`。
+- 删除后个人主页显示 `668 帖子`，顶部三条为 AI 裁员、Claude 创意工具、Agent 入口迁移三条图文帖。
+- 额外核查 `https://x.com/0xcybersmile/status/2049321259755065753`：这是 Agent 帖编辑前旧版本，页面提示 `这个帖子有新的版本` 并指向 `2049322589332590728`，没有作为主页独立坏帖出现。
+
+**遗留：**
+- 小红书仍未发布；本轮按用户要求先完成 X.com 修复。
