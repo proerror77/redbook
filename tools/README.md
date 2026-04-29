@@ -99,6 +99,12 @@ tools/
 
 看板会汇总今日日报、`tasks/active.md`、harness active/stale runs、待确认发布项、发布账本最新记录和缺口。
 
+迁移 `status` / `workflow-health` 前先跑合约测试：
+
+```bash
+node --test tools/tests/redbookctl_contract.test.mjs
+```
+
 ### 1. X.com 工具链
 
 #### ✅ **推荐：当前主流程**

@@ -51,3 +51,4 @@ Python 不再作为新 workflow / publish / browser / image pipeline 的默认�
 - Smoke command passes.
 - Output artifact shape is unchanged or migration notes explain the change.
 - No unrelated publish/content behavior is changed in the same commit.
+- For `redbookctl status` / `workflow-health`, `node --test tools/tests/redbookctl_contract.test.mjs` passes before and after migration.

@@ -1,0 +1,44 @@
+{
+  "statusRequiredPaths": [
+    "date",
+    "today_report.path",
+    "today_report.exists",
+    "daily_health.today_report_exists",
+    "daily_health.latest_log",
+    "daily_health.launchd_plist_exists",
+    "daily_health.launchd_loaded",
+    "active_tasks.open_count",
+    "active_tasks.total_count",
+    "active_tasks.open",
+    "harness_runs.total_count",
+    "harness_runs.status_counts",
+    "harness_runs.active_count",
+    "harness_runs.active",
+    "harness_runs.stale_count",
+    "harness_runs.stale",
+    "pending_publish_confirmations",
+    "publish_ledger.path",
+    "publish_ledger.record_count",
+    "publish_ledger.latest",
+    "publish_ledger.followups_due",
+    "publish_ledger.followups_unverified",
+    "publish_ledger.recent_publish_records_missing_ledger",
+    "storyboard_closure_gaps"
+  ],
+  "workflowHealthRequiredPaths": [
+    "status",
+    "actions"
+  ],
+  "actionRequiredPaths": [
+    "severity",
+    "area",
+    "issue",
+    "action"
+  ],
+  "publishGateRequiredPaths": [
+    "run_id",
+    "root",
+    "missing",
+    "publish_record_file"
+  ]
+}

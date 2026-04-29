@@ -45,6 +45,26 @@
 - `status`, `pick`, `publish`, `workflow-health`, and `publish-health` remain legacy Python until the status/publish-gap collector has a JSON contract fixture.
 - Verification passed: help smoke for migrated commands, `status --json`, `browser --json`, `draft` empty guidance, `close-run` missing-id validation, Python compile for legacy file, and `git diff --check`.
 
+## 2026-04-30 Redbookctl Status Contract Fixture
+
+- Owner: Codex
+- Source: User said continue after TS dispatch migration
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Add a fixture that documents the required `status` and `workflow-health` JSON paths.
+- [x] Add a no-dependency `node --test` contract check against current and legacy redbookctl output.
+- [x] Verify current default wrapper matches legacy output before TS migration of status collection.
+- [x] Document the contract test as the next migration guard.
+
+### Review
+
+- Added `tools/tests/fixtures/redbookctl-contract.json` with required JSON paths for status, workflow-health actions, and publish gates.
+- Added `tools/tests/redbookctl_contract.test.mjs`.
+- The test runs `tools/redbookctl status --json` and `tools/redbookctl legacy status --json`, then does the same for `workflow-health --json`; it checks shape and exact parity while the legacy fallback is still authoritative.
+- Verification passed: `node --test tools/tests/redbookctl_contract.test.mjs`.
+
 ## 2026-04-29 Workflow Review Follow-up Fixes
 
 - Owner: Codex Agent Teams

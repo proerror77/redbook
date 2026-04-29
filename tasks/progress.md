@@ -4,6 +4,24 @@
 
 ---
 
+## [2026-04-30] 会话摘要：redbookctl status/workflow-health 合约测试
+
+**完成了什么：**
+- 给 `status` / `workflow-health` 迁 TS 前补了 JSON contract fixture。
+- 新增 `tools/tests/fixtures/redbookctl-contract.json`，记录必需字段路径。
+- 新增 `tools/tests/redbookctl_contract.test.mjs`，同时验证：
+  - default `tools/redbookctl status --json` 与 `legacy status --json` 完全一致。
+  - default `workflow-health --json` 与 legacy 完全一致。
+  - status、workflow-health、actions、publish_gate 的关键字段形状存在。
+
+**验证：**
+- `node --test tools/tests/redbookctl_contract.test.mjs`
+
+**未完成 / 遗留：**
+- 还没有迁 `status` / `workflow-health` 实现；下一步可以在这个 contract 保护下把状态收集逻辑移进 TS。
+
+---
+
 ## [2026-04-30] 会话摘要：redbookctl TS 调度迁移
 
 **完成了什么：**
