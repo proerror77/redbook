@@ -49,7 +49,11 @@ done
 # 运行每日日程
 log "运行每日日程脚本..."
 cd "$SCRIPT_DIR"
-PYTHONUNBUFFERED=1 python3 -u daily_schedule.py "${DAILY_ARGS[@]}" 2>&1 | tee -a "$LOG_FILE"
+if [ "${#DAILY_ARGS[@]}" -gt 0 ]; then
+    PYTHONUNBUFFERED=1 python3 -u daily_schedule.py "${DAILY_ARGS[@]}" 2>&1 | tee -a "$LOG_FILE"
+else
+    PYTHONUNBUFFERED=1 python3 -u daily_schedule.py 2>&1 | tee -a "$LOG_FILE"
+fi
 
 TODAY="$(date +%Y-%m-%d)"
 log "运行 LLM Wiki 每日维护周期（ingest + lint）..."
