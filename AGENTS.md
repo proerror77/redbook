@@ -130,6 +130,7 @@ wiki/                 # LLM 维护的知识库（唯一知识底座，见下方 
 - 外部发布统一是 `approved-publish`：草稿、预览、审稿可自动；submit/publish 必须等用户明确说“发布 / 直接发”。
 - 图片生成统一优先走 Tuzi/兔子 `gpt-image-2.0`；不要再把 Nano Banana / Gemini 写成默认图像模型。
 - 长文配图使用 balanced visual arc：封面可选，正文默认 3-5 张，约每 600-900 中文字或每 2-3 个主要小节 1 张，除小红书卡片系列外最多 6 张。
+- 文内插图先做 visual metaphor map：每张图必须绑定一个文章短句 / 关键词，先判断语义、情绪、张力和读者感受，再决定视觉隐喻、承载面、主体关系、文字是否进入构图；不要只把段落摘要翻译成泛插画。
 - 浏览器工作先跑 `tools/redbookctl browser` 检查现有 Chrome/CDP tabs；X 发布 profile 先跑 `tools/redbookctl x-login` 检查 composer；优先复用已登录 tab 或已配置 profile，不默认新开未登录 profile、空白页或可见窗口。
 
 ---
@@ -178,16 +179,17 @@ wiki/                 # LLM 维护的知识库（唯一知识底座，见下方 
 2. Wiki query：提炼角度、金句、案例和历史相关内容。
 3. 爆款对标：从当前平台高互动样本找 Hook、节奏、CTA。
 4. 创作主稿：嵌入 3-5 个人工素材，避免纯 AI 拼贴。
-5. QA / 审稿：X 内容必须过 `/x-mastery-mentor` 四层诊断。
-6. 发布前确认：展示最终稿、平台版本、配图方案、插图位置和风险点。
-7. 发布与验证：按平台 skill 执行，并拿到真实平台侧证据。
-8. 回写：发布记录、数据统计、wiki 沉淀、`tasks/progress.md`、git commit。
+5. 配图规划：为封面和正文插图写 visual metaphor map，列出插入位置、锚定短句、视觉隐喻、图文咬合方式、禁用元素。
+6. QA / 审稿：X 内容必须过 `/x-mastery-mentor` 四层诊断；配图方案必须过“是否服务观点、是否可读、是否非装饰、是否不侵权/不误导”的检查。
+7. 发布前确认：展示最终稿、平台版本、配图方案、插图位置和风险点。
+8. 发布与验证：按平台 skill 执行，并拿到真实平台侧证据。
+9. 回写：发布记录、数据统计、wiki 沉淀、`tasks/progress.md`、git commit。
 
 完成标准：
 - 适合保留完整 harness 五阶段：`research -> draft -> review -> publish -> retrospect`。
 - 主稿在 `01-内容生产/02-制作中的选题/` 或 `03-已发布的选题/`。
 - X：不能只看脚本 stdout，要有状态 URL、发布时间、主页/状态页可见证据。
-- 长文 / 公众号 / 小红书图文：发布清单必须说明图片模型、图片数量、插图插入位置；默认模型为 Tuzi `gpt-image-2.0`。
+- 长文 / 公众号 / 小红书图文：发布清单必须说明图片模型、图片数量、插图插入位置、每张图的锚定短句与视觉隐喻；默认模型为 Tuzi `gpt-image-2.0`。
 - 小红书：不能只看 `PUBLISH_STATUS`，要有成功页、笔记管理状态或 note id。
 - 数据回写至少有 T+0 `04-内容数据统计/publish-records.jsonl` 记录；T+1/T+3 数据可后续补。
 

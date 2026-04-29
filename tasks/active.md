@@ -2,6 +2,26 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-04-29 Article Visual Metaphor Workflow
+
+- Owner: Codex
+- Source: User shared X article `https://x.com/xiaoxiaodong01/status/2048443572119330853`
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Extract the reusable article-image method from the referenced X article.
+- [x] Add a concrete visual-metaphor planning gate to Redbook longform and image-generation docs.
+- [x] Sync shared playbook targets and update the active document-illustrator skill guidance.
+- [x] Run doc consistency checks and commit the scoped workflow change.
+
+### Review
+
+- The referenced X article was distilled into a Redbook-specific `visual metaphor map` workflow: anchor phrase, semantic read, visual metaphor, composition, text-image integration, avoid list, and insertion placement.
+- Longform Lane C now has a dedicated配图规划 gate before QA, and publish checklists must include each image's anchor phrase and visual metaphor.
+- `document-illustrator`, XHS image routing, and article-illustrator guidance now discourage paragraph-summary/decorative images and require viewpoint-serving visual metaphors.
+- Verification passed: shared playbook sync, `git diff --check`, `python3 -m py_compile tools/sync_redbook_playbook.py`, and `rg` checks for the new workflow terms across synced docs.
+
 ## 2026-04-29 Stable X Login Command
 
 - Owner: Codex

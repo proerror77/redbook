@@ -4,6 +4,26 @@
 
 ---
 
+## [2026-04-29] 会话摘要：文章配图 visual metaphor workflow
+
+**完成了什么：**
+- 来源：用户提供 X 长文 `https://x.com/xiaoxiaodong01/status/2048443572119330853`，其核心方法是把词语 / 短句先做语义、情绪、张力分析，再转成文字参与构图的概念海报。
+- 已把 Redbook 长文配图流程升级为 `visual metaphor map`：每张正文图必须有 anchor phrase、semantic read、visual metaphor、composition、text-image integration、avoid list、placement。
+- 已更新主 playbook、skills manifest、GPT Image 2 editorial prompt 标准、`.rules`、本地 `document-illustrator` / `baoyu-xhs-images` 指引，并同步全局 `~/.codex/skills/document-illustrator/SKILL.md`。
+- 后续写文章时，配图阶段应先输出插图规划表，再调用 `/document-illustrator` 或 `/baoyu-xhs-images`；找不到锚定短句和视觉隐喻的图不要生成。
+
+**验证：**
+- `python3 tools/sync_redbook_playbook.py`
+- `git diff --check`
+- `python3 -m py_compile tools/sync_redbook_playbook.py`
+- `rg` 检查新规则已同步到 `AGENTS.md` / `CLAUDE.md` / shared docs。
+
+**未完成 / 遗留：**
+- 没有调用真实生图 API，本轮只改工作流和 skill 指引。
+- `.agents/skills/baoyu-article-illustrator/` 仍是 git-ignored 本地参考 skill，已更新本地文件但不会进入本仓库提交。
+
+---
+
 ## [2026-04-29] 会话摘要：稳定 X 登录检查入口
 
 **完成了什么：**

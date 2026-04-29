@@ -1,6 +1,6 @@
 # Redbook Skills Manifest
 
-> 最后更新：2026-04-28
+> 最后更新：2026-04-29
 > 目的：把“当前可直接用的入口”和“历史/本地参考入口”分开，避免流程文档引用跑不到的 skill。
 
 ## 使用原则
@@ -11,6 +11,7 @@
 - X / 小红书发布成功不能只看脚本 stdout；必须回查状态 URL、主页/管理页、发布时间、note id 等平台侧证据。
 - 配图 / 图文生成默认模型是 Tuzi/兔子 `gpt-image-2.0`；Nano Banana / Gemini 只能作为用户明确指定的 fallback。
 - 长文配图默认 balanced density：正文 3-5 张，约每 600-900 中文字或每 2-3 个主要小节 1 张；小红书卡片系列可放宽到 5-7 张，除非用户明确要更多。
+- 正文配图先产出 visual metaphor map：每张图要有文章锚定短句、语义/情绪判断、视觉隐喻、插入位置和禁用元素；不能只用段落摘要生成装饰图。
 - 浏览器类任务先用 `tools/redbookctl browser` 检查当前 Chrome/CDP 登录态；发布和账号操作优先复用已有 tab，避免重复开新页面和新 profile。
 
 ## Active Entrypoints
