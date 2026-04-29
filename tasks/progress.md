@@ -4,6 +4,29 @@
 
 ---
 
+## [2026-04-30] 会话摘要：redbookctl TS 控制面迁移起点
+
+**完成了什么：**
+- 新增 `tools/redbookctl.ts` 作为 `redbookctl` canonical TS/Bun 控制面。
+- `tools/redbookctl` wrapper 改为进入 Bun/TS。
+- `browser` 和 `x-login` 两个低风险入口已由 TS 直接调度。
+- 其它未迁命令通过显式 legacy path 委托给 `tools/redbookctl.py`，保持现有行为不变。
+- 更新 `docs/reference/skills-manifest.md`、`docs/reference/runtime-language-policy.md` 和 `tools/README.md`，标记 TS canonical / Python legacy 边界。
+
+**验证：**
+- `tools/redbookctl --help`
+- `tools/redbookctl browser --help`
+- `tools/redbookctl x-login --help`
+- `tools/redbookctl status --json`
+- `tools/redbookctl browser --json`
+- `python3 -m py_compile tools/redbookctl.py`
+- `git diff --check`
+
+**未完成 / 遗留：**
+- `workflow-health`、`xhs-health`、publish ledger helpers 仍在 legacy Python，后续应按契约测试逐步迁 TS。
+
+---
+
 ## [2026-04-29] 会话摘要：TS/Bun canonical runtime 策略
 
 **完成了什么：**

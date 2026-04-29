@@ -66,8 +66,9 @@ tools/
 │   └── x-publish/        ⚠️ 已被 /baoyu-post-to-x 替代
 │
 ├── reddit_hack.py        ✅ Reddit 痛点挖掘（唯一）
-├── redbookctl            ✅ Redbook 日常控制面 wrapper
-├── redbookctl.py         ✅ Redbook 日常控制面实现
+├── redbookctl            ✅ Redbook 日常控制面 wrapper（Bun）
+├── redbookctl.ts         ✅ Redbook 日常控制面 canonical 入口
+├── redbookctl.py         ⚠️ legacy delegated implementation（待逐步迁 TS）
 ├── record_publish.py     ✅ 发布数据 JSONL 主账本追加工具
 │
 └── aws-proxy/            ✅ 代理基础设施（独立项目）
@@ -80,6 +81,7 @@ tools/
 ### 0. Redbook 控制面
 
 **`tools/redbookctl`** - 日常 workflow 统一入口
+- canonical runtime 是 `tools/redbookctl.ts` / Bun；未迁移命令会显式 delegate 到 legacy `tools/redbookctl.py`
 - 默认看板：`tools/redbookctl status`
 - 浏览器会话：`tools/redbookctl browser`，先检查 X / 小红书 / 微信 / BOSS 是否已有可复用登录 tab
 - X 发布 profile：`tools/redbookctl x-login`，强制检查 `/baoyu-post-to-x` 的默认 profile 是否能打开 X composer 且账号匹配 `expected_handle`；登录失效时用 `tools/redbookctl x-login --headed --login-wait-ms 600000` 做人工恢复

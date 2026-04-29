@@ -38,8 +38,8 @@ Python 不再作为新 workflow / publish / browser / image pipeline 的默认�
 
 ## Recommended Migration Order
 
-1. Create a TS `redbookctl` control surface while preserving the existing `tools/redbookctl` command.
-2. Move workflow-health, x-login, xhs-health, publish gaps, and storyboard checks to TS first.
+1. Done: create a TS `redbookctl` control surface while preserving the existing `tools/redbookctl` command.
+2. Move workflow-health, xhs-health, publish gaps, and storyboard checks to TS next; `x-login` and `browser` dispatch already run in TS.
 3. Move publish ledger helpers after the JSONL contract is covered by tests.
 4. Keep wiki/harness/daily research in Python until the control surface is stable.
 5. Retire legacy Python/shell entrypoints only after docs, tests, and `tools/redbookctl` routes are updated.

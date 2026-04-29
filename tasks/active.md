@@ -2,6 +2,28 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-04-30 Redbookctl TS Control Surface Migration
+
+- Owner: Codex
+- Source: User asked to continue after setting TS/Bun as the default workflow runtime
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Add a TS/Bun `redbookctl` control surface while preserving the existing `tools/redbookctl` command.
+- [x] Move low-risk browser/X login dispatch into TS first.
+- [x] Keep unmigrated Python commands available through an explicit legacy delegation path.
+- [x] Update docs to show TS as canonical and Python as legacy implementation.
+- [x] Run wrapper/help/smoke checks and commit the scoped migration start.
+
+### Review
+
+- `tools/redbookctl` now executes `tools/redbookctl.ts` with Bun.
+- `browser` and `x-login` dispatch live in TS; `browser --json` still returns structured CDP health without opening a page.
+- Unmigrated commands continue through an explicit legacy delegation to `tools/redbookctl.py`, preserving the existing command surface.
+- Docs now mark `redbookctl.ts` as canonical and `redbookctl.py` as legacy delegated implementation.
+- Verification passed: `tools/redbookctl --help`, `tools/redbookctl browser --help`, `tools/redbookctl x-login --help`, `tools/redbookctl status --json`, `tools/redbookctl browser --json`, `python3 -m py_compile tools/redbookctl.py`, and `git diff --check`.
+
 ## 2026-04-29 Workflow Review Follow-up Fixes
 
 - Owner: Codex Agent Teams

@@ -42,13 +42,13 @@
 | 入口 | 状态 | 位置 | 用途 | 备注 |
 | --- | --- | --- | --- | --- |
 | `bash tools/daily.sh` | active-script | `tools/daily.sh` | 每日研究报告主入口 | 输出 `05-选题研究/X-每日日程-YYYY-MM-DD.md` |
-| `tools/redbookctl browser` | active-script | `tools/redbookctl.py` + `tools/browser-core/interactive/session.mjs` | 只读检查当前 Chrome/CDP tabs 与登录态 | X/XHS/微信/BOSS 动作前 |
+| `tools/redbookctl browser` | active-script | `tools/redbookctl.ts` + `tools/browser-core/interactive/session.mjs` | 只读检查当前 Chrome/CDP tabs 与登录态 | X/XHS/微信/BOSS 动作前 |
 | `python3 tools/wiki_workflow.py daily-cycle --date YYYY-MM-DD` | active-script | `tools/wiki_workflow.py` | Wiki ingest + lint 维护 run | research-only run 会自动关闭 |
 | `python3 tools/wiki_workflow.py query --topic ... --date YYYY-MM-DD` | active-script | `tools/wiki_workflow.py` | 显式 wiki query 并留 harness 证据 | 内容创作前优先使用 |
 | `python3 -m tools.redbook_harness.cli close-run --run-id ...` | active-script | `tools/redbook_harness/cli.py` | 关闭非完整内容 pipeline 的 run | 支持 `done` / `closed_stale` / `cancelled` |
-| `tools/redbookctl workflow-health` | active-script | `tools/redbookctl.py` | 日报、harness、发布确认、账本、分镜缺口总览 | 别名 `publish-health` |
-| `tools/redbookctl x-login` | active-script | `tools/redbookctl.py` + `/baoyu-post-to-x` | X 发布 profile 登录/账号检查 | 不输入、不发布 |
-| `tools/redbookctl xhs-health` | active-script | `tools/redbookctl.py` + `RedBookSkills` | 小红书创作者中心登录/管理页回读检查 | 不发布 |
+| `tools/redbookctl workflow-health` | active-script | `tools/redbookctl.ts` -> legacy `tools/redbookctl.py` | 日报、harness、发布确认、账本、分镜缺口总览 | 别名 `publish-health`；待迁 TS |
+| `tools/redbookctl x-login` | active-script | `tools/redbookctl.ts` + `/baoyu-post-to-x` | X 发布 profile 登录/账号检查 | 不输入、不发布 |
+| `tools/redbookctl xhs-health` | active-script | `tools/redbookctl.ts` -> legacy `tools/redbookctl.py` + `RedBookSkills` | 小红书创作者中心登录/管理页回读检查 | 不发布；待迁 TS |
 | `tools/auto-zhipin` npm scripts | active-script | `tools/auto-zhipin/README.md` | BOSS 登录、扫描、投递预检、消息监看、台账报告 | 主链是 `boss:login` / `chrome:collect` / `boss:apply` / `report`；current-tab/OpenCLI 仅 fallback |
 | Runtime language policy | active-doc | `docs/reference/runtime-language-policy.md` | TS/Bun canonical runtime 与 Python legacy 边界 | 新增或迁移 workflow 代码前 |
 
