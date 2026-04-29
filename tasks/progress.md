@@ -4,6 +4,27 @@
 
 ---
 
+## [2026-04-29] 会话摘要：X 登录 profile 修复
+
+**完成了什么：**
+- 修复 `/baoyu-post-to-x` 普通发帖链路的默认 profile 选择：脚本现在会读取 `X_BROWSER_PROFILE_DIR` / `X_BROWSER_PROFILE`，以及 `EXTEND.md` 里的 `default_profile` / `profile_dir` / `chrome_profile`。
+- 给 `x-browser.ts` 增加 `--check-login`，可只检查 X composer / 登录态，不输入内容、不提交发布。
+- 已把本机用户级配置 `~/.baoyu-skills/baoyu-post-to-x/EXTEND.md` 指到已验证可用的 X profile：
+  - `/Users/proerror/.local/share/x-article-v4-data/x-browser-profile`
+- 验证 `--check-login --headless` 通过，输出账号为：
+  - `Smileyface @0xcybersmile`
+
+**未完成 / 遗留：**
+- `tools/redbookctl browser` 仍然会报告 `127.0.0.1:9222` 不可用，因为当前普通 Chrome `Shih` profile 没有用 HTTP CDP 启动。
+- 这次没有发帖，只做登录态与 composer 检查。
+
+**下次会话优先做：**
+- X 发帖前先跑：
+  - `bun .agents/skills/baoyu-post-to-x/scripts/x-browser.ts --check-login --headless`
+- 如果要检查普通 Chrome 的当前标签，仍需先用 `--remote-debugging-port=9222` 启动可复用 Chrome，或继续使用现在这个已验证 automation profile。
+
+---
+
 ## [2026-04-29] 会话摘要：Agent 入口迁移 X 发布验证
 
 **完成了什么：**

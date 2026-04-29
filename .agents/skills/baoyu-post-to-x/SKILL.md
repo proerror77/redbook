@@ -12,7 +12,7 @@ Posts text, images, videos, and long-form articles to X via real Chrome browser 
 - Mode: `interactive-browser`
 - Standard: [docs/standards/browser-modes.md](/Users/proerror/Documents/redbook/docs/standards/browser-modes.md)
 - Current status: this skill is a site-specific write layer. It may keep its X-specific page logic, but it should not be treated as the repo's generic browser foundation.
-- Session default: reuse the existing Chrome/CDP endpoint (`X_BROWSER_CDP_ENDPOINT` or `127.0.0.1:9222`) and an existing X tab when possible. Do not launch a new Chrome/profile unless CDP is unavailable or `--new-browser` / `--profile` is explicitly used.
+- Session default: reuse the existing Chrome/CDP endpoint (`X_BROWSER_CDP_ENDPOINT` or `127.0.0.1:9222`) and an existing X tab when possible. If CDP is unavailable, use `--profile`, `X_BROWSER_PROFILE_DIR`, or `default_profile` in `EXTEND.md` before falling back to `~/.local/share/x-browser-profile`.
 - Default execution posture: `headless`. Use `--headed` only for first login, verification/CAPTCHA, or an intentional manual preview.
 - Login recovery: when `--headed` is used and the composer is not available, keep the browser open and wait for manual login/verification instead of closing it.
 
@@ -64,7 +64,7 @@ test -f "$HOME/.baoyu-skills/baoyu-post-to-x/EXTEND.md" && echo "user"
 │ Not found │ Use defaults                                                              │
 └───────────┴───────────────────────────────────────────────────────────────────────────┘
 
-**EXTEND.md Supports**: Default Chrome profile | Auto-submit preference
+**EXTEND.md Supports**: Default Chrome profile (`default_profile`) | Auto-submit preference
 
 ## Prerequisites
 
@@ -99,6 +99,7 @@ npx -y bun ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png --subm
 | `--new-browser` | Force isolated Chrome/profile instead of current Chrome/CDP reuse |
 | `--headed` | Open a visible browser for login or manual preview |
 | `--headless` | Force background mode (default) |
+| `--check-login` | Verify X composer/login state only; do not type or submit |
 | `--login-wait-ms <ms>` | In headed mode, wait for manual login/verification recovery before failing (default: 600000) |
 | `--close-on-login-required` | Close the launched browser even if login recovery times out |
 
@@ -109,6 +110,7 @@ npx -y bun ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png --subm
 - Do not report a post as published from script stdout alone; include the status URL or explain the verification blocker.
 
 **Login recovery gate**:
+- Before posting from an uncertain session, run `npx -y bun ${SKILL_DIR}/scripts/x-browser.ts --check-login`.
 - If headless mode cannot find a composer in a browser it launched, it opens a headed Chrome with the same profile for manual recovery and leaves it open.
 - If headless mode cannot recover the active browser itself, rerun with `--headed`; the script will wait for login/verification and never submit until the composer is visible.
 - If headed mode times out while waiting for login recovery, the launched browser stays open by default. Finish login manually, then rerun the same command.

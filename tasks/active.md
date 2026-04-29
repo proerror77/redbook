@@ -2,6 +2,27 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-04-29 X Login Profile Recovery Fix
+
+- Owner: Codex
+- Source: User request to continue fixing today's X.com login correction
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Add a configurable default X browser profile so publish scripts do not fall back to the logged-out legacy profile.
+- [x] Add a non-publishing X login smoke command for composer/login verification.
+- [x] Point the local user config at the verified `@0xcybersmile` automation profile.
+- [x] Run help/static/login smoke checks and record the remaining risks.
+
+### Review
+
+- `x-utils.ts` now reads `X_BROWSER_PROFILE_DIR`, `X_BROWSER_PROFILE`, or `default_profile` / `profile_dir` / `chrome_profile` from `EXTEND.md` before using the legacy profile.
+- `x-browser.ts` now has `--check-login`, which verifies the X composer and prints the visible account without typing or publishing.
+- User config `~/.baoyu-skills/baoyu-post-to-x/EXTEND.md` now points `default_profile` at `/Users/proerror/.local/share/x-article-v4-data/x-browser-profile`.
+- Verification passed: default profile resolves to the verified profile, `--help` exposes `--check-login`, `--check-login --headless` passed as `Smileyface @0xcybersmile`, import has no CLI side effect, no launched Chrome process remained, and `git diff --check` passed.
+- Remaining risk: `tools/redbookctl browser` still reports `9222` unavailable when the normal Shih Chrome was not launched with HTTP CDP; this fix makes the publish script's fallback profile usable instead of changing the already-running human Chrome.
+
 ## 2026-04-28 Redbook Browser Session Reuse Review
 
 - Owner: Codex

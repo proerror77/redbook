@@ -27,6 +27,7 @@ interface XBrowserOptions {
   timeoutMs?: number;
   loginWaitMs?: number;
   keepOpenOnLoginRequired?: boolean;
+  checkLogin?: boolean;
   profileDir?: string;
   chromePath?: string;
   headless?: boolean;
@@ -142,6 +143,21 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
         await sleep(1000);
       }
       return false;
+    };
+
+    const readLoginSnapshot = async (): Promise<{ url?: string; title?: string; accountText?: string }> => {
+      const result = await cdp!.send<{ result: { value?: string } }>('Runtime.evaluate', {
+        expression: `JSON.stringify((function() {
+          const accountButton = document.querySelector('[data-testid="SideNav_AccountSwitcher_Button"]');
+          return {
+            url: window.location.href,
+            title: document.title,
+            accountText: accountButton ? accountButton.innerText.replace(/\\s+/g, ' ').trim() : ''
+          };
+        })())`,
+        returnByValue: true,
+      }, { sessionId });
+      return JSON.parse(result.result.value || '{}') as { url?: string; title?: string; accountText?: string };
     };
 
     const focusVisibleEditor = async (): Promise<void> => {
@@ -310,6 +326,12 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
       }
     }
 
+    if (options.checkLogin) {
+      const snapshot = await readLoginSnapshot();
+      console.log(`[x-browser] Login check passed: ${snapshot.accountText || snapshot.title || snapshot.url || 'X composer visible'}`);
+      return;
+    }
+
     if (text) {
       console.log('[x-browser] Typing text...');
       await focusVisibleEditor();
@@ -404,6 +426,7 @@ Options:
   --new-browser    Force isolated Chrome/profile instead of reusing current Chrome CDP
   --headed         Open a visible browser for login/manual preview
   --headless       Force background mode (default; can also set X_BROWSER_HEADLESS=0)
+  --check-login    Verify X composer/login state only; do not type or submit
   --login-wait-ms <ms>  How long headed mode waits for manual login recovery (default: 600000)
   --close-on-login-required  Close launched browser even when login recovery times out
   --help           Show this help
@@ -427,6 +450,7 @@ async function main(): Promise<void> {
   let newBrowser = false;
   let loginWaitMs: number | undefined;
   let keepOpenOnLoginRequired = true;
+  let checkLogin = false;
   const headless = parseHeadlessFlag(args);
   const textParts: string[] = [];
 
@@ -443,6 +467,8 @@ async function main(): Promise<void> {
       cdpEndpoint = args[++i];
     } else if (arg === '--new-browser') {
       newBrowser = true;
+    } else if (arg === '--check-login') {
+      checkLogin = true;
     } else if (arg === '--login-wait-ms' && args[i + 1]) {
       loginWaitMs = Number(args[++i]);
       if (!Number.isFinite(loginWaitMs) || loginWaitMs < 0) {
@@ -460,7 +486,7 @@ async function main(): Promise<void> {
 
   const text = textParts.join(' ').trim() || undefined;
 
-  if (!text && images.length === 0) {
+  if (!checkLogin && !text && images.length === 0) {
     console.error('Error: Provide text or at least one image.');
     process.exit(1);
   }
@@ -475,10 +501,13 @@ async function main(): Promise<void> {
     newBrowser,
     loginWaitMs,
     keepOpenOnLoginRequired,
+    checkLogin,
   });
 }
 
-await main().catch((err) => {
-  console.error(`Error: ${err instanceof Error ? err.message : String(err)}`);
-  process.exit(1);
-});
+if (import.meta.main) {
+  await main().catch((err) => {
+    console.error(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    process.exit(1);
+  });
+}
