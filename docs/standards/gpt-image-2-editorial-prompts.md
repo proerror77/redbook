@@ -29,6 +29,37 @@
 
 硬规则：如果找不到 anchor phrase 和视觉隐喻，这张图先不要生成。宁可少一张，也不要补一张装饰图。
 
+## 图文分镜与排版
+
+图文内容不能直接继承文章段落结构。文章结构负责线性论证，图文结构负责视觉叙事。生成任何小红书卡片组、X 配图系列或公众号文内插图前，先产出 `图文分镜.md` 或等价分镜表。
+
+分镜表必须包含：
+
+- Card role：封面冲突、关键判断、视觉隐喻、框架图、案例画面、行动建议、结尾 CTA 等。
+- Reader task：这张图让读者完成什么动作，例如停下、看懂、比较、记住、转发、行动。
+- Anchor phrase：图内核心短句；不要把整段话搬进图。
+- Visual metaphor：这张图的单一视觉隐喻。
+- Layout spec：比例、网格、标题区、主体区、留白、安全边距。
+- Text budget：主标题、可选副标题、标签数量和每个字段的字数上限。
+- Hierarchy：第一眼看什么，第二眼看什么，第三眼看什么。
+- QA result：缩略图可读、文字不重叠、主体不遮挡、没有无意义装饰。
+
+默认卡片结构：
+
+- X card：1 张强概念图，最多 1 个短标题，图服务主帖 Hook。
+- 小红书图文：5-7 张；封面制造冲突，2-4 张展开判断/框架/案例，最后 1 张收束行动建议。
+- 公众号/长文：3-5 张文内插图，插在关键论证后面，不做成小红书卡片。
+
+排版硬规则：
+
+- 一张图只承担一个读者任务。
+- 主标题不超过 12 个中文字符；副标题不超过 18 个中文字符；标签不超过 4 个，每个不超过 6 个中文字符。
+- 文字必须有明确层级：主标题、辅助信息、装饰性信息不能同权重。
+- 四周保留至少 8% 安全边距，主体和文字不能贴边。
+- 不允许文字压住人物脸、核心物体、关键线条或 UI 主体。
+- 不允许小字段落、随机编号、假坐标、假 logo、无意义英文小字。
+- 生成后如果缩略图看不懂、文字粘连、主体遮挡、字像后贴标题，必须改 prompt 或重生。
+
 ## Prompt 结构
 
 每个 prompt 必须包含这些字段：
@@ -36,10 +67,13 @@
 - Goal：这张图要帮内容完成什么任务。
 - Audience：给谁看，例如 tech founders、AI builders、operators。
 - Placement：X.com feed card、blog hero、newsletter header、article diagram。
+- Card role：这张图在图文分镜里的职责。
+- Reader task：读者看完这张图应该完成的动作。
 - Anchor phrase：来自文章的短句 / 关键词；正文插图必须有。
 - Semantic read：这句话的含义、情绪、张力和读者感受。
 - Image content：要视觉化的核心观点，不超过一个主隐喻。
 - Composition：构图、主体、留白、裁切安全区。
+- Layout spec：网格、标题区、主体区、安全边距、文字预算。
 - Text-image integration：文字是否进入画面；进入时必须与主体、空间、承载面咬合。
 - Style：minimal editorial / magazine / Swiss grid / quiet product diagram 等。
 - Color palette：off-white / graphite / ink / soft gray + 一个精准点缀色，避免单一紫蓝科技渐变。
@@ -69,6 +103,12 @@ AI builders, indie hackers, product operators, and technical founders.
 Placement:
 X.com timeline image. Aspect ratio 3:4. Readable at thumbnail size.
 
+Card role:
+{cover conflict / key judgment / concept poster}
+
+Reader task:
+{make the viewer stop and understand the main claim before reading}
+
 Anchor phrase:
 {short phrase from the post/article}
 
@@ -82,6 +122,11 @@ Composition:
 One strong focal point, Swiss grid, clean negative space, safe margins for social cropping.
 Use foreground / midground / background separation. No collage of unrelated icons.
 If the anchor phrase appears in the image, make it part of the spatial structure rather than a pasted label.
+
+Layout spec:
+3:4 vertical grid. Reserve at least 8% safe margin on all sides.
+Use one dominant headline zone and one visual subject zone. No dense paragraphs.
+Thumbnail must still show the focal point and the anchor phrase clearly.
 
 Style:
 Simple elegant editorial technology design, modern magazine art direction, restrained palette,
@@ -112,6 +157,12 @@ Founders, AI builders, engineering managers, and operators.
 Placement:
 Blog / newsletter header. Aspect ratio 16:9.
 
+Card role:
+{hero / section opener / explanatory diagram}
+
+Reader task:
+{set context / make one abstract point concrete}
+
 Anchor phrase:
 {article title or core phrase}
 
@@ -124,6 +175,10 @@ Image content:
 Composition:
 Horizontal editorial layout, generous negative space, one main subject, balanced margins.
 Leave room for optional title overlay outside the generated image.
+
+Layout spec:
+16:9 horizontal grid. Keep the main subject away from edges.
+If title text is inside the image, use one short line only and preserve clear hierarchy.
 
 Style:
 Minimal editorial tech illustration or quiet workbench scene. Subtle texture, crisp forms,

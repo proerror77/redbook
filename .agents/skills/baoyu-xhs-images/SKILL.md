@@ -7,7 +7,7 @@ description: Generates Xiaohongshu (Little Red Book) infographic series with 10 
 
 Break down complex content into eye-catching infographic series for Xiaohongshu with multiple style options.
 
-Default image count: use 5-7 cards for normal XHS infographic series, 3-4 cards for short posts, and more than 7 only when the content naturally needs a step-by-step card sequence. Default visual taste for this workspace is simple, elegant, and minimal; prefer `minimal` or `notion` for AI/product/agent/business articles unless the user explicitly asks for a louder XHS style. Use Tuzi/兔子 `gpt-image-2.0` as the primary image model; Gemini/Nano Banana wording is only legacy fallback context. For article-derived cards, first bind each card to an anchor phrase from the article and plan the semantic read, visual metaphor, text-image integration, and avoid list; do not convert paragraphs into decorative summary cards.
+Default image count: use 5-7 cards for normal XHS infographic series, 3-4 cards for short posts, and more than 7 only when the content naturally needs a step-by-step card sequence. Default visual taste for this workspace is simple, elegant, and minimal; prefer `minimal` or `notion` for AI/product/agent/business articles unless the user explicitly asks for a louder XHS style. Use Tuzi/兔子 `gpt-image-2.0` as the primary image model; Gemini/Nano Banana wording is only legacy fallback context. For article-derived cards, first create `图文分镜.md`: bind each card to an anchor phrase from the article, plan the reader task, semantic read, visual metaphor, layout spec, text budget, hierarchy, and avoid list. Do not convert paragraphs into decorative summary cards.
 
 ## Usage
 
@@ -307,15 +307,25 @@ image_count: 5
 
 ## P1 Cover
 **Type**: cover
+**Reader Task**: stop scrolling and understand the conflict
 **Hook**: "入冬后脸不干了🥹终于找到对的面霜"
+**Anchor Phrase**: "找到对的面霜"
 **Visual**: Product hero shot with cozy winter atmosphere
 **Layout**: sparse
+**Text Budget**: headline <= 12 Chinese chars, subtitle <= 18 Chinese chars, labels <= 4
+**Hierarchy**: headline first, product/subject second, detail labels third
+**Layout QA**: safe margins >= 8%, no text-subject overlap, thumbnail readable
 
 ## P2 Problem
 **Type**: pain-point
+**Reader Task**: recognize the pain
 **Message**: Previous struggles with dry skin
+**Anchor Phrase**: "脸干反复"
 **Visual**: Before state, relatable scenario
 **Layout**: balanced
+**Text Budget**: headline <= 12 Chinese chars, body text avoided
+**Hierarchy**: pain headline first, visual contrast second
+**Layout QA**: no dense paragraphs, no decorative clutter
 
 ...
 ```
@@ -375,7 +385,16 @@ With confirmed outline + style + layout:
    - **Backup rule**: If prompt file exists, rename to `prompts/NN-{type}-[slug]-backup-YYYYMMDD-HHMMSS.md`
 2. Generate image using confirmed style and layout
    - **Backup rule**: If image file exists, rename to `NN-{type}-[slug]-backup-YYYYMMDD-HHMMSS.png`
-3. Report progress after each generation
+3. Run layout QA before accepting the image:
+   - One card = one reader task
+   - Main headline <= 12 Chinese chars, subtitle <= 18 Chinese chars, max 4 labels
+   - Clear hierarchy: first glance / second glance / third glance
+   - Safe margins >= 8% on all sides
+   - Text does not overlap faces, core objects, lines, or UI subjects
+   - Thumbnail remains readable
+   - No random tiny text, fake logo, fake coordinates, or decorative filler
+4. If layout QA fails, update the prompt first, then regenerate.
+5. Report progress after each generation
 
 **Watermark Application** (if enabled in preferences):
 Add to each image generation prompt:
@@ -435,6 +454,7 @@ Files:
 1. **Cover (Image 1)**: Hook + visual impact → `sparse` layout
 2. **Content (Middle)**: Core value per image → `balanced`/`dense`/`list`/`comparison`/`flow`
 3. **Ending (Last)**: CTA / summary → `sparse` or `balanced`
+4. **Layout QA**: Every card must pass text budget, hierarchy, safe-margin, non-overlap, and thumbnail-readability checks before final delivery.
 
 **Style × Layout Matrix** (✓✓ = highly recommended, ✓ = works well):
 

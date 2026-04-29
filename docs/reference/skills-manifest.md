@@ -12,6 +12,7 @@
 - 配图 / 图文生成默认模型是 Tuzi/兔子 `gpt-image-2.0`；Nano Banana / Gemini 只能作为用户明确指定的 fallback。
 - 长文配图默认 balanced density：正文 3-5 张，约每 600-900 中文字或每 2-3 个主要小节 1 张；小红书卡片系列可放宽到 5-7 张，除非用户明确要更多。
 - 正文配图先产出 visual metaphor map：每张图要有文章锚定短句、语义/情绪判断、视觉隐喻、插入位置和禁用元素；不能只用段落摘要生成装饰图。
+- 图文生成先产出 `图文分镜.md` 或等价分镜表，并做排版 QA：卡片职责、读者任务、文字预算、层级、安全边距、图文不重叠、缩略图可读。
 - 浏览器类任务先用 `tools/redbookctl browser` 检查当前 Chrome/CDP 登录态；发布和账号操作优先复用已有 tab，避免重复开新页面和新 profile。
 
 ## Active Entrypoints

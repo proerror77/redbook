@@ -2,6 +2,26 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-04-29 Article Storyboard Layout Workflow
+
+- Owner: Codex
+- Source: User approved storyboard workflow and emphasized layout quality
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Add a required `图文分镜` gate before image/card generation.
+- [x] Add concrete layout QA rules: hierarchy, text budget, safe margins, non-overlap, and regeneration triggers.
+- [x] Update image-related skills and shared playbook so article structure and visual-card structure are separated.
+- [x] Sync docs, verify consistency, and commit the workflow change.
+
+### Review
+
+- Lane C now separates article structure from visual-card structure: article = linear argument; image/carousel = storyboard.
+- Image workflows now require `图文分镜.md` or equivalent with card role, reader task, anchor phrase, layout spec, text budget, hierarchy, and layout QA.
+- Layout QA is explicit: headline/subtitle/label limits, >= 8% safe margins, no text-subject overlap, thumbnail readability, and regenerate-on-fail.
+- Verification passed: shared playbook sync, `git diff --check`, `python3 -m py_compile tools/sync_redbook_playbook.py`, and `rg` checks for storyboard/layout QA terms across synced docs and active skills.
+
 ## 2026-04-29 X Login Workflow Review Fix
 
 - Owner: Codex

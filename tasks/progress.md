@@ -4,6 +4,27 @@
 
 ---
 
+## [2026-04-29] 会话摘要：图文分镜与排版 QA 工作流
+
+**完成了什么：**
+- 根据用户确认，把“先做图文分镜、排版必须做好”写入 Redbook 工作流。
+- Lane C 现在明确拆开：文章结构负责线性论证，图文结构负责卡片叙事；生成图前必须有 `图文分镜.md` 或等价分镜表。
+- 图文分镜字段包括：卡片职责、读者任务、锚定短句、视觉隐喻、排版规格、文字预算、视觉层级、排版 QA。
+- 排版 QA 明确为：主标题不超过 12 个中文字符，副标题不超过 18 个中文字符，标签最多 4 个，安全边距至少 8%，文字不压主体，缩略图可读；不通过则改 prompt 或重生。
+- 已更新 `docs/shared/redbook-playbook.md` 并同步到 `AGENTS.md` / `CLAUDE.md`，同时更新 `docs/standards/gpt-image-2-editorial-prompts.md`、`docs/reference/skills-manifest.md`、`.rules`、本地和全局 `document-illustrator`、本地 `baoyu-xhs-images`。
+
+**验证：**
+- `python3 tools/sync_redbook_playbook.py`
+- `git diff --check`
+- `python3 -m py_compile tools/sync_redbook_playbook.py`
+- `rg` 检查 `图文分镜` / `排版 QA` / `文字预算` / `安全边距` 已出现在主流程、标准和 active skills。
+
+**未完成 / 遗留：**
+- 没有跑真实生图 API，本轮只改 workflow、标准和 skill 指引。
+- `.agents/skills/baoyu-article-illustrator/` 是 git-ignored 本地参考 skill，已同步更新但不会进入仓库提交。
+
+---
+
 ## [2026-04-29] 会话摘要：X 登录 workflow review 修正
 
 **完成了什么：**
