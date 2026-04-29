@@ -2623,3 +2623,44 @@
   3) 生图验收标准是“能解释观点、缩略图可读、像严肃 editorial visual”，不是“看起来很炫”。
 - 下次触发信号：用户说“图太丑”“审美太糟糕”“用于 X.com/blog 生图”“GPT Image 2.0 prompt”。
 - 验证结果：已新增 prompt preset、editorial-tech 风格、标准文档；脚本 help 和 Python 编译通过。
+
+### Lesson 114
+- 日期：2026-04-29
+- 场景：用户指出 X / 小红书自动化如果登录状态不对，必须能扫码或手动恢复；之前浏览器打开后又被 headless/cleanup 关掉。
+- 问题：
+  1) X 脚本遇到 composer 不可用时会进入 `finally` 清理，导致刚打开的登录/验证窗口被关掉。
+  2) 小红书 pipeline headless 未登录时虽然会切 headed 打开登录页，但马上退出，没有等待扫码后恢复流程。
+  3) 对用户来说，正确行为不是“报错退出”，而是“把登录窗口留住，让状态恢复，然后继续或可重跑”。
+- 根因：
+  1) 自动化把浏览器生命周期当成内部资源管理，没有区分发布失败和登录恢复状态。
+  2) 登录状态异常是人工协作节点，不能按普通失败清理浏览器。
+- 修正动作：
+  1) X headed 登录恢复超时后默认保留 Chrome，并提供 `--login-wait-ms`。
+  2) 小红书发布 pipeline 增加 `--login-wait-seconds`，未登录时切 headed、打开登录页、等待扫码/验证，恢复后继续。
+  3) 只有显式要求关闭时才清理登录恢复浏览器。
+- 预防规则（Rule）：
+  1) 登录/扫码/验证码/风控状态下，不得自动关闭用户正在恢复的浏览器。
+  2) headless 只能用于登录状态已健康的普通操作；一旦需要人工恢复，必须切 headed 并等待。
+  3) 发布自动化的完成报告必须区分：已发布、已填表待手动、登录恢复中、登录恢复超时。
+- 下次触发信号：用户说“扫码”“登录状态不对”“浏览器被关起来”“headless 把页面关了”“风控”。
+- 验证结果：X help、XHS pipeline help、Python 编译和 git diff 检查通过。
+
+### Lesson 115
+- 日期：2026-04-29
+- 场景：用户再次指出 image 审美糟糕，希望文章配图更简洁、更 elegant。
+- 问题：
+  1) “editorial tech” 仍可能被模型理解成科技海报或复杂视觉。
+  2) 小红书图文默认仍偏传统 XHS 手绘/活泼信息图，不适合用户当前 AI / Agent / 企业导入文章。
+- 根因：
+  1) 默认审美没有足够明确地写成 simple / elegant / minimal article visual。
+  2) 没有把“少文字、留白、低饱和、一个点缀色”设为硬约束。
+- 修正动作：
+  1) 新增 `article-elegant` preset。
+  2) 收窄 GPT Image 2 prompt 标准为 off-white / graphite / ink / soft gray + 一个点缀色。
+  3) 小红书图片工作流默认推荐 `minimal` / `notion`，不再默认 cute 或 loud infographic。
+- 预防规则（Rule）：
+  1) 用户的文章配图默认走 simple/elegant/minimal，不走炫技海报。
+  2) 除非用户明确要求，小红书 AI/商业/Agent 内容也优先 minimal / notion。
+  3) 图像 prompt 要先写“prefer no visible text / generous whitespace / one accent color”，再写具体内容。
+- 下次触发信号：用户说“简洁”“elegant”“文章配图”“审美太差”“不要花哨”。
+- 验证结果：image-gen help 显示 `article-elegant`，document illustrator 编译通过。

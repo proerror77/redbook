@@ -3239,3 +3239,30 @@
 **遗留：**
 - 本轮未实际调用 GPT Image 2.0 生成样张，避免未确认前消耗 API 额度。
 - Tuzi 的 `16:9` compact size enum 暂未硬传，只作为 prompt 布局指令；等确认 provider 支持后再加参数映射。
+
+## [2026-04-29] 会话摘要：X / 小红书登录恢复与文章配图审美二次修正
+
+**完成了什么：**
+- X 发布脚本增加登录恢复行为：
+  - `--headed` 下找不到 composer 时等待登录/验证恢复。
+  - 新增 `--login-wait-ms`。
+  - 登录恢复超时默认保留浏览器，不再自动关掉。
+- 小红书发布 pipeline 增加登录恢复行为：
+  - headless 未登录时切到 headed。
+  - 打开登录页，等待扫码/验证码/手动登录，默认 600 秒。
+  - 恢复后继续当前发布流程；超时保留浏览器并要求重跑同命令。
+- 图片审美二次收窄：
+  - 新增 `article-elegant` preset。
+  - GPT Image 2 标准改为 simple / elegant / minimal article visual。
+  - 小红书图片默认偏向 `minimal` / `notion`，不再默认 cute/loud infographic。
+
+**验证：**
+- `git diff --check`
+- `bun .agents/skills/baoyu-post-to-x/scripts/x-browser.ts --help`
+- `bun .agents/skills/baoyu-image-gen/scripts/main.ts --help`
+- `python3 -m py_compile .agents/skills/document-illustrator/scripts/generate_single_image.py /Users/proerror/.codex/skills/xiaohongshu-skills/scripts/publish_pipeline.py`
+- `python3 /Users/proerror/.codex/skills/xiaohongshu-skills/scripts/publish_pipeline.py --help`
+
+**遗留：**
+- 本轮未真实触发 X / 小红书登录恢复，因为那会打开浏览器并可能进入扫码/风控流程。
+- 本轮未实际调用 GPT Image 2.0 生成样张，避免 API 额度消耗。

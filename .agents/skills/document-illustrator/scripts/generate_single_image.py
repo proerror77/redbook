@@ -93,24 +93,25 @@ def build_gpt_image_2_prompt(title, content, style_prompt, aspect_ratio, is_cove
     这里统一包一层可发布图片的质量门槛，避免 prompt 退化成泛科技感海报。
     """
     image_role = "cover / hero image" if is_cover else "supporting article illustration"
-    return f"""Create a polished {image_role} for X.com, blog, or newsletter use.
+    return f"""Create a simple, elegant {image_role} for X.com, blog, or newsletter use.
 
 Image specifications:
 - Aspect ratio: {aspect_ratio}
 - Audience: tech founders, AI builders, product/operators
-- Output quality: final publishable editorial visual, readable at thumbnail size
+- Output quality: final publishable article visual, calm and readable at thumbnail size
 
 Design rules:
 - Use one clear visual metaphor, not a collage of unrelated icons.
-- Use a mature editorial composition: Swiss grid, strong focal point, clean negative space, clear hierarchy.
+- Use a mature minimal editorial composition: Swiss grid, strong focal point, generous negative space, clear hierarchy.
+- Use an elegant restrained palette: off-white, graphite, ink black, soft gray, plus at most one precise accent color.
 - Prefer concrete work scenes and product surfaces: browser, inbox, code graph, terminal, dashboard, whiteboard, operator desk.
-- Keep visible text minimal. If text appears, use only exact short strings from the title/content and render them sharply.
+- Prefer no visible text. If text appears, use only exact short strings from the title/content and render them sharply.
 - Leave safe margins for social preview cropping.
 
 Avoid:
-- generic blue-purple AI glow, random robot mascots, glossy Dribbble 3D blobs, bokeh orbs, fake logos, watermark
+- generic blue-purple AI glow, random robot mascots, glossy Dribbble 3D blobs, bokeh orbs, cyberpunk neon, fake logos, watermark
 - cluttered infographic paragraphs, tiny unreadable UI labels, warped Chinese/English text
-- one-note palette or decorative gradients that do not explain the idea
+- loud gradients, one-note palette, decorative effects that do not explain the idea
 
 Style brief:
 {style_prompt}

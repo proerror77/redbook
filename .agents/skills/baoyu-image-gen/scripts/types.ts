@@ -1,6 +1,6 @@
 export type Provider = "google" | "openai" | "dashscope" | "tuzi";
 export type Quality = "normal" | "2k";
-export type PromptPreset = "raw" | "x-card" | "blog-hero" | "x-blog-editorial";
+export type PromptPreset = "raw" | "x-card" | "blog-hero" | "x-blog-editorial" | "article-elegant";
 
 export type CliArgs = {
   prompt: string | null;

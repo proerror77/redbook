@@ -25,6 +25,8 @@ interface XBrowserOptions {
   images?: string[];
   submit?: boolean;
   timeoutMs?: number;
+  loginWaitMs?: number;
+  keepOpenOnLoginRequired?: boolean;
   profileDir?: string;
   chromePath?: string;
   headless?: boolean;
@@ -43,6 +45,9 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
   let cdp: CdpConnection | null = null;
   let launchedChrome: ReturnType<typeof spawn> | null = null;
   let ownsBrowser = false;
+  let keepBrowserOpen = false;
+  let launchedProfileDir: string | null = null;
+  let launchedChromePath: string | null = null;
 
   try {
     const shouldLaunchNewBrowser = Boolean(options.newBrowser || options.profileDir);
@@ -54,6 +59,8 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
       const profileDir = options.profileDir ?? getDefaultProfileDir();
       const chromePath = options.chromePath ?? findChromeExecutable(CHROME_CANDIDATES_FULL);
       if (!chromePath) throw new Error('Chrome not found. Set X_BROWSER_CHROME_PATH env var.');
+      launchedProfileDir = profileDir;
+      launchedChromePath = chromePath;
 
       await mkdir(profileDir, { recursive: true });
 
@@ -127,9 +134,9 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
       return typeof value === 'string' && value ? JSON.parse(value) as VisibleEditor | null : null;
     };
 
-    const waitForEditor = async (): Promise<boolean> => {
+    const waitForEditor = async (waitMs: number = timeoutMs): Promise<boolean> => {
       const start = Date.now();
-      while (Date.now() - start < timeoutMs) {
+      while (Date.now() - start < waitMs) {
         const editor = await findVisibleEditor();
         if (editor) return true;
         await sleep(1000);
@@ -272,12 +279,35 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
     const editorFound = await waitForEditor();
     if (!editorFound) {
       if (headless) {
-        throw new Error('X editor not found in headless mode. Run this command once with --headed to log in or handle verification, then rerun headless.');
+        if (ownsBrowser && launchedProfileDir && launchedChromePath) {
+          console.log('[x-browser] Headless mode cannot recover login. Opening a headed Chrome with the same profile for manual recovery...');
+          try { await cdp!.send('Browser.close', {}, { timeoutMs: 5_000 }); } catch {}
+          cdp.close();
+          cdp = null;
+          try { launchedChrome?.kill('SIGTERM'); } catch {}
+          launchedChrome = null;
+
+          const recoveryPort = await getFreePort();
+          launchedChrome = spawn(launchedChromePath, buildChromeLaunchArgs({
+            port: recoveryPort,
+            profileDir: launchedProfileDir,
+            url: X_COMPOSE_URL,
+            headless: false,
+          }), { stdio: 'ignore' });
+          keepBrowserOpen = true;
+          await waitForChromeDebugPort(recoveryPort, 30_000, { includeLastError: true });
+          throw new Error('Opened headed Chrome for X login/verification recovery. Finish login in that window, then rerun the same command.');
+        }
+        throw new Error('X editor not found in headless mode. Run with --headed to restore login/verification state. The script will not submit without a visible composer.');
       }
       console.log('[x-browser] Editor not found. Please log in to X in the browser window.');
-      console.log('[x-browser] Waiting for login...');
-      const loggedIn = await waitForEditor();
-      if (!loggedIn) throw new Error('Timed out waiting for X editor. Please log in first.');
+      console.log('[x-browser] Waiting for login/verification recovery. The browser will stay open if this times out.');
+      const loginWaitMs = options.loginWaitMs ?? 10 * 60_000;
+      const loggedIn = await waitForEditor(loginWaitMs);
+      if (!loggedIn) {
+        keepBrowserOpen = options.keepOpenOnLoginRequired ?? true;
+        throw new Error('Timed out waiting for X login recovery. Browser left open for manual login; rerun the same command after the composer is available.');
+      }
     }
 
     if (text) {
@@ -343,17 +373,19 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
     }
   } finally {
     if (cdp) {
-      if (ownsBrowser) {
+      if (ownsBrowser && !keepBrowserOpen) {
         try { await cdp.send('Browser.close', {}, { timeoutMs: 5_000 }); } catch {}
       }
       cdp.close();
     }
 
-    if (launchedChrome) {
+    if (launchedChrome && !keepBrowserOpen) {
       setTimeout(() => {
         if (!launchedChrome?.killed) try { launchedChrome?.kill('SIGKILL'); } catch {}
       }, 2_000).unref?.();
       try { launchedChrome.kill('SIGTERM'); } catch {}
+    } else if (keepBrowserOpen) {
+      console.log('[x-browser] Keeping Chrome open for login recovery.');
     }
   }
 }
@@ -372,6 +404,8 @@ Options:
   --new-browser    Force isolated Chrome/profile instead of reusing current Chrome CDP
   --headed         Open a visible browser for login/manual preview
   --headless       Force background mode (default; can also set X_BROWSER_HEADLESS=0)
+  --login-wait-ms <ms>  How long headed mode waits for manual login recovery (default: 600000)
+  --close-on-login-required  Close launched browser even when login recovery times out
   --help           Show this help
 
 Examples:
@@ -391,6 +425,8 @@ async function main(): Promise<void> {
   let profileDir: string | undefined;
   let cdpEndpoint: string | undefined;
   let newBrowser = false;
+  let loginWaitMs: number | undefined;
+  let keepOpenOnLoginRequired = true;
   const headless = parseHeadlessFlag(args);
   const textParts: string[] = [];
 
@@ -407,6 +443,14 @@ async function main(): Promise<void> {
       cdpEndpoint = args[++i];
     } else if (arg === '--new-browser') {
       newBrowser = true;
+    } else if (arg === '--login-wait-ms' && args[i + 1]) {
+      loginWaitMs = Number(args[++i]);
+      if (!Number.isFinite(loginWaitMs) || loginWaitMs < 0) {
+        console.error(`Error: Invalid --login-wait-ms: ${args[i]}`);
+        process.exit(1);
+      }
+    } else if (arg === '--close-on-login-required') {
+      keepOpenOnLoginRequired = false;
     } else if (arg === '--headless' || arg === '--headed') {
       continue;
     } else if (!arg.startsWith('-')) {
@@ -421,7 +465,17 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  await postToX({ text, images, submit, profileDir, headless, cdpEndpoint, newBrowser });
+  await postToX({
+    text,
+    images,
+    submit,
+    profileDir,
+    headless,
+    cdpEndpoint,
+    newBrowser,
+    loginWaitMs,
+    keepOpenOnLoginRequired,
+  });
 }
 
 await main().catch((err) => {

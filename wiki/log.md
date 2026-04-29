@@ -903,3 +903,20 @@
 - X 发布成功不能只看 toast 或 stdout；图文内容必须验证状态 URL、正文和 `photo`/media 同时存在。
 - GPT Image 2.0 prompt 的核心不是堆风格词，而是声明 artifact、读者、投放位置、构图、文字角色和避免项。
 - 对本账号来说，AI Agent / 企业导入 / workflow 主题配图应贴近真实工作界面和 operator 场景，默认排除泛紫蓝发光、机器人、bokeh 和假 logo。
+
+## [2026-04-29] ingest | X / 小红书登录恢复与 elegant article visual 标准
+
+来源：用户反馈“登录状态不对时必须扫码恢复，浏览器不能被关；图片要简洁/elegant” + 本地自动化脚本二次修正
+
+触及页面：6个
+- `.agents/skills/baoyu-post-to-x/scripts/x-browser.ts` — headed 登录恢复等待、超时保留浏览器、`--login-wait-ms`
+- `/Users/proerror/.codex/skills/xiaohongshu-skills/scripts/publish_pipeline.py` — headless 未登录切 headed、等待扫码恢复、恢复后继续
+- `.agents/skills/baoyu-image-gen/scripts/main.ts` — 新增 `article-elegant` preset
+- `.agents/skills/document-illustrator/styles/editorial-tech.md` — 收窄为 simple/elegant/minimal article visual
+- `.agents/skills/baoyu-xhs-images/SKILL.md` — AI/商业/Agent 内容默认推荐 minimal / notion
+- `tasks/lessons.md` — 新增登录恢复和简洁配图两条规则
+
+关键洞察：
+- 登录异常不是普通失败，而是人工协作节点；自动化必须把浏览器留给用户扫码/验证。
+- headless 只适合登录状态已健康的路径；需要恢复时必须切 headed 并等待。
+- 文章配图默认应该是 elegant article visual：少文字、大留白、低饱和、一个点缀色，而不是科技海报或小红书花哨信息图。

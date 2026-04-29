@@ -3797,3 +3797,24 @@
 - X 发布链路现在对缺失图片、未挂载 media、发布后无图片状态页都做阻断。
 - 生图链路新增 X/blog editorial preset、`editorial-tech` 风格和 `docs/standards/gpt-image-2-editorial-prompts.md` 标准。
 - 本轮未实际调用 GPT Image 2.0 生成样张，避免未确认前消耗 API 额度。
+
+---
+
+## 新任务：X / 小红书登录恢复与文章配图审美二次修正
+- 任务名称：让 X 与小红书自动化在登录异常时可扫码/手动恢复，并把文章配图默认审美改成简洁 elegant
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-29
+- 优先级：P0
+- Harness Run：N/A（工具链修复）
+
+### 执行清单
+- [x] 1. Review X 发布脚本关闭浏览器的问题，补登录恢复等待和保留浏览器机制
+- [x] 2. Review 小红书发布 pipeline，补 headless 未登录时切 headed、等待扫码、恢复后继续的机制
+- [x] 3. 将 X/blog/文章配图默认审美收窄到 simple / elegant / minimal editorial
+- [x] 4. 更新技能文档、prompt 标准和小红书图片默认风格说明
+- [x] 5. 运行最小验证
+
+### Review 结论
+- X headed 模式下找不到 composer 时，会等待登录/验证恢复；超时默认保留浏览器，不再自动关掉。
+- 小红书发布 pipeline 未登录时会打开有窗口浏览器和登录页，等待扫码/验证码/手动登录，恢复后继续当前流程；超时保留浏览器。
+- 生图默认改为简洁克制的 article visual：大留白、off-white / graphite / ink + 一个点缀色、少文字或无文字、拒绝紫蓝发光/机器人/3D blob。

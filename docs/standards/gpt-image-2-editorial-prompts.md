@@ -4,7 +4,7 @@
 
 ## 适用范围
 
-用于 X.com、blog、newsletter、文章配图和技术观点速评。目标不是“好看的 AI 图”，而是可发布、能解释观点、缩略图也能看懂的 editorial visual。
+用于 X.com、blog、newsletter、文章配图和技术观点速评。默认审美是简洁、克制、elegant：目标不是“好看的 AI 图”，而是可发布、能解释观点、缩略图也能看懂的 article visual。
 
 ## Prompt 结构
 
@@ -15,9 +15,9 @@
 - Placement：X.com feed card、blog hero、newsletter header、article diagram。
 - Image content：要视觉化的核心观点，不超过一个主隐喻。
 - Composition：构图、主体、留白、裁切安全区。
-- Style：成熟 editorial / magazine / Swiss grid / product diagram 等。
-- Color palette：克制的多色组合，避免单一紫蓝科技渐变。
-- Text inside image：只允许少量短文本；必须写明 headline、label、footer 等角色。
+- Style：minimal editorial / magazine / Swiss grid / quiet product diagram 等。
+- Color palette：off-white / graphite / ink / soft gray + 一个精准点缀色，避免单一紫蓝科技渐变。
+- Text inside image：默认无文字；必须出现时只允许短文本，并写明 headline、label、footer 等角色。
 - Avoid：明确排除 generic AI glow、机器人吉祥物、Dribbble 3D、bokeh orbs、假 logo、水印、小字段落。
 - Output requirements：比例、质量、可读性和平台尺寸。
 
@@ -25,7 +25,7 @@
 
 - X card：默认 `3:4`，主体大、信息少、适合时间线快速扫过。
 - Blog hero：默认 `16:9`，横向构图、适合文章头图和 newsletter。
-- 技术观点图：优先使用具体工作场景，例如浏览器、邮箱、代码图谱、terminal、dashboard、白板、operator desk。
+- 技术观点图：优先使用具体工作场景，例如浏览器、邮箱、代码图谱、terminal、dashboard、白板、operator desk，但画面保持留白和克制。
 - Agent / AI 工具主题：不要画发光脑袋、机器人、紫色宇宙背景；用“后台工位”“工具接管流程”“人机协作界面”来表达。
 - Crypto / AI 新闻速评：用 editorial poster 或 restrained product diagram，不做金融暴富感、不做赛博霓虹。
 
@@ -51,8 +51,8 @@ One strong focal point, Swiss grid, clean negative space, safe margins for socia
 Use foreground / midground / background separation. No collage of unrelated icons.
 
 Style:
-Premium editorial technology design, modern magazine art direction, restrained palette,
-precise hierarchy, polished but not flashy.
+Simple elegant editorial technology design, modern magazine art direction, restrained palette,
+precise hierarchy, polished but quiet.
 
 Text inside the image:
 At most one short quoted headline. No paragraphs. No fake UI labels unless they are essential.
@@ -87,8 +87,8 @@ Horizontal editorial layout, generous negative space, one main subject, balanced
 Leave room for optional title overlay outside the generated image.
 
 Style:
-Modern editorial tech illustration or cinematic workbench scene. Subtle texture, crisp forms,
-professional color contrast, no loud neon.
+Minimal editorial tech illustration or quiet workbench scene. Subtle texture, crisp forms,
+professional color contrast, no loud neon, no decorative complexity.
 
 Text inside the image:
 Prefer no text. If text appears, use one short exact headline only.
@@ -106,11 +106,11 @@ Clean 16:9 hero image suitable for a blog cover and social preview.
 第一版太乱时直接用：
 
 ```text
-Reduce information density by 40%.
+Reduce information density by 50%.
 Make the visual metaphor clearer.
 Remove decorative glow, random icons, and unreadable text.
 Increase negative space and make the focal point larger.
-Keep the same core idea, but make it look like a serious magazine editorial image.
+Keep the same core idea, but make it look like a simple elegant article illustration.
 ```
 
 ## 相关页面

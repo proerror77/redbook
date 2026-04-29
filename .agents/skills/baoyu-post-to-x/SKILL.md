@@ -14,6 +14,7 @@ Posts text, images, videos, and long-form articles to X via real Chrome browser 
 - Current status: this skill is a site-specific write layer. It may keep its X-specific page logic, but it should not be treated as the repo's generic browser foundation.
 - Session default: reuse the existing Chrome/CDP endpoint (`X_BROWSER_CDP_ENDPOINT` or `127.0.0.1:9222`) and an existing X tab when possible. Do not launch a new Chrome/profile unless CDP is unavailable or `--new-browser` / `--profile` is explicitly used.
 - Default execution posture: `headless`. Use `--headed` only for first login, verification/CAPTCHA, or an intentional manual preview.
+- Login recovery: when `--headed` is used and the composer is not available, keep the browser open and wait for manual login/verification instead of closing it.
 
 ## Script Directory
 
@@ -98,12 +99,20 @@ npx -y bun ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png --subm
 | `--new-browser` | Force isolated Chrome/profile instead of current Chrome/CDP reuse |
 | `--headed` | Open a visible browser for login or manual preview |
 | `--headless` | Force background mode (default) |
+| `--login-wait-ms <ms>` | In headed mode, wait for manual login/verification recovery before failing (default: 600000) |
+| `--close-on-login-required` | Close the launched browser even if login recovery times out |
 
 **Image safety gate**:
 - If `--image` is provided and the file does not exist, the script aborts before opening X.
 - If images are provided but the composer does not show the same number of attached media, the script refuses to submit.
 - After `--submit`, success is claimed only after a status URL is found and the status page shows the expected text plus a photo/media link.
 - Do not report a post as published from script stdout alone; include the status URL or explain the verification blocker.
+
+**Login recovery gate**:
+- If headless mode cannot find a composer in a browser it launched, it opens a headed Chrome with the same profile for manual recovery and leaves it open.
+- If headless mode cannot recover the active browser itself, rerun with `--headed`; the script will wait for login/verification and never submit until the composer is visible.
+- If headed mode times out while waiting for login recovery, the launched browser stays open by default. Finish login manually, then rerun the same command.
+- Use `--close-on-login-required` only for deliberate cleanup runs.
 
 ---
 

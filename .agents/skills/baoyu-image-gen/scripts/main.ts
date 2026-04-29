@@ -16,7 +16,7 @@ Options:
   --image <path>            Output image path (required)
   --provider google|openai|dashscope|tuzi  Force provider (auto-detect by default)
   -m, --model <id>          Model ID
-  --preset <name>           Prompt preset: raw|x-card|blog-hero|x-blog-editorial (default: raw)
+  --preset <name>           Prompt preset: raw|x-card|blog-hero|x-blog-editorial|article-elegant (default: raw)
   --ar <ratio>              Aspect ratio (e.g., 16:9, 1:1, 4:3)
   --size <WxH>              Size (e.g., 1024x1024)
   --quality normal|2k       Quality preset (default: 2k)
@@ -127,7 +127,7 @@ function parseArgs(argv: string[]): CliArgs {
 
     if (a === "--preset") {
       const v = argv[++i];
-      if (v !== "raw" && v !== "x-card" && v !== "blog-hero" && v !== "x-blog-editorial") {
+      if (v !== "raw" && v !== "x-card" && v !== "blog-hero" && v !== "x-blog-editorial" && v !== "article-elegant") {
         throw new Error(`Invalid preset: ${v}`);
       }
       out.preset = v;
@@ -260,24 +260,26 @@ function applyPromptPreset(prompt: string, args: CliArgs): string {
 
   const target = args.preset === "blog-hero"
     ? "blog hero image"
+    : args.preset === "article-elegant"
+      ? "minimal elegant article illustration"
     : args.preset === "x-card"
       ? "X.com feed card"
       : "X.com/blog editorial image";
 
-  const defaultRatio = args.aspectRatio || (args.preset === "blog-hero" ? "16:9" : "3:4");
-  const exactTextPolicy = args.preset === "blog-hero"
-    ? "Avoid long body copy inside the image. If text is needed, use only one short quoted headline and one small label."
+  const defaultRatio = args.aspectRatio || (args.preset === "blog-hero" || args.preset === "article-elegant" ? "16:9" : "3:4");
+  const exactTextPolicy = args.preset === "blog-hero" || args.preset === "article-elegant"
+    ? "Prefer no text inside the image. If text is necessary, use only one short quoted headline."
     : "Use at most one short quoted headline inside the image; avoid paragraphs, UI clutter, fake logos, and tiny illegible labels.";
 
   return `Create a polished ${target} for a tech founder audience.
 
 Output artifact:
-- Platform: ${args.preset === "blog-hero" ? "blog / newsletter / article header" : "X.com timeline image"}
+- Platform: ${args.preset === "blog-hero" || args.preset === "article-elegant" ? "blog / newsletter / article header" : "X.com timeline image"}
 - Aspect ratio: ${defaultRatio}
-- Visual direction: premium editorial technology design, clear at thumbnail size, strong composition, mature taste
-- Aesthetic anchors: modern magazine art direction, Swiss grid, restrained color palette, clean negative space, precise hierarchy
-- Preferred styles: editorial vector illustration, modernist poster, tasteful product-diagram, or cinematic desk/terminal scene
-- Avoid: generic blue-purple AI glow, random robot mascots, glossy Dribbble 3D blobs, bokeh orbs, cluttered infographic text, unreadable tiny type, fake brand logos, watermark, low-effort clipart
+- Visual direction: simple, elegant editorial technology design; calm, useful, and mature
+- Aesthetic anchors: Swiss grid, generous negative space, restrained typography, off-white / graphite / ink palette, one precise accent color
+- Preferred styles: minimalist editorial illustration, quiet product diagram, clean article hero, or understated workspace scene
+- Avoid: generic blue-purple AI glow, random robot mascots, glossy Dribbble 3D blobs, bokeh orbs, cyberpunk neon, busy collage, cluttered infographic text, unreadable tiny type, fake brand logos, watermark, low-effort clipart
 
 Typography and text:
 - ${exactTextPolicy}
@@ -286,7 +288,8 @@ Typography and text:
 
 Composition requirements:
 - One clear visual metaphor, not a collage of many unrelated symbols.
-- Foreground, midground, and background should be intentionally separated.
+- Use large shapes, quiet contrast, and deliberate whitespace.
+- Foreground, midground, and background should be intentionally separated, but never visually noisy.
 - Leave safe margins for cropping in X/blog previews.
 - The image should communicate the idea before the viewer reads the post.
 

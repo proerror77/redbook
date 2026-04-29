@@ -4,25 +4,25 @@ Use this style for X.com cards, blog hero images, newsletter headers, and AI/pro
 
 ### Visual Goal
 
-Create a polished editorial technology image that feels like a serious magazine or founder memo visual, not a generic AI poster.
+Create a simple, elegant editorial technology image that feels like a serious article visual or founder memo, not a generic AI poster.
 
 ### Art Direction
 
 - Output artifact: editorial tech cover image / article hero / X.com feed card.
 - Composition: one strong visual metaphor, large readable focal point, generous negative space.
 - Layout: Swiss grid, clear foreground / midground / background separation, safe margins for social preview cropping.
-- Visual language: modernist poster, premium magazine illustration, product-diagram clarity, restrained startup/operator taste.
-- Texture: subtle paper grain, clean vector edges, or cinematic desk/workspace lighting. Use texture sparingly.
+- Visual language: minimal magazine illustration, quiet product-diagram clarity, restrained startup/operator taste.
+- Texture: very subtle paper grain, clean vector edges, or soft natural workspace lighting. Use texture sparingly.
 
 ### Color System
 
-- Base: off-white, graphite, ink black, or quiet neutral.
-- Accent: choose one or two precise colors only, such as cobalt blue, signal red, acid green, warm amber, or cyan.
-- Avoid one-note purple/blue gradients, bokeh, glowing orbs, random neon fog, and glossy 3D blobs.
+- Base: off-white, graphite, ink black, warm gray, or quiet neutral.
+- Accent: choose one precise color only, such as cobalt blue, muted green, warm amber, or signal red.
+- Avoid one-note purple/blue gradients, bokeh, glowing orbs, random neon fog, cyberpunk lighting, and glossy 3D blobs.
 
 ### Typography
 
-- Use at most one short headline inside the image.
+- Prefer no visible text. Use at most one short headline inside the image when the brief requires it.
 - If visible text is needed, render exact strings in quotes and name their role:
   - headline: "AI Agent 正在搬家"
   - footer label: "Workflow / Browser / IDE"
