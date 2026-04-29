@@ -24,6 +24,27 @@
 - Docs now mark `redbookctl.ts` as canonical and `redbookctl.py` as legacy delegated implementation.
 - Verification passed: `tools/redbookctl --help`, `tools/redbookctl browser --help`, `tools/redbookctl x-login --help`, `tools/redbookctl status --json`, `tools/redbookctl browser --json`, `python3 -m py_compile tools/redbookctl.py`, and `git diff --check`.
 
+## 2026-04-30 Redbookctl TS Dispatch Migration
+
+- Owner: Codex
+- Source: User said continue after TS control surface landed
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Move low-risk command dispatch from legacy Python into `tools/redbookctl.ts`.
+- [x] Keep existing Python business scripts as called tools, not as the control surface.
+- [x] Update docs to show which commands are now TS-dispatched.
+- [x] Run non-destructive help/smoke checks for migrated commands.
+- [x] Commit the scoped dispatch migration.
+
+### Review
+
+- `daily`, `draft`, `publish-record`, `xhs-health`, `challenge`, `emerge`, `draft-seed`, and `close-run` now dispatch from `tools/redbookctl.ts`.
+- Existing implementation scripts remain in place: daily shell runner, Python harness, publish ledger recorder, XHS skill script, and content loop are now called by the TS control surface.
+- `status`, `pick`, `publish`, `workflow-health`, and `publish-health` remain legacy Python until the status/publish-gap collector has a JSON contract fixture.
+- Verification passed: help smoke for migrated commands, `status --json`, `browser --json`, `draft` empty guidance, `close-run` missing-id validation, Python compile for legacy file, and `git diff --check`.
+
 ## 2026-04-29 Workflow Review Follow-up Fixes
 
 - Owner: Codex Agent Teams

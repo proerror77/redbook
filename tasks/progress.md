@@ -4,6 +4,35 @@
 
 ---
 
+## [2026-04-30] 会话摘要：redbookctl TS 调度迁移
+
+**完成了什么：**
+- 继续把 `tools/redbookctl` 的低风险命令调度迁到 TS。
+- 新增 TS 调度：`daily`、`draft`、`publish-record`、`xhs-health`、`challenge`、`emerge`、`draft-seed`、`close-run`。
+- 这些命令仍调用现有业务脚本或 harness，不改变底层输出契约。
+- legacy `tools/redbookctl.py` 现在主要保留 `status`、`pick`、`publish`、`workflow-health` / `publish-health`。
+- 更新 `docs/reference/skills-manifest.md`、`docs/reference/runtime-language-policy.md`、`tools/README.md`。
+
+**验证：**
+- `tools/redbookctl --help`
+- `tools/redbookctl daily --help`
+- `tools/redbookctl draft --help`
+- `tools/redbookctl publish-record --help`
+- `tools/redbookctl xhs-health --help`
+- `tools/redbookctl challenge --help`
+- `tools/redbookctl close-run --help`
+- `tools/redbookctl status --json`
+- `tools/redbookctl browser --json`
+- `tools/redbookctl draft`
+- `tools/redbookctl close-run` missing-id validation
+- `python3 -m py_compile tools/redbookctl.py`
+- `git diff --check`
+
+**未完成 / 遗留：**
+- `status` / `workflow-health` 的状态收集和 publish gap 逻辑仍在 Python，下一步应先做 JSON contract fixture，再迁 TS。
+
+---
+
 ## [2026-04-30] 会话摘要：redbookctl TS 控制面迁移起点
 
 **完成了什么：**
