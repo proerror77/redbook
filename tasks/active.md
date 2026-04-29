@@ -2,6 +2,29 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-04-29 Publish Workflow Hardening Team Fix
+
+- Owner: Codex Agent Teams
+- Source: User asked to complete all workflow fixes with Agent Teams
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Review X publish submit path, XHS publish path, ledger health, daily gap, and storyboard closure in parallel.
+- [x] Make X submit fail closed on account/profile mismatch before any input or click.
+- [x] Add XHS health/preflight and prevent `PUBLISH_STATUS` from being treated as verified success without platform evidence.
+- [x] Add an operator workflow-health surface for daily report, active harness runs, pending publish confirmations, ledger gaps, and follow-ups.
+- [x] Update publish ledger validation and workflow docs.
+- [x] Run smoke/static checks and commit the scoped fix.
+
+### Review
+
+- X submit now checks `expected_handle` before typing/uploading/clicking, requires a configured expected handle for `--submit`, defaults submit to the configured publishing profile, and only reuses CDP when `--cdp-endpoint` is explicit.
+- XHS now has `tools/redbookctl xhs-health`; RedBookSkills publish paths only print `PUBLISH_STATUS: PUBLISHED` after note link or creator-management evidence is found.
+- `tools/redbookctl workflow-health` / `publish-health` now reports daily report gaps, launchd/log health, active publish runs, pending publish confirmations, item-level JSONL gaps, T+1/T+3 due items, and storyboard closure gaps.
+- 4/29 missing daily report was regenerated with `--skip-x`; 4/29 AI Agent content package received T+0 JSONL records, a `publish_record` artifact, `published=true`, a retrospective `图文分镜.md`, and the harness run is closed as `done`.
+- Remaining health items are intentionally not auto-resolved: the 2026-04-28 Agent long-thread run still needs explicit user publish confirmation, and 2026-04-28 T+1 metrics require live platform readback.
+
 ## 2026-04-29 Article Storyboard Layout Workflow
 
 - Owner: Codex

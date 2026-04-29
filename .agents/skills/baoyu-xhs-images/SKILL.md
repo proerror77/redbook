@@ -439,6 +439,22 @@ Files:
 - 04-ending-[slug].png ✓ Ending (sparse)
 ```
 
+### Step 7: Publish Handoff / Health Gate
+
+This skill may prepare Xiaohongshu assets, but publishing is still `approved-publish`.
+
+Before any publish click:
+1. User must explicitly say "发布" or "直接发".
+2. Run `tools/redbookctl xhs-health` to verify creator login without publishing.
+3. If publishing evidence will rely on the creator management table, run `tools/redbookctl xhs-health --with-content-data`.
+4. Confirm the final title, body, image list, and account.
+
+After a publish click:
+- Treat `FILL_STATUS: READY_TO_PUBLISH` as draft-filled only, never as published.
+- Treat `PUBLISH_STATUS: PUBLISHED` as insufficient by itself.
+- Claim success only with a note link/note id, success page, or creator management page evidence for the specific title.
+- Record T+0 with `tools/redbookctl publish-record -- --stage T+0 ...`; if note id is not exposed but management page shows the note, use explicit evidence such as `note_management_reviewing` and note `note_id_pending`.
+
 ## Image Modification
 
 | Action | Steps |

@@ -23,7 +23,7 @@
 - 文内插图先做 visual metaphor map：每张图必须绑定一个文章短句 / 关键词，先判断语义、情绪、张力和读者感受，再决定视觉隐喻、承载面、主体关系、文字是否进入构图；不要只把段落摘要翻译成泛插画。
 - 图文内容先做 `图文分镜.md`，再生图：文章结构负责论证，图文结构负责卡片叙事；每张图必须有版式职责、文字预算、安全边距和不重叠检查。
 - X.com 和小红书图片规格必须分开：X 默认 `16:9` 单张观点卡（可选 `1:1`），小红书默认 `3:4` / `1080x1440` 的 5-7 张卡片；只共享视觉隐喻，不共享最终裁切图。
-- 浏览器工作先跑 `tools/redbookctl browser` 检查现有 Chrome/CDP tabs；X 发布 profile 先跑 `tools/redbookctl x-login` 检查 composer 和 `expected_handle`；优先复用已登录 tab 或已配置 profile，不默认新开未登录 profile、空白页或可见窗口。
+- 浏览器工作先跑 `tools/redbookctl browser` 检查现有 Chrome/CDP tabs；X 发布 profile 先跑 `tools/redbookctl x-login` 检查 composer 和 `expected_handle`；小红书发布前先跑 `tools/redbookctl xhs-health`，需要管理页证据时加 `--with-content-data`；优先复用已登录 tab 或已配置 profile，不默认新开未登录 profile、空白页或可见窗口。
 
 ---
 
@@ -85,7 +85,7 @@
 - X：不能只看脚本 stdout，要有状态 URL、发布时间、主页/状态页可见证据。
 - 长文 / 公众号 / 小红书图文：发布清单必须说明图片模型、图片数量、插图插入位置、每张图的锚定短句与视觉隐喻、排版检查结论；默认模型为 Tuzi `gpt-image-2.0`。
 - 小红书图文必须有 `图文分镜.md` 或等价分镜表；每张卡片只承担一个读者任务，不把长文段落硬塞进图。
-- 小红书：不能只看 `PUBLISH_STATUS`，要有成功页、笔记管理状态或 note id。
+- 小红书：不能只看 `FILL_STATUS` 或 `PUBLISH_STATUS`，要有成功页、笔记管理状态或 note id。
 - 数据回写至少有 T+0 `04-内容数据统计/publish-records.jsonl` 记录；T+1/T+3 数据可后续补。
 
 ---
@@ -113,6 +113,7 @@
 - 工作流看板：`tools/redbookctl status`
 - 浏览器会话检查：`tools/redbookctl browser`（只读现有 Chrome/CDP，不开新页）
 - X 发布 profile 检查：`tools/redbookctl x-login`（强制检查发布 profile 的 composer 和账号，不输入、不发布；`--headed` 用于人工登录恢复）
+- 小红书发布健康检查：`tools/redbookctl xhs-health`；需要创作者管理页回读时用 `tools/redbookctl xhs-health --with-content-data`
 - 每日研究：`tools/redbookctl daily`（等价于 `bash tools/daily.sh`）
 - 关注列表全量巡检：`tools/redbookctl daily --with-following-audit`
 - 选中日报题目：`tools/redbookctl pick --topic "..." --source "..."`
@@ -121,6 +122,7 @@
 - 隐性观点涌现：`tools/redbookctl emerge --topic "..."`
 - 草稿种子生成：`tools/redbookctl draft-seed --topic "..."`
 - 发布前/发布后缺口：`tools/redbookctl publish`
+- Workflow 缺口总览：`tools/redbookctl workflow-health`（别名 `publish-health`）
 - 发布数据记录：`tools/redbookctl publish-record -- --stage T+0 ...`
 - 关闭 harness run：`tools/redbookctl close-run --run-id ... --status done`
 - Wiki query：`python3 tools/wiki_workflow.py query --topic "..." --date YYYY-MM-DD`

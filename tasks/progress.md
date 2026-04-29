@@ -4,6 +4,34 @@
 
 ---
 
+## [2026-04-29] 会话摘要：发布 workflow Agent Teams 修正
+
+**完成了什么：**
+- 用 Codex native subagents 并行 review 了 X submit、小红书发布、账本/日报/harness/storyboard workflow。
+- X 普通帖真实 `--submit` 路径现在会在输入、传图、点击发布前强制校验 `expected_handle`；submit 默认走已配置发布 profile，不再隐式复用 `127.0.0.1:9222`。
+- 小红书发布链路新增 `tools/redbookctl xhs-health`；RedBookSkills 的 publish/pipeline 现在只有拿到 note link 或创作者管理页回读证据后才打印 `PUBLISH_STATUS: PUBLISHED`。
+- 新增 `tools/redbookctl workflow-health` / `publish-health`，汇总日报、launchd/log、active harness、pending publish、item-level JSONL、T+1/T+3、图文分镜 closure 缺口。
+- 补齐 4/29 AI Agent 三选题包：写入 3 条 T+0 JSONL、补 `图文分镜.md`、补 harness `publish_record` artifact、设 `published=true` 并关闭 run 为 `done`。
+- 修复 `tools/auto-x/scripts/run_daily.sh` 日志行变量未加 braces 导致 `AGENT_BROWSER_HEADED�: unbound variable` 的问题，并用 `tools/redbookctl daily --skip-x` 生成了 2026-04-29 日报。
+
+**验证：**
+- `python3 -m py_compile tools/redbookctl.py tools/record_publish.py tools/sync_redbook_playbook.py ~/.codex/skills/xiaohongshu-skills/scripts/{cdp_publish.py,publish_pipeline.py}`
+- `tools/redbookctl x-login --timeout-ms 45000`
+- `bun .agents/skills/baoyu-post-to-x/scripts/x-browser.ts ... --submit --expected-handle @definitely_wrong --new-browser --headless --timeout-ms 45000` 失败在账号 gate，未进入 Typing。
+- `tools/redbookctl status`
+- `tools/redbookctl workflow-health`
+- `tools/redbookctl publish --limit 20 --recent-days 30`
+- `python3 tools/record_publish.py ... --platform xiaohongshu --evidence note_management_reviewing --note note_id_pending --dry-run`
+- `jq -c . 04-内容数据统计/publish-records.jsonl`
+- `git diff --check`
+
+**未完成 / 遗留：**
+- 4/28 Agent 长帖仍在 approved-publish，必须等用户明确说“发布/直接发”才能提交。
+- 4/28 三条 X 记录的 T+1 指标需要平台实时回读后再补。
+- 日报生成成功；Claude CLI wiki ingest 因 `Not logged in` 失败，但 `wiki_workflow.py daily-cycle` 已记录 ingest/lint run，日报本身不受影响。
+
+---
+
 ## [2026-04-29] 会话摘要：新增 article-visual-storyboard skill 与 X/XHS 规格拆分
 
 **完成了什么：**

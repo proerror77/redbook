@@ -1,0 +1,141 @@
+{
+  "run_id": "20260429-115012-llm-wiki-ingest-2026-04-29-415a55",
+  "kind": "content_pipeline",
+  "topic": "LLM Wiki ingest 2026-04-29",
+  "summary": "为当日研究报告创建显式 wiki ingest 运行痕迹",
+  "source": "05-选题研究/X-每日日程-2026-04-29.md",
+  "owner": "Codex",
+  "priority": "P1",
+  "current_stage": "research",
+  "status": "done",
+  "created_at": "2026-04-29T11:50:12+00:00",
+  "updated_at": "2026-04-29T11:50:12+00:00",
+  "artifacts": [
+    {
+      "id": "f3fe837400",
+      "type": "research_report",
+      "path": "05-选题研究/X-每日日程-2026-04-29.md",
+      "description": "Daily source for wiki ingest: X-每日日程-2026-04-29.md",
+      "stage": "research",
+      "created_at": "2026-04-29T11:50:12+00:00"
+    },
+    {
+      "id": "e02e48f641",
+      "type": "research_report",
+      "path": "05-选题研究/HN-每日热点-2026-04-29.md",
+      "description": "Daily source for wiki ingest: HN-每日热点-2026-04-29.md",
+      "stage": "research",
+      "created_at": "2026-04-29T11:50:12+00:00"
+    },
+    {
+      "id": "8250237b8f",
+      "type": "research_report",
+      "path": "05-选题研究/Reddit-每日监控-2026-04-29.md",
+      "description": "Daily source for wiki ingest: Reddit-每日监控-2026-04-29.md",
+      "stage": "research",
+      "created_at": "2026-04-29T11:50:12+00:00"
+    },
+    {
+      "id": "83b0dd8db4",
+      "type": "research_report",
+      "path": "docs/reports/wiki-ingest-2026-04-29.md",
+      "description": "Wiki ingest summary report for 2026-04-29",
+      "stage": "research",
+      "created_at": "2026-04-29T11:50:12+00:00"
+    }
+  ],
+  "checks": {
+    "materials_queried": true,
+    "research_complete": true,
+    "outline_locked": false,
+    "draft_written": false,
+    "facts_checked": false,
+    "platform_ready": false,
+    "published": false,
+    "progress_updated": false,
+    "wiki_logged": false,
+    "lessons_reviewed": false
+  },
+  "incidents": [],
+  "events": [
+    {
+      "at": "2026-04-29T11:50:12+00:00",
+      "type": "run_created",
+      "stage": "research",
+      "message": "Run created for topic: LLM Wiki ingest 2026-04-29",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-29T11:50:12+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: research_report",
+      "meta": {
+        "path": "05-选题研究/X-每日日程-2026-04-29.md",
+        "artifact_id": "f3fe837400"
+      }
+    },
+    {
+      "at": "2026-04-29T11:50:12+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: research_report",
+      "meta": {
+        "path": "05-选题研究/HN-每日热点-2026-04-29.md",
+        "artifact_id": "e02e48f641"
+      }
+    },
+    {
+      "at": "2026-04-29T11:50:12+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: research_report",
+      "meta": {
+        "path": "05-选题研究/Reddit-每日监控-2026-04-29.md",
+        "artifact_id": "8250237b8f"
+      }
+    },
+    {
+      "at": "2026-04-29T11:50:12+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: research_report",
+      "meta": {
+        "path": "docs/reports/wiki-ingest-2026-04-29.md",
+        "artifact_id": "83b0dd8db4"
+      }
+    },
+    {
+      "at": "2026-04-29T11:50:12+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-29T11:50:12+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check research_complete set to True",
+      "meta": {
+        "check_name": "research_complete",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-29T11:50:12+00:00",
+      "type": "run_closed",
+      "stage": "research",
+      "message": "Run closed with status: done",
+      "meta": {
+        "status": "done",
+        "note": "Daily wiki ingest is a research-only maintenance run.",
+        "closed_at": "2026-04-29T11:50:12+00:00"
+      }
+    }
+  ],
+  "closed_at": "2026-04-29T11:50:12+00:00"
+}

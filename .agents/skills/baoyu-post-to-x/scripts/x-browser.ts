@@ -54,7 +54,8 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
   let launchedChromePath: string | null = null;
 
   try {
-    const shouldLaunchNewBrowser = Boolean(options.newBrowser || options.profileDir);
+    const explicitCdpEndpoint = Boolean(options.cdpEndpoint?.trim());
+    const shouldLaunchNewBrowser = Boolean(options.newBrowser || options.profileDir || (submit && !explicitCdpEndpoint));
     let wsUrl = shouldLaunchNewBrowser ? null : await maybeGetBrowserWebSocketUrl(options.cdpEndpoint);
 
     if (wsUrl) {
@@ -84,14 +85,19 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
     cdp = await CdpConnection.connect(wsUrl, 30_000, { defaultTimeoutMs: 15_000 });
 
     const targets = await cdp.send<{ targetInfos: Array<{ targetId: string; url: string; type: string }> }>('Target.getTargets');
-    let pageTarget = targets.targetInfos.find((t) => t.type === 'page' && /https?:\/\/(x|twitter)\.com\//.test(t.url));
+    const pageTargets = targets.targetInfos.filter((t) => t.type === 'page');
+    let pageTarget = pageTargets.find((t) => /https?:\/\/(x|twitter)\.com\/compose\/post/.test(t.url));
 
     if (!pageTarget) {
-      pageTarget = targets.targetInfos.find((t) => t.type === 'page' && t.url === 'about:blank');
+      pageTarget = pageTargets.find((t) => t.url === 'about:blank');
+    }
+
+    if (!pageTarget && ownsBrowser) {
+      pageTarget = pageTargets.find((t) => /https?:\/\/(x|twitter)\.com\//.test(t.url));
     }
 
     if (!pageTarget) {
-      console.log('[x-browser] No reusable X/about:blank tab found; creating one tab in the existing browser session.');
+      console.log('[x-browser] No reusable compose/about:blank tab found; creating one controlled compose tab.');
       const { targetId } = await cdp.send<{ targetId: string }>('Target.createTarget', { url: X_COMPOSE_URL });
       pageTarget = { targetId, url: X_COMPOSE_URL, type: 'page' };
     }
@@ -161,6 +167,32 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
         returnByValue: true,
       }, { sessionId });
       return JSON.parse(result.result.value || '{}') as { url?: string; title?: string; accountText?: string };
+    };
+
+    const resolveExpectedHandle = (): string | undefined => (
+      options.expectedHandle
+        ? normalizeXHandle(options.expectedHandle)
+        : getExpectedXHandle()
+    );
+
+    const requireExpectedAccount = async (
+      context: string,
+      requireConfigured: boolean = false,
+    ): Promise<void> => {
+      const expectedHandle = resolveExpectedHandle();
+      if (!expectedHandle) {
+        if (requireConfigured) {
+          throw new Error(`${context} requires --expected-handle or expected_handle in EXTEND.md. Refusing to continue without an account guard.`);
+        }
+        return;
+      }
+
+      const snapshot = await readLoginSnapshot();
+      const seen = String(snapshot.accountText || '').toLowerCase();
+      if (!seen.includes(expectedHandle)) {
+        throw new Error(`${context} saw the wrong X account. Expected ${expectedHandle}; saw ${snapshot.accountText || snapshot.title || snapshot.url || 'no account text'}.`);
+      }
+      console.log(`[x-browser] ${context} account check passed: ${snapshot.accountText || expectedHandle}`);
     };
 
     const focusVisibleEditor = async (): Promise<void> => {
@@ -334,15 +366,12 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
 
     if (options.checkLogin) {
       const snapshot = await readLoginSnapshot();
-      const expectedHandle = options.expectedHandle
-        ? normalizeXHandle(options.expectedHandle)
-        : getExpectedXHandle();
-      if (expectedHandle && !String(snapshot.accountText || '').toLowerCase().includes(expectedHandle)) {
-        throw new Error(`X login check saw the wrong account. Expected ${expectedHandle}; saw ${snapshot.accountText || snapshot.title || snapshot.url || 'no account text'}.`);
-      }
+      await requireExpectedAccount('X login check');
       console.log(`[x-browser] Login check passed: ${snapshot.accountText || snapshot.title || snapshot.url || 'X composer visible'}`);
       return;
     }
+
+    await requireExpectedAccount(submit ? 'X submit' : 'X compose', submit);
 
     if (text) {
       console.log('[x-browser] Typing text...');
@@ -434,7 +463,7 @@ Options:
   --image <path>   Add image (can be repeated, max 4)
   --submit         Actually post (default: preview only)
   --profile <dir>  Chrome profile directory
-  --cdp-endpoint <url>  Existing Chrome CDP endpoint (default: X_BROWSER_CDP_ENDPOINT or 127.0.0.1:9222)
+  --cdp-endpoint <url>  Existing Chrome CDP endpoint (non-submit default: X_BROWSER_CDP_ENDPOINT or 127.0.0.1:9222)
   --new-browser    Force isolated Chrome/profile instead of reusing current Chrome CDP
   --headed         Open a visible browser for login/manual preview
   --headless       Force background mode (default; can also set X_BROWSER_HEADLESS=0)
@@ -449,6 +478,11 @@ Examples:
   npx -y bun x-browser.ts "Hello from CLI!"
   npx -y bun x-browser.ts "Check this out" --image ./screenshot.png
   npx -y bun x-browser.ts "Post it!" --image a.png --image b.png --submit
+
+Submit safety:
+  --submit requires expected_handle/--expected-handle and checks the visible account
+  before typing/uploading/clicking. Submit uses the configured publish profile unless
+  --cdp-endpoint is explicitly provided.
 `);
   process.exit(0);
 }

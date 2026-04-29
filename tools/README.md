@@ -9,12 +9,14 @@
 | **工作流看板 / 控制面** | `tools/redbookctl status` | 直接读 `tasks/active.md` / harness JSON | ✅ 主推 |
 | **浏览器登录态检查** | `tools/redbookctl browser` | 只读当前 Chrome/CDP tabs，不开新页 | ✅ 主推 |
 | **X 发布 profile 登录检查** | `tools/redbookctl x-login` | 固定 automation profile + expected handle 的 composer 检查；`--headed` 用于人工恢复 | ✅ 主推 |
+| **小红书发布健康检查** | `tools/redbookctl xhs-health` | 检查创作者中心登录；`--with-content-data` 回读管理页 | ✅ 主推 |
 | **X.com 研究** | `tools/redbookctl daily` + `wiki_workflow.py query` | `bash tools/daily.sh` / `tools/x-skills/x-collect` legacy local reference | ✅ 主推 |
 | **X.com 创作** | `/x-mastery-mentor` + 账号风格手写/改写 | `tools/x-skills/x-create` legacy local reference | ✅ 主推 |
 | **X.com 发布** | `/baoyu-post-to-x` skill | ❌ ~~`auto-x/publish_x.sh`~~ | ✅ 唯一 |
 | **小红书图文** | `/baoyu-xhs-images` skill | ❌ ~~`auto-redbook/render_simple.sh`~~ | ✅ 唯一 |
 | **小红书视频/数据/搜索** | `RedBookSkills` | 历史 `/post-to-xhs` 文档 | ✅ 主推 |
 | **发布数据记录** | `tools/redbookctl publish-record -- ...` + `publish-records.jsonl` | `record_publish.py` 直接调用 | ✅ 主推 |
+| **Workflow 缺口总览** | `tools/redbookctl workflow-health` | `publish-health` 别名；日报、harness、账本、分镜缺口 | ✅ 主推 |
 | **跨站点只读抓取 / 环境验证** | `tools/opencli/` | 现有 skills / 手工浏览器 | ✅ 辅助层 |
 | **内部工作台自然语言试点** | `tools/page-agent-console/` | 无 | ✅ 试点 |
 | **Reddit 痛点** | `reddit_hack.py` | 无 | ✅ 唯一 |
@@ -81,6 +83,7 @@ tools/
 - 默认看板：`tools/redbookctl status`
 - 浏览器会话：`tools/redbookctl browser`，先检查 X / 小红书 / 微信 / BOSS 是否已有可复用登录 tab
 - X 发布 profile：`tools/redbookctl x-login`，强制检查 `/baoyu-post-to-x` 的默认 profile 是否能打开 X composer 且账号匹配 `expected_handle`；登录失效时用 `tools/redbookctl x-login --headed --login-wait-ms 600000` 做人工恢复
+- 小红书发布健康：`tools/redbookctl xhs-health`，只检查创作者中心登录；需要发布后管理页证据时跑 `tools/redbookctl xhs-health --with-content-data`
 - 跑每日研究：`tools/redbookctl daily`，需要全量关注列表巡检时加 `--with-following-audit`
 - 从日报 promotion 题目：`tools/redbookctl pick --topic "题目" --source "来源"`
 - 创建完整内容 run：`tools/redbookctl draft --topic "题目" --source "日报/链接/路径" --summary "一句话目标"`
@@ -88,6 +91,7 @@ tools/
 - 隐性观点涌现：`tools/redbookctl emerge --topic "题目"`
 - 草稿种子生成：`tools/redbookctl draft-seed --topic "题目"`
 - 发布前检查：`tools/redbookctl publish`
+- Workflow 缺口总览：`tools/redbookctl workflow-health`
 - 发布后补结构化账本：`tools/redbookctl publish-record -- --stage T+0 ...`
 - 关闭 run：`tools/redbookctl close-run --run-id <run_id> --status done`
 
@@ -115,6 +119,7 @@ tools/
 - **适用场景**：发布任何类型的推文
 - **调用方式**：说「发布到 X」或「发布推文」
 - **稳定登录检查**：发帖前跑 `tools/redbookctl x-login`；它不会输入内容或发布，只验证已配置 profile 下的 X composer 和 `expected_handle`。
+- **真实 submit 保护**：`--submit` 会在输入/上传/点击前再次校验 `expected_handle`；没有配置 handle 时拒绝发布，并默认走发布 profile 而不是隐式复用 `127.0.0.1:9222`。
 - **人工恢复**：如果检查失败，跑 `tools/redbookctl x-login --headed --login-wait-ms 600000`，在打开的浏览器里完成登录/验证后，再重跑 `tools/redbookctl x-login`。
 
 #### ✅ **推荐：自动化方式**（定时任务）
@@ -163,6 +168,7 @@ bash tools/morning_sync.sh
 - 主账本：`04-内容数据统计/publish-records.jsonl`
 - Schema：`04-内容数据统计/publish-records.schema.md`
 - 阶段：`T+0` 记录状态 URL / note id / 初始 views；`T+1` 和 `T+3` 追加后续指标与复盘结论。
+- 小红书 T+0 如果 note id 暂时取不到，但管理页能看到笔记，必须写明确 evidence（如 `note_management_reviewing`）和 `note_id_pending` 说明；不能只用 `PUBLISH_STATUS`。
 
 示例：
 ```bash

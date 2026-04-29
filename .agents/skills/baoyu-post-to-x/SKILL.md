@@ -108,6 +108,8 @@ npx -y bun ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png --subm
 **Image safety gate**:
 - If `--image` is provided and the file does not exist, the script aborts before opening X.
 - If images are provided but the composer does not show the same number of attached media, the script refuses to submit.
+- `--submit` fails closed unless `expected_handle` is configured (or `--expected-handle` is provided) and the visible account matches before any text, image, or click action.
+- `--submit` defaults to the configured publishing profile/new browser; implicit `127.0.0.1:9222` reuse is only allowed when `--cdp-endpoint` is passed explicitly and the handle check still passes.
 - After `--submit`, success is claimed only after a status URL is found and the status page shows the expected text plus a photo/media link.
 - Do not report a post as published from script stdout alone; include the status URL or explain the verification blocker.
 

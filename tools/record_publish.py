@@ -86,12 +86,43 @@ def build_record(args: argparse.Namespace) -> dict[str, Any]:
 def validate_record(record: dict[str, Any]) -> None:
     if record["stage"] not in STAGES:
         raise ValueError(f"stage must be one of {', '.join(STAGES)}")
-    if record["stage"] == "T+0" and not (record.get("status_url") or record.get("note_id")):
-        raise ValueError("T+0 records need a status_url or note_id")
+    if record["stage"] == "T+0" and not t0_has_publish_evidence(record):
+        raise ValueError(
+            "T+0 records need a status_url or note_id. "
+            "XHS records may instead use explicit platform evidence such as "
+            "success_page_visible or note_management_reviewing."
+        )
     for key in ("content_path", "publish_record_path"):
         value = record.get(key)
         if value and not (ROOT / value).exists():
             raise ValueError(f"{key} does not exist: {value}")
+
+
+def t0_has_publish_evidence(record: dict[str, Any]) -> bool:
+    if record.get("status_url") or record.get("note_id"):
+        return True
+
+    platform = str(record.get("platform", "")).lower()
+    if platform not in {"xhs", "xiaohongshu", "小红书", "rednote"}:
+        return False
+
+    accepted_evidence = {
+        "success_page_visible",
+        "note_management_visible",
+        "note_management_reviewing",
+        "note_management_published",
+        "note_id_pending",
+    }
+    evidence = {
+        str(item).strip().lower()
+        for item in record.get("evidence", [])
+        if str(item).strip()
+    }
+    if evidence & accepted_evidence:
+        return True
+
+    notes = str(record.get("notes", "")).lower()
+    return "note_id_pending" in notes or "管理页" in notes
 
 
 def main() -> int:

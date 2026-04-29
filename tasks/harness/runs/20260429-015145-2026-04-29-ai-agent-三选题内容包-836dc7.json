@@ -7,9 +7,9 @@
   "owner": "Codex",
   "priority": "P1",
   "current_stage": "publish",
-  "status": "in_progress",
+  "status": "done",
   "created_at": "2026-04-29T01:51:45+00:00",
-  "updated_at": "2026-04-29T02:01:26+00:00",
+  "updated_at": "2026-04-29T11:47:35+00:00",
   "artifacts": [
     {
       "id": "6fbe935825",
@@ -98,6 +98,22 @@
       "description": "三选题内容母稿与发布清单",
       "stage": "draft",
       "created_at": "2026-04-29T02:00:55+00:00"
+    },
+    {
+      "id": "66990cb584",
+      "type": "publish_record",
+      "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/发布记录.md",
+      "description": "X.com 三条图文重发发布记录，含状态链接与图像验证证据",
+      "stage": "publish",
+      "created_at": "2026-04-29T11:47:23+00:00"
+    },
+    {
+      "id": "bf79f3cfa2",
+      "type": "visual_storyboard",
+      "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/图文分镜.md",
+      "description": "回溯补齐小红书图卡图文分镜与排版 QA",
+      "stage": "draft",
+      "created_at": "2026-04-29T11:47:23+00:00"
     }
   ],
   "checks": {
@@ -107,7 +123,7 @@
     "draft_written": true,
     "facts_checked": true,
     "platform_ready": true,
-    "published": false,
+    "published": true,
     "progress_updated": true,
     "wiki_logged": true,
     "lessons_reviewed": true
@@ -351,6 +367,48 @@
       "stage": "publish",
       "message": "Stage promoted to publish",
       "meta": {}
+    },
+    {
+      "at": "2026-04-29T11:47:23+00:00",
+      "type": "artifact_added",
+      "stage": "publish",
+      "message": "Artifact added: publish_record",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/发布记录.md",
+        "artifact_id": "66990cb584"
+      }
+    },
+    {
+      "at": "2026-04-29T11:47:23+00:00",
+      "type": "check_updated",
+      "stage": "publish",
+      "message": "Check published set to True",
+      "meta": {
+        "check_name": "published",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-29T11:47:23+00:00",
+      "type": "artifact_added",
+      "stage": "publish",
+      "message": "Artifact added: visual_storyboard",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/图文分镜.md",
+        "artifact_id": "bf79f3cfa2"
+      }
+    },
+    {
+      "at": "2026-04-29T11:47:35+00:00",
+      "type": "run_closed",
+      "stage": "publish",
+      "message": "Run closed with status: done",
+      "meta": {
+        "status": "done",
+        "note": "X.com 三条图文重发已补 T+0 JSONL、publish_record artifact 与图文分镜；小红书按发布记录保持未发布。",
+        "closed_at": "2026-04-29T11:47:35+00:00"
+      }
     }
-  ]
+  ],
+  "closed_at": "2026-04-29T11:47:35+00:00"
 }

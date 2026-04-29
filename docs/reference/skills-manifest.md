@@ -8,7 +8,9 @@
 - 主流程只引用 `status=active` 或 `status=active-global` 的入口。
 - `status=legacy-local` 只作为参考资料，不作为默认执行入口。
 - 发布类 skill 仍遵守用户确认规则：生成、预览、审稿可以自动推进；提交发布必须等用户明确说“发布/直接发”。
-- X / 小红书发布成功不能只看脚本 stdout；必须回查状态 URL、主页/管理页、发布时间、note id 等平台侧证据。
+- X 发布前必须通过 `tools/redbookctl x-login`；真实 `--submit` 必须有 `expected_handle` 并在输入/点击前校验账号。
+- 小红书发布前必须通过 `tools/redbookctl xhs-health`；需要管理页证据时加 `--with-content-data`。
+- X / 小红书发布成功不能只看脚本 stdout；X 必须回查状态 URL、主页/状态页、发布时间/图片证据，小红书不能只看 `FILL_STATUS` / `PUBLISH_STATUS`，必须有成功页、管理页或 note id 等平台侧证据。
 - 配图 / 图文生成默认模型是 Tuzi/兔子 `gpt-image-2.0`；Nano Banana / Gemini 只能作为用户明确指定的 fallback。
 - 长文配图默认 balanced density：正文 3-5 张，约每 600-900 中文字或每 2-3 个主要小节 1 张；小红书卡片系列可放宽到 5-7 张，除非用户明确要更多。
 - 正文配图先产出 visual metaphor map：每张图要有文章锚定短句、语义/情绪判断、视觉隐喻、插入位置和禁用元素；不能只用段落摘要生成装饰图。
@@ -43,6 +45,9 @@
 | `python3 tools/wiki_workflow.py daily-cycle --date YYYY-MM-DD` | active-script | `tools/wiki_workflow.py` | Wiki ingest + lint 维护 run | research-only run 会自动关闭 |
 | `python3 tools/wiki_workflow.py query --topic ... --date YYYY-MM-DD` | active-script | `tools/wiki_workflow.py` | 显式 wiki query 并留 harness 证据 | 内容创作前优先使用 |
 | `python3 -m tools.redbook_harness.cli close-run --run-id ...` | active-script | `tools/redbook_harness/cli.py` | 关闭非完整内容 pipeline 的 run | 支持 `done` / `closed_stale` / `cancelled` |
+| `tools/redbookctl workflow-health` | active-script | `tools/redbookctl.py` | 日报、harness、发布确认、账本、分镜缺口总览 | 别名 `publish-health` |
+| `tools/redbookctl x-login` | active-script | `tools/redbookctl.py` + `/baoyu-post-to-x` | X 发布 profile 登录/账号检查 | 不输入、不发布 |
+| `tools/redbookctl xhs-health` | active-script | `tools/redbookctl.py` + `RedBookSkills` | 小红书创作者中心登录/管理页回读检查 | 不发布 |
 
 ## Legacy Or Reference Only
 

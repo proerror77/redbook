@@ -25,9 +25,9 @@ log() {
     echo "[$(date '+%H:%M:%S')] $1" | tee -a "$LOG_FILE"
 }
 
-log "========== X.com 每日日程启动 =========="
-log "使用 agent-browser-session $(agent-browser-session --version 2>/dev/null || echo '未知版本')"
-log "浏览器姿态 AGENT_BROWSER_HEADED=$AGENT_BROWSER_HEADED（默认 headless；登录/验证码/人工确认才临时 headed）"
+log "========== X.com daily schedule start =========="
+log "agent-browser-session: $(agent-browser-session --version 2>/dev/null || echo 'unknown')"
+log "browser mode: AGENT_BROWSER_HEADED=${AGENT_BROWSER_HEADED} (default headless; use headed only for login/CAPTCHA/manual confirmation)"
 
 SHOULD_RUN_FOLLOWING_AUDIT="false"
 DAILY_ARGS=()
