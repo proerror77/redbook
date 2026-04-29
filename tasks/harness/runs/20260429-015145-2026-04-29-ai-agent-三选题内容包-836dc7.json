@@ -1,0 +1,356 @@
+{
+  "run_id": "20260429-015145-2026-04-29-ai-agent-三选题内容包-836dc7",
+  "kind": "content_pipeline",
+  "topic": "2026-04-29 AI Agent 三选题内容包",
+  "summary": "产出 1/3/5 三个选题的 X 文案与小红书本地草稿规划，不发布",
+  "source": "X timeline live scan + Anthropic/OpenAI/arXiv official sources",
+  "owner": "Codex",
+  "priority": "P1",
+  "current_stage": "publish",
+  "status": "in_progress",
+  "created_at": "2026-04-29T01:51:45+00:00",
+  "updated_at": "2026-04-29T02:01:26+00:00",
+  "artifacts": [
+    {
+      "id": "6fbe935825",
+      "type": "research",
+      "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/素材来源.md",
+      "description": "素材来源与事实边界",
+      "stage": "research",
+      "created_at": "2026-04-29T01:56:01+00:00"
+    },
+    {
+      "id": "f80101d1af",
+      "type": "x_copy",
+      "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/选题1-Claude进入创意工具-X文案.md",
+      "description": "选题1 X文案",
+      "stage": "draft",
+      "created_at": "2026-04-29T01:56:02+00:00"
+    },
+    {
+      "id": "1727adf3f3",
+      "type": "x_copy",
+      "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/选题3-AI裁员陷阱-X文案.md",
+      "description": "选题3 X文案",
+      "stage": "draft",
+      "created_at": "2026-04-29T01:56:02+00:00"
+    },
+    {
+      "id": "83cd18b7a9",
+      "type": "x_copy",
+      "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/选题5-Agent入口迁移-X文案.md",
+      "description": "选题5 X文案",
+      "stage": "draft",
+      "created_at": "2026-04-29T01:56:03+00:00"
+    },
+    {
+      "id": "8bfed0086f",
+      "type": "xhs_draft_index",
+      "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/小红书草稿/README.md",
+      "description": "小红书本地草稿目录，未发布",
+      "stage": "draft",
+      "created_at": "2026-04-29T01:56:03+00:00"
+    },
+    {
+      "id": "a712615c58",
+      "type": "review",
+      "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/QA报告.md",
+      "description": "x-mastery-mentor 自审与 QA",
+      "stage": "review",
+      "created_at": "2026-04-29T01:56:04+00:00"
+    },
+    {
+      "id": "f87b227f68",
+      "type": "publish_plan",
+      "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/发布清单.md",
+      "description": "待用户确认的发布清单",
+      "stage": "publish",
+      "created_at": "2026-04-29T01:56:05+00:00"
+    },
+    {
+      "id": "c35e55f8ff",
+      "type": "research_report",
+      "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/素材来源.md",
+      "description": "研究报告：素材来源、Timeline 信号与事实边界",
+      "stage": "research",
+      "created_at": "2026-04-29T01:57:00+00:00"
+    },
+    {
+      "id": "1eba3f9162",
+      "type": "qa_report",
+      "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/QA报告.md",
+      "description": "QA 自审报告",
+      "stage": "review",
+      "created_at": "2026-04-29T01:57:01+00:00"
+    },
+    {
+      "id": "8365d15c20",
+      "type": "publish_checklist",
+      "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/发布清单.md",
+      "description": "发布清单，小红书只本地草稿",
+      "stage": "review",
+      "created_at": "2026-04-29T01:57:01+00:00"
+    },
+    {
+      "id": "d6441b197e",
+      "type": "draft",
+      "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/内容母稿.md",
+      "description": "三选题内容母稿与发布清单",
+      "stage": "draft",
+      "created_at": "2026-04-29T02:00:55+00:00"
+    }
+  ],
+  "checks": {
+    "materials_queried": true,
+    "research_complete": true,
+    "outline_locked": true,
+    "draft_written": true,
+    "facts_checked": true,
+    "platform_ready": true,
+    "published": false,
+    "progress_updated": true,
+    "wiki_logged": true,
+    "lessons_reviewed": true
+  },
+  "incidents": [],
+  "events": [
+    {
+      "at": "2026-04-29T01:51:45+00:00",
+      "type": "run_created",
+      "stage": "research",
+      "message": "Run created for topic: 2026-04-29 AI Agent 三选题内容包",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-29T01:56:01+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: research",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/素材来源.md",
+        "artifact_id": "6fbe935825"
+      }
+    },
+    {
+      "at": "2026-04-29T01:56:02+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: draft",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/选题1-Claude进入创意工具-X文案.md",
+        "artifact_id": "f80101d1af"
+      }
+    },
+    {
+      "at": "2026-04-29T01:56:02+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: draft",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/选题3-AI裁员陷阱-X文案.md",
+        "artifact_id": "1727adf3f3"
+      }
+    },
+    {
+      "at": "2026-04-29T01:56:03+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: draft",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/选题5-Agent入口迁移-X文案.md",
+        "artifact_id": "83cd18b7a9"
+      }
+    },
+    {
+      "at": "2026-04-29T01:56:03+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: draft",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/小红书草稿",
+        "artifact_id": "8bfed0086f"
+      }
+    },
+    {
+      "at": "2026-04-29T01:56:04+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: review",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/QA报告.md",
+        "artifact_id": "a712615c58"
+      }
+    },
+    {
+      "at": "2026-04-29T01:56:05+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: publish_plan",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/发布清单.md",
+        "artifact_id": "f87b227f68"
+      }
+    },
+    {
+      "at": "2026-04-29T01:56:16+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-29T01:56:17+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check research_complete set to True",
+      "meta": {
+        "check_name": "research_complete",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-29T01:56:20+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check outline_locked set to True",
+      "meta": {
+        "check_name": "outline_locked",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-29T01:56:21+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check draft_written set to True",
+      "meta": {
+        "check_name": "draft_written",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-29T01:56:21+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check facts_checked set to True",
+      "meta": {
+        "check_name": "facts_checked",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-29T01:56:22+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check platform_ready set to True",
+      "meta": {
+        "check_name": "platform_ready",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-29T01:56:23+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check progress_updated set to True",
+      "meta": {
+        "check_name": "progress_updated",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-29T01:56:25+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check wiki_logged set to True",
+      "meta": {
+        "check_name": "wiki_logged",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-29T01:56:25+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check lessons_reviewed set to True",
+      "meta": {
+        "check_name": "lessons_reviewed",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-04-29T01:56:26+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check published set to False",
+      "meta": {
+        "check_name": "published",
+        "value": false
+      }
+    },
+    {
+      "at": "2026-04-29T01:57:00+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: research_report",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/素材来源.md",
+        "artifact_id": "c35e55f8ff"
+      }
+    },
+    {
+      "at": "2026-04-29T01:57:01+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: qa_report",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/QA报告.md",
+        "artifact_id": "1eba3f9162"
+      }
+    },
+    {
+      "at": "2026-04-29T01:57:01+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: publish_checklist",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/发布清单.md",
+        "artifact_id": "8365d15c20"
+      }
+    },
+    {
+      "at": "2026-04-29T01:58:02+00:00",
+      "type": "stage_promoted",
+      "stage": "draft",
+      "message": "Stage promoted to draft",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-29T02:00:55+00:00",
+      "type": "artifact_added",
+      "stage": "draft",
+      "message": "Artifact added: draft",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/内容母稿.md",
+        "artifact_id": "d6441b197e"
+      }
+    },
+    {
+      "at": "2026-04-29T02:00:57+00:00",
+      "type": "stage_promoted",
+      "stage": "review",
+      "message": "Stage promoted to review",
+      "meta": {}
+    },
+    {
+      "at": "2026-04-29T02:01:26+00:00",
+      "type": "stage_promoted",
+      "stage": "publish",
+      "message": "Stage promoted to publish",
+      "meta": {}
+    }
+  ]
+}

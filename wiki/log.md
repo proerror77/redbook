@@ -823,3 +823,19 @@
 - AI-native 团队的传播切口不能只写“agent 让 coding 更快”，更应该写 coding 加速后暴露出的产品判断、用户解释、review ownership 和 verification 瓶颈。
 - 本轮旧文案的问题是过度使用 `not just / hard part` 式抽象结论；修正版改成从 PR 变快后的真实工作摩擦切入。
 - 后续 X 互动和 quote repost 发布前必须先过 X mentor 审核，避免“先发后审”。
+
+## [2026-04-29] query | AI Agent 三选题内容包
+
+来源：当前 X Timeline live scan + Anthropic / OpenAI / arXiv 官方来源 + `wiki/选题/AI工具与效率.md` + `wiki/选题/AI Agent企业导入与协作.md`
+
+触及页面：5个
+- `01-内容生产/02-制作中的选题/2026-04-29-AI-Agent三选题内容包/` — 本轮 X 文案、小红书本地草稿、QA 和发布清单
+- `wiki/选题/AI工具与效率.md` — 更新 2026-04-29 今日信号
+- `wiki/选题/AI Agent企业导入与协作.md` — 追加本轮已产出草稿和新信号
+- `wiki/index.md` — 更新相关页面日期
+- `tasks/progress.md` — 记录本轮草稿产出与未发布边界
+
+关键洞察：
+- Claude 进入创意工具应写成“AI 进入专业软件工作现场”，而不是普通插件新闻。
+- `AI Layoff Trap` 可作为 AI native 组织的反面框架：只把 AI 当裁员工具，可能把执行成本问题换成需求萎缩问题。
+- Agent 入口迁移仍是最贴账号主线的母题：邮箱、浏览器、IDE、本地代码图谱、语音和可穿戴终端都在把 AI 从聊天框搬进工作现场。
