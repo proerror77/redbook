@@ -32,6 +32,14 @@
 - X.com 与小红书图片不共用默认规格：X 默认 16:9 单张观点卡；小红书默认 3:4 / 1080x1440 多卡片
 - 如果没有单独指定风格，默认避免“泛插画、糖水渐变、低信息密度的空洞大图”
 
+## Runtime 语言策略
+
+- 新增 workflow、publish、browser、image pipeline 代码默认使用 TypeScript / Bun
+- Python 只保留 legacy、wiki/harness/daily research、一次性数据脚本或有明确测试保护的迁移前代码
+- Shell 只做 thin wrapper，不承载业务逻辑
+- 不为了语言纯度重写稳定脚本；迁移必须先保留输出契约和 smoke check
+- 详细规则见 `docs/reference/runtime-language-policy.md`
+
 ## Git 提交规范
 
 ### Atomic Commit 原则

@@ -16,6 +16,7 @@
 - 正文配图先产出 visual metaphor map：每张图要有文章锚定短句、语义/情绪判断、视觉隐喻、插入位置和禁用元素；不能只用段落摘要生成装饰图。
 - 图文生成先产出 `图文分镜.md` 或等价分镜表，并做排版 QA：卡片职责、读者任务、文字预算、层级、安全边距、图文不重叠、缩略图可读。
 - X.com 和小红书规格不可默认共用：X 默认 `16:9` 单张观点卡，小红书默认 `3:4` / `1080x1440` 多卡片。
+- 新增 workflow / publish / browser / image pipeline 代码默认使用 TypeScript / Bun；Python 入口保留为 legacy 或专项例外，见 `docs/reference/runtime-language-policy.md`。
 - 浏览器类任务先用 `tools/redbookctl browser` 检查当前 Chrome/CDP 登录态；发布和账号操作优先复用已有 tab，避免重复开新页面和新 profile。
 
 ## Active Entrypoints
@@ -48,6 +49,7 @@
 | `tools/redbookctl workflow-health` | active-script | `tools/redbookctl.py` | 日报、harness、发布确认、账本、分镜缺口总览 | 别名 `publish-health` |
 | `tools/redbookctl x-login` | active-script | `tools/redbookctl.py` + `/baoyu-post-to-x` | X 发布 profile 登录/账号检查 | 不输入、不发布 |
 | `tools/redbookctl xhs-health` | active-script | `tools/redbookctl.py` + `RedBookSkills` | 小红书创作者中心登录/管理页回读检查 | 不发布 |
+| Runtime language policy | active-doc | `docs/reference/runtime-language-policy.md` | TS/Bun canonical runtime 与 Python legacy 边界 | 新增或迁移 workflow 代码前 |
 
 ## Legacy Or Reference Only
 

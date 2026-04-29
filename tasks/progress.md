@@ -4,6 +4,29 @@
 
 ---
 
+## [2026-04-29] 会话摘要：TS/Bun canonical runtime 策略
+
+**完成了什么：**
+- 根据用户要求，把 Redbook 新增 workflow 代码默认语言收敛为 TypeScript / Bun。
+- 新增 `docs/reference/runtime-language-policy.md`，明确：
+  - 新 workflow / publish / browser / image pipeline 默认 TS/Bun。
+  - Python 保留为 legacy、wiki/harness/daily research、一次性数据脚本或迁移前代码。
+  - Shell 只做 thin wrapper。
+  - Rust 不作为本仓库内容工作流默认 runtime。
+- 更新 `docs/shared/redbook-playbook.md`、`docs/reference/skills-manifest.md`、`.rules`，让后续新增或迁移代码先遵守 runtime policy。
+- 没有重写现有 Python 脚本；下一步应先迁 `redbookctl` 控制面，再逐步迁 workflow-health / x-login / xhs-health / publish ledger。
+
+**验证：**
+- `python3 tools/sync_redbook_playbook.py`
+- `python3 -m py_compile tools/sync_redbook_playbook.py`
+- `git diff --check`
+- `rg` 检查 TS/Bun / Python legacy / runtime policy 规则已同步到 playbook、manifest、`.rules`。
+
+**未完成 / 遗留：**
+- 本轮只设定语言策略和迁移计划，没有迁移 `redbookctl.py` 到 TS。
+
+---
+
 ## [2026-04-29] 会话摘要：发布 workflow Agent Teams 修正
 
 **完成了什么：**
