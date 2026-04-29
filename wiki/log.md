@@ -936,3 +936,20 @@
 - 这条外部方法可复用的不是 Obsidian，而是“输入层、处理层、输出层、价值闭环”。
 - redbook 的输入层已经存在：timeline、x-to-markdown、daily reports、progress、wiki；缺的是显式调用入口。
 - `challenge / emerge / draft-seed` 应成为写稿前的轻量预处理：先反问，再挖隐性观点，再生成草稿种子。
+
+## [2026-04-29] ingest | Corrode：Rust 不会自动捕获的系统软件 bug
+
+来源：https://corrode.dev/blog/bugs-rust-wont-catch/
+
+触及页面：6个
+- `wiki/选题/Rust系统软件安全边界.md` — 新增 Rust 内存安全之外的系统边界选题页
+- `wiki/素材/案例库.md` — 新增 uutils / Canonical CVE 审计案例
+- `wiki/素材/金句库.md` — 新增工程与系统软件金句
+- `wiki/素材/框架库.md` — 新增“语言保证 vs 系统边界”框架
+- `wiki/index.md` — 补入选题索引
+- `wiki/overview.md` — 补入核心论点
+
+关键洞察：
+- Rust 能减少内存安全问题，但路径、权限、syscall 时序、Unix bytes、错误传播和兼容性仍然是系统软件的真实风险。
+- 对基础工具来说，兼容性不是体验细节，而是生产契约和安全边界的一部分。
+- 这个案例适合延展到“AI 写代码越来越强，但工程判断仍然重要”的内容主线。

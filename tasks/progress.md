@@ -3343,3 +3343,26 @@
 
 **遗留：**
 - 这套工具现在是本地素材编排器，不直接调用 LLM；实际写稿时仍由 Codex 读取报告后生成正式内容。
+
+## [2026-04-29] 会话摘要：保留 Corrode Rust 系统安全文章
+
+**完成了什么：**
+- 将 `https://corrode.dev/blog/bugs-rust-wont-catch/` 沉淀为 wiki 选题页：
+  - `wiki/选题/Rust系统软件安全边界.md`
+- 补充可复用素材：
+  - `wiki/素材/案例库.md`
+  - `wiki/素材/金句库.md`
+  - `wiki/素材/框架库.md`
+- 更新索引和概述：
+  - `wiki/index.md`
+  - `wiki/overview.md`
+- 追加 wiki log：
+  - `wiki/log.md`
+
+**验证：**
+- `test -f wiki/选题/Rust系统软件安全边界.md`
+- `rg -n "Rust 系统软件安全边界|语言保证 vs 系统边界|Bugs Rust Won't Catch|Rust 不是安全终点" wiki tasks/progress.md`
+- `git diff --check`
+
+**遗留：**
+- 这里只做知识沉淀，尚未扩写成 X 或小红书稿件。
