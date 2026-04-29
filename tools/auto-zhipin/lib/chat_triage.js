@@ -4,7 +4,7 @@ const { OPENCLI_CHAT_TRIAGE_PATH } = require('./paths');
 
 const REJECTION_REGEX = /不合适|不太合适|匹配度有所差距|未通过|已招满|暂时不考虑|抱歉|感谢关注|不匹配/i;
 const OFFSITE_EMAIL_REGEX = /邮箱|email|e-mail|发到邮箱|发邮箱|投递邮箱|站外投递|发送到邮箱|@[\w.-]+\.[A-Za-z]{2,}/i;
-const BIG_COMPANY_REGEX = /美的|吉利|锐捷|长鑫|iherb|药明|oppo|vivo|国企|央企|事业单位/i;
+const BIG_COMPANY_REGEX = /字节|字节跳动|腾讯|阿里|阿里巴巴|蚂蚁|美团|美的|吉利|锐捷|长鑫|iherb|药明|oppo|vivo|研究院|集团|国企|央企|事业单位/i;
 
 function normalizeForMatch(value) {
   return normalizeWhitespace(value).toLowerCase();

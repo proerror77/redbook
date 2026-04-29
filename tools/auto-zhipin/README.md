@@ -40,7 +40,7 @@ tools/auto-zhipin/
 ├── scripts/
 │   ├── chrome_collect_queue.js
 │   ├── chrome_monitor_queue.js
-│   ├── reply_worker.js     # PinchTab 实验后端
+│   ├── reply_worker.js     # 站内动作执行；PinchTab 只保留为显式实验后端
 │   └── report.js
 ├── tests/
 ├── config.example.json
@@ -150,12 +150,14 @@ Playwright profile 主路径：
 ```bash
 cd tools/auto-zhipin
 npm run boss:apply -- --url https://www.zhipin.com/job_detail/xxx.html --dry-run true
-npm run boss:apply -- --url https://www.zhipin.com/job_detail/xxx.html
+npm run boss:apply -- --url https://www.zhipin.com/job_detail/xxx.html --dry-run false
 ```
 
 说明：
 - 会复用 `tools/auto-zhipin/.auth/profile`
-- `--dry-run true` 只点击首个投递动作，不继续发送后续问候
+- 默认按 `config.apply.dryRun` 执行；仓库默认是 `true`
+- `--dry-run true` 只做预检路径，不写成真实已投
+- 真实投递必须显式传 `--dry-run false`，或在配置里把 `apply.dryRun` 改成 `false`
 - 真正需要兼容旧的 current-tab / CDP 流程时，再手动运行 `boss:apply-current`
 
 旧入口保留为 fallback：
@@ -187,9 +189,8 @@ node scripts/report.js
 ### 7. 实验性 PinchTab 后端
 
 这条线目前分成两层：
-- `probe`：探测页面健康状态
-- `readonly monitor`：对聊天页做只读抓取，不发送消息、不投递
-- `action executor`：实验性接入自动回复管理和已知 URL 的顺序投递
+- `action executor`：实验性接入自动回复管理
+- 旧的 `pinchtab:probe` / `pinchtab:monitor` / `pinchtab:apply` npm 脚本已经移出主入口；相关脚本只保留在 `_legacy` 目录作参考
 
 先启动 PinchTab server：
 
@@ -200,20 +201,16 @@ npx --yes pinchtab
 然后在 `tools/auto-zhipin` 里运行：
 
 ```bash
-npm run pinchtab:probe -- --url https://example.com --mode page
-npm run pinchtab:probe -- --url https://www.zhipin.com/web/geek/chat?ka=header-message --mode chat
-npm run pinchtab:monitor
 npm run pinchtab:reply -- --run-actions
-npm run pinchtab:apply -- --url https://www.zhipin.com/job_detail/xxx.html
 ```
 
 当前产物：
-- `data/pinchtab_probe_latest.json`
-- `data/pinchtab_chat_readonly_latest.json`
+- `data/events.jsonl`
+- `data/ledger.json`
 
 说明：
 - 这条后端目前是实验性的
-- 搜索结果页的岗位抽取主路径已经改成 current-tab；PinchTab 目前更适合作为动作执行层
+- 搜索结果页的岗位抽取主路径是 Playwright profile；PinchTab 只保留为动作执行实验层
 - `pinchtab eval` 在当前本机版本里表现不稳定，所以动作层直接改用了 PinchTab 的 HTTP API
 - 当前已接：
   - `自动回复管理`
@@ -250,6 +247,6 @@ npm run pinchtab:apply -- --url https://www.zhipin.com/job_detail/xxx.html
 2. `npm run chrome:collect` 先看过滤效果
 3. 调整 `filters`
 4. 真正投递前，先用 `npm run boss:apply -- --url ... --dry-run true` 做预检
-5. 确认无误后，使用 `npm run boss:apply -- --url ...` 正式投递
+5. 确认无误后，使用 `npm run boss:apply -- --url ... --dry-run false` 正式投递
 6. 只有 Playwright profile 路线失效时，才退回 `npm run boss:apply-current` 或 `npm run boss:apply-opencli`
 7. 需要消息处理时再运行 `npm run chrome:monitor` 或 `npm run reply`

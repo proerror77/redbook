@@ -25,8 +25,8 @@ tools/redbookctl daily
 
 ## 功能
 
-### 1. 发布推文
-使用 `publish_x.sh` 辅助发布推文到 X.com
+### 1. 发布推文（已降级）
+`publish_x.sh` 只保留为历史手工辅助脚本，不作为当前发布入口。当前发布入口是：先 `tools/redbookctl x-login`，再使用 `/baoyu-post-to-x`。
 
 ### 2. 内容搜索与分析
 使用 `search_x.py` 搜索热门话题，自动提取推文数据，识别用户痛点
@@ -68,6 +68,8 @@ agent-browser-session --version
 bash tools/auto-x/scripts/publish_x.sh "推文内容" [图片1] [图片2]
 ```
 
+这段只用于排查旧流程；新内容不要从这里发布。
+
 示例：
 ```bash
 # 纯文本推文
@@ -83,6 +85,8 @@ bash tools/auto-x/scripts/publish_x.sh "分享一些图片" image1.png image2.pn
 3. 提示你手动完成发布步骤
 
 ### 搜索话题
+
+日常研究不要直接调用单脚本；使用 `tools/redbookctl daily`。以下命令只用于定位 daily 内部问题。
 
 ```bash
 python tools/auto-x/scripts/search_x.py "搜索关键词" [输出文件]

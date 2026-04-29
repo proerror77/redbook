@@ -10,7 +10,7 @@ OPENCLI_BIN="$(pwd)/../opencli/bin/redbook-opencli.js"
 
 # Quick doctor check
 DOCTOR=$(node "$OPENCLI_BIN" doctor 2>&1)
-if ! echo "$DOCTOR" | grep -q "Everything looks good"; then
+if ! echo "$DOCTOR" | node --input-type=module -e "import { parseDoctorOutput } from '../opencli/lib/verify_helpers.js'; const text = await new Promise((resolve) => { let data=''; process.stdin.on('data', (chunk) => data += chunk); process.stdin.on('end', () => resolve(data)); }); process.exit(parseDoctorOutput(text).healthy ? 0 : 1)" 2>/dev/null; then
   echo "[$(date)] chatlist skipped - extension not connected" >> "$LOG_FILE"
   exit 1
 fi

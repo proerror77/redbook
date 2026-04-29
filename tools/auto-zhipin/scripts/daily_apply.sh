@@ -12,7 +12,7 @@ echo "=== Daily Apply Started at $(date) ===" >> "$LOG_FILE"
 
 # Preflight 1: OpenCLI doctor
 DOCTOR=$(node "$OPENCLI_BIN" doctor 2>&1)
-if echo "$DOCTOR" | grep -q "Everything looks good"; then
+if echo "$DOCTOR" | node --input-type=module -e "import { parseDoctorOutput } from '../opencli/lib/verify_helpers.js'; const text = await new Promise((resolve) => { let data=''; process.stdin.on('data', (chunk) => data += chunk); process.stdin.on('end', () => resolve(data)); }); process.exit(parseDoctorOutput(text).healthy ? 0 : 1)" 2>/dev/null; then
   echo "[preflight] Doctor: PASS" >> "$LOG_FILE"
 else
   echo "[preflight] Doctor: FAIL - extension not connected or daemon down" >> "$LOG_FILE"
@@ -23,7 +23,7 @@ fi
 
 # Preflight 2: BOSS login
 LOGIN=$(node "$OPENCLI_BIN" boss chat-list --limit 3 -f json 2>&1)
-if echo "$LOGIN" | node -e "const d=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')); process.exit(Array.isArray(d)&&d.length>0?0:1)" 2>/dev/null; then
+if echo "$LOGIN" | node -e "const d=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')); process.exit(Array.isArray(d)?0:1)" 2>/dev/null; then
   echo "[preflight] Login: PASS" >> "$LOG_FILE"
 else
   echo "[preflight] Login: FAIL - not logged in to BOSS" >> "$LOG_FILE"

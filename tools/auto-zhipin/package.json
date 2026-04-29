@@ -12,11 +12,7 @@
     "boss:apply-current": "node scripts/opencli_apply_current_tab.js",
     "chrome:collect": "node scripts/chrome_collect_queue.js",
     "chrome:monitor": "node scripts/chrome_monitor_queue.js",
-    "chrome:supervisor": "node scripts/chrome_supervisor.js",
     "monitor": "node scripts/chrome_monitor_queue.js",
-    "pinchtab:apply": "node scripts/pinchtab_apply_queue.js",
-    "pinchtab:monitor": "node scripts/pinchtab_monitor_readonly.js",
-    "pinchtab:probe": "node scripts/pinchtab_probe.js",
     "pinchtab:reply": "node scripts/reply_worker.js --backend pinchtab",
     "scan": "node scripts/chrome_collect_queue.js",
     "reply": "node scripts/chrome_monitor_queue.js --once --send-drafts --run-actions",
@@ -28,7 +24,7 @@
   "keywords": [
     "zhipin",
     "boss",
-    "chrome-current-tab",
+    "playwright-profile",
     "job-automation"
   ],
   "license": "MIT"

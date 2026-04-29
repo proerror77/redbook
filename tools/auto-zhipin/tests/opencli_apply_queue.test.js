@@ -77,6 +77,22 @@ test('isSuccessfulApplyResult only counts verified apply outcomes', () => {
   assert.equal(isSuccessfulApplyResult({
     action: 'apply',
     status: 'success',
+    mode: 'clicked_apply',
+    url: 'https://www.zhipin.com/job_detail/ok.html',
+    dryRun: true,
+  }), false);
+
+  assert.equal(isSuccessfulApplyResult({
+    action: 'apply',
+    status: 'success',
+    mode: 'clicked_apply',
+    url: 'https://www.zhipin.com/job_detail/ok.html',
+    evidence: { dryRun: true },
+  }), false);
+
+  assert.equal(isSuccessfulApplyResult({
+    action: 'apply',
+    status: 'success',
     mode: 'sent_message_modal_stay',
     url: 'about:blank',
   }), false);

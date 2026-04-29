@@ -29,6 +29,28 @@ DAILY_LOG_DIR = ROOT / "tools" / "auto-x" / "data" / "logs"
 DAILY_LAUNCHD_LABEL = "com.redbook.daily-x"
 DAILY_LAUNCHD_PLIST = ROOT / "tools" / "auto-x" / f"{DAILY_LAUNCHD_LABEL}.plist"
 TERMINAL_RUN_STATUSES = {"done", "closed_stale", "cancelled"}
+FOLLOWUP_STAGES = {"T+1", "T+3"}
+LIVE_READBACK_EVIDENCE = {
+    "status_page_visible",
+    "homepage_top_post",
+    "post_analytics_visible",
+    "live_platform_readback",
+    "platform_readback",
+    "x_status_readback",
+    "x_analytics_readback",
+    "creator_management_visible",
+    "creator_management_readback",
+    "note_management_visible",
+    "note_management_reviewing",
+    "note_management_published",
+    "xhs_management_readback",
+}
+CLOSURE_ONLY_EVIDENCE = {
+    "user_confirmed_complete",
+    "closed_without_metrics",
+    "metrics_unavailable",
+    "followup_closed_without_readback",
+}
 
 
 @dataclass
@@ -196,8 +218,6 @@ def extract_publish_items(path: Path) -> list[dict[str, str]]:
 
         for match in url_re.finditer(line):
             url = match.group(0).rstrip("。；;，,")
-            if "/status/" in url and "/0xcybersmile/status/" not in url:
-                continue
             identity = match.group(1) or match.group(2) or url
             label = current_heading
             label_match = re.search(r"[-*]\s+`?([^`：:]+)`?\s*[：:]", line)
@@ -408,6 +428,48 @@ def publish_followups_due(records: list[dict[str, Any]], today: date, limit: int
     return due[:limit]
 
 
+def normalized_evidence(record: dict[str, Any]) -> set[str]:
+    return {
+        str(item).strip().lower()
+        for item in record.get("evidence", [])
+        if str(item).strip()
+    }
+
+
+def followup_has_readback(record: dict[str, Any]) -> bool:
+    if record.get("stage") not in FOLLOWUP_STAGES:
+        return True
+    metrics = record.get("metrics") or {}
+    if not metrics:
+        return False
+    return bool(normalized_evidence(record) & LIVE_READBACK_EVIDENCE)
+
+
+def followup_has_explicit_closure(record: dict[str, Any]) -> bool:
+    if record.get("stage") not in FOLLOWUP_STAGES:
+        return False
+    evidence = normalized_evidence(record)
+    notes = str(record.get("notes", "")).lower()
+    return bool(evidence & CLOSURE_ONLY_EVIDENCE) or "no live platform readback" in notes
+
+
+def publish_followups_unverified(records: list[dict[str, Any]], limit: int) -> list[dict[str, str]]:
+    gaps = []
+    for record in records:
+        if record.get("stage") not in FOLLOWUP_STAGES:
+            continue
+        if followup_has_readback(record):
+            continue
+        gaps.append({
+            "record_id": str(record.get("record_id", "")),
+            "stage": str(record.get("stage", "")),
+            "title": str(record.get("title", "")),
+            "closure_only": str(followup_has_explicit_closure(record)).lower(),
+            "evidence": ",".join(sorted(normalized_evidence(record))),
+        })
+    return gaps[:limit]
+
+
 def collect_status(stale_days: int, limit: int, recent_days: int) -> dict[str, Any]:
     today = date.today()
     today_report = ROOT / "05-选题研究" / f"X-每日日程-{today.isoformat()}.md"
@@ -480,6 +542,7 @@ def collect_status(stale_days: int, limit: int, recent_days: int) -> dict[str, A
             "record_count": len(publish_records),
             "latest": latest_publish_record,
             "followups_due": publish_followups_due(publish_records, today, limit),
+            "followups_unverified": publish_followups_unverified(publish_records, limit),
             "recent_publish_records_missing_ledger": find_publish_records_missing_ledger(
                 publish_records,
                 recent_days,
@@ -537,6 +600,11 @@ def print_status(status: dict[str, Any]) -> None:
         print("  due:")
         for item in ledger["followups_due"]:
             print(f"  - {item['stage']} | {item['record_id']} | {item['title']}")
+    if ledger["followups_unverified"]:
+        print("  unverified follow-ups:")
+        for item in ledger["followups_unverified"]:
+            marker = "closure-only" if item.get("closure_only") == "true" else "missing metrics/readback"
+            print(f"  - {item['stage']} | {item['record_id']} | {marker} | {item['title']}")
     if ledger["recent_publish_records_missing_ledger"]:
         print("  recent publish records not in JSONL:")
         for item in ledger["recent_publish_records_missing_ledger"]:
@@ -573,12 +641,12 @@ def collect_workflow_actions(status: dict[str, Any]) -> list[dict[str, str]]:
             })
 
     for run in status["harness_runs"]["active"]:
-        action = "确认是否仍在等待用户发布；已发布则补 T+0 JSONL 后 close-run，未发布则保留 approved-publish 等待确认。"
+        action = "确认是否仍在等待用户发布；已发布则补 T+0 JSONL，promote 到 retrospect 并补 progress/wiki/lessons gate 后再 close-run，未发布则保留 approved-publish 等待确认。"
         if run.get("stage") != "publish":
             action = "检查当前阶段产物；完成后推进或用 tools/redbookctl close-run 明确关闭。"
         publish_gate = run.get("publish_gate") or {}
         if publish_gate.get("publish_record_file"):
-            action = f"已有发布记录文件 {publish_gate['publish_record_file']}；补 JSONL / harness publish_record artifact / published check 后再 close-run。"
+            action = f"已有发布记录文件 {publish_gate['publish_record_file']}；补 JSONL / harness publish_record artifact / published check 后 promote 到 retrospect，再补复盘 gate 后 close-run。"
         actions.append({
             "severity": "warn",
             "area": "harness",
@@ -601,6 +669,15 @@ def collect_workflow_actions(status: dict[str, Any]) -> list[dict[str, str]]:
             "area": "ledger",
             "issue": f"{item['stage']} due: {item['record_id']} | {item['title']}",
             "action": f"回读平台数据后运行 tools/redbookctl publish-record -- --stage {item['stage']} --record-id {item['record_id']} ...",
+        })
+
+    for item in ledger["followups_unverified"]:
+        marker = "按用户确认关闭但没有平台指标" if item.get("closure_only") == "true" else "缺少平台回读指标"
+        actions.append({
+            "severity": "info" if item.get("closure_only") == "true" else "warn",
+            "area": "ledger",
+            "issue": f"{item['stage']} unverified: {item['record_id']} | {item['title']} | {marker}",
+            "action": "需要数据驱动复盘时，回读平台指标后追加带 metrics + readback evidence 的 follow-up 记录。",
         })
 
     for item in ledger["recent_publish_records_missing_ledger"]:

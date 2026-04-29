@@ -7,8 +7,10 @@ const { chromium } = require('../node_modules/playwright');
 const { loadConfig } = require('../lib/config');
 const { requireBossCoreModule } = require('../lib/opencli_core');
 const { isSuccessfulApplyResult } = require('../lib/opencli_apply_queue');
+const { enforceRuntimeGuard, formatGuardError } = require('../lib/runtime_guard');
 const { ZhipinStore } = require('../lib/store');
 const { makeApplicationIdentity, normalizeWhitespace, nowIso, parseArgs, sleep } = require('../lib/utils');
+const { JOB_READY_SELECTORS } = require('../lib/zhipin');
 
 const jobBrowserCore = requireBossCoreModule('job-browser');
 
@@ -176,6 +178,15 @@ async function selectBossPage(browser, args = {}) {
   const described = [];
   for (let index = 0; index < pages.length; index += 1) {
     described.push(await describePage(pages[index], index));
+  }
+
+  const activeVerifyPage = described.find((entry) => (
+    entry.isBoss
+    && entry.isVerify
+    && (entry.hasFocus || entry.visibilityState === 'visible')
+  ));
+  if (activeVerifyPage) {
+    return { ...activeVerifyPage, score: Number.POSITIVE_INFINITY };
   }
 
   const candidates = described
@@ -364,7 +375,23 @@ async function main() {
     await sleep(800);
 
     const adapter = createAdapter(selectedPage.page);
+    const guard = await enforceRuntimeGuard({
+      page: selectedPage.page,
+      store,
+      mode: 'page',
+      readySelectors: JOB_READY_SELECTORS,
+    });
+    if (guard.blocked) {
+      throw new Error(formatGuardError(guard));
+    }
+    if (guard.probeOnly && !probeOnly) {
+      throw new Error('site recovered from restriction; rerun probe first before applying');
+    }
+
     const beforeMeta = await extractCurrentJobMeta(selectedPage.page);
+    if (beforeMeta.securityCheck && !probeOnly) {
+      throw new Error('boss security check detected; resolve manually and rerun probe before applying');
+    }
     const jobRecord = deriveJobRecord(beforeMeta);
 
     store.upsertApplication({
@@ -425,18 +452,19 @@ async function main() {
       dryRun,
       buttonTextCandidates,
     });
-    const success = isSuccessfulApplyResult(applyResult || {});
+    const success = !dryRun && isSuccessfulApplyResult(applyResult || {});
+    const finalStatus = success ? 'applied' : (dryRun ? 'dry_run' : 'skipped');
 
     store.upsertApplication({
       ...jobRecord,
-      status: success ? 'applied' : 'skipped',
+      status: finalStatus,
       appliedAt: success ? nowIso() : undefined,
-      skippedAt: success ? undefined : nowIso(),
+      skippedAt: !success && !dryRun ? nowIso() : undefined,
       reasons: success ? [] : [String(applyResult?.reason || applyResult?.mode || applyResult?.status || 'apply_failed')],
       applyResult,
       source: 'opencli_apply_current_tab',
     });
-    store.finishRun(runId, success ? 'completed' : 'failed', {
+    store.finishRun(runId, success || dryRun ? 'completed' : 'failed', {
       url: jobRecord.url,
       title: jobRecord.title,
       company: jobRecord.company,
@@ -447,7 +475,7 @@ async function main() {
       operation: 'opencli_apply_current_tab',
       phase: 'finish',
       runId,
-      status: success ? 'completed' : 'failed',
+      status: success || dryRun ? 'completed' : 'failed',
     });
 
     console.log(JSON.stringify({
@@ -472,6 +500,7 @@ async function main() {
       },
       result: applyResult,
       success,
+      finalStatus,
     }, null, 2));
   } catch (error) {
     store.finishRun(runId, 'failed', { error: error.message || String(error) });
@@ -483,6 +512,15 @@ async function main() {
     }
   }
 }
+
+module.exports = {
+  describePage,
+  deriveJobRecord,
+  extractCurrentJobMeta,
+  parseBoolean,
+  scoreCandidatePage,
+  selectBossPage,
+};
 
 if (require.main === module) {
   main().catch((error) => {

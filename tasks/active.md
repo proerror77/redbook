@@ -2,6 +2,28 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-04-29 Workflow Review Follow-up Fixes
+
+- Owner: Codex Agent Teams
+- Source: User asked Agent Teams to review Redbook and BOSS workflows
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Fix BOSS apply defaults so all apply paths are dry-run unless explicitly configured or requested live.
+- [x] Stop current-tab BOSS dry-run from being recorded as a real application and hard-stop on verify/auth/restricted states.
+- [x] Tighten content harness and publish ledger semantics so `done` and follow-up stages cannot silently mean "not really verified".
+- [x] Align workflow docs and skill entrypoints so BOSS, X, and XHS do not route agents to stale paths.
+- [x] Run focused tests/static checks and commit the scoped changes.
+
+### Review
+
+- BOSS `boss:apply` now respects `config.apply.dryRun` by default; live apply requires `--dry-run false` or config opt-in.
+- BOSS current-tab fallback now pauses on active verify pages, runs runtime health guard before matching/clicking, and records dry-run as `dry_run` instead of `applied`.
+- Follow-up publish records now require metrics plus live readback evidence, or explicit closure evidence; `workflow-health` surfaces closure-only follow-ups as unverified instead of silently green.
+- Content harness `close-run --status done` now requires the final `retrospect` stage for normal content pipelines, while wiki maintenance/research closures remain allowed.
+- BOSS, X, and XHS docs now point to the current canonical entrypoints and mark stale paths as fallback, archived, or historical.
+
 ## 2026-04-29 Publish Workflow Hardening Team Fix
 
 - Owner: Codex Agent Teams

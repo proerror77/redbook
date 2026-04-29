@@ -20,6 +20,7 @@
 - 尽量不要使用 Playwright。
 - 默认优先级：真实 Chrome + CDP/current-tab > 非 Playwright 兼容桥接 > Playwright fallback。
 - 如果某能力当前只能依赖 Playwright，必须在该 skill 或 README 里明确标注原因，不能把它写成默认主入口。
+- 例外：BOSS 当前主链已经收口到 `tools/auto-zhipin` 的 Playwright CLI + 持久化 profile，因为近期验证显示它比 current-tab/CDP 更稳定；BOSS current-tab 只保留为 fallback。
 
 ## 默认执行姿态
 
@@ -63,7 +64,7 @@
 - X 发布
 - 小红书发布
 - 微信 browser 发布
-- BOSS current-tab
+- BOSS：`tools/auto-zhipin` Playwright profile 主链；current-tab 仅 fallback
 
 默认原则：
 
@@ -178,6 +179,7 @@
 | 方案 | 模式 | 定位 |
 |---|---|---|
 | Chrome DevTools MCP | `interactive-browser` | 主工具面候选 |
+| BOSS Playwright profile | `interactive-browser` | BOSS 站点主链例外 |
 | gstack `browse` | `qa-browser` | Playwright-backed fallback |
 | Playwright/Chromium headless | `render-browser` | fallback |
 | opencli Browser Bridge | legacy adapter | 兼容层 |

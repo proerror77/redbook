@@ -21,7 +21,7 @@
 - 它不是现有发布 skill 的替代品。
 - X、小红书、BOSS 的写操作主链路仍然分别保留在：
   - `/baoyu-post-to-x`
-  - `/baoyu-xhs-images` / `/post-to-xhs`
+  - `/baoyu-xhs-images` / `RedBookSkills`
   - `tools/auto-zhipin`（supervisor / ledger / dedupe / breaker）
 
 ## 先决条件

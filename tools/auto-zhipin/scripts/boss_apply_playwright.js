@@ -56,7 +56,7 @@ async function main() {
     throw new Error(`site restricted: ${activeRestriction.reason}; retry after ${activeRestriction.recoveryAt || 'unknown'}`);
   }
 
-  const dryRun = parseBoolean(args['dry-run'], false);
+  const dryRun = parseBoolean(args['dry-run'], config.apply?.dryRun !== false);
   const runId = store.startRun('boss_apply_playwright', {
     url: args.url,
     dryRun,

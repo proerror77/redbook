@@ -1,55 +1,33 @@
 ---
 name: zhipin
-description: 使用 Chrome 當前分頁 (CDP) 進行 BOSS 直聘掃描、過濾、投遞與後續動作執行。替代 Playwright 全程新建瀏覽器的版本。
+description: 使用 tools/auto-zhipin 的 Playwright profile 主链进行 BOSS 直聘扫描、过滤、投递预检与后续动作执行；current-tab/CDP 只作为显式 fallback。
 ---
 
 # /zhipin
 
-這個 Skill 專門把你目前已登入的 Chrome 當前分頁作為控制端，直接驅動已打開的 zhipin 頁面。
+这个 Skill 是 BOSS 工作流的入口说明。当前主链是 `tools/auto-zhipin` 的 Playwright CLI + 持久化 profile；current-tab/CDP 和 OpenCLI 只作为低层 fallback 或诊断入口。
 
 ## Browser Mode
 
 - Mode: `interactive-browser`
 - Standard: [docs/standards/browser-modes.md](/Users/proerror/Documents/redbook/docs/standards/browser-modes.md)
-- Position: current-tab BOSS workflow is the preferred business path; this skill should not fall back to "launch a separate generic browser" as its default behavior.
+- Position: BOSS is an explicit exception to the repo's general "avoid Playwright" preference because recent validation found Playwright profile more stable than current-tab/CDP for this site.
 
-對應你現在的「最新版方式」：
-- 掃描/抽職位：`chrome_collect_queue.js`
-- 對單條職位做實際投遞：`redbook-opencli.js boss apply`
-- 站內回覆與自動動作：`reply_worker.js --backend pinchtab`
+当前主入口：
+- 登录/profile 准备：`npm run boss:login`
+- 扫描/抽职位：`npm run chrome:collect`
+- 单条投递预检/投递：`npm run boss:apply -- --url <job-url> --dry-run true|false`
+- 消息监看：`npm run chrome:monitor`
+- 报告：`npm run report`
 
-> 不再要求你每次都啟新 Playwright 瀏覽器。
+`boss:apply-current`、`boss:apply-opencli`、PinchTab 相关路径只在 Playwright profile 主链失效或需要低层诊断时使用。
 
 ## 先決條件
 
-1. Chrome 已手動登入 zhipin 且頁面可正常訪問。
+1. 先用 `npm run boss:login` 把登录态写入 `tools/auto-zhipin/.auth/profile`。
 2. `tools/auto-zhipin/config.local.json` 配好 filters / apply / chat。
 3. 已安裝 dependency：`cd tools/auto-zhipin && npm install`。
-4. 如要用 `pinchtab` 後端執行回覆/動作，先啟動：
-
-```bash
-cd /Users/proerror/Documents/redbook/tools/auto-zhipin
-npx --yes pinchtab
-```
-
-### 0) 新版 MCP 直連（推薦，Chrome 146+）
-
-如果你是 Chrome 146（或更高）且已開啟 `chrome://inspect/#remote-debugging` 的自動連接，建議直接掛載 MCP，讓 Claude 直接操控「你正在登入的 Chrome」：
-
-```bash
-claude mcp add chrome-devtools -- npx chrome-devtools-mcp@latest --autoConnect
-```
-
-重啟 Session 後，Claude 即可直接在 MCP 連線下操作你目前的瀏覽器上下文（cookie、權限、會話都保留）。
-
-這條路徑的價值是：
-- 不需要再開新瀏覽器（非 headless）。
-- 不需要你額外重複登入。
-- 比較接近「真實你」的行為環境。
-
-你在本地確認 MCP 正常後，可把 `/zhipin` 流程中的操作改為：
-- 優先用 MCP 開啟對應的 `zhipin` 頁簽/聊天頁。
-- 再用 `/zhipin` 命令觸發你既有的本地腳本（`chrome_collect_queue`）做採集，投遞則走 `redbook-opencli.js boss apply`。
+4. 页面出现登录失效、滑块、`访问受限 / 异常访问行为` 时停止自动化，人工恢复后先跑只读探测。
 
 ## 快速命令
 
@@ -58,8 +36,8 @@ claude mcp add chrome-devtools -- npx chrome-devtools-mcp@latest --autoConnect
 ### 1) 掃描（只讀 + 打標）
 
 ```bash
-node /Users/proerror/Documents/redbook/tools/auto-zhipin/scripts/chrome_collect_queue.js \
-  --limit 30
+cd /Users/proerror/Documents/redbook/tools/auto-zhipin
+npm run chrome:collect -- --limit 30
 ```
 
 參數補充：`--url <search-url>`、`--include`, `--exclude`, `--require-location`。
@@ -67,51 +45,35 @@ node /Users/proerror/Documents/redbook/tools/auto-zhipin/scripts/chrome_collect_
 ### 2) 對單條職位投遞
 
 ```bash
-node /Users/proerror/Documents/redbook/tools/opencli/bin/redbook-opencli.js boss apply \
-  --url <job-url>
+npm run boss:apply -- --url <job-url> --dry-run true
+npm run boss:apply -- --url <job-url> --dry-run false
 ```
 
-可選：`--greeting "..."` 自訂開場訊息。
+默认是 dry-run。真实投递必须显式 `--dry-run false` 或配置 `apply.dryRun=false`。
 
 ### 3) 一次把草稿/動作送出（站內）
 
 ```bash
-node /Users/proerror/Documents/redbook/tools/auto-zhipin/scripts/reply_worker.js --run-actions --backend pinchtab
-```
-
-如果你要直接發送所有待回覆草稿：
-
-```bash
-node /Users/proerror/Documents/redbook/tools/auto-zhipin/scripts/reply_worker.js --send-all --backend pinchtab
-```
-
-### 4) 監聽新消息（原生模式）
-
-目前仍建議 `monitor_messages` 保持 Playwright 後端進行輪詢抓消息（更穩定）：
-
-```bash
-node /Users/proerror/Documents/redbook/tools/auto-zhipin/scripts/monitor_messages.js --once --run-actions
+npm run chrome:monitor -- --once
 ```
 
 ### 5) 查看結果
 
 ```bash
-node /Users/proerror/Documents/redbook/tools/auto-zhipin/scripts/report.js
-node /Users/proerror/Documents/redbook/tools/auto-zhipin/scripts/funnel_report.js
+npm run report
+npm run funnel-report
 ```
-
-如果 MCP 已就緒，也可以在 MCP 對話中先把頁面導向你要操作的 Zhipin 分頁（聊天頁或搜尋頁），再執行以下命令即可。
 
 ## /zhipin 建議流程（你現在的版本）
 
-1. `chrome_collect_queue`（先把本頁職位跑過濾）
-2. 人工確認 matched 明確後
-3. `redbook-opencli.js boss apply --url <job-url>`（開啟投遞）
-4. `reply_worker --run-actions --backend pinchtab`（可選）
-5. 檢查 `report`
+1. `npm run boss:login`
+2. `npm run chrome:collect`
+3. 人工确认 matched 明确后，先 `npm run boss:apply -- --url <job-url> --dry-run true`
+4. 确认无误后，才 `npm run boss:apply -- --url <job-url> --dry-run false`
+5. 检查 `npm run report`
 
 ## 注意事項
 
-- 先用 `dryRun` 驗證後再關閉：`config.local.json -> apply.dryRun = false`。
+- 先用 `dryRun` 验证后再关闭：`config.local.json -> apply.dryRun = false` 或单次传 `--dry-run false`。
 - 已有 `siteHealth` 熱點時，會先觸發限制保護，避免直接重試。
 - `/zhipin` 只做「流程入口」，底層邏輯仍沿用你既有 `tools/auto-zhipin` 相關腳本。

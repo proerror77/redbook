@@ -3504,3 +3504,38 @@
 
 **遗留：**
 - 这里只做知识沉淀，尚未扩写成 X 或小红书稿件。
+
+## [2026-04-30] 会话摘要：Agent Teams workflow review 后续修复
+
+**完成了什么：**
+- 用 Agent Teams 分头 review Redbook 发布、BOSS 投递、入口文档一致性；Franklin 控制面子任务遇到 Cloudflare 400，主线程用本地复核补齐。
+- 修复 BOSS 投递安全默认：
+  - `boss:apply` 默认遵守 `config.apply.dryRun`，不再无参数实投。
+  - `boss:apply-current` dry-run 不再写成 `applied`，并在 verify/auth/restricted/security check 前 fail closed。
+  - BOSS current-tab fallback 会优先返回当前激活的 verify 页，避免绕到另一张 BOSS tab 上误操作。
+- 修复内容 workflow 状态语义：
+  - 正常 content pipeline 不能在非 `retrospect` 阶段直接 `close-run --status done`。
+  - T+1/T+3 账本需要 metrics + live readback evidence；无指标关闭会在 `workflow-health` 中显示为 unverified follow-up。
+  - `workflow-health` 的 publish run 提示改成先 promote 到 retrospect，再补复盘 gate 后关闭。
+- 统一入口文档：
+  - BOSS 主链明确为 `tools/auto-zhipin` Playwright profile；current-tab/OpenCLI/PinchTab 只保留为 fallback 或实验。
+  - X `publish_x.sh`、小红书 `/post-to-xhs`、`tools/auto-redbook` 都标成历史/降级入口。
+  - `docs/standards/browser-modes.md` 记录 BOSS 是 Playwright profile 例外。
+- 顺手修复 BOSS chat triage 大公司/研究院/集团识别，避免相关候选继续进入后续流程。
+
+**验证：**
+- `node --test tools/auto-zhipin/tests/*.test.js` => 106/106 pass
+- `python3 -m unittest tools.redbook_harness.tests.test_close_run tools.redbook_harness.tests.test_record_publish` => 6/6 pass
+- `python3 -m py_compile tools/redbookctl.py tools/record_publish.py tools/redbook_harness/runtime.py`
+- `node --check tools/auto-zhipin/scripts/opencli_apply_current_tab.js`
+- `node --check tools/auto-zhipin/scripts/boss_apply_playwright.js`
+- `node --check tools/auto-zhipin/lib/opencli_apply_queue.js`
+- `node --check tools/auto-zhipin/lib/chat_triage.js`
+- package script existence check for `tools/auto-zhipin/package.json`
+- `tools/redbookctl workflow-health`
+- `git diff --check`
+
+**遗留：**
+- `workflow-health` 当前按本机日期显示 2026-04-30 日报缺失、launchd 未加载；这是当天调度/日报状态，不属于本轮 workflow 修复。
+- 2026-04-28 三条讯息仍按用户确认关闭，但现在会显示为 `unverified follow-up`，表示没有平台指标回读；需要数据复盘时再补 metrics + readback evidence。
+- 2026-04-29 三条 X 图文已触发 T+1 due，需要平台回读后补账本。

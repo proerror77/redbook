@@ -197,11 +197,30 @@ class HarnessRuntime:
 
         return self._mutate_run(run_id, mutate)
 
+    def _can_close_done_without_final_stage(self, run: dict[str, Any]) -> bool:
+        topic = str(run.get("topic", "")).lower()
+        source = str(run.get("source", "")).lower()
+        if topic.startswith("llm wiki") or "llm-wiki" in topic:
+            return True
+        if source.startswith("wiki/"):
+            return True
+        return False
+
     def close_run(self, run_id: str, *, status: str = "done", note: str = "") -> dict[str, Any]:
         if status not in {"done", "closed_stale", "cancelled"}:
             raise ValueError(f"Unsupported close status: {status}")
 
         def mutate(run: dict[str, Any]) -> dict[str, Any]:
+            if (
+                status == "done"
+                and run.get("kind") == RUN_KIND
+                and run.get("current_stage") != STAGE_ORDER[-1]
+                and not self._can_close_done_without_final_stage(run)
+            ):
+                raise ValueError(
+                    "content_pipeline runs can only close as done from the final retrospect stage; "
+                    "use promote after satisfying gates, or use closed_stale/cancelled for abandoned work."
+                )
             closed_at = utc_now()
             run["status"] = status
             run["closed_at"] = closed_at

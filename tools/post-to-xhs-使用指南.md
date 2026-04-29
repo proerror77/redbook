@@ -5,7 +5,7 @@
 
 ## 功能概述
 
-`/post-to-xhs` skill 提供小红书内容发布和数据分析功能，基于 Chrome CDP 自动化。
+本文件只作为历史命令形态参考；不要把 `/post-to-xhs` 当成当前可执行主入口。小红书图文使用 `/article-visual-storyboard` -> `/baoyu-xhs-images`，视频、数据、搜索、评论等站点操作使用 `RedBookSkills`。
 
 ## 核心功能
 

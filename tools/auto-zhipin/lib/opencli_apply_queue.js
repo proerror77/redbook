@@ -74,6 +74,9 @@ function isSuccessfulApplyResult(result = {}) {
   const reason = String(result.reason || '').trim();
   const url = getApplyResultUrl(result);
 
+  if (result.dryRun === true || result.evidence?.dryRun === true || result.normalized?.dryRun === true) {
+    return false;
+  }
   if (url.startsWith('about:blank')) {
     return false;
   }

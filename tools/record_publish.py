@@ -14,6 +14,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_LEDGER = ROOT / "04-内容数据统计" / "publish-records.jsonl"
 STAGES = ("T+0", "T+1", "T+3")
+FOLLOWUP_STAGES = {"T+1", "T+3"}
 METRIC_FIELDS = (
     "views",
     "likes",
@@ -25,6 +26,27 @@ METRIC_FIELDS = (
     "saves",
     "followers",
 )
+LIVE_READBACK_EVIDENCE = {
+    "status_page_visible",
+    "homepage_top_post",
+    "post_analytics_visible",
+    "live_platform_readback",
+    "platform_readback",
+    "x_status_readback",
+    "x_analytics_readback",
+    "creator_management_visible",
+    "creator_management_readback",
+    "note_management_visible",
+    "note_management_reviewing",
+    "note_management_published",
+    "xhs_management_readback",
+}
+CLOSURE_ONLY_EVIDENCE = {
+    "user_confirmed_complete",
+    "closed_without_metrics",
+    "metrics_unavailable",
+    "followup_closed_without_readback",
+}
 
 
 def slugify(value: str) -> str:
@@ -92,6 +114,14 @@ def validate_record(record: dict[str, Any]) -> None:
             "XHS records may instead use explicit platform evidence such as "
             "success_page_visible or note_management_reviewing."
         )
+    if record["stage"] in FOLLOWUP_STAGES and not (
+        followup_has_readback(record) or followup_has_explicit_closure(record)
+    ):
+        raise ValueError(
+            f"{record['stage']} records need at least one metric plus live readback evidence. "
+            "If the follow-up is intentionally closed without metrics, add evidence "
+            "closed_without_metrics or metrics_unavailable."
+        )
     for key in ("content_path", "publish_record_path"):
         value = record.get(key)
         if value and not (ROOT / value).exists():
@@ -123,6 +153,31 @@ def t0_has_publish_evidence(record: dict[str, Any]) -> bool:
 
     notes = str(record.get("notes", "")).lower()
     return "note_id_pending" in notes or "管理页" in notes
+
+
+def normalized_evidence(record: dict[str, Any]) -> set[str]:
+    return {
+        str(item).strip().lower()
+        for item in record.get("evidence", [])
+        if str(item).strip()
+    }
+
+
+def followup_has_readback(record: dict[str, Any]) -> bool:
+    if record.get("stage") not in FOLLOWUP_STAGES:
+        return True
+    metrics = record.get("metrics") or {}
+    if not metrics:
+        return False
+    return bool(normalized_evidence(record) & LIVE_READBACK_EVIDENCE)
+
+
+def followup_has_explicit_closure(record: dict[str, Any]) -> bool:
+    if record.get("stage") not in FOLLOWUP_STAGES:
+        return False
+    evidence = normalized_evidence(record)
+    notes = str(record.get("notes", "")).lower()
+    return bool(evidence & CLOSURE_ONLY_EVIDENCE) or "no live platform readback" in notes
 
 
 def main() -> int:
