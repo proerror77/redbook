@@ -4,6 +4,27 @@
 
 ---
 
+## [2026-04-29] 会话摘要：新增 article-visual-storyboard skill 与 X/XHS 规格拆分
+
+**完成了什么：**
+- 新增 `.agents/skills/article-visual-storyboard/`，作为文章转图前的规划型 skill，只负责平台分镜、规格拆分、排版 QA 和生图交接，不直接生图。
+- 明确 X.com 与小红书不能默认共用成图：
+  - X.com：默认 `16:9` / `1920x1080` 单张观点卡，可选 `1:1` 紧凑卡。
+  - 小红书：默认 `3:4` / `1080x1440`，5-7 张卡片序列。
+- 已把新 skill 加入 `docs/reference/skills-manifest.md` 和 shared playbook，并同步到 `AGENTS.md` / `CLAUDE.md`。
+- 已更新 `docs/standards/gpt-image-2-editorial-prompts.md`、`.rules`、本地和全局 `document-illustrator`、本地 `baoyu-xhs-images`，避免继续把 3:4 小红书图当作 X 默认配图。
+
+**验证：**
+- `python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py .agents/skills/article-visual-storyboard`
+- `python3 tools/sync_redbook_playbook.py`
+- `rg` 检查旧的 “X 默认 3:4” 规则已清除，新规则已同步到 manifest、playbook、标准和 active skills。
+
+**未完成 / 遗留：**
+- 本轮没有跑真实生图 API。
+- 当前工作区还有其他正在进行的发布 workflow hardening 修改，未纳入本次 skill 提交。
+
+---
+
 ## [2026-04-29] 会话摘要：图文分镜与排版 QA 工作流
 
 **完成了什么：**

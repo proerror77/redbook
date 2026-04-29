@@ -13,6 +13,7 @@
 - 长文配图默认 balanced density：正文 3-5 张，约每 600-900 中文字或每 2-3 个主要小节 1 张；小红书卡片系列可放宽到 5-7 张，除非用户明确要更多。
 - 正文配图先产出 visual metaphor map：每张图要有文章锚定短句、语义/情绪判断、视觉隐喻、插入位置和禁用元素；不能只用段落摘要生成装饰图。
 - 图文生成先产出 `图文分镜.md` 或等价分镜表，并做排版 QA：卡片职责、读者任务、文字预算、层级、安全边距、图文不重叠、缩略图可读。
+- X.com 和小红书规格不可默认共用：X 默认 `16:9` 单张观点卡，小红书默认 `3:4` / `1080x1440` 多卡片。
 - 浏览器类任务先用 `tools/redbookctl browser` 检查当前 Chrome/CDP 登录态；发布和账号操作优先复用已有 tab，避免重复开新页面和新 profile。
 
 ## Active Entrypoints
@@ -21,6 +22,7 @@
 | --- | --- | --- | --- | --- |
 | `/x-mastery-mentor` | active | `.agents/skills/x-mastery-mentor/SKILL.md` and `~/.codex/skills/x-mentor/SKILL.md` | X 写作方法论、审稿、账号诊断、选题判断 | X 草稿前的结构判断、发布前 QA |
 | `/baoyu-post-to-x` | active | `.agents/skills/baoyu-post-to-x/SKILL.md` | 发布 X 普通帖、图片/视频帖、长文 | 用户明确确认发布后 |
+| `/article-visual-storyboard` | active | `.agents/skills/article-visual-storyboard/SKILL.md` | 为文章生成平台分镜、X/XHS 规格拆分、排版 QA 和生图交接 | 任何文章转 X 配图、小红书图文、公众号配图之前 |
 | `/baoyu-xhs-images` | active | `.agents/skills/baoyu-xhs-images/SKILL.md` | 生成小红书图文卡片，并支持图文发布链路 | 小红书图文内容 |
 | `RedBookSkills` | active-global | `~/.codex/skills/xiaohongshu-skills/SKILL.md` and `~/.codex/skills/XiaohongshuSkills/SKILL.md` | 小红书发布、视频、搜索、详情、评论、数据表 | 视频、多账号、数据回查、竞品/搜索 |
 | `/document-illustrator` | active | `.agents/skills/document-illustrator/SKILL.md` and `~/.codex/skills/document-illustrator/SKILL.md` | 用 Tuzi `gpt-image-2.0` 为文章生成封面和文内配图 | 长文配图、多图叙事 |

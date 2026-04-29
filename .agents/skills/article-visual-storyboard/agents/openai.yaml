@@ -1,0 +1,4 @@
+interface:
+  display_name: "Article Visual Storyboard"
+  short_description: "Plan platform-specific image storyboards."
+  default_prompt: "Use $article-visual-storyboard to create a platform-specific image storyboard for this article."

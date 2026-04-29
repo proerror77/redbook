@@ -22,6 +22,7 @@
 - 长文配图使用 balanced visual arc：封面可选，正文默认 3-5 张，约每 600-900 中文字或每 2-3 个主要小节 1 张，除小红书卡片系列外最多 6 张。
 - 文内插图先做 visual metaphor map：每张图必须绑定一个文章短句 / 关键词，先判断语义、情绪、张力和读者感受，再决定视觉隐喻、承载面、主体关系、文字是否进入构图；不要只把段落摘要翻译成泛插画。
 - 图文内容先做 `图文分镜.md`，再生图：文章结构负责论证，图文结构负责卡片叙事；每张图必须有版式职责、文字预算、安全边距和不重叠检查。
+- X.com 和小红书图片规格必须分开：X 默认 `16:9` 单张观点卡（可选 `1:1`），小红书默认 `3:4` / `1080x1440` 的 5-7 张卡片；只共享视觉隐喻，不共享最终裁切图。
 - 浏览器工作先跑 `tools/redbookctl browser` 检查现有 Chrome/CDP tabs；X 发布 profile 先跑 `tools/redbookctl x-login` 检查 composer 和 `expected_handle`；优先复用已登录 tab 或已配置 profile，不默认新开未登录 profile、空白页或可见窗口。
 
 ---
@@ -127,6 +128,7 @@
 - Harness：`python3 -m tools.redbook_harness.cli --help`
 - X 审稿 / 创作辅助：`/x-mastery-mentor`
 - X 发布：`/baoyu-post-to-x`（发帖前先 `tools/redbookctl x-login`）
+- 图文分镜：`/article-visual-storyboard`
 - 文档配图：`/document-illustrator`
 - 小红书图文：`/baoyu-xhs-images`
 - 小红书视频 / 数据 / 搜索：`RedBookSkills`

@@ -1,6 +1,6 @@
 # GPT Image 2 Editorial Prompts
 
-> 来源：OpenAI image generation docs、OpenAI Cookbook image prompting examples、PixelDojo GPT Image 2 guide、Hello Soya ChatGPT Images 2.0 guide、X article `xiaoxiaodong01/status/2048443572119330853` | 最后更新：2026-04-29
+> 来源：OpenAI image generation docs、OpenAI Cookbook image prompting examples、PixelDojo GPT Image 2 guide、Hello Soya ChatGPT Images 2.0 guide、X Business creative specs、X article `xiaoxiaodong01/status/2048443572119330853` | 最后更新：2026-04-29
 
 ## 适用范围
 
@@ -46,9 +46,16 @@
 
 默认卡片结构：
 
-- X card：1 张强概念图，最多 1 个短标题，图服务主帖 Hook。
-- 小红书图文：5-7 张；封面制造冲突，2-4 张展开判断/框架/案例，最后 1 张收束行动建议。
+- X card：默认 `16:9` / `1920x1080`，1 张强概念图，最多 1 个短标题，图服务主帖 Hook；需要紧凑观点卡时可用 `1:1`。
+- 小红书图文：默认 `3:4` / `1080x1440`，5-7 张；封面制造冲突，2-4 张展开判断/框架/案例，最后 1 张收束行动建议。
 - 公众号/长文：3-5 张文内插图，插在关键论证后面，不做成小红书卡片。
+
+跨平台硬规则：
+
+- X.com 和小红书不能默认使用同一张成图。
+- 可以共享：核心观点、视觉隐喻、色彩系统、主素材。
+- 必须分开：画布比例、裁切、安全区、文字密度、文件名、发布前预览。
+- X.com 图要像 feed card；小红书图要像 swipeable card sequence。
 
 排版硬规则：
 
@@ -83,7 +90,8 @@
 
 ## Redbook 默认审美
 
-- X card：默认 `3:4`，主体大、信息少、适合时间线快速扫过。
+- X card：默认 `16:9`，主体大、信息少、适合时间线快速扫过；不要复用小红书 `3:4` 卡片。
+- Xiaohongshu card：默认 `3:4` / `1080x1440`，适合手机竖屏滑动，允许更明确的标题区和少量标签。
 - Blog hero：默认 `16:9`，横向构图、适合文章头图和 newsletter。
 - 技术观点图：优先使用具体工作场景，例如浏览器、邮箱、代码图谱、terminal、dashboard、白板、operator desk，但画面保持留白和克制。
 - Agent / AI 工具主题：不要画发光脑袋、机器人、紫色宇宙背景；用“后台工位”“工具接管流程”“人机协作界面”来表达。
@@ -101,7 +109,7 @@ Audience:
 AI builders, indie hackers, product operators, and technical founders.
 
 Placement:
-X.com timeline image. Aspect ratio 3:4. Readable at thumbnail size.
+X.com timeline image. Aspect ratio 16:9. Suggested canvas 1920x1080. Readable at thumbnail size.
 
 Card role:
 {cover conflict / key judgment / concept poster}
@@ -124,9 +132,10 @@ Use foreground / midground / background separation. No collage of unrelated icon
 If the anchor phrase appears in the image, make it part of the spatial structure rather than a pasted label.
 
 Layout spec:
-3:4 vertical grid. Reserve at least 8% safe margin on all sides.
+16:9 horizontal grid. Reserve at least 8% safe margin on all sides.
 Use one dominant headline zone and one visual subject zone. No dense paragraphs.
 Thumbnail must still show the focal point and the anchor phrase clearly.
+Do not reuse the Xiaohongshu 3:4 crop for this X.com image.
 
 Style:
 Simple elegant editorial technology design, modern magazine art direction, restrained palette,
