@@ -82,6 +82,9 @@ tools/
 - 跑每日研究：`tools/redbookctl daily`，需要全量关注列表巡检时加 `--with-following-audit`
 - 从日报 promotion 题目：`tools/redbookctl pick --topic "题目" --source "来源"`
 - 创建完整内容 run：`tools/redbookctl draft --topic "题目" --source "日报/链接/路径" --summary "一句话目标"`
+- 原创闭环挑战：`tools/redbookctl challenge --topic "题目"`
+- 隐性观点涌现：`tools/redbookctl emerge --topic "题目"`
+- 草稿种子生成：`tools/redbookctl draft-seed --topic "题目"`
 - 发布前检查：`tools/redbookctl publish`
 - 发布后补结构化账本：`tools/redbookctl publish-record -- --stage T+0 ...`
 - 关闭 run：`tools/redbookctl close-run --run-id <run_id> --status done`

@@ -3818,3 +3818,31 @@
 - X headed 模式下找不到 composer 时，会等待登录/验证恢复；超时默认保留浏览器，不再自动关掉。
 - 小红书发布 pipeline 未登录时会打开有窗口浏览器和登录页，等待扫码/验证码/手动登录，恢复后继续当前流程；超时保留浏览器。
 - 生图默认改为简洁克制的 article visual：大留白、off-white / graphite / ink + 一个点缀色、少文字或无文字、拒绝紫蓝发光/机器人/3D blob。
+
+---
+
+## 新任务：套用 Claude Code + 本地知识库原创闭环
+- 任务名称：把观自的 challenge / emerge / draft 方法套用到 redbook 内容系统
+- 负责人（Lead Agent）：Codex
+- 开始日期：2026-04-29
+- 优先级：P1
+- 来源：`https://x.com/longdechen12/status/2048792302655848821`
+
+### 执行清单
+- [x] 1. 用 `baoyu-danger-x-to-markdown` 保存原帖为本地素材
+- [x] 2. 抽象方法：真实输入 → 本地知识库 → challenge/emerge/draft → 输出倒逼输入
+- [x] 3. 新增 `tools/content_loop.py`
+- [x] 4. 接入 `tools/redbookctl challenge / emerge / draft-seed`
+- [x] 5. 新增 Wiki 方法论页并更新 index / overview / log
+- [x] 6. 生成三份 smoke 报告验证命令可用
+- [x] 7. 更新 progress / shared playbook / tools README
+
+### Review 结论
+- 已将外部方法映射到 redbook 系统，而不是照搬 Obsidian：
+  - 输入层：`05-选题研究/`、`x-to-markdown/`、`tasks/progress.md`、wiki 内容页
+  - 处理层：`wiki/`、素材库、harness
+  - 输出层：`tools/redbookctl challenge`、`emerge`、`draft-seed`
+- 已生成验证报告：
+  - `docs/reports/content-loop-challenge-原创成长内容闭环-20260429-154314.md`
+  - `docs/reports/content-loop-emerge-原创成长内容闭环-20260429-154314.md`
+  - `docs/reports/content-loop-draft-原创成长内容闭环-20260429-154314.md`

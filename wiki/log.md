@@ -920,3 +920,19 @@
 - 登录异常不是普通失败，而是人工协作节点；自动化必须把浏览器留给用户扫码/验证。
 - headless 只适合登录状态已健康的路径；需要恢复时必须切 headed 并等待。
 - 文章配图默认应该是 elegant article visual：少文字、大留白、低饱和、一个点缀色，而不是科技海报或小红书花哨信息图。
+
+## [2026-04-29] ingest | 原创成长内容闭环接入 redbookctl
+
+来源：`x-to-markdown/longdechen12/2048792302655848821.md` + 本地 `tools/content_loop.py` smoke 报告
+
+触及页面：6个
+- `tools/content_loop.py` — 新增 challenge / emerge / draft 本地语料编排器
+- `tools/redbookctl.py` — 新增 `challenge`、`emerge`、`draft-seed` 子命令
+- `wiki/方法论/原创成长内容闭环.md` — 新增方法论页
+- `wiki/index.md` / `wiki/overview.md` — 更新方法论索引和核心论点
+- `docs/shared/redbook-playbook.md` / `tools/README.md` — 增加日常入口
+
+关键洞察：
+- 这条外部方法可复用的不是 Obsidian，而是“输入层、处理层、输出层、价值闭环”。
+- redbook 的输入层已经存在：timeline、x-to-markdown、daily reports、progress、wiki；缺的是显式调用入口。
+- `challenge / emerge / draft-seed` 应成为写稿前的轻量预处理：先反问，再挖隐性观点，再生成草稿种子。

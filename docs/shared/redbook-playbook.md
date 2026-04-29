@@ -109,6 +109,9 @@
 - 关注列表全量巡检：`tools/redbookctl daily --with-following-audit`
 - 选中日报题目：`tools/redbookctl pick --topic "..." --source "..."`
 - 创建完整内容 run：`tools/redbookctl draft --topic "..." --source "..." --summary "..."`
+- 原创闭环挑战：`tools/redbookctl challenge --topic "..."`
+- 隐性观点涌现：`tools/redbookctl emerge --topic "..."`
+- 草稿种子生成：`tools/redbookctl draft-seed --topic "..."`
 - 发布前/发布后缺口：`tools/redbookctl publish`
 - 发布数据记录：`tools/redbookctl publish-record -- --stage T+0 ...`
 - 关闭 harness run：`tools/redbookctl close-run --run-id ... --status done`

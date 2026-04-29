@@ -3266,3 +3266,34 @@
 **遗留：**
 - 本轮未真实触发 X / 小红书登录恢复，因为那会打开浏览器并可能进入扫码/风控流程。
 - 本轮未实际调用 GPT Image 2.0 生成样张，避免 API 额度消耗。
+
+## [2026-04-29] 会话摘要：套用本地原创成长闭环
+
+**完成了什么：**
+- 将观自 X 长文保存为本地素材：
+  - `x-to-markdown/longdechen12/2048792302655848821.md`
+- 抽象并落地三段式内容系统：
+  - `challenge`：用本地语料反问选题，逼出原创判断。
+  - `emerge`：从本地语料挖隐性主题、可命名概念和可转成内容的问题。
+  - `draft-seed`：生成 X / 小红书 / blog 草稿种子。
+- 新增工具入口：
+  - `tools/content_loop.py`
+  - `tools/redbookctl challenge --topic "..."`
+  - `tools/redbookctl emerge --topic "..."`
+  - `tools/redbookctl draft-seed --topic "..."`
+- 新增 Wiki 方法论：
+  - `wiki/方法论/原创成长内容闭环.md`
+
+**验证：**
+- `python3 -m py_compile tools/content_loop.py tools/redbookctl.py`
+- `tools/redbookctl challenge --topic "原创成长内容闭环" --limit 5`
+- `tools/redbookctl emerge --topic "原创成长内容闭环" --limit 5`
+- `tools/redbookctl draft-seed --topic "原创成长内容闭环" --limit 5`
+
+**产出报告：**
+- `docs/reports/content-loop-challenge-原创成长内容闭环-20260429-154314.md`
+- `docs/reports/content-loop-emerge-原创成长内容闭环-20260429-154314.md`
+- `docs/reports/content-loop-draft-原创成长内容闭环-20260429-154314.md`
+
+**遗留：**
+- 这套工具现在是本地素材编排器，不直接调用 LLM；实际写稿时仍由 Codex 读取报告后生成正式内容。

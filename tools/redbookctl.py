@@ -428,6 +428,21 @@ def command_browser(args: argparse.Namespace) -> int:
     return run_passthrough(command).code
 
 
+def command_content_loop(mode: str, args: argparse.Namespace) -> int:
+    command = [
+        sys.executable,
+        str(ROOT / "tools" / "content_loop.py"),
+        mode,
+        "--topic",
+        args.topic,
+        "--limit",
+        str(args.limit),
+    ]
+    if args.print_only:
+        command.append("--print")
+    return run_passthrough(command).code
+
+
 def command_close_run(args: argparse.Namespace) -> int:
     return run_passthrough(
         [
@@ -487,6 +502,16 @@ def build_parser() -> argparse.ArgumentParser:
     browser.add_argument("--endpoint", default="http://127.0.0.1:9222")
     browser.add_argument("--json", action="store_true")
 
+    for mode, help_text in [
+        ("challenge", "Generate challenge questions from local corpus."),
+        ("emerge", "Mine implicit ideas and frame candidates from local corpus."),
+        ("draft-seed", "Generate a draft seed from local corpus."),
+    ]:
+        loop = subparsers.add_parser(mode, help=help_text)
+        loop.add_argument("--topic", required=True)
+        loop.add_argument("--limit", type=int, default=8)
+        loop.add_argument("--print", action="store_true", dest="print_only")
+
     close_run = subparsers.add_parser("close-run", help="Close a harness run.")
     close_run.add_argument("--run-id", required=True)
     close_run.add_argument("--status", choices=["done", "closed_stale", "cancelled"], default="done")
@@ -528,6 +553,12 @@ def main(argv: list[str] | None = None) -> int:
         return command_publish_record(args)
     if args.command == "browser":
         return command_browser(args)
+    if args.command == "challenge":
+        return command_content_loop("challenge", args)
+    if args.command == "emerge":
+        return command_content_loop("emerge", args)
+    if args.command == "draft-seed":
+        return command_content_loop("draft", args)
     if args.command == "close-run":
         return command_close_run(args)
 
