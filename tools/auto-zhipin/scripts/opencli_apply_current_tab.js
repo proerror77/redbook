@@ -5,11 +5,12 @@ const http = require('node:http');
 const { chromium } = require('../node_modules/playwright');
 
 const { loadConfig } = require('../lib/config');
+const { readChatTriage } = require('../lib/chat_triage');
 const { requireBossCoreModule } = require('../lib/opencli_core');
-const { isSuccessfulApplyResult } = require('../lib/opencli_apply_queue');
+const { checkPreApplyCandidate, isSuccessfulApplyResult } = require('../lib/opencli_apply_queue');
 const { enforceRuntimeGuard, formatGuardError } = require('../lib/runtime_guard');
 const { ZhipinStore } = require('../lib/store');
-const { makeApplicationIdentity, normalizeWhitespace, nowIso, parseArgs, sleep } = require('../lib/utils');
+const { deriveCompanyFields, deriveJobDetailFields, makeApplicationIdentity, normalizeWhitespace, nowIso, parseArgs, sleep } = require('../lib/utils');
 const { JOB_READY_SELECTORS } = require('../lib/zhipin');
 
 const jobBrowserCore = requireBossCoreModule('job-browser');
@@ -28,11 +29,12 @@ function printHelp() {
     '  --cdp-endpoint <url>      Chrome CDP endpoint, default http://localhost:9222',
     '  --config <path>           Config file path',
     '  --greeting <text>         Override greeting message',
-    '  --dry-run <true|false>    Click apply only, do not continue send flow',
+    '  --dry-run <true|false>    Read-only preflight; do not click apply or send',
     '  --probe <true|false>      Inspect current BOSS page only, do not click anything',
     '  --title <keyword>         Prefer tabs whose title contains this keyword',
     '  --url <keyword>           Prefer tabs whose URL contains this keyword',
     '  --wait-verify <true|false>  Wait for manual verification if verify page appears',
+    '  --focus <true|false>      Bring the selected tab to front; default false',
     '',
     'Examples:',
     '  npm run boss:apply-current',
@@ -290,6 +292,9 @@ async function extractCurrentJobMeta(page) {
 function deriveJobRecord(meta = {}) {
   const infoTags = Array.isArray(meta.infoTags) ? meta.infoTags : [];
   const companyTags = Array.isArray(meta.companyTags) ? meta.companyTags : [];
+  const bodyText = meta.bodyText || '';
+  const detailFields = deriveJobDetailFields(infoTags, bodyText);
+  const companyFields = deriveCompanyFields(companyTags, bodyText);
   return {
     jobId: meta.url || `current-tab:${nowIso()}`,
     url: meta.url || '',
@@ -297,11 +302,11 @@ function deriveJobRecord(meta = {}) {
     company: meta.company || '',
     salaryText: meta.salaryText || '',
     salary: meta.salaryText || '',
-    location: infoTags[0] || '',
-    experienceText: infoTags[1] || '',
-    degreeText: infoTags[2] || '',
-    companySize: companyTags.find((item) => /人/.test(item)) || '',
-    stage: companyTags.find((item) => /(轮|上市|融资)/.test(item)) || '',
+    location: detailFields.location,
+    experienceText: detailFields.experienceText,
+    degreeText: detailFields.degreeText,
+    companySize: companyFields.companySize,
+    stage: companyFields.stage,
     summary: normalizeWhitespace(
       [infoTags.join(' | '), companyTags.join(' | '), meta.pageTitle || '']
         .filter(Boolean)
@@ -336,6 +341,7 @@ async function main() {
     : undefined;
 
   const store = new ZhipinStore();
+  const triage = readChatTriage();
   const runId = store.startRun('opencli_apply_current_tab', {
     cdpEndpoint,
     dryRun,
@@ -371,8 +377,10 @@ async function main() {
       selectedPage = await selectBossPage(browser, args);
     }
 
-    await selectedPage.page.bringToFront().catch(() => {});
-    await sleep(800);
+    if (parseBoolean(args.focus, false)) {
+      await selectedPage.page.bringToFront().catch(() => {});
+      await sleep(800);
+    }
 
     const adapter = createAdapter(selectedPage.page);
     const guard = await enforceRuntimeGuard({
@@ -393,10 +401,22 @@ async function main() {
       throw new Error('boss security check detected; resolve manually and rerun probe before applying');
     }
     const jobRecord = deriveJobRecord(beforeMeta);
+    const preApplyGate = checkPreApplyCandidate({
+      store,
+      config,
+      application: {
+        ...jobRecord,
+        applyState: String(beforeMeta.actionText || beforeMeta.bodyText || '').includes('继续沟通')
+          ? 'already_continuing'
+          : '',
+      },
+      triage,
+    });
 
     store.upsertApplication({
       ...jobRecord,
       status: 'matched',
+      reasons: preApplyGate.allow ? [] : preApplyGate.reasons,
       source: 'opencli_apply_current_tab',
     });
     store.save({ operation: 'opencli_apply_current_tab', phase: 'matched', runId, url: jobRecord.url });
@@ -447,6 +467,45 @@ async function main() {
       return;
     }
 
+    if (!preApplyGate.allow) {
+      store.upsertApplication({
+        ...jobRecord,
+        status: 'skipped',
+        skippedAt: nowIso(),
+        reasons: preApplyGate.reasons,
+        applyResult: { preApplyGate },
+        source: 'opencli_apply_current_tab',
+      });
+      store.finishRun(runId, 'completed', {
+        url: jobRecord.url,
+        title: jobRecord.title,
+        company: jobRecord.company,
+        dryRun,
+        preApplyGate,
+      });
+      store.save({
+        operation: 'opencli_apply_current_tab',
+        phase: 'pre_apply_blocked',
+        runId,
+        status: 'completed',
+      });
+      console.log(JSON.stringify({
+        runId,
+        dryRun,
+        skipped: true,
+        reason: preApplyGate.reasons[0] || 'pre_apply_blocked',
+        preApplyGate,
+        job: {
+          url: jobRecord.url,
+          title: jobRecord.title,
+          company: jobRecord.company,
+          salaryText: jobRecord.salaryText,
+          location: jobRecord.location,
+        },
+      }, null, 2));
+      return;
+    }
+
     const applyResult = await jobBrowserCore.applyOnActiveJobDetail(adapter, {
       greeting,
       dryRun,
@@ -470,6 +529,7 @@ async function main() {
       company: jobRecord.company,
       dryRun,
       result: applyResult,
+      preApplyGate,
     });
     store.save({
       operation: 'opencli_apply_current_tab',

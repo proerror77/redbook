@@ -102,7 +102,7 @@ function evaluateJob(job, filters) {
   }
 
   const salary = parseSalaryRange(salaryText);
-  if (salary && salary.maxMonthlyK < Number(filters.minMonthlySalaryK || 0)) {
+  if (salary && salary.minMonthlyK < Number(filters.minMonthlySalaryK || 0)) {
     reasons.push('salary_below_minimum');
   }
 

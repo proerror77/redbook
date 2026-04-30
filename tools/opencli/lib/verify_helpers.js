@@ -1,6 +1,7 @@
 export function isTransientBridgeError(message = '') {
   const text = String(message || '');
-  return text.includes('Inspected target navigated or closed');
+  return text.includes('Inspected target navigated or closed')
+    || isBridgeUnavailableError(text);
 }
 
 export function isBridgeUnavailableError(message = '') {

@@ -9,6 +9,7 @@ test('shared job-browser module is available from opencli boss core', () => {
   assert.equal(typeof jobBrowser.extractJobDetailMeta, 'function');
   assert.equal(typeof jobBrowser.applyOnActiveJobDetail, 'function');
   assert.equal(typeof jobBrowser.buildClickApplyScript, 'function');
+  assert.equal(typeof jobBrowser.buildProbeApplyButtonScript, 'function');
   assert.equal(typeof jobBrowser.selectJobCard, 'function');
   assert.equal(typeof jobBrowser.buildSelectJobCardScript, 'function');
 });
@@ -64,18 +65,19 @@ test('applyOnActiveJobDetail short-circuits already continuing jobs', async () =
   };
 
   const result = await applyOnActiveJobDetail(adapter, {});
-  assert.equal(result.ok, true);
+  assert.equal(result.ok, false);
   assert.equal(result.mode, 'already_continuing');
   assert.equal(result.url, 'https://www.zhipin.com/job_detail/demo.html');
   assert.equal(result.action, 'apply');
-  assert.equal(result.status, 'success');
+  assert.equal(result.status, 'skipped');
+  assert.equal(result.reason, 'already_continuing');
 });
 
-test('applyOnActiveJobDetail returns dry-run result after clicking apply', async () => {
+test('applyOnActiveJobDetail returns dry-run preflight without clicking apply', async () => {
   const { applyOnActiveJobDetail } = requireBossCoreModule('job-browser');
   let callCount = 0;
   const adapter = {
-    async evaluate() {
+    async evaluate(source) {
       callCount += 1;
       if (callCount === 1) {
         return JSON.stringify({
@@ -83,6 +85,8 @@ test('applyOnActiveJobDetail returns dry-run result after clicking apply', async
           bodyText: '职位描述',
         });
       }
+      assert.equal(source.includes('dispatchEvent'), false);
+      assert.equal(source.includes('.click()'), false);
       return JSON.stringify({
         ok: true,
         text: '立即沟通',
@@ -91,9 +95,10 @@ test('applyOnActiveJobDetail returns dry-run result after clicking apply', async
   };
 
   const result = await applyOnActiveJobDetail(adapter, { dryRun: true });
+  assert.equal(callCount, 2);
   assert.equal(result.ok, true);
   assert.equal(result.dryRun, true);
-  assert.equal(result.mode, 'clicked_apply');
+  assert.equal(result.mode, 'dry_run_preflight');
   assert.equal(result.button, '立即沟通');
   assert.equal(result.url, 'https://www.zhipin.com/job_detail/demo.html');
   assert.equal(result.action, 'apply');
@@ -105,7 +110,7 @@ test('applyOnActiveJobDetail returns standardized result fields and fires lifecy
   let callCount = 0;
   const events = [];
   const adapter = {
-    async evaluate() {
+    async evaluate(source) {
       callCount += 1;
       if (callCount === 1) {
         return JSON.stringify({
@@ -113,6 +118,7 @@ test('applyOnActiveJobDetail returns standardized result fields and fires lifecy
           bodyText: '职位描述',
         });
       }
+      assert.equal(source.includes('dispatchEvent'), false);
       return JSON.stringify({
         ok: true,
         text: '立即沟通',
@@ -136,6 +142,7 @@ test('applyOnActiveJobDetail returns standardized result fields and fires lifecy
   assert.equal(result.action, 'apply');
   assert.equal(result.status, 'success');
   assert.equal(result.reason, null);
+  assert.equal(result.mode, 'dry_run_preflight');
   assert.deepEqual(result.normalized, {
     url: 'https://www.zhipin.com/job_detail/demo.html',
     button: '立即沟通',

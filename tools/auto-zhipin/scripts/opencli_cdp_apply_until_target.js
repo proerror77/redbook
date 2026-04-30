@@ -76,6 +76,28 @@ const FOCUS_KEYWORDS = [
 const GENERIC_BIG_COMPANY_PATTERNS = ['某大型', '某知名', '上市公司', '实验室', '研究院'];
 const OUTSIDE_BASE_PATTERN = /(?:base|驻|常驻|工作地|办公地)[^,\n，。]*(苏州|杭州|北京|深圳|广州|南京|成都|武汉|西安|合肥|厦门)/i;
 
+function parseBoolean(value, fallback = false) {
+  if (value === undefined) {
+    return fallback;
+  }
+  const text = String(value).trim().toLowerCase();
+  if (['1', 'true', 'yes', 'y', 'on'].includes(text)) return true;
+  if (['0', 'false', 'no', 'n', 'off'].includes(text)) return false;
+  return fallback;
+}
+
+function assertLiveApplyEnabled(args = {}, config = {}) {
+  if (
+    process.env.BOSS_ENABLE_LIVE_APPLY === '1'
+    && parseBoolean(args.live, false)
+    && config.apply?.enabled === true
+    && config.apply?.dryRun === false
+  ) {
+    return;
+  }
+  throw new Error('live BOSS batch apply is disabled; require BOSS_ENABLE_LIVE_APPLY=1, --live true, apply.enabled=true, and apply.dryRun=false for an intentional supervised live run');
+}
+
 function shouldRetryError(error) {
   const text = String(error && (error.stack || error.message || error) || '');
   return text.includes('Inspected target navigated or closed');
@@ -468,10 +490,9 @@ async function main() {
   const timeoutMs = Math.max(30 * 1000, Number(args['timeout-ms'] || 120 * 1000));
 
   const { config } = loadConfig(args.config);
+  assertLiveApplyEnabled(args, config);
   config.apply = {
     ...(config.apply || {}),
-    enabled: true,
-    dryRun: false,
     minMonthlySalaryK: Math.max(20, Number(args['min-salary-k'] || 20)),
   };
 

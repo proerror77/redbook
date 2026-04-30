@@ -43,6 +43,7 @@
 | `/baoyu-post-to-wechat` | active | `.agents/skills/baoyu-post-to-wechat/SKILL.md` | 发布到微信公众号 | 用户明确确认发布后 |
 | `/baoyu-image-gen` | active | `.agents/skills/baoyu-image-gen/SKILL.md` | 通用 AI 图片生成，Tuzi 优先且默认 `gpt-image-2.0` | 非小红书专用图像 |
 | `/baoyu-infographic` | active | `.agents/skills/baoyu-infographic/SKILL.md` | 信息图生成 | 单张视觉总结 |
+| `/zhipin` | active | `.codex/skills/zhipin/SKILL.md` | BOSS/Zhipin 职位浏览、去重、聊天 triage、dry-run gate、保守 live apply | 任何 BOSS 投递、继续投递、修复投递流程或达成每日投递目标前 |
 
 ## Script Entrypoints
 

@@ -10,6 +10,12 @@ OPENCLI_BIN="$(pwd)/../opencli/bin/redbook-opencli.js"
 
 echo "=== Daily Apply Started at $(date) ===" >> "$LOG_FILE"
 
+if [ "${BOSS_ENABLE_LIVE_APPLY:-}" != "1" ]; then
+  echo "[preflight] Live batch apply disabled. Set BOSS_ENABLE_LIVE_APPLY=1 only for an intentional supervised live run." >> "$LOG_FILE"
+  echo "=== Aborted at $(date) ===" >> "$LOG_FILE"
+  exit 1
+fi
+
 # Preflight 1: OpenCLI doctor
 DOCTOR=$(node "$OPENCLI_BIN" doctor 2>&1)
 if echo "$DOCTOR" | node --input-type=module -e "import { parseDoctorOutput } from '../opencli/lib/verify_helpers.js'; const text = await new Promise((resolve) => { let data=''; process.stdin.on('data', (chunk) => data += chunk); process.stdin.on('end', () => resolve(data)); }); process.exit(parseDoctorOutput(text).healthy ? 0 : 1)" 2>/dev/null; then

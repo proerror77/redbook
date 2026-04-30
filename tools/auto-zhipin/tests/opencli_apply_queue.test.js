@@ -6,6 +6,7 @@ const path = require('node:path');
 
 const { ZhipinStore } = require('../lib/store');
 const {
+  checkPreApplyCandidate,
   getApplyMinMonthlySalaryK,
   getRemainingSuccessTarget,
   isSuccessfulApplyResult,
@@ -65,7 +66,7 @@ test('isSuccessfulApplyResult only counts verified apply outcomes', () => {
     status: 'success',
     mode: 'already_continuing',
     url: 'https://www.zhipin.com/job_detail/ok.html',
-  }), true);
+  }), false);
 
   assert.equal(isSuccessfulApplyResult({
     action: 'apply',
@@ -112,6 +113,79 @@ test('isSuccessfulApplyResult only counts verified apply outcomes', () => {
     mode: 'job_card_not_found',
     url: 'https://www.zhipin.com/job_detail/missing.html',
   }), false);
+});
+
+test('checkPreApplyCandidate blocks duplicates, existing chats, and chat-triage hits', () => {
+  const store = makeStore();
+  const config = makeConfig();
+
+  store.upsertApplication({
+    jobId: 'old-url',
+    url: 'https://www.zhipin.com/job_detail/old-url.html',
+    title: 'AI应用架构师',
+    company: '已投公司',
+    salary: '50-60K',
+    salaryText: '50-60K',
+    status: 'applied',
+    appliedAt: '2026-03-22T08:00:00.000Z',
+  });
+
+  assert.deepEqual(
+    checkPreApplyCandidate({
+      store,
+      config,
+      application: {
+        jobId: 'new-url',
+        url: 'https://www.zhipin.com/job_detail/new-url.html',
+        title: 'AI 应用架构师',
+        company: '已投公司',
+        salaryText: '50-60K',
+        companySize: '20-99人',
+      },
+      triage: { blockedEntries: [] },
+    }).reasons,
+    ['duplicate_applied_identity']
+  );
+
+  assert.deepEqual(
+    checkPreApplyCandidate({
+      store,
+      config,
+      application: {
+        jobId: 'continuing-url',
+        url: 'https://www.zhipin.com/job_detail/continuing-url.html',
+        title: 'AI Agent 工程师',
+        company: '小团队',
+        salaryText: '45-60K',
+        companySize: '20-99人',
+        applyState: 'already_continuing',
+      },
+      triage: { blockedEntries: [] },
+    }).reasons,
+    ['already_continuing']
+  );
+
+  assert.deepEqual(
+    checkPreApplyCandidate({
+      store,
+      config,
+      application: {
+        jobId: 'blocked-chat',
+        url: 'https://www.zhipin.com/job_detail/blocked-chat.html',
+        title: 'AI Agent 工程师',
+        company: '拒绝科技',
+        salaryText: '45-60K',
+        companySize: '20-99人',
+      },
+      triage: {
+        blockedEntries: [{
+          category: 'explicit_rejection',
+          matchHints: ['拒绝科技'],
+        }],
+      },
+    }).reasons,
+    ['chat_triage_explicit_rejection']
+  );
 });
 
 test('getApplyMinMonthlySalaryK prefers apply override over filters', () => {

@@ -2,6 +2,8 @@
 
 const { loadConfig } = require('../lib/config');
 const { launchContext, getPrimaryPage } = require('../lib/browser');
+const { readChatTriage } = require('../lib/chat_triage');
+const { checkPreApplyCandidate } = require('../lib/opencli_apply_queue');
 const { ZhipinStore } = require('../lib/store');
 const { applyToJob } = require('../lib/zhipin');
 const { makeApplicationIdentity, nowIso, parseArgs } = require('../lib/utils');
@@ -14,7 +16,7 @@ function printHelp() {
     'Options:',
     '  --url <job-url>          Job detail URL',
     '  --greeting <text>        Greeting to send after clicking apply',
-    '  --dry-run <true|false>   Click apply only, do not continue send flow',
+    '  --dry-run <true|false>   Read-only preflight; do not click apply or send',
     '  --headed <true|false>    Force headed Playwright session',
     '  --channel <channel>      Browser channel, default from config.browser.channel',
     '',
@@ -38,6 +40,70 @@ function parseBoolean(value, fallback) {
   return fallback;
 }
 
+function extractJobDetailId(url) {
+  const match = String(url || '').match(/\/job_detail\/([^/.?#]+)\.html/i);
+  return match ? match[1] : '';
+}
+
+function validateTargetUrl(expectedUrl, result = {}) {
+  const expectedId = extractJobDetailId(expectedUrl);
+  const actualUrl = result.url
+    || result.normalized?.url
+    || result.evidence?.afterMeta?.url
+    || result.evidence?.initialMeta?.url
+    || '';
+  const actualId = extractJobDetailId(actualUrl);
+
+  if (!expectedId) {
+    return {
+      ok: false,
+      reason: 'target_url_not_a_job_detail',
+      expectedUrl,
+      actualUrl,
+    };
+  }
+  if (!actualId) {
+    return {
+      ok: false,
+      reason: 'target_url_not_verified',
+      expectedUrl,
+      actualUrl,
+    };
+  }
+  if (expectedId !== actualId) {
+    return {
+      ok: false,
+      reason: 'target_url_mismatch',
+      expectedUrl,
+      actualUrl,
+    };
+  }
+  return {
+    ok: true,
+    expectedUrl,
+    actualUrl,
+  };
+}
+
+function buildApplicationFromMeta(args, result = {}) {
+  const meta = result.evidence?.afterMeta || result.evidence?.initialMeta || {};
+  const application = {
+    jobId: args.url,
+    url: result.url || meta.url || args.url,
+    title: meta.title || '',
+    company: meta.company || '',
+    salary: meta.salaryText || '',
+    salaryText: meta.salaryText || '',
+    location: '',
+    companySize: meta.companySize || '',
+    stage: meta.stage || '',
+    summary: '',
+    applyState: result.mode === 'already_continuing' ? 'already_continuing' : '',
+  };
+  application.identityKey = makeApplicationIdentity(application);
+  return application;
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (args.help || args.h) {
@@ -51,6 +117,7 @@ async function main() {
 
   const { config } = loadConfig(args.config);
   const store = new ZhipinStore();
+  const triage = readChatTriage();
   const activeRestriction = store.getActiveRestriction();
   if (activeRestriction) {
     throw new Error(`site restricted: ${activeRestriction.reason}; retry after ${activeRestriction.recoveryAt || 'unknown'}`);
@@ -68,25 +135,51 @@ async function main() {
 
   try {
     const page = await getPrimaryPage(context);
-    const result = await applyToJob(page, { url: args.url }, {
+    const preflight = await applyToJob(page, { url: args.url }, {
       greeting: args.greeting || config.apply?.greeting || '',
-      dryRun,
+      dryRun: true,
       buttonTextCandidates: config.apply?.buttonTextCandidates || [],
     });
+    const preflightTargetCheck = validateTargetUrl(args.url, preflight);
+    const preflightApplication = buildApplicationFromMeta(args, preflight);
+    const gate = preflightTargetCheck.ok
+      ? checkPreApplyCandidate({
+        store,
+        config,
+        application: preflightApplication,
+        triage,
+      })
+      : {
+        allow: false,
+        reasons: [preflightTargetCheck.reason],
+        candidate: preflightApplication,
+        existingApplication: null,
+        blockedEntry: null,
+      };
+
+    const result = dryRun || !gate.allow
+      ? preflight
+      : await applyToJob(page, { url: args.url }, {
+        greeting: args.greeting || config.apply?.greeting || '',
+        dryRun: false,
+        buttonTextCandidates: config.apply?.buttonTextCandidates || [],
+      });
+    const targetCheck = validateTargetUrl(args.url, result);
+    const ok = Boolean(result.ok && targetCheck.ok && gate.allow);
+    const reason = targetCheck.ok
+      ? (!gate.allow ? (gate.reasons[0] || 'pre_apply_blocked') : result.reason)
+      : targetCheck.reason;
 
     const application = {
-      jobId: args.url,
-      url: result.url || args.url,
-      title: '',
-      company: '',
-      salary: '',
-      location: '',
-      status: result.ok ? (dryRun ? 'dry_run' : 'applied') : 'failed',
-      reasons: [result.reason].filter(Boolean),
+      ...buildApplicationFromMeta(args, result),
+      status: ok ? (dryRun ? 'dry_run' : 'applied') : (!gate.allow ? 'skipped' : 'failed'),
+      reasons: [reason].filter(Boolean),
       source: 'boss_apply_playwright',
-      identityKey: makeApplicationIdentity({ url: result.url || args.url }),
       reviewedAt: nowIso(),
       applyRunId: runId,
+      targetCheck,
+      preflightTargetCheck,
+      preApplyGate: gate,
     };
     store.upsertJob({
       id: application.jobId,
@@ -95,14 +188,21 @@ async function main() {
       company: application.company,
       salaryText: application.salary,
       location: application.location,
+      companySize: application.companySize,
+      stage: application.stage,
       identityKey: application.identityKey,
       collectedAt: nowIso(),
     });
     store.upsertApplication(application);
-    store.finishRun(runId, result.ok ? 'completed' : 'failed', result);
+    store.finishRun(runId, ok ? 'completed' : 'failed', {
+      ...result,
+      targetCheck,
+      preflightTargetCheck,
+      preApplyGate: gate,
+    });
     store.save({
       operation: 'boss_apply_playwright',
-      phase: result.ok ? 'finish' : 'failed',
+      phase: ok ? 'finish' : 'failed',
       runId,
       url: args.url,
     });
@@ -111,7 +211,12 @@ async function main() {
       backend: 'playwright_profile',
       runId,
       dryRun,
+      preflightTargetCheck,
+      preApplyGate: gate,
+      targetCheck,
       ...result,
+      ok,
+      reason,
     }, null, 2));
   } catch (error) {
     store.finishRun(runId, 'failed', { error: error.message || String(error) });
@@ -127,7 +232,16 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  console.error(error.stack || error.message || String(error));
-  process.exitCode = 1;
-});
+if (require.main === module) {
+  main().catch((error) => {
+    console.error(error.stack || error.message || String(error));
+    process.exitCode = 1;
+  });
+}
+
+module.exports = {
+  buildApplicationFromMeta,
+  extractJobDetailId,
+  main,
+  validateTargetUrl,
+};

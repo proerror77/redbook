@@ -57,6 +57,33 @@ test('evaluateJob rejects excluded keywords and low salary', () => {
   assert.deepEqual(result.reasons.sort(), ['matched_exclude_keyword', 'salary_below_minimum'].sort());
 });
 
+test('evaluateJob rejects salary ranges whose lower bound is below minimum', () => {
+  const result = evaluateJob(
+    {
+      title: 'AI 应用开发工程师',
+      company: '某公司',
+      salaryText: '18-30K',
+      experienceText: '1-3年',
+      degreeText: '本科',
+      summary: 'AI Agent 应用开发',
+    },
+    {
+      includeKeywords: ['AI'],
+      excludeKeywords: [],
+      minMonthlySalaryK: 20,
+      maxExperienceYears: 8,
+      allowedDegrees: ['本科'],
+      excludeCompanySizes: [],
+      excludeFundingStages: [],
+      excludeLocations: [],
+      excludeRecruiterTitles: [],
+    }
+  );
+
+  assert.equal(result.allow, false);
+  assert.ok(result.reasons.includes('salary_below_minimum'));
+});
+
 test('evaluateJob allows a matching engineering role', () => {
   const result = evaluateJob(
     {

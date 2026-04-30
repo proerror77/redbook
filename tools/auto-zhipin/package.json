@@ -10,8 +10,11 @@
     "boss:apply": "node scripts/boss_apply_playwright.js",
     "boss:apply-opencli": "node ../opencli/bin/redbook-opencli.js boss apply",
     "boss:apply-current": "node scripts/opencli_apply_current_tab.js",
+    "boss:apply-cdp": "node scripts/cdp_apply_job.js",
     "chrome:collect": "node scripts/chrome_collect_queue.js",
     "chrome:monitor": "node scripts/chrome_monitor_queue.js",
+    "jobs:collect-cdp": "node scripts/cdp_collect_current_jobs.js",
+    "chat:triage-cdp": "node scripts/cdp_chat_triage_export.js",
     "monitor": "node scripts/chrome_monitor_queue.js",
     "pinchtab:reply": "node scripts/reply_worker.js --backend pinchtab",
     "scan": "node scripts/chrome_collect_queue.js",
@@ -19,7 +22,7 @@
     "reply:playwright": "node scripts/reply_worker.js --backend playwright",
     "report": "node scripts/report.js",
     "funnel-report": "node scripts/funnel_report.js",
-    "test": "node --test"
+    "test": "node --test tests/*.test.js tests/*.test.mjs"
   },
   "keywords": [
     "zhipin",

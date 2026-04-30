@@ -43,3 +43,36 @@ test('ZhipinStore can find an applied application by normalized identity', () =>
   assert.ok(matched);
   assert.equal(matched.jobId, 'job-1');
 });
+
+test('getTodaySuccessfulApplies counts only first successful apply per identity', () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'zhipin-store-today-'));
+  const store = new ZhipinStore({
+    dataDir: tempDir,
+    ledgerPath: path.join(tempDir, 'ledger.json'),
+    eventsPath: path.join(tempDir, 'events.jsonl'),
+  });
+
+  store.upsertApplication({
+    jobId: 'old-url',
+    company: '重复公司',
+    title: 'AI应用架构师',
+    status: 'applied',
+    appliedAt: '2026-03-22T08:00:00.000Z',
+  });
+  store.upsertApplication({
+    jobId: 'today-dup-url',
+    company: '重复公司',
+    title: 'AI 应用 架构师',
+    status: 'applied',
+    appliedAt: '2026-04-30T02:00:00.000Z',
+  });
+  store.upsertApplication({
+    jobId: 'today-new-url',
+    company: '新公司',
+    title: 'AI Agent 工程师',
+    status: 'applied',
+    appliedAt: '2026-04-30T03:00:00.000Z',
+  });
+
+  assert.equal(store.getTodaySuccessfulApplies('2026-04-30T12:00:00.000Z'), 1);
+});

@@ -99,8 +99,8 @@
     ]
   },
   "supervisor": {
-    "enabled": true,
-    "pause": false,
+    "enabled": false,
+    "pause": true,
     "schedulerIntervalMinutes": 5,
     "tickBudgetMs": 600000,
     "lockTtlMs": 1200000,

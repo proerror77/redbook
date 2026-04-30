@@ -1,9 +1,9 @@
 const { evaluateJob, parseSalaryRange } = require('./filters');
+const { matchJobAgainstChatTriage } = require('./chat_triage');
 const { makeApplicationIdentity, normalizeWhitespace } = require('./utils');
 
 const SUCCESS_APPLY_MODES = new Set([
   'sent_message_modal_stay',
-  'already_continuing',
   'chat_navigation',
   'detail_success_signal',
 ]);
@@ -78,6 +78,9 @@ function isSuccessfulApplyResult(result = {}) {
     return false;
   }
   if (url.startsWith('about:blank')) {
+    return false;
+  }
+  if (mode === 'already_continuing') {
     return false;
   }
   if (reason === 'apply_not_verified' || reason === 'job_card_not_found') {
@@ -212,6 +215,68 @@ function shouldAllowAutoApplyCandidate(application = {}, config = {}) {
   };
 }
 
+function buildPreApplyCandidate(application = {}) {
+  const normalized = normalizeApplication(application);
+  normalized.identityKey = normalized.identityKey || makeApplicationIdentity(normalized);
+  return normalized;
+}
+
+function findBlockingApplication(store, application = {}) {
+  if (!store) {
+    return null;
+  }
+
+  const id = application.jobId || application.id || application.url || '';
+  const byId = id ? store.ledger.applications?.[id] : null;
+  if (byId && ['applied', 'skipped', 'deduped'].includes(byId.status)) {
+    return byId;
+  }
+
+  return store.findApplicationByIdentity(application, ['applied', 'skipped', 'deduped']);
+}
+
+function checkPreApplyCandidate({ store, config = {}, application = {}, triage = null }) {
+  const candidate = buildPreApplyCandidate(application);
+  const reasons = [];
+
+  if (!candidate.title) {
+    reasons.push('missing_title_for_apply');
+  }
+
+  if (candidate.applyState === 'already_continuing') {
+    reasons.push('already_continuing');
+  }
+
+  const existing = findBlockingApplication(store, candidate);
+  if (existing) {
+    reasons.push(existing.status === 'applied' ? 'duplicate_applied_identity' : `duplicate_${existing.status}_identity`);
+  }
+
+  const filters = buildApplyFilters(config);
+  const filterDecision = evaluateJob(candidate, filters);
+  if (!filterDecision.allow) {
+    reasons.push(...filterDecision.reasons);
+  }
+
+  const applyDecision = shouldAllowAutoApplyCandidate(candidate, config);
+  if (!applyDecision.allow) {
+    reasons.push(...applyDecision.reasons);
+  }
+
+  const blockedEntry = triage ? matchJobAgainstChatTriage(candidate, triage) : null;
+  if (blockedEntry) {
+    reasons.push(`chat_triage_${blockedEntry.category || 'blocked'}`);
+  }
+
+  return {
+    allow: reasons.length === 0,
+    reasons,
+    candidate,
+    existingApplication: existing || null,
+    blockedEntry: blockedEntry || null,
+  };
+}
+
 function pickOpencliApplyCandidates(store, config = {}, args = {}) {
   if (args.url) {
     return [{
@@ -302,6 +367,8 @@ module.exports = {
   getApplyMinMonthlySalaryK,
   getApplyResultUrl,
   getRemainingSuccessTarget,
+  checkPreApplyCandidate,
+  findBlockingApplication,
   isSuccessfulApplyResult,
   pickOpencliApplyCandidates,
   scoreCandidate,

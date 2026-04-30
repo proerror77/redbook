@@ -446,10 +446,28 @@ class ZhipinStore {
 
   getTodaySuccessfulApplies(date = new Date()) {
     const isoDate = new Date(date).toISOString().slice(0, 10);
-    return Object.values(this.ledger.applications || {}).filter((application) => {
-      return application.status === 'applied'
-        && String(application.appliedAt || '').startsWith(isoDate);
-    }).length;
+    const firstAppliedByIdentity = new Map();
+    for (const application of Object.values(this.ledger.applications || {})) {
+      if (application.status !== 'applied') {
+        continue;
+      }
+      const identityKey = application.identityKey
+        || makeApplicationIdentity(application)
+        || `url:${application.url || application.jobId || application.id || ''}`;
+      if (!identityKey) {
+        continue;
+      }
+      const appliedAt = String(application.appliedAt || '');
+      if (!appliedAt) {
+        continue;
+      }
+      const previous = firstAppliedByIdentity.get(identityKey);
+      if (!previous || appliedAt < previous) {
+        firstAppliedByIdentity.set(identityKey, appliedAt);
+      }
+    }
+
+    return Array.from(firstAppliedByIdentity.values()).filter((appliedAt) => appliedAt.startsWith(isoDate)).length;
   }
 
   summary() {
