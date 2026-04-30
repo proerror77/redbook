@@ -2,6 +2,49 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-04-30 Lane A Current-Timeline Guard
+
+- Owner: Codex
+- Source: User pointed out topic recommendations were old backlog items, not today's X topics
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Make the daily report label backlog/publish reminders as non-current topic sources.
+- [x] Add a fail-closed source contract for Lane A so missing X timeline evidence cannot be replaced by old drafts.
+- [x] Update shared playbook/docs and sync generated mirrors.
+- [x] Run focused smoke checks and commit only scoped workflow changes.
+
+### Review
+
+- `tools/auto-x/scripts/daily_schedule.py` now labels backlog as `发布提醒（非今日选题来源）` and writes an explicit `当日选题来源判定` block into the daily report.
+- Lane A now fails closed in the shared playbook: when X timeline / X search / X Pro are unavailable, the workflow must disclose the evidence gap and must not substitute old drafts, old backlog, or the topic pool.
+- `docs/shared/redbook-playbook.md`, `AGENTS.md`, `CLAUDE.md`, and `docs/reference/skills-manifest.md` now all state the same rule so the constraint is not chat-only.
+- Verification passed: `bash -n tools/auto-x/scripts/run_daily.sh`, `python3 -m py_compile tools/auto-x/scripts/daily_schedule.py`, `python3 tools/sync_redbook_playbook.py`, and report grep checks for the new guard text.
+
+## 2026-04-30 BOSS Apply Safety Repair
+
+- Owner: Codex
+- Source: User asked to fix review findings and test whether the safer BOSS flow is usable
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Make BOSS dry-run a read-only preflight that never clicks the primary CTA.
+- [x] Disable stale live batch apply entrypoints unless an explicit environment gate is set.
+- [x] Align example config with conservative supervisor defaults.
+- [x] Add target URL identity validation to Playwright apply ledger writes.
+- [x] Exclude legacy tests from default `npm test` and run focused verification.
+
+### Review
+
+- BOSS dry-run now returns `dry_run_preflight` from a no-click CTA probe; tests assert the dry-run script contains no click/dispatch path.
+- `auto-zhipin` now prefers the repo vendor OpenCLI boss core over global OpenCLI to avoid version drift during apply/search tests.
+- Stale batch live apply requires `BOSS_ENABLE_LIVE_APPLY=1`; default invocation aborts before search/apply.
+- `config.example.json` supervisor defaults are conservative: disabled and paused.
+- `boss_apply_playwright` records failed instead of applied when the actual job detail id cannot be verified against the requested URL.
+- Verification passed: `npm test` in `tools/auto-zhipin` reports 109/109 pass; changed scripts pass `node --check`; live batch gate smoke aborts as expected; `git diff --check` passes.
+
 ## 2026-04-30 Redbookctl TS Control Surface Migration
 
 - Owner: Codex

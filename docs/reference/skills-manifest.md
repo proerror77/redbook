@@ -18,6 +18,7 @@
 - X.com 和小红书规格不可默认共用：X 默认 `16:9` 单张观点卡，小红书默认 `3:4` / `1080x1440` 多卡片。
 - 新增 workflow / publish / browser / image pipeline 代码默认使用 TypeScript / Bun；Python 入口保留为 legacy 或专项例外，见 `docs/reference/runtime-language-policy.md`。
 - 浏览器类任务先用 `tools/redbookctl browser` 检查当前 Chrome/CDP 登录态；发布和账号操作优先复用已有 tab，避免重复开新页面和新 profile。
+- Lane A 选题研究必须用当日研究区或当前 X timeline 证据；`tools/redbookctl daily` 里的发布提醒/制作中旧稿只作 backlog，不得当作“今天值得写”的来源。
 
 ## Active Entrypoints
 

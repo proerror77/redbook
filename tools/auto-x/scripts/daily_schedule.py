@@ -22,13 +22,18 @@ from x_utils import (
 # ── 发布提醒 ──────────────────────────────────────────────
 
 def generate_publish_reminder() -> str:
-    """扫描内容管道，生成今日发布提醒"""
+    """扫描内容管道，生成发布提醒。
+
+    This section is operational backlog, not a source for "today's topics".
+    Lane A selection must come from live/current research sections below.
+    """
     print_colored("\n" + "=" * 50, 'cyan')
     print_colored("📋 发布提醒", 'cyan')
     print_colored("=" * 50, 'cyan')
 
     sections = []
-    sections.append("## 📋 今日发布提醒\n")
+    sections.append("## 📋 发布提醒（非今日选题来源）\n")
+    sections.append("> 这里只提示旧稿/待发布内容，不能作为“今天有什么值得写”的候选来源。\n")
 
     # 1. 待深化的选题
     pending_dir = PROJECT_ROOT / "01-内容生产" / "01-待深化的选题"
@@ -58,7 +63,7 @@ def generate_publish_reminder() -> str:
     sections.append(f"### 选题池\n- 待处理选题: **{todo_count}** 条\n")
 
     # 4. 发布建议
-    sections.append("### 今日建议")
+    sections.append("### 发布建议")
     if wip_files:
         sections.append(f"- ✅ 有 {len(wip_files)} 篇制作中内容可以发布")
     elif pending_files:
@@ -111,6 +116,25 @@ def generate_hot_tweets_section(hot_tweets: list) -> str:
         lines.append(f"| {content}... | @{author} | {engagement} | |")
     lines.append("")
     return '\n'.join(lines)
+
+
+def generate_topic_source_contract(*, browser_ok: bool, skip_x: bool, topics_source: str) -> str:
+    """State whether the report has current-topic evidence for Lane A."""
+    lines = ["## ✅ 当日选题来源判定\n"]
+
+    if skip_x:
+        lines.append("- X timeline: skipped by `--skip-x`; 不可用于判断今天 X 上值得写什么。")
+    elif browser_ok and topics_source.strip():
+        lines.append("- X timeline / X research: available; Lane A 可从本报告的 X 研究区提取当日选题。")
+    elif browser_ok:
+        lines.append("- X timeline / X research: connected but no usable topic evidence; 不得用发布提醒旧稿顶替。")
+    else:
+        lines.append("- X timeline / X research: unavailable; 不得用发布提醒、制作中内容或旧题库冒充今天热点。")
+
+    lines.append("- Backlog/publish reminders: operational only; not current-topic evidence.")
+    lines.append("- HN/Reddit: 可作为外部热点补充，但若用户明确要 X timeline，必须标明 X 证据缺口。")
+    lines.append("")
+    return "\n".join(lines)
 
 
 # ── 数据回顾 ──────────────────────────────────────────────
@@ -322,6 +346,11 @@ def main():
             hn_limit=args.hn_limit,
             reddit_limit=args.reddit_limit,
         )
+        report_sections.append(generate_topic_source_contract(
+            browser_ok=browser_ok,
+            skip_x=args.skip_x,
+            topics_source=topics_source,
+        ))
         report_sections.append(research)
 
         # 注入 Timeline 爆款 Top 3（紧接在发布提醒之后）
