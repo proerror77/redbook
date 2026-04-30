@@ -10,7 +10,7 @@ Do not jump from a topic or news link directly into writing.
 Every morning topic and every pasted news link first passes through the same decision gate:
 
 ```text
-选题/新闻 -> 决策卡 -> 用户确认形态 -> 对应生产结构 -> 审稿 -> 发布确认 -> 发布回读
+选题/新闻 -> 决策卡 -> 用户确认形态 -> 对应生产结构 -> Persona/受益人/冷读 -> 审稿 -> 发布确认 -> 发布回读
 ```
 
 The agent must recommend one shape instead of asking the user to choose from scratch.
@@ -28,6 +28,8 @@ Use this exact shape when the user asks for morning topics or pastes a news link
 建议形态：
 为什么不是其他形态：
 推荐角度：
+目标受益人：
+Persona 匹配：
 小红书企业翻译：
 下一步：
 ```
@@ -46,7 +48,7 @@ Use this exact shape when the user asks for morning topics or pastes a news link
 
 1. Run or read today's topic report / current X evidence.
 2. Output 3-5 topics as decision cards.
-3. For each topic, include the recommended content shape.
+3. For each topic, include the recommended content shape, target beneficiary, and persona fit.
 4. Do not create content packages yet.
 5. When the user picks one topic and shape, continue into Lane B or Lane C.
 
@@ -56,7 +58,7 @@ When the user pastes a link:
 
 1. Fetch and verify the source.
 2. Summarize the news in one sentence.
-3. Output one decision card.
+3. Output one decision card with target beneficiary and persona fit.
 4. Recommend one shape.
 5. Wait for the user's shape decision unless the user already gave it.
 
@@ -85,6 +87,7 @@ Publishing rules:
 
 - If replying under the source post, use the reply version and do not repeat the link unless needed.
 - If publishing independently, include the original link at the end.
+- Before `/x-mastery-mentor`, state the target beneficiary and why this short comment has a repost/reply reason.
 - Always run `/x-mastery-mentor` quick review before showing the final publishable version.
 - Do not submit until the user explicitly says publish.
 
@@ -118,6 +121,34 @@ Required order:
 11. Progress/wiki/publish ledger update.
 
 For planned longform and Xiaohongshu content, cold-read should happen after at least one context break when practical. If the topic is time-sensitive, use an independent reviewer/subagent-style pass as the minimum substitute, and record that no real waiting period was used.
+
+## How To Start Future Workflows
+
+Use these user-facing starts:
+
+```text
+今天有什么值得写？
+```
+
+Runs Lane A. The agent should inspect current daily/X evidence, return 3-5 decision cards, and stop before drafting.
+
+```text
+这个链接值得写吗？<url>
+```
+
+Runs the pasted-link decision gate. The agent should verify the source, recommend one shape, name the beneficiary/persona fit, and wait for shape confirmation unless the user already asked for a specific output.
+
+```text
+把这个做成短评。<url or topic>
+```
+
+Runs Lane B. The agent may skip shape discussion, but still must verify source, write the fixed short-comment structure, run quick review, and wait for publish confirmation.
+
+```text
+把这个做成完整内容 / 多平台内容 / 小红书图文。
+```
+
+Runs Lane C. The agent must create the content package only after core proposition, platform orchestration, persona/beneficiary gate, cold-read pass, storyboard when needed, and platform-specific review.
 
 ## Agent Behavior
 
