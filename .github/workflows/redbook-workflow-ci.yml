@@ -1,0 +1,82 @@
+name: Redbook Workflow CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/redbook-workflow-ci.yml"
+      - "AGENTS.md"
+      - "CLAUDE.md"
+      - "docs/shared/redbook-playbook.md"
+      - "docs/reference/**"
+      - "tools/redbookctl"
+      - "tools/redbookctl.ts"
+      - "tools/redbookctl.py"
+      - "tools/wiki_workflow.py"
+      - "tools/sync_redbook_playbook.py"
+      - "tools/tests/**"
+      - "tools/auto-x/scripts/**"
+  pull_request:
+    paths:
+      - ".github/workflows/redbook-workflow-ci.yml"
+      - "AGENTS.md"
+      - "CLAUDE.md"
+      - "docs/shared/redbook-playbook.md"
+      - "docs/reference/**"
+      - "tools/redbookctl"
+      - "tools/redbookctl.ts"
+      - "tools/redbookctl.py"
+      - "tools/wiki_workflow.py"
+      - "tools/sync_redbook_playbook.py"
+      - "tools/tests/**"
+      - "tools/auto-x/scripts/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: redbook-workflow-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  workflow-contract:
+    runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Shanghai
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3.5"
+
+      - name: Validate Shared Playbook Sync
+        run: |
+          python3 tools/sync_redbook_playbook.py
+          git diff --exit-code -- AGENTS.md CLAUDE.md docs/shared/redbook-playbook.md
+
+      - name: Check Script Syntax
+        run: |
+          python3 -m py_compile \
+            tools/redbookctl.py \
+            tools/wiki_workflow.py \
+            tools/sync_redbook_playbook.py \
+            tools/auto-x/scripts/daily_schedule.py
+          bash -n tools/daily.sh
+          bash -n tools/auto-x/scripts/run_daily.sh
+          tools/redbookctl --help >/dev/null
+
+      - name: Run Workflow Contract Tests
+        run: |
+          node --test \
+            tools/tests/redbook_workflow_contract.test.mjs \
+            tools/tests/redbookctl_contract.test.mjs
