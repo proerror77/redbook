@@ -2,6 +2,20 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-04-30 BOSS Batch Apply Planning And Deduping
+
+- Owner: Codex Agent Teams
+- Source: User asked to use Agent Teams to plan and execute BOSS AI-role deduped applications from jobs/chat pages with local record consolidation
+- Status: in_progress
+
+### Cleanup Plan
+
+- [ ] Confirm the current normal-Chrome BOSS session can stably access `chat` and `jobs` without Playwright-triggered bounce-back.
+- [ ] Audit local ledger, chat triage, and manual dedupe artifacts to identify trustworthy duplicate-avoidance signals.
+- [ ] Audit current apply scripts and decide the safest executable path for today's run.
+- [ ] Refresh dedupe state from live chat data before any apply attempt.
+- [ ] Start low-risk preflight on AI-related roles and only then move into serial apply execution.
+
 ## 2026-04-30 Lane A Current-Timeline Guard
 
 - Owner: Codex
