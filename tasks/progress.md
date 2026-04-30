@@ -4,6 +4,24 @@
 
 ---
 
+## [2026-04-30] 会话摘要：MinLiBuilds 写作方法整合
+
+**完成了什么：**
+- 核验来源：用户给的 X status `2049487316063072624` 实际跳转到 X Article `2049481948456976385`，匿名访问 403；通过本机已登录 Chrome CDP `127.0.0.1:9224` 读取到文章内容。
+- 方法提炼：外部方法核心是稳定 persona、明确具体受益人、发稿前冷读改稿；不是替代选题或平台编排，而是补足发布前读者视角。
+- Workflow 更新：Lane C 增加 `Persona / 受益人门` 和 `冷读审稿`；计划内容没有冷读结论只能标为草稿，不能进入发布确认。
+- Wiki 更新：新增 `wiki/方法论/受益人冷读审稿.md`，并更新 `wiki/index.md`、`wiki/overview.md`。
+
+**验证：**
+- `python3 tools/sync_redbook_playbook.py`
+- targeted `rg` consistency check for `受益人` / `冷读` / `Persona`
+- scoped `git diff --check`
+
+**未完成 / 遗留：**
+- 需要在后续真实 Lane C 内容包里把 `冷读审稿` 写成固定文件或发布清单字段。
+
+---
+
 ## [2026-04-30] 会话摘要：redbookctl status/workflow-health 合约测试
 
 **完成了什么：**

@@ -2,6 +2,77 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-04-30 Beneficiary Cold-Read Review Workflow
+
+- Owner: Codex
+- Source: User shared MinLiBuilds X article and asked how its writing methodology differs from ours and how to integrate it into the workflow.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Extract the external method into Redbook-native concepts instead of copying the article.
+- [x] Compare it against existing `选题决策门` / `跨平台账号编排` / `原创成长内容闭环`.
+- [x] Add a durable workflow rule for persona, beneficiary, and cold-read review before planned publishing.
+- [x] Update shared playbook / reference docs / wiki index and sync instruction mirrors.
+- [x] Run consistency checks and record completion.
+
+### Review
+
+- The X status resolved through `t.co` to X Article `2049481948456976385`; anonymous access was blocked, so the article was read through the existing logged-in Chrome CDP session on `127.0.0.1:9224`.
+- MinLiBuilds' method is now mapped as a publishing-stage gate, not a replacement for topic selection or platform orchestration.
+- Added `受益人 + 冷读审稿门`: planned content must record persona, concrete beneficiary, and 3 likely reader drop-off points before publish confirmation.
+- Added `wiki/方法论/受益人冷读审稿.md` and indexed it in `wiki/index.md` / `wiki/overview.md`.
+- Synced shared playbook into `AGENTS.md` and `CLAUDE.md`.
+- Verification passed: targeted `rg` consistency check and scoped `git diff --check`.
+
+## 2026-04-30 Editorial Decision Workflow Stabilization
+
+- Owner: Codex
+- Source: User is dissatisfied that links jump straight into draft/package generation instead of first discussing post shape and using the fixed article structures.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Add a fixed editorial decision gate between topic/link intake and content production.
+- [x] Make morning topic review and pasted-news-link review use the same recommendation card.
+- [x] Require agent to recommend one shape, state tradeoffs, and wait for user's shape decision before creating full content packages.
+- [x] Lock per-shape output structures for short comment, longform, X thread/article, and Xiaohongshu enterprise cards.
+- [x] Update shared playbook, skill manifest, and synced instruction mirrors.
+- [x] Add a durable reference doc and progress record.
+
+### Review
+
+- Added `docs/reference/editorial-decision-workflow.md` as the canonical decision gate for morning topics and pasted news links.
+- Updated `docs/shared/redbook-playbook.md`: every topic/link now first gets a decision card before drafting or package creation unless the user has already decided the shape.
+- Updated Lane B so short comments use the fixed structure: news anchor -> account judgment -> why it matters -> link/reply structure.
+- Updated `docs/reference/skills-manifest.md` so the active entrypoint list names the decision workflow.
+- Synced shared playbook into `AGENTS.md` and `CLAUDE.md`.
+- Added wiki method `wiki/方法论/选题决策门.md` and indexed it in `wiki/index.md` / `wiki/overview.md`.
+
+## 2026-04-30 Cross-Platform Account Direction Workflow
+
+- Owner: Codex
+- Source: User clarified that X and Xiaohongshu should share one account direction: X carries judgment, Xiaohongshu translates the same thesis into business / enterprise AI application.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Review current Redbook Lane C, wiki, recent article packages, and publish/checklist artifacts for cross-platform drift.
+- [x] Add an account-thesis gate so selected topics must first become one core proposition before platform writing starts.
+- [x] Add an XHS enterprise-application gate: no direct longform splitting; cards must map to business scenario, management question, ROI/risk/workflow implication, and action checklist.
+- [x] Add durable wiki/methodology support so the direction is searchable before future drafting.
+- [x] Update the current orchestration package with a platform orchestration note for X vs Xiaohongshu.
+- [x] Run doc sync and consistency checks.
+
+### Review
+
+- Added the core rule: X.com carries judgment and industry signal; Xiaohongshu translates the same thesis into enterprise / business AI application.
+- Lane A now asks whether a topic can be translated into Xiaohongshu's enterprise/business reader task; otherwise it remains X-only.
+- Lane C now requires `核心命题` and `平台编排` before Xiaohongshu generation.
+- Wiki now has `wiki/方法论/跨平台账号编排.md`, and `AI Agent企业导入与协作` records the 2026-04-30 direction correction.
+- Current orchestration package now has `平台编排.md` and an updated `发布清单.md` showing X published and Xiaohongshu pending enterprise-oriented rewrite.
+- Verification passed: shared playbook sync, targeted `rg` consistency check, and `git diff --check`.
+
 ## 2026-04-30 BOSS Batch Apply Planning And Deduping
 
 - Owner: Codex Agent Teams
