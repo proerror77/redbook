@@ -183,10 +183,13 @@ npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md --submit               #
 | `--cover <path>` | Cover image |
 | `--title <text>` | Override title |
 | `--submit` | Publish (default: preview) |
-| `--headed` | Open a visible browser for login/manual preview or inline content-image paste |
-| `--headless` | Force background mode (default; inline content images are rejected because they still require clipboard paste) |
+| `--cdp-endpoint <url>` | Existing Chrome CDP endpoint to reuse; required when pairing with browser-trace so trace and script observe the same browser |
+| `--headed` | Open a visible browser for login/manual preview |
+| `--headless` | Force background mode (default; inline content images use direct file upload and fail closed if X does not persist them) |
 
 **Frontmatter**: `title`, `cover_image` supported in YAML front matter.
+
+**Inline image caveat**: X Article has separate cover/header media controls and body-editor media controls with similar labels. Body images must be inserted through the body toolbar flow `Insert/Add media content -> Media`; a global media-button query can overwrite the cover. Cover upload opens an Apply modal, but body-media upload may commit directly without an Apply modal. The script verifies the preview DOM after draft creation and fails closed if body media does not persist.
 
 ---
 

@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-- 状态：本地 X Article 已补齐中间插图；X 平台草稿箱已写入封面 + 正文，但中间图受 macOS 粘贴权限阻挡，尚未成功进入平台草稿。
+- 状态：X 平台草稿箱已写入封面 + 正文 + 3 张正文中间插图；未发布。
 - 发布形态：X Article / 长文 + 1 张 16:9 主图 + 3 张正文插图。
 - 主图：`images/x-agent-payment-permission-layer-codex.png`
 - 正文插图：
@@ -51,8 +51,12 @@ Stripe 和 OKX 同时在补 Agent payment layer。
   - `Content inserted successfully (4434 chars)`
   - `Article composed (draft mode)`
 - 未使用 `--submit`，没有发布。
-- 当前正文已补 3 张中间插图；尝试重新写入 X Article 草稿时，脚本找到 3 个图片占位符，但 `osascript` 无权发送 Cmd+V，导致 inline 图片未能粘贴进平台编辑器。
-- data image HTML 替代路径也已尝试，X 编辑器未保留图片。
+- 2026-05-01 修复后重新写入草稿，当前草稿 preview URL：`https://x.com/compose/articles/edit/2050103269012484096/preview`。
+- Browser DOM 回读确认 `pbs.twimg.com/media` 大图共 4 张：
+  - 1 张 `alt="文章封面图片"`，尺寸 `1672x669`。
+  - 3 张正文图 `alt="图像"`，尺寸均为 `1672x941`。
+- 保存 payload 回读确认 `ArticleEntityUpdateContent` 最终包含 3 个 `atomic` blocks 和 3 个 `MEDIA` entity，media ids 分别写入 `entity_map`。
+- 修复后的正文图插入路径：先聚焦正文编辑器，再点顶部正文工具栏 `插入 / 添加媒体内容`，随后点菜单项 `媒体`；不能点封面区域的 `添加照片或视频`。
 
 ## 发布前门槛
 
@@ -70,3 +74,22 @@ Stripe 和 OKX 同时在补 Agent payment layer。
 - Stripe：写成用户确认 + 一次性支付凭证 + 真实支付信息隔离，不写成完全自动付款。
 - OKX：escrow / dispute resolution 属于 roadmap / future capability，不写成已完整落地。
 - 两者不是直接竞品：Stripe 偏现有法币/商户网络，OKX 偏链上 Agent-to-Agent commerce。
+
+## 2026-05-01 Browser-trace 诊断结论
+
+- trace run：`.o11y/x-article-inline-realclick-20260501-134237`
+- 关键证据：X Article 保存请求 `ArticleEntityUpdateContent` 共 3 次，`content_state.blocks` 分别约 75 / 119 / 174 blocks，但 `entityMap` 均为空，blocks 类型只有 `unstyled` / `header-two` / `unordered-list-item`，没有 image/media entity。
+- 同一 trace 中能看到 `media_upload:local_file:tweet_image` 成功日志和 mediaId，说明图片上传到 X media pipeline 成功，但没有绑定进 Article 正文内容模型。
+- 预览页 DOM 验证：账号 `Smileyface @0xcybersmile`，草稿 URL 为 `/compose/articles/edit/2050088414528294913/preview`，`pbs.twimg.com/media` 大图只有 1 张，即封面；正文 3 张插图未持久化。
+- 结论：当前 X Article 网页编辑器不可靠支持脚本方式插入正文图片；脚本 stdout 不能作为成功依据，必须以后置 preview media count / 保存 payload 验证为准。
+- 修复动作：`x-article.ts` 已改为 preview 后 fail-closed；若正文图未持久化，会报错而不是声称草稿完成。headed 模式下 Chrome 也会 `unref()`，避免“浏览器留着导致脚本进程不退出”的假卡住。
+
+## 2026-05-01 修复后 trace 结论
+
+- trace run：`.o11y/x-article-body-menu-20260501-try2`
+- 根因修正：正文图片不能全局点击 `添加照片或视频`，该按钮属于封面/header 区，会覆盖封面；正文插图入口是顶部编辑工具栏 `插入 / 添加媒体内容` -> 菜单项 `媒体`。
+- trace DOM method 证据：
+  - 封面路径：`HTMLElement.click` 命中 `aria-label="添加照片或视频"`，随后出现封面裁剪 modal 和 `data-testid="applyButton"`。
+  - 正文路径：正文图上传时没有封面 modal；选择文件后直接异步生成 Article content atomic block。
+- 保存 payload 证据：`ArticleEntityUpdateContent` 从 0 个 `atomic` block 增长到 3 个 `atomic` block，`entity_map` 从 0 个增长到 3 个 `MEDIA` entity。
+- 预览 DOM 证据：`/compose/articles/edit/2050103269012484096/preview` 中 `pbs.twimg.com/media` 大图为 4 张，1 张封面 + 3 张正文图。
