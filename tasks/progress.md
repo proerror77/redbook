@@ -4,6 +4,29 @@
 
 ---
 
+## [2026-05-01] 会话摘要：Stripe vs OKX Agent Payment X Article 工作流
+
+**完成了什么：**
+- 将 `Agent 支付基础设施 - Stripe vs OKX` 内容包推进到 X.com 长文工作流。
+- 新增 `X-Article版.md`，把通用长文改成适合 X Article 的观点钩子、对比结构和结尾判断。
+- 新增 `图文分镜.md`，明确 X.com 单图规格、视觉隐喻、文字预算、排版 QA 和生成交接。
+- 新增 `X审稿.md`，按 X 长文审阅维度检查 Hook、内容推进、算法层和 CTA。
+- 新增 `X发布清单.md`，保留发布主帖建议、配图路径、发布前门槛和事实边界。
+- 配图生成：Tuzi `baoyu-image-gen` 因 `Invalid Token` 失败；已记录在 `images/生成记录.md`，并用本地 SVG 兜底生成可用 PNG 主图。
+
+**验证：**
+- `rsvg-convert` 导出 PNG 成功。
+- `file` / `sips` 验证 `images/x-agent-payment-permission-layer.png` 为 `1920 x 1080` PNG。
+- 人工查看图片：标题可读，主体与文字不重叠，无 Stripe / OKX logo、无真实银行卡号。
+- `git diff --check -- 01-内容生产/02-制作中的选题/2026-05-01-Agent支付基础设施-Stripe-vs-OKX`
+
+**未完成 / 遗留：**
+- 未发布；仍需用户明确说“发布 / 直接发”。
+- 正式发布前需跑 `tools/redbookctl x-login`，并在发布后回读 X 状态页/主页证据。
+- Tuzi 图像 token 需要修复；当前图为本地 SVG 兜底图。
+
+---
+
 ## [2026-04-30] 会话摘要：MinLiBuilds 写作方法整合
 
 **完成了什么：**
