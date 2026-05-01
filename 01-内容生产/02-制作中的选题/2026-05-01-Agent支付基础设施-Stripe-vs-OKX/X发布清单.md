@@ -2,9 +2,9 @@
 
 ## 当前状态
 
-- 状态：草稿完成，待用户确认发布。
+- 状态：已放入 X Article 草稿箱，待用户确认发布。
 - 发布形态：X Article / 长文 + 1 张 16:9 主图。
-- 主图：`images/x-agent-payment-permission-layer.png`
+- 主图：`images/x-agent-payment-permission-layer-codex.png`
 - X Article 正文：`X-Article版.md`
 - 审稿：`X审稿.md`
 
@@ -26,16 +26,27 @@ Stripe 和 OKX 同时在补 Agent payment layer。
 文件：
 
 ```text
-01-内容生产/02-制作中的选题/2026-05-01-Agent支付基础设施-Stripe-vs-OKX/images/x-agent-payment-permission-layer.png
+01-内容生产/02-制作中的选题/2026-05-01-Agent支付基础设施-Stripe-vs-OKX/images/x-agent-payment-permission-layer-codex.png
 ```
 
 检查：
 
 - PNG 真实产出。
-- 尺寸：1920x1080。
+- 尺寸：1672x941。
+- 来源：Codex 原生 image_gen，原始文件保留在 `/Users/proerror/.codex/generated_images/019de182-abbd-7892-bad8-121ef711296c/`。
 - 无 Stripe / OKX logo。
 - 无真实银行卡号。
 - 标题和主体无重叠。
+
+## 草稿箱记录
+
+- `tools/redbookctl x-login` 已通过，账号：`Smileyface @0xcybersmile`。
+- 第一次 draft mode 正文写入成功，但封面路径被解析成重复相对路径，封面大概率未进入草稿。
+- 第二次 draft mode 使用绝对封面路径，日志确认：
+  - `Cover image applied, modal closed`
+  - `Content inserted successfully (4434 chars)`
+  - `Article composed (draft mode)`
+- 未使用 `--submit`，没有发布。
 
 ## 发布前门槛
 
