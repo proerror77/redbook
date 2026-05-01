@@ -2,9 +2,13 @@
 
 ## 当前状态
 
-- 状态：已放入 X Article 草稿箱，待用户确认发布。
-- 发布形态：X Article / 长文 + 1 张 16:9 主图。
+- 状态：本地 X Article 已补齐中间插图；X 平台草稿箱已写入封面 + 正文，但中间图受 macOS 粘贴权限阻挡，尚未成功进入平台草稿。
+- 发布形态：X Article / 长文 + 1 张 16:9 主图 + 3 张正文插图。
 - 主图：`images/x-agent-payment-permission-layer-codex.png`
+- 正文插图：
+  - `images/inline-01-final-step.png`
+  - `images/inline-02-two-rails.png`
+  - `images/inline-03-bounded-agent.png`
 - X Article 正文：`X-Article版.md`
 - 审稿：`X审稿.md`
 
@@ -47,6 +51,8 @@ Stripe 和 OKX 同时在补 Agent payment layer。
   - `Content inserted successfully (4434 chars)`
   - `Article composed (draft mode)`
 - 未使用 `--submit`，没有发布。
+- 当前正文已补 3 张中间插图；尝试重新写入 X Article 草稿时，脚本找到 3 个图片占位符，但 `osascript` 无权发送 Cmd+V，导致 inline 图片未能粘贴进平台编辑器。
+- data image HTML 替代路径也已尝试，X 编辑器未保留图片。
 
 ## 发布前门槛
 

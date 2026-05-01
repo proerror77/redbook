@@ -46,6 +46,8 @@ OKX 推出 Agent Payments Protocol，也就是 APP。它讨论的不是传统 ch
 
 支付就是最典型的真实动作。
 
+![Agent 卡在付款最后一步：真正的边界不是能力，而是授权。](images/inline-01-final-step.png)
+
 ## Stripe：让 Agent 能付款，但不要碰真实银行卡
 
 Stripe 的路线更接近现有商业世界。
@@ -140,6 +142,8 @@ OKX 解决的是“Agent 之间如何形成可结算的商业关系”。
 
 后者更接近未来的 Agent 网络。
 
+![Stripe 和 OKX 是两条不同的 Agent 支付轨道：人授权付款，与 Agent-to-Agent 结算。](images/inline-02-two-rails.png)
+
 ## 真正的问题不是支付，而是授权
 
 很多人看到这些新闻，会自然把注意力放在“AI 可以付款了”。
@@ -224,6 +228,8 @@ OKX 的路线则提供了另一个未来想象：如果 Agent 之间的服务调
 但它们共同说明一件事：
 
 Agent 想进入真实经济活动，必须先学会被约束。
+
+![企业不会接受无限权限的 Agent，只会接受有额度、白名单、审批和审计的 Agent。](images/inline-03-bounded-agent.png)
 
 ## Agent 经济不会从“全自动”开始
 
