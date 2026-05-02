@@ -29,6 +29,7 @@ Posts text, images, videos, and long-form articles to X via real Chrome browser 
 | Script | Purpose |
 |--------|---------|
 | `scripts/x-browser.ts` | Regular posts (text + images) |
+| `scripts/x-delete.ts` | Delete own X status URLs with expected-handle guard |
 | `scripts/x-video.ts` | Video posts (text + video) |
 | `scripts/x-quote.ts` | Quote tweet with comment |
 | `scripts/x-article.ts` | Long-form article publishing (Markdown) |
@@ -120,6 +121,17 @@ npx -y bun ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png --subm
 - If headless mode cannot recover the active browser itself, rerun with `--headed`; the script will wait for login/verification and never submit until the composer is visible.
 - If headed mode times out while waiting for login recovery, the launched browser stays open by default. Finish login manually, then rerun the same command.
 - Use `--close-on-login-required` only for deliberate cleanup runs.
+
+**Delete/correction workflow**:
+
+```bash
+npx -y bun ${SKILL_DIR}/scripts/x-delete.ts --url https://x.com/0xcybersmile/status/123 --dry-run
+npx -y bun ${SKILL_DIR}/scripts/x-delete.ts --url https://x.com/0xcybersmile/status/123
+```
+
+- Use only after explicit user approval to delete or replace a published X post.
+- Always run `--dry-run` first; it must identify an owned status URL under `expected_handle`.
+- The script refuses to delete third-party status URLs and verifies the status is absent after deletion.
 
 ---
 
