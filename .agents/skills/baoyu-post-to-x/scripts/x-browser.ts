@@ -175,6 +175,14 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
         : getExpectedXHandle()
     );
 
+    const expectedUsername = (): string => {
+      const expectedHandle = resolveExpectedHandle();
+      if (!expectedHandle) {
+        throw new Error('X submit verification requires --expected-handle or expected_handle in EXTEND.md.');
+      }
+      return expectedHandle.replace(/^@/, '').toLowerCase();
+    };
+
     const requireExpectedAccount = async (
       context: string,
       requireConfigured: boolean = false,
@@ -221,19 +229,45 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
     const countComposerMedia = async (): Promise<number> => {
       const result = await cdp!.send<{ result: { value?: number } }>('Runtime.evaluate', {
         expression: `(function() {
-          const selectors = [
-            '[data-testid="attachments"] img',
-            '[data-testid="tweetPhoto"] img',
-            'div[aria-label="Image"] img',
-            'img[src^="blob:"]',
-            'img[src*="pbs.twimg.com/media"]'
-          ];
-          const images = Array.from(document.querySelectorAll(selectors.join(',')));
-          return images.filter((el) => {
+          function isVisible(el) {
             const rect = el.getBoundingClientRect();
             const style = window.getComputedStyle(el);
             return rect.width > 20 && rect.height > 20 && style.display !== 'none' && style.visibility !== 'hidden';
-          }).length;
+          }
+
+          function findComposerRoot() {
+            const editors = Array.from(document.querySelectorAll('[contenteditable="true"][data-testid="tweetTextarea_0"]'))
+              .filter(isVisible)
+              .sort((a, b) => b.getBoundingClientRect().height - a.getBoundingClientRect().height);
+            const editor = editors[0];
+            if (!editor) return null;
+
+            let node = editor;
+            while (node && node !== document.body) {
+              if (node.querySelector?.('[data-testid="tweetButton"], [data-testid="tweetButtonInline"]')) {
+                return node;
+              }
+              node = node.parentElement;
+            }
+            return editor.closest('[role="dialog"]') || editor.closest('article') || editor.closest('main');
+          }
+
+          const root = findComposerRoot();
+          if (!root) return 0;
+
+          const mediaRoots = Array.from(root.querySelectorAll(
+            '[data-testid="attachments"] [data-testid="tweetPhoto"], [data-testid="attachments"] [aria-label="Image"], [data-testid="tweetPhoto"], div[aria-label="Image"]'
+          )).filter((el) => {
+            if (!isVisible(el)) return false;
+            const img = el.querySelector('img[src^="blob:"], img[src*="pbs.twimg.com/media"]');
+            return Boolean(img && isVisible(img));
+          });
+          if (mediaRoots.length > 0) return mediaRoots.length;
+
+          const sources = new Set(Array.from(root.querySelectorAll(
+            '[data-testid="attachments"] img[src^="blob:"], [data-testid="attachments"] img[src*="pbs.twimg.com/media"], [data-testid="tweetPhoto"] img[src^="blob:"], [data-testid="tweetPhoto"] img[src*="pbs.twimg.com/media"]'
+          )).filter(isVisible).map((img) => img.getAttribute('src')).filter(Boolean));
+          return sources.size;
         })()`,
         returnByValue: true,
       }, { sessionId });
@@ -259,14 +293,59 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
       return result.result.value || '';
     };
 
-    const findCandidateStatusUrl = async (): Promise<string | null> => {
+    const normalizeOwnStatusUrl = (rawUrl: string, username: string): string | null => {
+      try {
+        const url = new URL(rawUrl);
+        if (!['x.com', 'twitter.com'].includes(url.hostname.replace(/^www\./, ''))) return null;
+        const match = url.pathname.match(new RegExp(`^/${username}/status/(\\d+)`, 'i'));
+        if (!match) return null;
+        return `https://x.com/${username}/status/${match[1]}`;
+      } catch {
+        return null;
+      }
+    };
+
+    const statusIdFromUrl = (rawUrl: string, username: string): string | null => {
+      const normalized = normalizeOwnStatusUrl(rawUrl, username);
+      return normalized?.match(/\/status\/(\d+)$/)?.[1] || null;
+    };
+
+    const findMatchingOwnTimelinePostUrl = async (username: string, expectedSnippet: string): Promise<string | null> => {
       const result = await cdp!.send<{ result: { value?: string | null } }>('Runtime.evaluate', {
         expression: `(function() {
-          const anchors = Array.from(document.querySelectorAll('a[href*="/status/"]'));
-          const href = anchors
-            .map((a) => a.href)
-            .find((href) => /\\/status\\/\\d+/.test(href) && !href.includes('/analytics') && !href.includes('/photo/'));
-          return href || null;
+          const username = ${JSON.stringify(username)};
+          const expectedSnippet = ${JSON.stringify(expectedSnippet)};
+          function normalizeText(value) {
+            return String(value || '').replace(/\\s+/g, ' ').trim();
+          }
+          function ownStatusUrl(rawUrl) {
+            try {
+              const url = new URL(rawUrl);
+              const host = url.hostname.replace(/^www\\./, '');
+              if (host !== 'x.com' && host !== 'twitter.com') return null;
+              const match = url.pathname.match(new RegExp('^/' + username + '/status/(\\\\d+)', 'i'));
+              if (!match) return null;
+              return 'https://x.com/' + username + '/status/' + match[1];
+            } catch {
+              return null;
+            }
+          }
+          const articles = Array.from(document.querySelectorAll('article')).filter((article) => {
+            const rect = article.getBoundingClientRect();
+            const style = window.getComputedStyle(article);
+            return rect.width > 0 && rect.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
+          });
+          for (const article of articles) {
+            const textMatches = expectedSnippet
+              ? normalizeText(article.innerText).includes(normalizeText(expectedSnippet))
+              : true;
+            if (!textMatches) continue;
+            const ownHref = Array.from(article.querySelectorAll('a[href*="/status/"]'))
+              .map((anchor) => ownStatusUrl(anchor.href))
+              .find(Boolean);
+            if (ownHref) return ownHref;
+          }
+          return null;
         })()`,
         returnByValue: true,
       }, { sessionId });
@@ -274,37 +353,81 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
     };
 
     const waitForPublishedPostUrl = async (): Promise<string> => {
+      const username = expectedUsername();
+      const expectedSnippet = text?.trim().replace(/\s+/g, ' ').slice(0, 40) || '';
       const start = Date.now();
+      let openedProfile = false;
       while (Date.now() - start < 30_000) {
         const currentUrl = await getCurrentUrl();
-        if (/\/status\/\d+/.test(currentUrl)) return currentUrl;
-        const candidate = await findCandidateStatusUrl();
-        if (candidate) return candidate;
+        const currentOwnStatus = normalizeOwnStatusUrl(currentUrl, username);
+        if (currentOwnStatus) return currentOwnStatus;
+
+        if (!openedProfile && Date.now() - start > 4_000) {
+          openedProfile = true;
+          await cdp!.send('Page.navigate', { url: `https://x.com/${username}` }, { sessionId, timeoutMs: 5_000 });
+          await sleep(3000);
+        }
+
+        if (openedProfile) {
+          const candidate = await findMatchingOwnTimelinePostUrl(username, expectedSnippet);
+          if (candidate) return candidate;
+        }
         await sleep(1000);
       }
-      throw new Error('Post submitted, but no status URL was found. Refusing to claim success without a verifiable X status URL.');
+      throw new Error(`Post submitted, but no matching status URL was found on @${username}'s timeline. Refusing to claim success without a verifiable own-account X status URL.`);
     };
 
     const verifyPublishedPost = async (postUrl: string): Promise<void> => {
+      const username = expectedUsername();
+      const normalizedPostUrl = normalizeOwnStatusUrl(postUrl, username);
+      if (!normalizedPostUrl) {
+        throw new Error(`Refusing to verify a non-owned or malformed X status URL: ${postUrl}`);
+      }
+      const statusId = statusIdFromUrl(normalizedPostUrl, username);
+      if (!statusId) {
+        throw new Error(`Unable to parse X status id from URL: ${normalizedPostUrl}`);
+      }
+
       const currentUrl = await getCurrentUrl();
-      if (!currentUrl.includes(postUrl.replace(/^https?:\/\/(x|twitter)\.com/, ''))) {
-        await cdp!.send('Page.navigate', { url: postUrl }, { sessionId, timeoutMs: 5_000 });
+      if (normalizeOwnStatusUrl(currentUrl, username) !== normalizedPostUrl) {
+        await cdp!.send('Page.navigate', { url: normalizedPostUrl }, { sessionId, timeoutMs: 5_000 });
         await sleep(4000);
       }
 
-      const expectedSnippet = text?.trim().slice(0, 40) || '';
+      const expectedSnippet = text?.trim().replace(/\s+/g, ' ').slice(0, 40) || '';
       const result = await cdp!.send<{ result: { value?: string } }>('Runtime.evaluate', {
         expression: `JSON.stringify((function() {
-          const bodyText = document.body.innerText || '';
-          const photoLinks = Array.from(document.querySelectorAll('a[href*="/photo/"]'));
-          const visibleMedia = Array.from(document.querySelectorAll('[data-testid="tweetPhoto"] img, img[src*="pbs.twimg.com/media"]')).filter((el) => {
+          const username = ${JSON.stringify(username)};
+          const statusId = ${JSON.stringify(statusId)};
+          const expectedSnippet = ${JSON.stringify(expectedSnippet)};
+          function isVisible(el) {
             const rect = el.getBoundingClientRect();
             const style = window.getComputedStyle(el);
             return rect.width > 20 && rect.height > 20 && style.display !== 'none' && style.visibility !== 'hidden';
-          });
+          }
+          function normalizeText(value) {
+            return String(value || '').replace(/\\s+/g, ' ').trim();
+          }
+          function isOwnStatusLink(anchor) {
+            try {
+              const url = new URL(anchor.href);
+              const host = url.hostname.replace(/^www\\./, '');
+              if (host !== 'x.com' && host !== 'twitter.com') return false;
+              return new RegExp('^/' + username + '/status/' + statusId + '(?:$|/)', 'i').test(url.pathname);
+            } catch {
+              return false;
+            }
+          }
+          const articles = Array.from(document.querySelectorAll('article')).filter(isVisible);
+          const article = articles.find((candidate) => (
+            Array.from(candidate.querySelectorAll('a[href*="/status/"]')).some(isOwnStatusLink)
+          )) || articles[0] || document.body;
+          const articleText = article.innerText || '';
+          const photoLinks = Array.from(article.querySelectorAll('a[href*="/photo/"]')).filter(isOwnStatusLink);
+          const visibleMedia = Array.from(article.querySelectorAll('[data-testid="tweetPhoto"] img, img[src*="pbs.twimg.com/media"]')).filter(isVisible);
           return {
             url: window.location.href,
-            hasExpectedText: ${JSON.stringify(expectedSnippet)} ? bodyText.includes(${JSON.stringify(expectedSnippet)}) : true,
+            hasExpectedText: expectedSnippet ? normalizeText(articleText).includes(normalizeText(expectedSnippet)) : true,
             mediaCount: photoLinks.length + visibleMedia.length
           };
         })())`,
@@ -318,13 +441,13 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
       };
 
       if (text && !verification.hasExpectedText) {
-        throw new Error(`Published X post did not show the expected text snippet on the status page: ${postUrl}`);
+        throw new Error(`Published X post did not show the expected text snippet on the matched status page: ${normalizedPostUrl}`);
       }
       if (images.length > 0 && (verification.mediaCount || 0) < 1) {
-        throw new Error(`Published X post did not show an image/photo link on the status page: ${postUrl}`);
+        throw new Error(`Published X post did not show an image/photo link on the matched status article: ${normalizedPostUrl}`);
       }
 
-      console.log(`[x-browser] Verified post: ${verification.url || postUrl} (media=${verification.mediaCount || 0})`);
+      console.log(`[x-browser] Verified post: ${verification.url || normalizedPostUrl} (media=${verification.mediaCount || 0})`);
     };
 
     const editorFound = await waitForEditor();

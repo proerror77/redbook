@@ -107,10 +107,11 @@ npx -y bun ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png --subm
 
 **Image safety gate**:
 - If `--image` is provided and the file does not exist, the script aborts before opening X.
-- If images are provided but the composer does not show the same number of attached media, the script refuses to submit.
+- If images are provided but the active composer does not show the same number of attached media, the script refuses to submit. Page-wide images, avatars, quoted-post previews, and timeline media do not count.
 - `--submit` fails closed unless `expected_handle` is configured (or `--expected-handle` is provided) and the visible account matches before any text, image, or click action.
 - `--submit` defaults to the configured publishing profile/new browser; implicit `127.0.0.1:9222` reuse is only allowed when `--cdp-endpoint` is passed explicitly and the handle check still passes.
-- After `--submit`, success is claimed only after a status URL is found and the status page shows the expected text plus a photo/media link.
+- After `--submit`, success is claimed only after a status URL from the expected account is found by matching the submitted text on that account's timeline or current status page.
+- For image posts, verification must find media on the matched main status article itself. Media posted later as a reply does not satisfy main-post image verification.
 - Do not report a post as published from script stdout alone; include the status URL or explain the verification blocker.
 
 **Login recovery gate**:
