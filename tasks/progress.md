@@ -21,6 +21,8 @@
 **遗留：**
 - 本轮中途的旧后台 target 对 X reply modal 不稳定，已改走现有可复用 X tab 的 inline composer 路径；后续批量回复应继续先跑 1 条 smoke，再跑大批量。
 - 用户随后指出多条回复质量差、AI 味重；已补充 `05-选题研究/X-互动回复质量复审-2026-05-05-batch2.md`，确认上一轮只是机械 gate，不等于真正内容审稿。删除/重发需用户明确确认。
+- 用户确认后，删除质量复审中最差的 12 条回复；删除清单和证据写入 `05-选题研究/X-互动回复删除清单-2026-05-05-batch2.json` 与 `05-选题研究/X-互动回复删除记录-2026-05-05-batch2.md`，最终逐条回读均为 `absent`。
+- 重新从当前 X timeline 测试 5 条新回复，只选 AI / Codex / workflow 相关候选，先写 reviewed JSON，再跑 review gate；结果 `approved=5 blocked=0`，发布结果 `posted_verified=5 failed=0`，记录在 `05-选题研究/X-互动回复记录-2026-05-05-test5.md` / `.jsonl`。
 
 ## [2026-05-05] 会话摘要：BOSS chat 复查与追加投递中断
 

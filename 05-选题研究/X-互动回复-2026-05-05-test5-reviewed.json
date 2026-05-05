@@ -1,0 +1,52 @@
+[
+  {
+    "handle": "eastweb3eth",
+    "url": "https://x.com/eastweb3eth/status/2051596138852339996",
+    "language": "zh",
+    "reply": "回老家还想让台式机继续跑任务太真实了。远控别只看能不能连上，断线后任务会不会丢更要命。",
+    "review": {
+      "status": "approved",
+      "notes": "贴原帖回老家、台式机、Agent 干活场景；中文帖中文回复；具体问题是断线和任务保留。"
+    }
+  },
+  {
+    "handle": "yanhua1010",
+    "url": "https://x.com/yanhua1010/status/2051535299340095564",
+    "language": "zh",
+    "reply": "这个入口有意思，不用重搭原来的工具链，先拿本地模型试 agent。团队试错成本会低很多。",
+    "review": {
+      "status": "approved",
+      "notes": "回应 Claude/Ollama/第三方模型入口；没有硬套大判断；保留团队试错成本这一账号主线。"
+    }
+  },
+  {
+    "handle": "wsl8297",
+    "url": "https://x.com/wsl8297/status/2051502614622380225",
+    "language": "zh",
+    "reply": "OMX 对我最大的价值是把“先想清楚再开写”变成默认动作。尤其是 interview 和 ralplan，能少掉很多返工。",
+    "review": {
+      "status": "approved",
+      "notes": "回应原帖 OMX、interview、ralplan 细节；用个人体验，不像泛化广告。"
+    }
+  },
+  {
+    "handle": "changloria0816",
+    "url": "https://x.com/changloria0816/status/2051307036470923705",
+    "language": "zh",
+    "reply": "X 书签整理成一周执行清单这个方向很实用。我最想先解决的是去重和优先级，不然收藏夹还是会变成另一个待办黑洞。",
+    "review": {
+      "status": "approved",
+      "notes": "贴 X 书签 workflow 和一周执行清单；提出具体后续问题：去重和优先级。"
+    }
+  },
+  {
+    "handle": "Saccc_c",
+    "url": "https://x.com/Saccc_c/status/2051546040021442744",
+    "language": "zh",
+    "reply": "这个我赞同，Codex 卡很多时候不是模型问题，是上下文和旧记录太重。定期归档比一直开新会话干净。",
+    "review": {
+      "status": "approved",
+      "notes": "回应 Codex App 越用越卡和清理旧记录；短、口语、贴工具使用体验。"
+    }
+  }
+]
