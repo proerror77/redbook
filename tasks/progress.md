@@ -4,6 +4,27 @@
 
 ---
 
+## [2026-05-05] 会话摘要：BOSS 联合创始人推荐流投递 30 个
+
+**完成了什么：**
+- 按用户要求先读取 BOSS chat：当前 CDP `9224` 上打开/读取了 BOSS chat 页，可见 50 条会话，含 05月02日“博远微加”、04月30日“元响科技”等近期沟通。
+- 将当前 chat 可见公司转成去重阻断项，并清洗掉 `AI / Agent / CEO / pdf / base` 等泛词，避免误挡所有 AI 岗位。
+- 从当前 BOSS jobs 页点击 `联合创始人(上海)` tab，分三轮向下滚动收集候选：
+  - 第一轮：92 个职位，39 个初筛匹配，成功投递 10 个。
+  - 第二轮：257 个职位，87 个初筛匹配，成功数补到 18 个。
+  - 第三轮：452 个职位，161 个初筛匹配，排除已处理后继续投递，成功数补到 30 个。
+- 每个职位都先跑 detail dry-run gate，过 URL / 公司名 / 薪资 / 公司规模 / 黑名单 / ledger / chat 去重后才 live apply。
+
+**验证：**
+- `tools/redbookctl browser --json`：BOSS 当前仍为 `reusable`，CDP endpoint `http://127.0.0.1:9224`。
+- `node scripts/report.js`：`todaySuccessfulApplies: 30`，`applied: 505`。
+- `ZhipinStore.getTodaySuccessfulApplies(new Date())`：返回 `30`；当天 raw applied 也是 `30`。
+- 结果文件：`tools/auto-zhipin/data/union-founder-apply-20260505T052914.json`、`...T053315.json`、`...T054209.json`。
+
+**未完成 / 遗留：**
+- `chat:triage-cdp` 现有 Playwright 版仍不稳定，本轮报 `Target page, context or browser has been closed`；实际改用低层 CDP 可见列表完成 chat 去重。
+- 本轮没有突破硬性策略：1000+ 公司、集团/研究院/大厂、已投/已聊、关键词不符仍全部跳过。
+
 ## [2026-05-05] 会话摘要：BOSS 登录与 browser 状态读取修复
 
 **完成了什么：**
