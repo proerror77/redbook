@@ -4,6 +4,21 @@
 
 ---
 
+## [2026-05-05] 会话摘要：X 高质量回复工作流沉淀与扩量 20 条
+
+**完成了什么：**
+- 将用户认可的 5 条测试回复方式沉淀为固定工作流：新增 `docs/reference/x-engagement-reply-workflow.md`，并同步更新 `docs/shared/redbook-playbook.md`、`docs/reference/skills-manifest.md`、`AGENTS.md`、`CLAUDE.md`。
+- 固定规则：先账号/浏览器预检；排除已回复 source status；只选 AI / Codex / workflow / 企业落地 / 工具链 / 风控相关候选；先做真人感、原帖细节、账号契合的内容审稿，再跑脚本 gate；候选不足不硬凑。
+- 从当前 X timeline 抓取 35 个候选，排除历史已回复 source URL 后，筛出 20 条账号主线相关回复。
+- 先发 1 条 live smoke 并验证成功，再跑完整 20 条；第一条在完整批次中识别为 `already_exists`，没有重复发布。
+
+**验证 / 证据：**
+- `tools/redbookctl x-login --timeout-ms 45000`：账号 gate 通过，发布账号为 `Smileyface @0xcybersmile`。
+- `reply_engagement_queue.mjs --review-only --targets 05-选题研究/X-互动回复-2026-05-05-batch3-20-reviewed.json`：`approved=20 blocked=0`。
+- 发布脚本完成：`posted_or_existing=20 failed=0`；最终记录统计为 `already_exists: 1`、`posted_verified: 19`、`unique_sources: 20`、`unique_verify_urls: 20`、`missing_verify: []`。
+- 首条验证 URL：`https://x.com/0xcybersmile/status/2051610090965500196`；末条验证 URL：`https://x.com/0xcybersmile/status/2051612188381732980`。
+- 记录文件：`05-选题研究/X-互动回复记录-2026-05-05-batch3-20-final.md` / `.jsonl`。
+
 ## [2026-05-05] 会话摘要：OpenCLI/OpenSeal BOSS 更新复查
 
 **完成了什么：**

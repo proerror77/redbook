@@ -1,0 +1,202 @@
+[
+  {
+    "handle": "WY_mask",
+    "url": "https://x.com/WY_mask/status/2051549545499410664",
+    "language": "zh",
+    "reply": "这种教程最有用的不是讲概念，而是把安装、跑任务、接代码仓库这些第一步铺平。新手少卡半小时就能继续往下试。",
+    "review": {
+      "status": "approved",
+      "notes": "回应 Codex 教程合集的具体内容；强调新手第一步，不空泛。"
+    }
+  },
+  {
+    "handle": "servasyy_ai",
+    "url": "https://x.com/servasyy_ai/status/2051300350725144852",
+    "language": "zh",
+    "reply": "如果每一章都能落到一个可运行项目，这本书就比大多数讲智能体的材料强。工程师需要的是能跑起来的边界感。",
+    "review": {
+      "status": "approved",
+      "notes": "贴 30 个可构建 agent 项目的细节；强调可运行项目。"
+    }
+  },
+  {
+    "handle": "jinchenma_ai",
+    "url": "https://x.com/jinchenma_ai/status/2050889856788639908",
+    "language": "zh",
+    "reply": "我同意方向，但更看重的是孩子能不能把一个小项目从想法做到交付。会用工具只是起点，闭环经验更稀缺。",
+    "review": {
+      "status": "approved",
+      "notes": "回应孩子使用 Codex/Claude Code 的暴论；不争吵，转向项目闭环。"
+    }
+  },
+  {
+    "handle": "dongxi_nlp",
+    "url": "https://x.com/dongxi_nlp/status/2051412715361419297",
+    "language": "zh",
+    "reply": "这种退化最伤的是信任。写代码时一次乱改配置，用户就会开始怀疑后面每一步是不是也要手动复查。",
+    "review": {
+      "status": "approved",
+      "notes": "回应 Claude Code 质量报告和降智问题；具体到乱改配置和复查成本。"
+    }
+  },
+  {
+    "handle": "wquguru",
+    "url": "https://x.com/wquguru/status/2051328724973609335",
+    "language": "zh",
+    "reply": "软件工程师不会消失，但工作内容会往验收、拆任务、管边界迁移。会写代码的人很多，会交付的人还是少。",
+    "review": {
+      "status": "approved",
+      "notes": "回应 Vibe Coding 和软件工程师主题；贴账号交付主线。"
+    }
+  },
+  {
+    "handle": "noahduck283",
+    "url": "https://x.com/noahduck283/status/2051465717284004338",
+    "language": "zh",
+    "reply": "触发机制和渐进式披露这两点很容易被忽略。Skill 写太满，模型反而不知道什么时候该拿出来用。",
+    "review": {
+      "status": "approved",
+      "notes": "引用原帖中的触发机制和渐进式披露；具体、不泛。"
+    }
+  },
+  {
+    "handle": "shao__meng",
+    "url": "https://x.com/shao__meng/status/2051473689175302618",
+    "language": "zh",
+    "reply": "语音延迟这事用户不会原谅。慢半拍就像被打断，技术指标最后都会变成很直接的对话体感。",
+    "review": {
+      "status": "approved",
+      "notes": "回应低延迟语音 AI 和自然感；避免堆技术词。"
+    }
+  },
+  {
+    "handle": "coolish",
+    "url": "https://x.com/coolish/status/2051568473499934764",
+    "language": "zh",
+    "reply": "外卖口味太准了。很多个人记忆不在硬盘里，反而散在点评、订单、聊天和截图里，导出才是第一关。",
+    "review": {
+      "status": "approved",
+      "notes": "贴原帖外卖口味、大众点评导出和个人记忆上下文。"
+    }
+  },
+  {
+    "handle": "AdrianPunk115",
+    "url": "https://x.com/AdrianPunk115/status/2051494055692116286",
+    "language": "zh",
+    "reply": "小企业自动化这块确实有缺口，但卖点不能是“我会用工具”。客户只关心能不能少雇人、少漏单、少返工。",
+    "review": {
+      "status": "approved",
+      "notes": "回应 Claude 自动化业务；落到小企业 ROI 和交付。"
+    }
+  },
+  {
+    "handle": "Phoenixyin13",
+    "url": "https://x.com/Phoenixyin13/status/2051516062001209588",
+    "language": "zh",
+    "reply": "这个排序挺实用。主系统、深度协作、生态插件、舆论雷达分开看，比单纯问哪个模型最强更接近真实用法。",
+    "review": {
+      "status": "approved",
+      "notes": "回应四类模型订阅角色；贴原帖排序。"
+    }
+  },
+  {
+    "handle": "nake13",
+    "url": "https://x.com/nake13/status/2051353290118766980",
+    "language": "zh",
+    "reply": "两个助手互相讨论十几轮还没收敛，我也遇到过。最好一开始就给验收标准，不然它们会把讨论当成产出。",
+    "review": {
+      "status": "approved",
+      "notes": "回应两个 Agent 浪费 token；给出具体办法：验收标准。"
+    }
+  },
+  {
+    "handle": "NFTCPS",
+    "url": "https://x.com/NFTCPS/status/2051503233156440329",
+    "language": "zh",
+    "reply": "Plan、确认、全自动三种模式分开很重要。不是所有任务都该一路放手跑，先看再动往往更省事。",
+    "review": {
+      "status": "approved",
+      "notes": "回应 DeepSeek TUI 三种模式；强调任务权限边界。"
+    }
+  },
+  {
+    "handle": "dontbesilent",
+    "url": "https://x.com/dontbesilent/status/2051588974032846935",
+    "language": "zh",
+    "reply": "把愿望改成可检查目标这一步很值。很多人失败不是没动力，是目标一开始就没法被验收。",
+    "review": {
+      "status": "approved",
+      "notes": "回应 dbskill /dbs-goal；贴目标审计和验收。"
+    }
+  },
+  {
+    "handle": "Zhm20220917",
+    "url": "https://x.com/Zhm20220917/status/2051254135518024039",
+    "language": "zh",
+    "reply": "非标制造这个切口很好。企业第一步通常不是上大模型，而是先把现场流程、表单、异常记录整理到能被复用。",
+    "review": {
+      "status": "approved",
+      "notes": "回应制造业 AI 调研；贴企业落地和现场流程。"
+    }
+  },
+  {
+    "handle": "geekbb",
+    "url": "https://x.com/geekbb/status/2051262059573071929",
+    "language": "zh",
+    "reply": "这种小工具适合做开发者名片。比简历更直观的是项目、贡献热力图和技术栈一眼能看见。",
+    "review": {
+      "status": "approved",
+      "notes": "回应 GitHub 个人主页工具；贴开发者展示。"
+    }
+  },
+  {
+    "handle": "Astronaut_1216",
+    "url": "https://x.com/Astronaut_1216/status/2051292042278371347",
+    "language": "zh",
+    "reply": "先摸能力边界再算成本，这个顺序我认可。很多工具第一天看贵，是因为还没找到它最适合替掉哪段流程。",
+    "review": {
+      "status": "approved",
+      "notes": "回应 OpenClaw 能力边界和成本顺序；不空泛。"
+    }
+  },
+  {
+    "handle": "CTracy0803",
+    "url": "https://x.com/CTracy0803/status/2051147343630872882",
+    "language": "zh",
+    "reply": "中转站风险不能只看技术能不能搭起来。账号来源、计费、授权、日志留存，任何一环不清楚都会出事。",
+    "review": {
+      "status": "approved",
+      "notes": "回应 AI 中转站法律风险；贴风控和合规环节。"
+    }
+  },
+  {
+    "handle": "wsl8297",
+    "url": "https://x.com/wsl8297/status/2051179783674007853",
+    "language": "zh",
+    "reply": "截图识别最怕只会 OCR。表格、公式、题目思路都能拆出来，才会真的进入学习和办公流程。",
+    "review": {
+      "status": "approved",
+      "notes": "回应 Snippai 的 OCR、公式、表格、题目思路；贴实际用法。"
+    }
+  },
+  {
+    "handle": "Jaden_riku",
+    "url": "https://x.com/Jaden_riku/status/2051082944870339062",
+    "language": "zh",
+    "reply": "我也觉得账号会越来越像简历，但前提是它能持续证明你会发现问题、做出东西、解释取舍。",
+    "review": {
+      "status": "approved",
+      "notes": "回应 AI 时代自媒体账号取代简历；具体到证明能力。"
+    }
+  },
+  {
+    "handle": "GitHub_Daily",
+    "url": "https://x.com/GitHub_Daily/status/2051517304543105279",
+    "language": "zh",
+    "reply": "给 AI 输出加一套文档设计约束很有必要。不是为了好看，是为了让读者愿意读完、愿意转发。",
+    "review": {
+      "status": "approved",
+      "notes": "回应 Kami 文档设计系统；贴读完和转发价值。"
+    }
+  }
+]

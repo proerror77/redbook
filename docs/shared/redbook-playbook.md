@@ -36,6 +36,8 @@
 - 新增 workflow / publish / browser / image pipeline 代码默认使用 TypeScript / Bun；Python 只保留 legacy、wiki/harness/daily research 或一次性数据脚本。详细规则见 `docs/reference/runtime-language-policy.md`。
 - 浏览器工作先跑 `tools/redbookctl browser` 检查现有 Chrome/CDP tabs；X 发布 profile 先跑 `tools/redbookctl x-login` 检查 composer 和 `expected_handle`；小红书发布前先跑 `tools/redbookctl xhs-health`，需要管理页证据时加 `--with-content-data`；优先复用已登录 tab 或已配置 profile，不默认新开未登录 profile、空白页或可见窗口。
 - 每日 X 运营必须生成 `X-互动队列-YYYY-MM-DD.md`：从当前 X timeline 找 20 条高互动人/帖，给出语言匹配的回复草稿，目标是建立账号活人感；默认只生成候选和草稿，不自动发布评论。
+- X timeline 批量回复必须使用 `docs/reference/x-engagement-reply-workflow.md`：先预检账号与当前浏览器，排除已回复 source status，只选账号主线相关帖，先做真人感 / 原帖细节 / 账号契合的内容审稿，再跑脚本 gate；候选不足时少回，不硬凑数量。
+- X 批量回复扩量前先做 5 条测试；用户认可风格后才扩大。发布后必须逐条拿 `with_replies` 验证 URL。用户指出 AI 味或质量差时，先做 keep/delete/rewrite 复审；删除必须等用户明确确认。
 
 ---
 
@@ -50,7 +52,7 @@
 4. 发布提醒只用于提醒旧稿可发布，不是当日选题来源；除非用户明确要求“从旧稿里挑今天发什么”。
 5. 输出 3-5 个可写选题，每个使用 `选题决策卡`：热度、争议点、账号契合、建议形态、推荐角度、目标受益人、Persona 匹配、为什么不建议其他形态。
 6. 对每个候选明确平台翻译：X.com 的观点钩子是什么，小红书能否落到企业/商业/管理者场景；不能落地的小红书只标 X，不强行多平台。
-7. 同步生成每日 X 互动队列：优先从 timeline 中挑有回复/转帖/喜欢势能、且能接上账号主线的人和帖子，生成 20 条回复候选。
+7. 同步生成每日 X 互动队列：优先从 timeline 中挑有回复/转帖/喜欢势能、且能接上账号主线的人和帖子，生成 20 条回复候选；实际发布回复时必须按 `x-engagement-reply-workflow` 复筛和审稿。
 8. 不创建完整 content run，不写发布清单，不自动写 `00-选题记录.md`。
 
 完成标准：

@@ -12,6 +12,7 @@
 - 新闻链接型内容不要直接生成完整内容包；先输出一张固定决策卡，并给出 agent 推荐形态和理由，减少用户反复重复工作。
 - X 短评固定结构是：新闻锚点 -> 账号判断 -> 为什么重要 -> 原链接/回复结构；发布前必须过 `/x-mastery-mentor` 快速审稿。
 - X 发布前必须通过 `tools/redbookctl x-login`；真实 `--submit` 必须有 `expected_handle` 并在输入/点击前校验账号。
+- X timeline 批量回复必须按 `docs/reference/x-engagement-reply-workflow.md` 执行：当前浏览器/账号预检、排除已回复 source status、只选账号主线相关帖、内容质量审稿 + 脚本 gate、5 条测试通过后再扩量、发布后逐条 `with_replies` 回读验证。候选不够好时少回，不硬凑数量。
 - 小红书发布前必须通过 `tools/redbookctl xhs-health`；需要管理页证据时加 `--with-content-data`。
 - X / 小红书发布成功不能只看脚本 stdout；X 必须回查状态 URL、主页/状态页、发布时间/图片证据，小红书不能只看 `FILL_STATUS` / `PUBLISH_STATUS`，必须有成功页、管理页或 note id 等平台侧证据。
 - 配图 / 图文生成默认模型是 Tuzi/兔子 `gpt-image-2.0`；Nano Banana / Gemini 只能作为用户明确指定的 fallback。
@@ -61,6 +62,7 @@
 | `tools/redbookctl publish-record` | active-script | `tools/redbookctl.ts` -> `tools/record_publish.py` | 发布数据 JSONL 主账本追加工具 | record 脚本待契约测试后迁移 |
 | `tools/redbookctl challenge` / `emerge` / `draft-seed` | active-script | `tools/redbookctl.ts` -> `tools/content_loop.py` | 本地语料 challenge / idea mining / 草稿种子 | content loop 待迁 TS |
 | Editorial decision workflow | active-doc | `docs/reference/editorial-decision-workflow.md` | 每日选题和新闻链接的固定形态判断门 | 先判断短评/长文/thread/小红书/只收藏，再生产 |
+| X engagement reply workflow | active-doc | `docs/reference/x-engagement-reply-workflow.md` | X timeline 批量回复的候选筛选、内容审稿、测试扩量、发布验证和删除纠错流程 | 回复 timeline、扩量互动、修正 AI 味回复 |
 | `tools/auto-zhipin` npm scripts | active-script | `tools/auto-zhipin/README.md` | BOSS 登录、扫描、投递预检、消息监看、台账报告 | 主链是 `boss:login` / `chrome:collect` / `boss:apply` / `report`；current-tab/OpenCLI 仅 fallback |
 | Runtime language policy | active-doc | `docs/reference/runtime-language-policy.md` | TS/Bun canonical runtime 与 Python legacy 边界 | 新增或迁移 workflow 代码前 |
 
