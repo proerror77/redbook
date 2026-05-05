@@ -18,6 +18,7 @@ The workflow has real external side effects. Treat BOSS `立即沟通` / `投递
 - Reuse the existing logged-in Chrome/CDP session when available.
 - Do not steal focus. Pass `--focus false` and do not call `Page.bringToFront` unless the user explicitly asks for foreground control.
 - Prefer the current normal browser/CDP route for this user's BOSS work. Use Computer Use only as a fallback for blocked visual/manual cases.
+- Do not use OpenCLI/OpenSeal BOSS adapters as the main path for BOSS work. As of 2026-05-05, OpenCLI `1.7.12` did not show a BOSS-specific fix, `boss chat-list` was no longer compatible, `boss chatlist` reported expired BOSS cookies, and `boss search` still failed with browser/network errors. Treat OpenCLI/OpenSeal as version/doctor evidence only unless the user explicitly asks to repair that adapter; operate BOSS through the existing web page/CDP scripts instead.
 - Do not use rapid search loops. Prefer browsing existing BOSS result pages, job tabs, and natural page recommendations like a human, with moderate scrolling.
 - Before any live apply, run detail dry-run and inspect the gate result.
 - If the page shows login, security check, restricted access, abnormal access, or bounce-back behavior, stop apply work and diagnose session health first.

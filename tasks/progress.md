@@ -4,6 +4,22 @@
 
 ---
 
+## [2026-05-05] 会话摘要：OpenCLI/OpenSeal BOSS 更新复查
+
+**完成了什么：**
+- 复查本地 OpenCLI：当前 repo wrapper / Browser Bridge 仍是 `1.6.8`，doctor 显示 Daemon / Extension / Connectivity 连接正常，但提示可更新到 `1.7.12`。
+- 复查 npm / GitHub Release：最新为 `@jackwener/opencli@1.7.12`，release notes 没有 BOSS 相关修复；主要是 CLI help、browser 原语、extension bridge、其他站点 adapter、metadata/audit。
+- 用 `npx -y @jackwener/opencli@1.7.12` 做只读 smoke：
+  - `--version` 返回 `1.7.12`。
+  - `doctor` 报 daemon stale，Extension 仍是 `v1.6.8`，并提示大量本地 adapter override / access metadata 兼容问题。
+  - `boss chat-list --limit 5 -f json -v` 不再兼容，提示 unknown command，建议 `chatlist`。
+  - `boss chatlist --limit 5 -f json -v` 报 `Cookie 已过期！请在当前 Chrome 浏览器中重新登录 BOSS 直聘。`
+  - `boss search '联合创始人' --city 上海 --limit 1 -f json -v` 报 `Network Error`。
+
+**结论 / 规则更新：**
+- 这次更新不能解决当前 BOSS 问题，且对本机 OpenCLI adapter 环境有额外兼容风险。
+- 已更新 `.codex/skills/zhipin/SKILL.md` 和 `.agents/skills/zhipin/SKILL.md`：以后 BOSS 相关任务不再默认使用 OpenCLI/OpenSeal；OpenCLI 只作为版本/doctor 诊断参考，实际 chat/search/apply 走现有网页/CDP 路径，必要时再用 Browser Trace。
+
 ## [2026-05-05] 会话摘要：X timeline 追加回复 30 条
 
 **完成了什么：**
