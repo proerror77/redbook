@@ -1,5 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
+const { isNonMonthlySalaryRate, isNonTechnicalApplyRole } = require('./filters');
 const { DATA_DIR, EVENTS_PATH, LEDGER_PATH } = require('./paths');
 const { nowIso, stableHash, makeApplicationIdentity } = require('./utils');
 const { isCircuitBreakerActive } = require('./site_health');
@@ -449,6 +450,16 @@ class ZhipinStore {
     const firstAppliedByIdentity = new Map();
     for (const application of Object.values(this.ledger.applications || {})) {
       if (application.status !== 'applied') {
+        continue;
+      }
+      if (isNonMonthlySalaryRate(application.salaryText || application.salary || '')) {
+        continue;
+      }
+      if (isNonTechnicalApplyRole([
+        application.title,
+        application.company,
+        application.summary,
+      ].filter(Boolean).join(' | '))) {
         continue;
       }
       const identityKey = application.identityKey

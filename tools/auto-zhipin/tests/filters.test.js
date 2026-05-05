@@ -1,7 +1,14 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const { evaluateJob, normalizeBossDigits, parseExperience, parseSalaryRange } = require('../lib/filters');
+const {
+  evaluateJob,
+  isNonMonthlySalaryRate,
+  isNonTechnicalApplyRole,
+  normalizeBossDigits,
+  parseExperience,
+  parseSalaryRange,
+} = require('../lib/filters');
 
 test('parseSalaryRange parses monthly salary text', () => {
   assert.deepEqual(parseSalaryRange('25-35K·14薪'), {
@@ -196,6 +203,78 @@ test('evaluateJob rejects weekly-rate opportunities before they consume communic
 
   assert.equal(result.allow, false);
   assert.deepEqual(result.reasons, ['weekly_rate_excluded']);
+});
+
+test('evaluateJob rejects hourly and yuan monthly rates before they consume communication quota', () => {
+  const filters = {
+    includeKeywords: ['智能体'],
+    excludeKeywords: [],
+    minMonthlySalaryK: 20,
+    maxExperienceYears: 8,
+    allowedDegrees: ['本科', '硕士'],
+    excludeCompanyKeywords: [],
+    excludeCompanySizes: [],
+    excludeFundingStages: [],
+    excludeLocations: [],
+    excludeRecruiterTitles: [],
+  };
+
+  assert.equal(isNonMonthlySalaryRate('50-100元/时'), true);
+  assert.equal(isNonMonthlySalaryRate('2000-3000元/月'), true);
+  assert.equal(isNonMonthlySalaryRate('25-35K·14薪'), false);
+
+  assert.deepEqual(
+    evaluateJob({
+      title: '智能体开发',
+      company: '智映社',
+      salaryText: '50-100元/时',
+      experienceText: '1-3年',
+      degreeText: '本科',
+      summary: '智能体开发',
+    }, filters).reasons,
+    ['hourly_rate_excluded']
+  );
+
+  assert.deepEqual(
+    evaluateJob({
+      title: 'AI Agent 开发',
+      company: '低薪公司',
+      salaryText: '2000-3000元/月',
+      experienceText: '1-3年',
+      degreeText: '本科',
+      summary: '智能体开发',
+    }, filters).reasons,
+    ['yuan_monthly_rate_excluded']
+  );
+});
+
+test('evaluateJob rejects non-technical AI operations and anchor roles', () => {
+  const result = evaluateJob(
+    {
+      title: 'Ai落地应用推荐官/主播/互联网运营',
+      company: '海南深航信息技术',
+      salaryText: '20-40K',
+      experienceText: '经验不限',
+      degreeText: '本科',
+      summary: '负责AI落地应用推广和直播运营',
+    },
+    {
+      includeKeywords: ['AI', 'AI落地'],
+      excludeKeywords: [],
+      minMonthlySalaryK: 20,
+      maxExperienceYears: 10,
+      allowedDegrees: ['本科', '硕士'],
+      excludeCompanyKeywords: [],
+      excludeCompanySizes: [],
+      excludeFundingStages: [],
+      excludeLocations: [],
+      excludeRecruiterTitles: [],
+    }
+  );
+
+  assert.equal(isNonTechnicalApplyRole('Ai落地应用推荐官/主播/互联网运营'), true);
+  assert.equal(result.allow, false);
+  assert.ok(result.reasons.includes('non_technical_role_excluded'));
 });
 
 test('evaluateJob rejects blacklisted big-company and institution keywords', () => {

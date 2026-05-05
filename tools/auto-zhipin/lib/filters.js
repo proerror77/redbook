@@ -24,6 +24,22 @@ function parseSalaryRange(text) {
   };
 }
 
+function isNonMonthlySalaryRate(text) {
+  const normalized = normalizeWhitespace(normalizeBossDigits(text));
+  return /元\s*\/\s*(天|周|时|月)/.test(normalized);
+}
+
+function isNonTechnicalApplyRole(text) {
+  return containsAny(text, [
+    '主播',
+    '推荐官',
+    '互联网运营',
+    '直播运营',
+    '内容运营',
+    '投放',
+  ]);
+}
+
 function parseExperience(text) {
   const normalized = normalizeWhitespace(text);
   if (!normalized || normalized.includes('经验不限')) {
@@ -69,6 +85,12 @@ function evaluateJob(job, filters) {
   if (salaryText.includes('元/周')) {
     reasons.push('weekly_rate_excluded');
   }
+  if (salaryText.includes('元/时')) {
+    reasons.push('hourly_rate_excluded');
+  }
+  if (salaryText.includes('元/月')) {
+    reasons.push('yuan_monthly_rate_excluded');
+  }
 
   if (filters.includeKeywords.length > 0 && !containsAny(haystack, filters.includeKeywords)) {
     reasons.push('missing_include_keyword');
@@ -76,6 +98,10 @@ function evaluateJob(job, filters) {
 
   if (filters.excludeKeywords.length > 0 && containsAny(haystack, filters.excludeKeywords)) {
     reasons.push('matched_exclude_keyword');
+  }
+
+  if (isNonTechnicalApplyRole(haystack)) {
+    reasons.push('non_technical_role_excluded');
   }
 
   if (filters.excludeCompanyKeywords?.length > 0 && containsAny(haystack, filters.excludeCompanyKeywords)) {
@@ -144,6 +170,8 @@ function evaluateJob(job, filters) {
 
 module.exports = {
   parseSalaryRange,
+  isNonMonthlySalaryRate,
+  isNonTechnicalApplyRole,
   parseExperience,
   evaluateJob,
   normalizeBossDigits,
