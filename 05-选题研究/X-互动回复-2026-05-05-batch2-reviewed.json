@@ -1,0 +1,302 @@
+[
+  {
+    "handle": "GoSailGlobal",
+    "url": "https://x.com/GoSailGlobal/status/2051160512696868984",
+    "language": "zh",
+    "reply": "成本降下来以后，CLI 外壳反而会变成分发层。团队要评估的是替换后工具权限、文件修改和回滚还能不能稳。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；接 DeepSeek/Claude Code 成本和 agent loop 语境；无链接，非模板。"
+    }
+  },
+  {
+    "handle": "_FORAB",
+    "url": "https://x.com/_FORAB/status/2051479970506293357",
+    "language": "zh",
+    "reply": "OpenAI 早期这段最有意思的是治理结构。钱、使命和控制权一旦混在一起，后面产品再强也会被旧账追上。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；评论治理结构，不扩写未核验事实；无攻击性。"
+    }
+  },
+  {
+    "handle": "superdoteng",
+    "url": "https://x.com/superdoteng/status/2051337107860308276",
+    "language": "en",
+    "reply": "The interesting part is the switch between GUI chat and terminal. Coding agents win when they can stay inside the developer's actual loop.",
+    "review": {
+      "status": "approved",
+      "notes": "English post; English reply; concrete product observation; no link."
+    }
+  },
+  {
+    "handle": "laozhouhengmei",
+    "url": "https://x.com/laozhouhengmei/status/2051139998146285707",
+    "language": "zh",
+    "reply": "很多产品和城市管理都怕遇到这种用户：规则不是没写清楚，而是对方把罚款当成购买体验的一部分。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；从规则和用户行为角度切入；避免群体攻击。"
+    }
+  },
+  {
+    "handle": "sunyunran",
+    "url": "https://x.com/sunyunran/status/2051265597523263794",
+    "language": "zh",
+    "reply": "这种出圈很像低成本传播样本：没有复杂叙事，就是一个动作、一个镜头、一个能被反复转发的状态。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；从传播结构评论，不冒犯人物。"
+    }
+  },
+  {
+    "handle": "jike_collection",
+    "url": "https://x.com/jike_collection/status/2051277037822984518",
+    "language": "zh",
+    "reply": "双床房这个选择很像产品里的冗余设计：平时看起来浪费，真要放东西、分区、临时办公时就很值。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；把酒店经验接到产品/工作流视角；无风险词。"
+    }
+  },
+  {
+    "handle": "lvjin1993",
+    "url": "https://x.com/lvjin1993/status/2051182299031765492",
+    "language": "zh",
+    "reply": "这些器械说明书缺失太久了。公共设施如果靠用户自己猜用法，设计再多也只是摆设。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；评论公共设施设计；短句。"
+    }
+  },
+  {
+    "handle": "CharlesXBoy",
+    "url": "https://x.com/CharlesXBoy/status/2051300455473680653",
+    "language": "zh",
+    "reply": "车的安全体验就是这样，平时都是参数，出事那一秒才知道系统有没有把极端情况算进去。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；从安全系统角度评论；不夸大事实。"
+    }
+  },
+  {
+    "handle": "iPaulCanada",
+    "url": "https://x.com/iPaulCanada/status/2051475367253135551",
+    "language": "zh",
+    "reply": "排队系统最难的是让普通用户觉得公平。只要付费插队太可见，体验差的就不只是等待时间了。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；接服务规则和公平感；无攻击性。"
+    }
+  },
+  {
+    "handle": "VincentLogic",
+    "url": "https://x.com/VincentLogic/status/2051309691603735011",
+    "language": "zh",
+    "reply": "这类灰产最麻烦的地方就在这里：单步看都像合规动作，连起来才露出意图。风控不能只看单点材料。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；接风控和流程视角；不使用禁词。"
+    }
+  },
+  {
+    "handle": "qingge369",
+    "url": "https://x.com/qingge369/status/2051309512733368531",
+    "language": "zh",
+    "reply": "韩国电影厉害的地方是敢把尴尬拍满。很多桥段不靠解释，靠一个动作就把人物关系说清了。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；转向影视表达，不跟随低俗措辞。"
+    }
+  },
+  {
+    "handle": "dotyyds1234",
+    "url": "https://x.com/dotyyds1234/status/2051263303272341661",
+    "language": "zh",
+    "reply": "费率这类成本最容易被忽略，因为它不像亏损那样刺眼。策略回测如果不把极端费率放进去，收益会虚高很多。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；接交易成本/回测语境；无风险词。"
+    }
+  },
+  {
+    "handle": "oragnes",
+    "url": "https://x.com/oragnes/status/2051180023823094054",
+    "language": "zh",
+    "reply": "YC 这批项目给人的信号挺清楚：AI 助手叙事过热了，能进真实行业流程、帮人省钱赚钱的项目更有说服力。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；聚焦 YC/AI 创投部分；避开争议身份话题。"
+    }
+  },
+  {
+    "handle": "iiifreespirit",
+    "url": "https://x.com/iiifreespirit/status/2051239156983255048",
+    "language": "zh",
+    "reply": "这种机器会让人停下来，是因为它把“无效劳动”做成了可见画面。效率时代看到这个反而有点刺眼。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；接视觉隐喻；无风险词。"
+    }
+  },
+  {
+    "handle": "billtheinvestor",
+    "url": "https://x.com/billtheinvestor/status/2051181189889917333",
+    "language": "zh",
+    "reply": "人类工程协作强在抽象和复盘，弱在对齐成本。项目一大，很多时间都花在解释、同步和重做上。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；回答原帖问题；贴账号协作主题。"
+    }
+  },
+  {
+    "handle": "hellosuoha",
+    "url": "https://x.com/hellosuoha/status/2051166369094238362",
+    "language": "zh",
+    "reply": "很多商业规则表面是服务分层，体感上却会变成权利分层。用户不满通常来自这里。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；基于可见标题做规则评论；不引战。"
+    }
+  },
+  {
+    "handle": "VincentLogic",
+    "url": "https://x.com/VincentLogic/status/2051211343945187463",
+    "language": "zh",
+    "reply": "拖延很多时候不是懒，是大脑没有启动信号。先做一个低阻力动作，比继续给自己讲道理有效。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；接 productivity 场景；口语化。"
+    }
+  },
+  {
+    "handle": "0427SMtieshou",
+    "url": "https://x.com/0427SMtieshou/status/2051227833817604158",
+    "language": "zh",
+    "reply": "小资金起步最难的不是第一笔怎么翻，而是怎么别把偶然收益误认成系统能力。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；风险克制；不使用禁词。"
+    }
+  },
+  {
+    "handle": "LuBtc888",
+    "url": "https://x.com/LuBtc888/status/2051162654262129125",
+    "language": "zh",
+    "reply": "YouTube 最值钱的不是教程数量，而是能不能把搜索、筛选、做笔记和动手练习连成一个学习流程。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；少量英文为平台名；贴学习 workflow。"
+    }
+  },
+  {
+    "handle": "SimonJP404",
+    "url": "https://x.com/SimonJP404/status/2051177700438766041",
+    "language": "zh",
+    "reply": "语音控制进入车内以后，安全边界要比炫技优先。任何自动动作都应该默认考虑儿童和误触场景。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；围绕安全边界；不扩展品牌攻击。"
+    }
+  },
+  {
+    "handle": "hx831126",
+    "url": "https://x.com/hx831126/status/2051311525047222372",
+    "language": "zh",
+    "reply": "把户型缺点先暴露出来很实用。AI 在这里不是替你买房，而是帮你把长期生活里的摩擦提前列出来。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；接 AI 用例；明确边界。"
+    }
+  },
+  {
+    "handle": "web3annie",
+    "url": "https://x.com/web3annie/status/2051316236680827345",
+    "language": "zh",
+    "reply": "睡眠建议最难的不是知道，而是把环境和日程改到能执行。健康习惯也需要系统设计，不只是意志力。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；生活习惯转系统设计；无医疗承诺。"
+    }
+  },
+  {
+    "handle": "knowledgefxg",
+    "url": "https://x.com/knowledgefxg/status/2051281629809893795",
+    "language": "zh",
+    "reply": "这种小物件能火，通常不是参数强，而是刚好解决一个每天都会遇到的小麻烦。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；产品观察；不索要链接。"
+    }
+  },
+  {
+    "handle": "0xleng1",
+    "url": "https://x.com/0xleng1/status/2051302405405368609",
+    "language": "zh",
+    "reply": "撸毛重新热起来时，最容易被低估的是记录成本。每天刷项目可以，最好把投入时间、资格条件和结果都记下来。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；提醒记录和 ROI；不含禁词。"
+    }
+  },
+  {
+    "handle": "rwayne",
+    "url": "https://x.com/rwayne/status/2051308366517956708",
+    "language": "zh",
+    "reply": "新人账号最值得看的不是粉丝数，而是叙事是否稳定、互动是不是来自同一群人。早期信号比表面数据重要。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；接账号增长/信号判断；无风险词。"
+    }
+  },
+  {
+    "handle": "arkuy99",
+    "url": "https://x.com/arkuy99/status/2051287760590512419",
+    "language": "zh",
+    "reply": "工具手感很难被参数解释清楚。很多人怀念某个模型，其实是在怀念它处理上下文和小任务时的节奏。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；接模型/工具体验；短句。"
+    }
+  },
+  {
+    "handle": "Sea_Bitcoin",
+    "url": "https://x.com/Sea_Bitcoin/status/2051474679580533201",
+    "language": "zh",
+    "reply": "段永平这类案例最值得学的是逆向筛选：市场情绪最差的时候，先判断企业还值不值得活下来。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；投资案例评论；无投资建议承诺。"
+    }
+  },
+  {
+    "handle": "_FORAB",
+    "url": "https://x.com/_FORAB/status/2051511629062578298",
+    "language": "zh",
+    "reply": "Met Gala 这类事件很会制造传播点。礼服不只是衣服，也是一个能被媒体反复描述的产品细节。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；从传播和产品细节角度评论；不评价外貌。"
+    }
+  },
+  {
+    "handle": "KKaWSB",
+    "url": "https://x.com/KKaWSB/status/2051468358030410092",
+    "language": "zh",
+    "reply": "六指梗变成红毯设计点挺聪明的。AI 的瑕疵被拿来做符号，反而说明它已经进入大众审美语境了。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；AI 梗和视觉传播相关；无风险词。"
+    }
+  },
+  {
+    "handle": "manateelazycat",
+    "url": "https://x.com/manateelazycat/status/2051316855625965991",
+    "language": "zh",
+    "reply": "虚拟和现实混在一起以后，最先被挑战的不是视觉效果，而是交通、保险和责任规则怎么跟上。",
+    "review": {
+      "status": "approved",
+      "notes": "中文帖中文回复；同账号但不同原帖；接现实规则和责任边界。"
+    }
+  }
+]

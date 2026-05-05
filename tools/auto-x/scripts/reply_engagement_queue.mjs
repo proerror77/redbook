@@ -424,6 +424,12 @@ async function findExistingReply(client, reply) {
 }
 
 async function clickReply(client) {
+  const inlineEditor = await client.evaluate(`(() => {
+    const editors = Array.from(document.querySelectorAll('[contenteditable="true"][data-testid="tweetTextarea_0"]'));
+    return editors.some((editor) => editor.offsetParent !== null && !editor.closest('[role="dialog"]'));
+  })()`).catch(() => false);
+  if (inlineEditor) return;
+
   const clicked = await client.evaluate(`(() => {
     const article = Array.from(document.querySelectorAll('article[data-testid="tweet"]'))[0];
     if (!article) return { ok: false, reason: 'no article' };
@@ -439,8 +445,8 @@ async function clickReply(client) {
   }
   await waitFor(client, `(() => {
     const dialog = document.querySelector('[role="dialog"]');
-    if (!dialog) return false;
-    const editors = Array.from(dialog.querySelectorAll('[contenteditable="true"][data-testid="tweetTextarea_0"]'));
+    const root = dialog || document;
+    const editors = Array.from(root.querySelectorAll('[contenteditable="true"][data-testid="tweetTextarea_0"]'));
     return editors.some((editor) => editor.offsetParent !== null);
   })()`, { timeoutMs: 10000, label: 'reply dialog editor' });
   await delay(800);
@@ -449,8 +455,7 @@ async function clickReply(client) {
 async function insertReplyText(client, reply) {
   const inserted = await client.evaluate(`(async () => {
     const text = ${JSON.stringify(reply)};
-    const root = document.querySelector('[role="dialog"]');
-    if (!root) return { ok: false, reason: 'no reply dialog', text: '' };
+    const root = document.querySelector('[role="dialog"]') || document;
     const editors = Array.from(root.querySelectorAll('[contenteditable="true"][data-testid="tweetTextarea_0"]'));
     const visibleEditors = editors.filter((item) => item.offsetParent !== null);
     const editor = visibleEditors[visibleEditors.length - 1] || editors[editors.length - 1];
@@ -507,8 +512,7 @@ async function insertReplyText(client, reply) {
 
 async function submitReply(client) {
   const submitted = await client.evaluate(`(() => {
-    const root = document.querySelector('[role="dialog"]');
-    if (!root) return { ok: false, reason: 'no reply dialog' };
+    const root = document.querySelector('[role="dialog"]') || document;
     const candidates = Array.from(root.querySelectorAll('button[data-testid="tweetButton"], button[data-testid="tweetButtonInline"]'));
     const enabled = candidates.filter((item) => {
       const visible = item.offsetParent !== null;

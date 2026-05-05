@@ -4,6 +4,23 @@
 
 ---
 
+## [2026-05-05] 会话摘要：X timeline 追加回复 30 条
+
+**完成了什么：**
+- 按用户要求从当前 X timeline 候选中追加回复 30 篇帖子，排除了上一批已经有验证回复的 source status；`xincctnnq` 因日志里已有我方回复痕迹也未重复发。
+- 每条回复先写入 `05-选题研究/X-互动回复-2026-05-05-batch2-reviewed.json`，并通过 `x-mastery-mentor` 风格规则审查：语言匹配、短回复、无链接、无模板化高风险表达。
+- 修复 `tools/auto-x/scripts/reply_engagement_queue.mjs`：X 当前部分 status 页使用 inline “发布你的回复”编辑器，不弹 modal；脚本现在同时支持 dialog 和 inline reply composer。
+- 实际发布记录写入 `05-选题研究/X-互动回复记录-2026-05-05-batch2-final.jsonl` 和 `.md`。
+
+**验证 / 证据：**
+- `tools/redbookctl x-login --timeout-ms 45000`：账号 gate 通过，发布账号为 `Smileyface @0xcybersmile`。
+- `node tools/auto-x/scripts/reply_engagement_queue.mjs --review-only --targets ... --limit 30`：`approved=30 blocked=0`，审查记录为 `05-选题研究/X-互动回复审查-2026-05-05-batch2.md`。
+- 发布脚本完成：`posted_or_existing=30 failed=0`；最终记录统计为 `already_exists: 1`、`posted_verified: 29`、`unique_sources: 30`、`unique_verify_urls: 30`、`missing_verify: []`。
+- 首条验证 URL：`https://x.com/0xcybersmile/status/2051586699172647151`；末条验证 URL：`https://x.com/0xcybersmile/status/2051590205636006235`。
+
+**遗留：**
+- 本轮中途的旧后台 target 对 X reply modal 不稳定，已改走现有可复用 X tab 的 inline composer 路径；后续批量回复应继续先跑 1 条 smoke，再跑大批量。
+
 ## [2026-05-05] 会话摘要：BOSS chat 复查与追加投递中断
 
 **完成了什么：**
