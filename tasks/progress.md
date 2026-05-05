@@ -3616,6 +3616,66 @@
 **遗留：**
 - 这里只做知识沉淀，尚未扩写成 X 或小红书稿件。
 
+## [2026-04-30] 会话摘要：选题决策门工作流固定
+
+**完成了什么：**
+- 根据用户反馈修正 Redbook 内容工作流：每天早上的选题和用户贴来的新闻链接，都必须先经过 `选题决策门`，不能直接跳到写稿、建包或发布。
+- 新增固定决策卡：新闻一句话、账号主线契合、为什么值得写、建议形态、为什么不是其他形态、推荐角度、小红书企业翻译、下一步。
+- 明确 agent 行为：先给推荐形态和理由，减少把决策重新丢回给用户；用户确认短评/长文/thread/小红书/只收藏后，才进入对应 lane。
+- 固定 Lane B 短评结构：新闻锚点 -> 账号判断 -> 为什么重要 -> 原链接/回复结构。
+- 修正 OKX 短评包的未发布状态：删除提前生成的空 `发布记录.md`，改为在 `发布清单.md` 内保留发布记录模板，避免 workflow-health 把未发布内容误判成缺账本。
+- 新增 reference：`docs/reference/editorial-decision-workflow.md`。
+- 更新 `docs/shared/redbook-playbook.md`、`docs/reference/skills-manifest.md`，并同步到 `AGENTS.md` / `CLAUDE.md`。
+- 新增 wiki 方法论：`wiki/方法论/选题决策门.md`，并更新 `wiki/index.md`、`wiki/overview.md`。
+
+**验证：**
+- `python3 tools/sync_redbook_playbook.py`
+- targeted `rg` consistency check for `选题决策门` / `Decision Card` / Lane B short-comment structure
+- `git diff --check` on scoped workflow/wiki/task files
+
+**遗留：**
+- 目前是文档和知识库级硬化；如果后续还出现跳过决策门的问题，应把 `redbookctl draft` / future link intake command 做成机器门禁。
+
+## [2026-04-30] 会话摘要：OKX APP / Agent Payments X 短评
+
+**完成了什么：**
+- 按 Lane B 热点速评工作流处理 OKX 中文原帖：`https://x.com/okxchinese/status/2049489287289438570`。
+- 核验原帖实际是 X Article 链接，t.co 跳转到 `https://x.com/i/article/2049468749321994240`。
+- 使用 `baoyu-danger-x-to-markdown` 抓取原帖内容，确认新闻核心是 Onchain OS 发布 Agent Payments Protocol，覆盖 Agent 通信、协商、支付、结算、报价、雇佣、托管和争议处理。
+- 新建轻量内容包：`01-内容生产/02-制作中的选题/2026-04-30-OKX-APP-Agent-Payments-短评/`。
+- 写入 `素材来源.md`、`X短评.md`、`x-mastery-mentor-审稿.md`、`发布清单.md`、`发布记录.md`。
+- 用户确认发布后，先跑 `tools/redbookctl x-login`，确认发布账号为 `Smileyface @0xcybersmile`。
+- `baoyu-post-to-x` 当前没有 reply 脚本；按发布清单 fallback，先尝试普通帖保留原链接，后因验证脚本抓到错误第三方状态 URL，改用 `x-quote.ts` 发布为 Quote post。
+- 平台主页回读发现重复发出两条；已保留更干净的 Quote 版，删除带 `原文：` 残留的旧版。
+- 最终保留状态 URL：`https://x.com/0xcybersmile/status/2049712962001379686`。
+- 已写入 `发布记录.md`，并追加 T+0 记录到 `04-内容数据统计/publish-records.jsonl`，record id：`2026-04-30-x-com-okx-app-agent-payments-x-t0`。
+
+**审稿结论：**
+- 通过。建议优先作为 OKX 中文原帖回复发布；如果脚本不支持 reply，则发独立短评并保留原文链接。
+
+**遗留：**
+- `x-browser.ts` 提交后状态 URL 抽取会误抓页面上的第三方状态链接，后续应修脚本验证逻辑：提交后优先从当前账号主页或 status text 匹配提取 URL，不应信任任意 `/status/` anchor。
+
+## [2026-04-30] 会话摘要：跨平台账号方向工作流修正
+
+**完成了什么：**
+- Review 了现有 Redbook Lane C、skills manifest、wiki 主线页、近期内容包和发布清单，确认缺口不是图文规格，而是缺少“同一核心命题 -> 分平台读者任务翻译”的上游 gate。
+- 更新 `docs/shared/redbook-playbook.md`：新增账号主线、X / 小红书平台分工、Lane A 平台翻译判断、Lane C `核心命题` / `平台编排` / 小红书企业应用门。
+- 更新 `docs/reference/skills-manifest.md`：把小红书同步前必须有企业/商业落点、不能直接拆 X 长文写成 active entrypoint 原则。
+- 新增 `wiki/方法论/跨平台账号编排.md`，并更新 `wiki/index.md`、`wiki/overview.md`、`wiki/选题/AI Agent企业导入与协作.md`。
+- 新增完整 review 报告：`docs/reports/2026-04-30-cross-platform-account-workflow-review.md`。
+- 为当前 Orchestration 内容包新增 `平台编排.md`，并更新 `发布清单.md`：X Article 已发布，小红书下一步必须按企业 AI Agent 落地判断清单重写。
+- 校准当前内容包状态：`QA报告.md` 和 `图文分镜.md` 不再保留“待生图 / 未验证发布”的旧状态，明确长文配图已生成、X 已发布、小红书企业应用卡片待补。
+
+**验证：**
+- `python3 tools/sync_redbook_playbook.py`
+- targeted `rg` consistency check for `跨平台账号编排` / `核心命题` / `平台编排` / 企业小红书规则
+- `git diff --check` on scoped workflow/wiki/content-package files
+
+**遗留：**
+- 这次先做文档和知识库级 workflow 编排，尚未把 `核心命题` / `平台编排` 做成 `redbookctl draft` 或 harness 的机器门禁。
+- 下一步如果继续推进小红书，应先写 `小红书图文稿.md`，再把 `图文分镜.md` 扩展成 5-7 张企业应用卡片。
+
 ## [2026-04-30] 会话摘要：Agent Teams workflow review 后续修复
 
 **完成了什么：**
@@ -3650,3 +3710,245 @@
 - `workflow-health` 当前按本机日期显示 2026-04-30 日报缺失、launchd 未加载；这是当天调度/日报状态，不属于本轮 workflow 修复。
 - 2026-04-28 三条讯息仍按用户确认关闭，但现在会显示为 `unverified follow-up`，表示没有平台指标回读；需要数据复盘时再补 metrics + readback evidence。
 - 2026-04-29 三条 X 图文已触发 T+1 due，需要平台回读后补账本。
+
+## [2026-04-30] 会话摘要：BOSS 投递重复事故修复
+
+**完成了什么：**
+- 停止继续 live apply，改为修复投递链路安全语义。
+- 新增统一 pre-apply gate：真实投递前必须通过 company/title 身份去重、详情页过滤、apply 黑名单、chat triage 阻断和 `already_continuing` 检查。
+- 修复 `already_continuing` 语义：它现在表示历史已有沟通/重复上下文，不再计入新增成功投递。
+- 修复 Playwright apply 入口：先执行只读 preflight 抽取详情身份，验证目标 URL 和 pre-apply gate 后才允许 live click。
+- 修复 CDP/current-tab fallback：live click 前同样走 pre-apply gate；被阻断时写入 `skipped`，不点击。
+- 加强 batch live 入口：`opencli_cdp_apply_until_target.js` 现在同时要求 `BOSS_ENABLE_LIVE_APPLY=1`、`--live true`、`apply.enabled=true`、`apply.dryRun=false`，并且不再在脚本内部强制改成 live。
+- 将 `config.local.json` 恢复为保守默认：`apply.enabled=false`、`apply.dryRun=true`。
+- chat triage 导出增加滚动采集，减少只看首屏 20 条导致的浅层去重风险。
+
+**验证：**
+- `cd tools/auto-zhipin && npm test` => 111/111 pass
+- `node --check` 覆盖 `cdp_apply_job.js`、`boss_apply_playwright.js`、`opencli_apply_current_tab.js`、`cdp_chat_triage_export.js`、`opencli_cdp_apply_until_target.js`
+- `git diff --check`
+- ledger 复核：2026-04-30 账面 raw applied 为 13，按 first identity 计数后 unique new applied 为 10。
+
+**遗留：**
+- 旧 ledger 里今天已经写入的 3 个重复投递仍保留为历史事实；后续报告应使用 unique identity 计数，不再用 raw applied 作为目标完成数。
+- 继续冲 50 前，应先刷新 chat triage 全量记录，再用 dry-run preflight 输出候选清单。
+
+## [2026-04-30] 会话摘要：BOSS 投递修复继续收口
+
+**完成了什么：**
+- `cdp_chat_triage_export.js` 不再只用会话列表 preview 判断拒绝/站外投递/大公司；现在会在滚动采集时打开每个新会话并读取最近消息，把消息正文纳入分类和 match hints。
+- `chat:triage-cdp` 新增 `--open-if-missing true` 显式开关；默认没有 chat 页时仍 fail-closed，不擅自开新页。
+- `boss_apply_playwright.js`、`cdp_apply_job.js` 改成可导入测试的结构，新增脚本级回归测试，覆盖：
+  - Playwright 入口从详情 metadata 生成非空 company/title identity。
+  - CDP 入口能从详情 metadata 生成 gate candidate。
+  - target URL mismatch 会被拒绝。
+  - chat triage 使用打开会话后的消息正文识别拒绝。
+
+**验证：**
+- `cd tools/auto-zhipin && npm test` => 115/115 pass
+- `node --check scripts/cdp_chat_triage_export.js`
+- `git diff --check`
+- CDP 9224 存活。
+
+**现场结果：**
+- `chat:triage-cdp --open-if-missing true --limit 30` 曾成功产出一次 triage：30 conversations、14 blockedEntries、8 followupCandidates。
+- 后续重跑时 BOSS chat 目标页被关闭，脚本 fail-closed，未覆盖旧 triage。
+- 当前 `opencli-chat-triage-latest.json` 为 `2026-04-30T03:21:04.017Z`，30 conversations，其中 3 opened、2 withMessages；说明 BOSS chat 页面在当前会话仍不稳定，继续真实投递前必须把 chat 页稳定性作为前置检查。
+
+## [2026-05-01] BOSS 自动投递可用性检查
+
+**检查结论：**
+- 当前不应启动自动 live apply：Playwright profile dry-run 命中 `auth_gate`，页面正文包含 `异常访问行为`，目标详情 URL 未能验证。
+- `tools/redbookctl browser` 默认检查的 `9222` 不可用；但 `9224` 当前存活，并且有 BOSS jobs/detail 页面。
+- 当前 `9224` 没有 `/web/geek/chat` 页面；`chat:triage-cdp --focus false` 因找不到 chat page fail-closed，未强行新开页面。
+
+**去重与拒绝记录状态：**
+- 本地 ledger 当前有 `jobs=2430`、`applications=659`、`applied=475`、`skipped=173`、`matched=11`，`todaySuccessfulApplies=0`。
+- pre-apply gate 会按 normalized `company::title` 阻断已 `applied/skipped/deduped` 的重复职位，并阻断 `already_continuing`。
+- `opencli-chat-triage-latest.json` 仍有 `14` 条 blocked entries：`big_company_ignore=9`、`offsite_email=2`、`explicit_rejection=3`，会在 apply 前作为 `chat_triage_*` 阻断信号。
+- 公司级去重存在记录和黑名单，但代码层主要是 `company::title` 精确身份去重；同公司不同岗位不会全部自动跳过，除非命中黑名单/chat triage/人工 dedupe 信号。
+
+**验证：**
+- `curl http://127.0.0.1:9224/json/version` 成功返回 Chrome DevTools endpoint。
+- `npm --silent run boss:apply -- --url https://www.zhipin.com/job_detail/8a96a8925cd3727c0nZ72Ni5E1pT.html --dry-run true --headed false` 返回 `auth_gate/body:异常访问行为`，没有点击投递。
+- `npm test -- --test-name-pattern 'identity|triage|preapply|target|blacklist|successful'` 实际覆盖 BOSS 测试集，`123/123 pass`。
+
+**下次优先项：**
+- 先人工恢复 BOSS 页面状态，确认没有异常访问/验证页，再刷新 chat triage。
+- 若要做公司级“同公司不再投任何岗位”，需要新增硬规则；当前只能说已具备职位身份去重和 chat/黑名单阻断。
+
+## [2026-05-01] BOSS browser-trace 诊断方法测试
+
+**完成了什么：**
+- 使用 `browser-trace` 挂到现有 `127.0.0.1:9224` CDP 会话，run id：`boss-trace-method-test`。
+- trace 运行时执行只读页面检查和 `boss:apply-cdp --dry-run true --focus false`，没有 live apply。
+- 将 `browser-trace` 诊断门沉淀到 `.codex/skills/zhipin/SKILL.md` 和 `tools/auto-zhipin/README.md`。
+
+**现场证据：**
+- `9224` 当前可用，BOSS jobs/detail 页处于已登录状态，页面中能读到账号入口 `sonic` 和 detail CTA `立即沟通`。
+- trace 捕获 `3129` 个 CDP events、`7` 个采样点、截图和 DOM dump。
+- trace 导航序列显示 detail 页在一次检查中连续切过多个 `job_detail` URL：
+  - `26df8726773925840nZ_2d69GFNY.html`
+  - `ad29ea9da0da85fc0nZz3NW1GFdR.html`
+  - `c8fa78d09d3a4b970nZ_3dm4E1dT.html`
+  - `b6a92449175331460nZz2NW4F1dY.html`
+  - `3fe6875b56fd635e0nd409S-F1NY.html`
+- dry-run 预检正确 fail-closed：请求目标是 `26df8726773925840nZ_2d69GFNY.html`，实际页面变成 `ad29ea9da0da85fc0nZz3NW1GFdR.html`，返回 `target_url_mismatch`，未点击投递。
+- trace errors 中有 `net::ERR_CONNECTION_CLOSED`，并能通过 trace query 定位到对应 page id；这是后续诊断页面不稳定的证据入口。
+
+**结论：**
+- 这套方法可以诊断 BOSS 登录/页面/操作异常，并证明 apply gate 不是单纯点击：目标 URL 不一致时会停止。
+- 继续真实投递前，需要先保证 detail 页不发生连续跳转，并且 dry-run 的 `targetCheck.ok === true`。
+- 原始 `.o11y` 截图/DOM 含账号和招聘页面信息，默认不提交；保留 trace 摘要到进度记录即可。
+
+## [2026-05-01] BOSS 提交流程 dry-run 测试
+
+**测试目标：**
+- 验证当前已登录 BOSS 页面能否被 agent 正常读取、trace 和 dry-run 预检。
+- 不执行 live apply，不点击 `立即沟通`。
+
+**执行结果：**
+- 当前 CDP：`127.0.0.1:9224` 可用。
+- 当前 BOSS detail：`https://www.zhipin.com/job_detail/3fe6875b56fd635e0nd409S-F1NY.html`
+- 页面标题：`淘宝闪购-数据研发专家（AI方向）-沪/杭`
+- 页面登录态：可读到账号入口 `sonic`，可读到职位详情和 CTA `立即沟通`。
+- `browser-trace` run id：`boss-submit-test-20260501T142522`
+- trace 捕获：`774` 个 CDP events，单一 page URL，说明这次 detail 页没有像上一轮那样连续跳转。
+
+**dry-run gate：**
+- `targetCheck.ok === true`
+- expected / actual URL 一致：`3fe6875b56fd635e0nd409S-F1NY.html`
+- candidate：`淘宝闪购 / 淘宝闪购-数据研发专家（AI方向）-沪/杭`
+- gate 拦截：`company_size_excluded`
+- 公司规模：`10000人以上`
+- 结论：页面和登录可用，但当前岗位不符合投递规则，不能用它测试真实提交。
+
+**trace 观察：**
+- 有 `net::ERR_CONNECTION_CLOSED`、HTTP `400`、HTTP `503` 记录，但未出现 auth/security blocker，也未出现 target URL mismatch。
+- 原始 `.o11y` 截图/DOM 含账号和招聘页面信息，不提交，只保留摘要。
+
+## [2026-05-01] BOSS trace probe 固定脚本与轮询
+
+**完成了什么：**
+- 新增固定脚本：`tools/auto-zhipin/scripts/boss_trace_probe.js`。
+- 新增 npm 入口：`npm run boss:trace-probe`。
+- 脚本会自动挂 `browser-trace`、执行当前/指定 BOSS detail 的只读 gate 检查、停止并切分 trace、写摘要、默认清理原始 `.o11y`。
+- 结果写入：
+  - `tools/auto-zhipin/data/boss-trace-probe-latest.json`
+  - `tools/auto-zhipin/data/boss-trace-probe-history.jsonl`
+- 支持轮询：`--poll true --interval-ms 30000 --max-loops 10`。
+
+**安全语义：**
+- 不点击 `立即沟通`，不写 `applications` ledger。
+- 只有 `okToLiveApply=true`、`targetCheck.ok=true`、`gate.reasons=[]`、`trace.issues=[]` 时，后续才可进入受监督 live apply 决策。
+- 如果 trace 期间捕获到不同 `job_detail` 导航，会加入 `trace_unstable_navigation` 并强制 `okToLiveApply=false`。
+
+**验证：**
+- `node --check scripts/boss_trace_probe.js`
+- `node --check scripts/cdp_apply_job.js`
+- `npm test -- --test-name-pattern 'boss_trace_probe|target'` => `125/125 pass`
+- 单轮 smoke：当前淘宝闪购岗位输出 `company_size_excluded`，`traceEvents=700`。
+- 两轮 poll smoke：可连续运行；第二轮识别到 `trace_unstable_navigation`，正确保持 `okToLiveApply=false`。
+
+**当前页面结论：**
+- 当前 BOSS 页面可读、登录态可用。
+- 当前岗位仍不适合投递：公司规模 `10000人以上`，且轮询中出现过 trace-level 非目标 detail 导航。
+
+## [2026-05-01] X Article 正文图片插入诊断
+
+**完成了什么：**
+- 用 `browser-trace` 挂到 X Article profile CDP，run id：`x-article-inline-realclick-20260501-134237`。
+- 复现正文 3 张图插入流程并读取 X Article preview DOM 与 `ArticleEntityUpdateContent` 保存 payload。
+- 修复 `x-article.ts` 的两个问题：profile 端口扫描只匹配指定 profile；headed Chrome `unref()`，避免脚本因保留人工预览浏览器而不退出。
+- 将正文图片验证改为 fail-closed：预览页未持久化足够媒体图时直接报错，不再把 stdout 当作成功。
+
+**关键证据：**
+- trace 中 `media_upload:local_file:tweet_image` 成功，说明图片上传成功。
+- 但 3 次 `ArticleEntityUpdateContent` 的 `entityMap` 均为空，blocks 里没有 image/media entity。
+- 预览页 `pbs.twimg.com/media` 大图只有 1 张，即封面；正文插图没有进入 X Article 草稿。
+
+**结论：**
+- 卡住点不是图片生成，也不是 AppleScript 单点失败，而是 X Article web editor 没把自动化上传的正文图片绑定进 DraftJS Article content_state。
+- 当前更稳的发布形态应改为：X Article 保持封面 + 正文，3 张插图另做配套图片帖/thread；或放弃 X Article，改发多图 thread。
+
+## [2026-05-01] X Article 正文图片插入修复
+
+**完成了什么：**
+- 修复 `.agents/skills/baoyu-post-to-x/scripts/x-article.ts`：
+  - 新增 `--cdp-endpoint`，确保 browser-trace 和脚本连到同一个 Chrome。
+  - inline 图片不再全局点击 `添加照片或视频`；该按钮属于封面/header 区，会覆盖封面。
+  - 正文插图改走正文工具栏路径：聚焦正文编辑器 -> `插入 / 添加媒体内容` -> 菜单项 `媒体` -> CDP file chooser。
+  - 正文媒体没有 `应用` modal 时，不再判失败；改为等待正文 media commit。
+  - DOM trace summary 同时识别 `entity_map` 和 `entityMap`。
+- 更新 `.agents/skills/baoyu-post-to-x/SKILL.md`、当前内容包 `X发布清单.md` 和 `images/生成记录.md`。
+
+**验证：**
+- build smoke：`npx -y bun build .agents/skills/baoyu-post-to-x/scripts/x-article.ts --target=bun --outfile=/tmp/x-article-check.js` 通过。
+- trace run：`.o11y/x-article-body-menu-20260501-try2`。
+- 脚本以 draft mode 运行，没有 `--submit`，未发布。
+- 当前 X Article 草稿 preview：`https://x.com/compose/articles/edit/2050103269012484096/preview`。
+- 预览 DOM 回读：`pbs.twimg.com/media` 大图 4 张，1 张封面 `1672x669`，3 张正文图均为 `1672x941`。
+- 保存 payload 回读：`ArticleEntityUpdateContent` 最终包含 3 个 `atomic` blocks 和 3 个 `MEDIA` entity。
+
+**结论：**
+- 用户指出的问题成立：旧脚本确实会把正文图插入动作打到 header/cover 控件上，覆盖封面。
+- 正确修复不是放宽权限或继续 AppleScript，而是监控 DOM 后走正文工具栏 `插入 -> 媒体`。
+
+## [2026-05-02] X 发布：Claude 到 Codex 工作流短文
+
+**完成了什么：**
+- 发布 X 长帖《从 Everything Claude 到 Almost Everything Codex》。
+- 主帖 URL：`https://x.com/0xcybersmile/status/2050403073672306830`
+- 主帖发出后状态页确认正文完整可见，主页回读显示为最新帖子。
+- 主帖图片没有随主帖持久化；已做非破坏性修正，在主帖第一条回复补发配图。
+- 配图回复 URL：`https://x.com/0xcybersmile/status/2050404275675963843`
+- 新增内容包文件：`01-内容生产/02-制作中的选题/2026-05-02-Claude-to-Codex-workflow/X短文.md`、`发布记录.md`、`images/claude-to-codex-agent-workflow.png`。
+- 追加 T+0 记录到 `04-内容数据统计/publish-records.jsonl`，record id：`2026-05-02-x-com-everything-claude-almost-everything-codex-t0`。
+
+**验证：**
+- 发布前 `tools/redbookctl x-login` 通过，账号为 `Smileyface @0xcybersmile`。
+- 主帖状态页显示 `上午10:32 · 2026年5月2日`，回读时约 `8` views。
+- 配图回复状态页回读到 `pbs.twimg.com/media/HHR_nLhbYAEgfTn?...`，尺寸 `680x383`。
+
+**遗留：**
+- `x-browser.ts` 对长帖带图仍不稳：本轮出现主帖漏图、composer media count 异常和第三方 status URL 抽取错误。后续应修复为提交后只从当前账号主页/状态页匹配新帖，并强制验证主帖媒体或明确失败。
+
+## [2026-05-02] x-browser 长帖带图验证修复
+
+**完成了什么：**
+- 修复 `.agents/skills/baoyu-post-to-x/scripts/x-browser.ts` 的两个发布后验证问题：
+  - 状态 URL 不再从全页面任意 `/status/` anchor 抽取，只接受 `expected_handle` 对应账号自己的 status。
+  - 提交后会去期望账号主页按提交正文片段匹配新帖，再回到对应状态页验证。
+- 修复 composer 图片计数：只统计活跃 composer 内的附件媒体，不再把头像、timeline 图片、引用预览或页面其它图片算成上传成功。
+- 图片帖验证改为检查 matched main status article 本身是否有媒体；后续补发的图片回复不能让主帖验证通过。
+- 更新 `.agents/skills/baoyu-post-to-x/SKILL.md`，把这些 fail-closed 规则写进 X regular post workflow。
+
+**验证：**
+- `npx -y bun build .agents/skills/baoyu-post-to-x/scripts/x-browser.ts --target=bun --outfile=/tmp/x-browser-check.js`
+- `npx -y bun .agents/skills/baoyu-post-to-x/scripts/x-browser.ts --help`
+- `tools/redbookctl x-login --timeout-ms 45000`，账号回读为 `Smileyface @0xcybersmile`
+- `git diff --check -- .agents/skills/baoyu-post-to-x/scripts/x-browser.ts .agents/skills/baoyu-post-to-x/SKILL.md tasks/active.md tasks/progress.md`
+
+**遗留：**
+- 本轮没有发真实测试帖，因为 X 外部发布仍需要用户明确确认。下一次真实带图发布如果仍发生 X 平台侧丢图，脚本会以非零退出并明确说明主帖缺媒体，不能再把第三方 URL 或补图回复当成功证据。
+
+## [2026-05-02] X Claude-to-Codex 短文排版纠错重发
+
+**完成了什么：**
+- 用户指出旧发布形态错误：配图应该作为主帖附件，而不是第一条回复。
+- 删除旧错误主帖：`https://x.com/0xcybersmile/status/2050403073672306830`。
+- 删除旧配图回复：`https://x.com/0xcybersmile/status/2050404275675963843`。
+- 第一次重发命中本地 Markdown 标题行外泄，已删除：`https://x.com/0xcybersmile/status/2050444201805099070`。
+- 最终重发成功：`https://x.com/0xcybersmile/status/2050444539060732188`。
+- 新增 `.agents/skills/baoyu-post-to-x/scripts/x-delete.ts`，支持 expected-handle guard、dry-run 识别和删除后缺席验证。
+- 更新内容包 `发布记录.md`，并追加 corrected T+0 ledger 记录：`2026-05-02-x-com-everything-claude-almost-everything-codex-corrected-t0`。
+
+**验证：**
+- `tools/redbookctl x-login --timeout-ms 45000` 通过，账号为 `Smileyface @0xcybersmile`。
+- `x-delete.ts --dry-run` 删除前正确识别旧主帖和旧配图回复。
+- `x-delete.ts` 删除旧主帖、旧配图回复和标题外泄重发帖后均回读为 absent。
+- 最终 `x-browser.ts --submit` 回读：`Post URL: https://x.com/0xcybersmile/status/2050444539060732188`，`media=2`。
+- 最终 `x-delete.ts --dry-run` 回读状态页正文开头为 `我以前几乎是 Everything Claude。`，确认没有本地 Markdown 标题行。
+
+**遗留：**
+- 当前有效版本为 `2050444539060732188`；旧 ledger 中保留了旧错误发布事实，后续统计应以 corrected T+0 记录为准。

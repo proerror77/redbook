@@ -107,6 +107,20 @@
 - `docs/shared/redbook-playbook.md`, `AGENTS.md`, `CLAUDE.md`, and `docs/reference/skills-manifest.md` now all state the same rule so the constraint is not chat-only.
 - Verification passed: `bash -n tools/auto-x/scripts/run_daily.sh`, `python3 -m py_compile tools/auto-x/scripts/daily_schedule.py`, `python3 tools/sync_redbook_playbook.py`, and report grep checks for the new guard text.
 
+## 2026-04-30 AI Agent Orchestration Longform
+
+- Owner: Codex
+- Source: User selected the orchestration angle and asked for a long article with images, then pointed out the workflow had skipped review / de-slop / formatting steps
+- Status: in_progress
+
+### Cleanup Plan
+
+- [ ] Build a proper Lane C content package for the orchestration topic under `01-内容生产/02-制作中的选题/`.
+- [ ] Write the longform draft from current X / Cursor SDK / Warp / Oz evidence and repo wiki context.
+- [ ] Run a de-slop and editorial pass so the draft reads like account-native judgment instead of generic AI copy.
+- [ ] Produce `图文分镜.md`, image anchors, and a publish checklist for later platform adaptation.
+- [ ] Verify file set consistency and keep the package ready for next-step review/publishing.
+
 ## 2026-04-30 BOSS Apply Safety Repair
 
 - Owner: Codex
@@ -550,3 +564,38 @@
 - Added `tools/record_publish.py` to append validated T+0/T+1/T+3 records with duplicate protection.
 - Updated `数据统计表.md`, `docs/shared/redbook-playbook.md`, `AGENTS.md`, `CLAUDE.md`, and `tools/README.md` to point publishing data back to the JSONL ledger.
 - Verification passed: script compiles, dry-run emits valid JSON, ledger parses, shared playbook sync is stable, references are present, and diff whitespace check passed.
+
+## 2026-05-01 X Article Body Image Insertion Repair
+
+- Owner: Codex
+- Source: user report that inline images were being inserted into the header/cover area and overwriting the first image
+- Status: in_progress
+
+### Cleanup Plan
+
+- [x] Add explicit CDP endpoint support so browser-trace and the article script operate on the same Chrome instance.
+- [x] Replace global media-button lookup with body-editor-scoped media-button selection.
+- [x] Re-run a traced X Article draft without submitting, then inspect `ArticleEntityUpdateContent` for body media entities and preview media count.
+- [x] Record the trace-backed result in the publish checklist and progress log.
+
+## 2026-05-02 X Browser Long Post Image Verification Repair
+
+- Owner: Codex
+- Source: 2026-05-02 X long post published text-only while `x-browser.ts` also extracted a third-party status URL.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Scope composer media counting to the active X composer instead of the whole page.
+- [x] Restrict post-submit status URL extraction to the expected publishing account.
+- [x] Resolve the posted URL from the expected account's timeline by matching the submitted text, not arbitrary `/status/` anchors.
+- [x] Verify image posts against the matched status article itself and fail closed if the main post has no media.
+- [x] Update skill docs, run build/static checks, and record the result.
+
+### Review
+
+- `x-browser.ts` no longer trusts arbitrary `/status/` anchors after submit. It only accepts status URLs under the configured `expected_handle`.
+- Post-submit URL resolution now navigates to the expected account timeline and matches the submitted text before returning a status URL.
+- Composer media counting is scoped to the active compose surface, so avatars, quoted-post previews, timeline images, and unrelated page media cannot satisfy the image gate.
+- Image verification now checks media on the matched main status article itself; an image reply cannot make a text-only main post look successful.
+- Verification passed: Bun build smoke, `--help` smoke, scoped `git diff --check`, and `tools/redbookctl x-login --timeout-ms 45000`.

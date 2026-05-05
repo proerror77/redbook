@@ -1,0 +1,87 @@
+{
+  "run_id": "20260502-021424-llm-wiki-query-codex-claude-coding-agent-workflow-ai-agent-工程方法-2026-05-02-552d5e",
+  "kind": "content_pipeline",
+  "topic": "LLM Wiki query Codex Claude Coding Agent workflow AI Agent 工程方法 2026-05-02",
+  "summary": "显式记录一次 wiki query：Codex Claude Coding Agent workflow AI Agent 工程方法",
+  "source": "wiki/index.md",
+  "owner": "Codex",
+  "priority": "P1",
+  "current_stage": "research",
+  "status": "done",
+  "created_at": "2026-05-02T02:14:24+00:00",
+  "updated_at": "2026-05-02T02:14:24+00:00",
+  "artifacts": [
+    {
+      "id": "cd2daea58c",
+      "type": "research_report",
+      "path": "docs/reports/wiki-query-codex-claude-coding-agent-workflow-ai-agent-工程方法-2026-05-02.md",
+      "description": "Wiki query report for topic: Codex Claude Coding Agent workflow AI Agent 工程方法",
+      "stage": "research",
+      "created_at": "2026-05-02T02:14:24+00:00"
+    }
+  ],
+  "checks": {
+    "materials_queried": true,
+    "research_complete": true,
+    "outline_locked": false,
+    "draft_written": false,
+    "facts_checked": false,
+    "platform_ready": false,
+    "published": false,
+    "progress_updated": false,
+    "wiki_logged": false,
+    "lessons_reviewed": false
+  },
+  "incidents": [],
+  "events": [
+    {
+      "at": "2026-05-02T02:14:24+00:00",
+      "type": "run_created",
+      "stage": "research",
+      "message": "Run created for topic: LLM Wiki query Codex Claude Coding Agent workflow AI Agent 工程方法 2026-05-02",
+      "meta": {}
+    },
+    {
+      "at": "2026-05-02T02:14:24+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: research_report",
+      "meta": {
+        "path": "docs/reports/wiki-query-codex-claude-coding-agent-workflow-ai-agent-工程方法-2026-05-02.md",
+        "artifact_id": "cd2daea58c"
+      }
+    },
+    {
+      "at": "2026-05-02T02:14:24+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-05-02T02:14:24+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check research_complete set to True",
+      "meta": {
+        "check_name": "research_complete",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-05-02T02:14:24+00:00",
+      "type": "run_closed",
+      "stage": "research",
+      "message": "Run closed with status: done",
+      "meta": {
+        "status": "done",
+        "note": "Wiki query is a research-only maintenance run.",
+        "closed_at": "2026-05-02T02:14:24+00:00"
+      }
+    }
+  ],
+  "closed_at": "2026-05-02T02:14:24+00:00"
+}
