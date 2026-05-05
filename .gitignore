@@ -58,6 +58,8 @@ Thumbs.db
 *.log
 *.tmp
 /tmp/
+.o11y/
+.playwright-mcp/
 .gstack/
 .omx/
 tasks/harness/locks/
