@@ -2,6 +2,12 @@
 
 import { describePageTargets } from './chrome-cdp.mjs';
 
+const DEFAULT_ENDPOINTS = [
+  'http://127.0.0.1:9222',
+  'http://127.0.0.1:9223',
+  'http://127.0.0.1:9224',
+];
+
 const SITE_RULES = [
   {
     id: 'x',
@@ -39,7 +45,7 @@ function printHelp() {
 Inspect the existing Chrome CDP session without opening new pages.
 
 Options:
-  --endpoint, --cdp-endpoint <url>  Chrome CDP endpoint (default: http://127.0.0.1:9222)
+  --endpoint, --cdp-endpoint <url>  Chrome CDP endpoint (default: auto-scan 9222, 9223, 9224)
   --json                            Print machine-readable JSON
   --help                            Show this help
 
@@ -51,7 +57,7 @@ Examples:
 
 function parseArgs(argv) {
   const args = {
-    endpoint: 'http://127.0.0.1:9222',
+    endpoint: '',
     json: false,
   };
 
@@ -76,6 +82,26 @@ function parseArgs(argv) {
   }
 
   return args;
+}
+
+async function describeFirstAvailableEndpoint(endpoint) {
+  const candidates = endpoint ? [endpoint] : DEFAULT_ENDPOINTS;
+  const errors = [];
+
+  for (const candidate of candidates) {
+    try {
+      const targets = await describePageTargets(candidate, { bodyLimit: 500 });
+      return { endpoint: targets.endpoint, targets, errors };
+    } catch (error) {
+      errors.push({
+        endpoint: candidate,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
+  }
+
+  const message = errors.map((item) => `${item.endpoint}: ${item.error}`).join('; ');
+  throw new Error(message || 'No Chrome CDP endpoint is reachable.');
 }
 
 function textIncludesAny(text, markers) {
@@ -135,9 +161,10 @@ async function main() {
   const args = parseArgs(process.argv.slice(2));
   const report = {
     cdp: {
-      endpoint: args.endpoint,
+      endpoint: args.endpoint || DEFAULT_ENDPOINTS.join(', '),
       available: false,
       error: '',
+      checked_endpoints: args.endpoint ? [args.endpoint] : DEFAULT_ENDPOINTS,
     },
     tabs: {
       total: 0,
@@ -146,7 +173,8 @@ async function main() {
   };
 
   try {
-    const targets = await describePageTargets(args.endpoint, { bodyLimit: 500 });
+    const { endpoint, targets } = await describeFirstAvailableEndpoint(args.endpoint);
+    report.cdp.endpoint = endpoint;
     report.cdp.available = true;
     report.tabs.total = targets.targets.length;
     report.sites = SITE_RULES.map((rule) => summarizeSite(rule, targets.targets));

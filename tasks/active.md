@@ -24,6 +24,27 @@
 - Generated today's queue with 20 candidates using the existing logged-in Chrome/CDP `9224`.
 - Verification passed: Python compile, `test_x_utils.py`, shell syntax checks, and `git diff --check`.
 
+## 2026-05-05 BOSS Browser Status Probe
+
+- Owner: Codex
+- Source: User asked to test whether BOSS login/status reading is correct and use Browser Tracing if not.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Verify existing BOSS/CDP session without opening a new browser or clicking live apply controls.
+- [x] Use Browser Tracing because the first probe detected security-check context.
+- [x] Fix the status reader if the canonical `redbookctl browser` entrypoint misreports the available session.
+- [x] Run focused smoke checks and record completion.
+
+### Review
+
+- Current Chrome CDP is on `127.0.0.1:9224`; `9222` is not running.
+- BOSS detail page shows logged-in account evidence (`sonic`, `消息`, `简历`) and visible `立即沟通`; no visible auth/security challenge remains.
+- Browser Trace captured the current detail page without target URL drift; live apply is still blocked by policy gate for `company_size_excluded`, not by login failure.
+- `tools/redbookctl browser` now auto-scans `9222`, `9223`, and `9224`, so it reports the reusable BOSS session instead of failing closed on missing `9222`.
+- Verification passed: `tools/redbookctl browser`, `tools/redbookctl browser --json`, explicit bad-port smoke, `node --check`, `bun tools/redbookctl.ts browser --help`, `node --test tools/tests/redbookctl_contract.test.mjs`, and `git diff --check`.
+
 ## 2026-04-30 Beneficiary Cold-Read Review Workflow
 
 - Owner: Codex

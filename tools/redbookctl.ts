@@ -74,7 +74,7 @@ function printBrowserHelp(): void {
 Inspect existing Chrome/CDP tabs without opening new pages.
 
 Options:
-  --endpoint URL   Chrome DevTools endpoint. Default: http://127.0.0.1:9222
+  --endpoint URL   Chrome DevTools endpoint. Default: auto-scan 9222, 9223, 9224
   --json           Print machine-readable JSON.
   -h, --help       Show this help.
 `);
@@ -289,11 +289,11 @@ function commandBrowser(args: string[]): number {
     return 0;
   }
 
-  const command = [
-    BROWSER_SESSION,
-    "--endpoint",
-    stringOption(parsed.options, "--endpoint", "http://127.0.0.1:9222")!,
-  ];
+  const command = [BROWSER_SESSION];
+  const endpoint = stringOption(parsed.options, "--endpoint");
+  if (endpoint) {
+    command.push("--endpoint", endpoint);
+  }
   if (parsed.options["--json"]) {
     command.push("--json");
   }

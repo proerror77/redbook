@@ -4,6 +4,30 @@
 
 ---
 
+## [2026-05-05] 会话摘要：BOSS 登录与 browser 状态读取修复
+
+**完成了什么：**
+- 只读检查了当前 BOSS/CDP 状态：`9224` 有可复用 Chrome，会话内有 2 个 BOSS 页面；`9222` 不可用。
+- OpenCLI doctor 通过：Daemon / Extension / Connectivity 都是 `[OK]`。
+- 当前 BOSS detail 页可见登录证据：`sonic`、`消息`、`简历`；可见主按钮为 `立即沟通`，没有可见安全验证/访问受限块。
+- 因首轮 probe 检测到 security-check context，已跑 Browser Trace：trace 没有 target URL drift，最终不可 live apply 的原因是 `company_size_excluded`，不是登录失败。
+- 修复 `tools/redbookctl browser` 默认只查 `9222` 的误报；现在默认 auto-scan `9222/9223/9224`，并正确落到当前 `9224`。
+
+**验证：**
+- `tools/redbookctl browser`
+- `tools/redbookctl browser --json`
+- `tools/redbookctl browser --endpoint http://127.0.0.1:9222 --json`
+- `npm --silent run boss:apply-current -- --cdp-endpoint http://127.0.0.1:9224 --probe true --focus false`
+- `npm --silent run boss:trace-probe -- --cdp-endpoint http://127.0.0.1:9224 --focus false --keep-trace false --wait-ms 2500 --post-wait-ms 1200`
+- `node --check tools/browser-core/interactive/session.mjs`
+- `bun tools/redbookctl.ts browser --help`
+- `node --test tools/tests/redbookctl_contract.test.mjs`
+- `git diff --check`
+
+**未完成 / 遗留：**
+- `chat:triage-cdp` 本轮只读运行无输出且卡住，已终止，未作为登录证据。
+- 当前职位因公司规模 `1000-9999人` 被策略 gate 拦截，不能 live apply。
+
 ## [2026-05-05] 会话摘要：X 每日高互动回复队列
 
 **完成了什么：**
