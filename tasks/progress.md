@@ -4,6 +4,26 @@
 
 ---
 
+## [2026-05-05] 会话摘要：X timeline 扩量回复 50 条
+
+**完成了什么：**
+- 按用户要求从当前 X timeline 扩量回复 50 个此前未回复过的 source status。
+- 执行固定 workflow：浏览器/CDP 预检、`x-login` 账号预检、排除低质量候选、手写 reviewed JSON、内容复审、脚本 `review-only` gate、1 条 live smoke、完整批次、失败复核与补发。
+- 内容只保留 AI agent、Codex/Claude Code、工具链、企业落地、权限/密钥/风控、预测市场/交易风险等账号主线相关帖子；剔除政治冲突、擦边娱乐、纯喊单和低上下文段子。
+- 主批次中 4 条是提交后延迟回读，后续从 `with_replies` 或源帖页面找到验证 URL；@fxtrader 因 CDP 超时单独 retry 后成功。
+
+**验证 / 证据：**
+- `tools/redbookctl browser --json`：X/CDP `http://127.0.0.1:9224` 可复用。
+- `tools/redbookctl x-login --timeout-ms 45000`：账号 gate 通过，发布账号为 `Smileyface @0xcybersmile`。
+- `reply_engagement_queue.mjs --review-only --limit 50`：`approved=50 blocked=0`。
+- 合并 verified 记录：`05-选题研究/X-互动回复记录-2026-05-05-batch4-50-verified.md` / `.jsonl`。
+- 最终统计：`success=50`、`failed=0`、`unique_sources=50`、`unique_verify_urls=50`。
+- 首条验证 URL：`https://x.com/0xcybersmile/status/2051634299087270395`；末条验证 URL：`https://x.com/0xcybersmile/status/2051640357465845849`；retry 验证 URL：`https://x.com/0xcybersmile/status/2051641089313083447`。
+
+**遗留 / 注意：**
+- 大批量回复中 `with_replies` 偶发延迟，后续继续保留“最终记录 + 延迟回读复核 + 必要时 retry”的收口步骤。
+- 不要只看主批次 stdout；本轮主批次 stdout 是 `45/5`，但最终合并验证后才是 `50/0`。
+
 ## [2026-05-05] 会话摘要：Codex 图片生成 skill 进化
 
 **完成了什么：**
