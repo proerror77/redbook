@@ -1,0 +1,87 @@
+{
+  "run_id": "20260505-111533-llm-wiki-query-封面设计-图像提示词-图文分镜-visual-style-ai-image-prompt-小红书-x-配图-2026-05-05-4b7adf",
+  "kind": "content_pipeline",
+  "topic": "LLM Wiki query 封面设计 图像提示词 图文分镜 visual style AI image prompt 小红书 X 配图 2026-05-05",
+  "summary": "显式记录一次 wiki query：封面设计 图像提示词 图文分镜 visual style AI image prompt 小红书 X 配图",
+  "source": "wiki/index.md",
+  "owner": "Codex",
+  "priority": "P1",
+  "current_stage": "research",
+  "status": "done",
+  "created_at": "2026-05-05T11:15:33+00:00",
+  "updated_at": "2026-05-05T11:15:33+00:00",
+  "artifacts": [
+    {
+      "id": "3cba1a2eb5",
+      "type": "research_report",
+      "path": "docs/reports/wiki-query-封面设计-图像提示词-图文分镜-visual-style-ai-image-prompt-小红书-x-配图-2026-05-05.md",
+      "description": "Wiki query report for topic: 封面设计 图像提示词 图文分镜 visual style AI image prompt 小红书 X 配图",
+      "stage": "research",
+      "created_at": "2026-05-05T11:15:33+00:00"
+    }
+  ],
+  "checks": {
+    "materials_queried": true,
+    "research_complete": true,
+    "outline_locked": false,
+    "draft_written": false,
+    "facts_checked": false,
+    "platform_ready": false,
+    "published": false,
+    "progress_updated": false,
+    "wiki_logged": false,
+    "lessons_reviewed": false
+  },
+  "incidents": [],
+  "events": [
+    {
+      "at": "2026-05-05T11:15:33+00:00",
+      "type": "run_created",
+      "stage": "research",
+      "message": "Run created for topic: LLM Wiki query 封面设计 图像提示词 图文分镜 visual style AI image prompt 小红书 X 配图 2026-05-05",
+      "meta": {}
+    },
+    {
+      "at": "2026-05-05T11:15:33+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: research_report",
+      "meta": {
+        "path": "docs/reports/wiki-query-封面设计-图像提示词-图文分镜-visual-style-ai-image-prompt-小红书-x-配图-2026-05-05.md",
+        "artifact_id": "3cba1a2eb5"
+      }
+    },
+    {
+      "at": "2026-05-05T11:15:33+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-05-05T11:15:33+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check research_complete set to True",
+      "meta": {
+        "check_name": "research_complete",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-05-05T11:15:33+00:00",
+      "type": "run_closed",
+      "stage": "research",
+      "message": "Run closed with status: done",
+      "meta": {
+        "status": "done",
+        "note": "Wiki query is a research-only maintenance run.",
+        "closed_at": "2026-05-05T11:15:33+00:00"
+      }
+    }
+  ],
+  "closed_at": "2026-05-05T11:15:33+00:00"
+}

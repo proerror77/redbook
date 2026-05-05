@@ -4,6 +4,23 @@
 
 ---
 
+## [2026-05-05] 会话摘要：GPT-image2 封面配方短评与图像提示词内化
+
+**完成了什么：**
+- 根据用户粘贴的 @xiaoxiaodong01 GPT-image2 封面提示词长帖，写成 Lane B X 短评草稿，内容包位于 `01-内容生产/02-制作中的选题/2026-05-05-GPT-image2-cover-recipe-short-comment/`。
+- 短评核心判断：真正有价值的不是 10 组 prompt，而是“汤底 + 佐料 + 变量”的可复用视觉系统。
+- 已跑 `/x-mastery-mentor` 口径审稿，结论是可作为草稿等待发布确认；风险点是还没有原帖 URL，发布前需回复/引用原帖或保留作者 handle。
+- 已把方法内化进图像 workflow：`docs/standards/gpt-image-2-editorial-prompts.md` 增加“汤底与佐料”，`article-visual-storyboard` 增加 Base broth / Style seasoning 字段，`baoyu-image-gen` 增加 visual recipe rule。
+- 修正 `baoyu-image-gen` 中 `x-card` 示例从 `--ar 3:4` 改为 `--ar 16:9`，避免 X 配图规格误导。
+
+**验证 / 证据：**
+- 已完成 wiki query，生成 `docs/reports/wiki-query-封面设计-图像提示词-图文分镜-visual-style-ai-image-prompt-小红书-x-配图-2026-05-05.md`。
+- 待最终提交前跑 scoped `git diff --check` 和关键词一致性检查。
+
+**未完成 / 遗留：**
+- 未发布；必须等用户明确说“发布 / 直接发”。
+- 如果后续要接原帖发布，需要先在当前登录 X 中找到 @xiaoxiaodong01 原帖 URL。
+
 ## [2026-05-05] 会话摘要：X 高质量回复工作流沉淀与扩量 20 条
 
 **完成了什么：**
@@ -2089,16 +2106,16 @@
 ## [YYYY-MM-DD] 会话摘要
 
 **完成了什么：**
-- 
+-
 
 **未完成 / 遗留：**
-- 
+-
 
 **下次会话优先做：**
-- 
+-
 
 **需要注意：**
-- 
+-
 ```
 
 ---

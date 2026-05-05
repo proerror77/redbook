@@ -21,6 +21,14 @@ Create or update `图文分镜.md` beside the source article. If the user only n
 4. Build one storyboard table per platform.
 5. Run layout QA before handing off to an image skill.
 
+Before image generation, define a reusable visual recipe for the content package:
+
+- `Base broth`: stable account-level visual rules such as restrained editorial taste, mobile readability, clean hierarchy, enough whitespace, and low text density.
+- `Style seasoning`: one selected style module for this topic, such as blueprint/manual/cinematic/eastern-literati/exhibition/garden-journal/variety-preview. Use at most one secondary seasoning.
+- `Content variables`: title, anchor phrase, reader task, platform spec, and the small set of visual objects that change per card.
+
+Do not treat seasoning as decorative adjectives. Translate it into concrete constraints: grid, typography feel, accent color, annotation style, illustration relationship, and avoid list.
+
 ## Platform Specs
 
 Use these as Redbook production defaults. If a user gives explicit platform specs, follow the user.
@@ -46,6 +54,8 @@ For each platform, create rows with:
 | `Anchor phrase` | 2-8 Chinese characters or one short English phrase from the article |
 | `Semantic read` | literal meaning, emotional tone, hidden tension, intended reader feeling |
 | `Visual metaphor` | concrete scene, object relationship, UI/workflow relation, or scale contrast |
+| `Base broth` | stable visual rules shared by all images in this content package |
+| `Style seasoning` | the chosen reusable style module and its concrete layout/color/type constraints |
 | `Layout spec` | title zone, subject zone, safe margins, grid, focal point |
 | `Text budget` | headline, subtitle, labels, and max character counts |
 | `Avoid` | specific cliches, misleading elements, or platform-inappropriate elements |
@@ -56,6 +66,7 @@ For each platform, create rows with:
 Every row must pass before generation:
 
 - One image has one reader task.
+- The content package has one consistent base broth and one main style seasoning.
 - Main headline is at most 12 Chinese characters.
 - Subtitle is at most 18 Chinese characters.
 - Labels are at most 4, each at most 6 Chinese characters.

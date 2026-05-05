@@ -120,7 +120,7 @@
 
 - Owner: Codex Agent Teams
 - Source: User asked to use Agent Teams to plan and execute BOSS AI-role deduped applications from jobs/chat pages with local record consolidation
-- Status: in_progress
+- Status: completed
 
 ### Cleanup Plan
 
@@ -642,3 +642,26 @@
 - Composer media counting is scoped to the active compose surface, so avatars, quoted-post previews, timeline images, and unrelated page media cannot satisfy the image gate.
 - Image verification now checks media on the matched main status article itself; an image reply cannot make a text-only main post look successful.
 - Verification passed: Bun build smoke, `--help` smoke, scoped `git diff --check`, and `tools/redbookctl x-login --timeout-ms 45000`.
+
+## 2026-05-05 Cover Prompt Seasoning Workflow
+
+- Owner: Codex
+- Source: User shared Xiaoxiaodong's "汤底 + 佐料" reusable GPT-image2 cover prompt method and asked to write a short comment plus check whether our image prompts should change.
+- Status: in_progress
+
+### Cleanup Plan
+
+- [x] Write a Lane B X short-comment draft and run X mentor review without publishing.
+- [x] Compare the method against current image prompt standards and active image skills.
+- [x] Add a reusable base-broth / style-seasoning layer to image prompt docs and storyboard fields.
+- [x] Fix any obvious prompt preset inconsistency found during review.
+- [x] Run scoped checks and record the result.
+
+### Review
+
+- Created a Lane B draft package at `01-内容生产/02-制作中的选题/2026-05-05-GPT-image2-cover-recipe-short-comment/` with source note, X short comment, X mentor review, and publish checklist.
+- The X draft reframes Xiaoxiaodong's method as a reusable visual system: base broth, style seasoning, and content variables.
+- Updated the tracked GPT-image-2 editorial standard and active image skills so cover/image prompts must define the visual recipe before prompt generation.
+- Fixed the tracked `x-card` example from `3:4` to `16:9`, matching the X.com default image spec.
+- Verification passed: scoped `git diff --check`, visual-recipe keyword check, and trailing-whitespace check.
+- Publishing remains blocked until the user explicitly says publish; the original X status URL has not been verified yet.

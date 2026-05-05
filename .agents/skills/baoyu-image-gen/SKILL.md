@@ -53,7 +53,7 @@ npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image cat.png
 npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A landscape" --image out.png --ar 16:9
 
 # X.com / blog editorial preset
-npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "Agent is becoming the background workstation" --image x-card.png --preset x-card --ar 3:4
+npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "Agent is becoming the background workstation" --image x-card.png --preset x-card --ar 16:9
 npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "How AI agents enter enterprise workflows" --image hero.png --preset blog-hero --ar 16:9
 npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "Why AI agent adoption is an operations problem" --image article.png --preset article-elegant --ar 16:9
 
@@ -147,6 +147,7 @@ The preset turns a short content brief into a publishable editorial prompt:
 - Composition: one visual metaphor, Swiss grid, generous negative space, safe margins.
 - Typography rule: preferably no text; at most one short headline; no paragraphs or tiny labels.
 - Style rule: simple, elegant, calm article visual; off-white / graphite / ink palette with one precise accent.
+- Visual recipe rule: preserve the workspace base broth, then add one concrete style seasoning such as blueprint/manual/cinematic/exhibition. The seasoning must control grid, typography feel, accent color, annotation style, and avoid list instead of acting as vague decoration.
 - Avoid list: generic purple AI glow, robot mascots, glossy Dribbble 3D, bokeh orbs, cyberpunk neon, fake logos, watermark.
 
 Project standard: `docs/standards/gpt-image-2-editorial-prompts.md`.
