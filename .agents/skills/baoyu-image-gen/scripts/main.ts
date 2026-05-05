@@ -16,13 +16,19 @@ Options:
   --image <path>            Output image path (required)
   --provider google|openai|dashscope|tuzi  Force provider (auto-detect by default)
   -m, --model <id>          Model ID
-  --preset <name>           Prompt preset: raw|x-card|blog-hero|x-blog-editorial|article-elegant (default: raw)
+  --preset <name>           Prompt preset: raw|x-card|blog-hero|x-blog-editorial|article-elegant|social-cover|info-card (default: raw)
   --ar <ratio>              Aspect ratio (e.g., 16:9, 1:1, 4:3)
   --size <WxH>              Size (e.g., 1024x1024)
   --quality normal|2k       Quality preset (default: 2k)
   --imageSize 1K|2K|4K      Image size for Google (default: from quality)
   --ref <files...>          Reference images (Google multimodal only)
   --n <count>               Number of images (default: 1)
+  --broth <text>            Stable account-level visual recipe rules
+  --seasoning <text>        One reusable style module, e.g. blueprint/manual/cinematic
+  --title <text>            Exact visible headline, if text is needed
+  --subtitle <text>         Exact visible subtitle, if text is needed
+  --text-mode <mode>        none|headline|headline-subtitle|labels
+  --print-prompt            Print the final assembled prompt and exit without generating
   --json                    JSON output
   -h, --help                Show help
 
@@ -58,6 +64,12 @@ function parseArgs(argv: string[]): CliArgs {
     imageSize: null,
     referenceImages: [],
     n: 1,
+    broth: null,
+    seasoning: null,
+    visibleTitle: null,
+    visibleSubtitle: null,
+    textMode: null,
+    printPrompt: false,
     json: false,
     help: false,
   };
@@ -86,6 +98,11 @@ function parseArgs(argv: string[]): CliArgs {
 
     if (a === "--json") {
       out.json = true;
+      continue;
+    }
+
+    if (a === "--print-prompt") {
+      out.printPrompt = true;
       continue;
     }
 
@@ -127,7 +144,7 @@ function parseArgs(argv: string[]): CliArgs {
 
     if (a === "--preset") {
       const v = argv[++i];
-      if (v !== "raw" && v !== "x-card" && v !== "blog-hero" && v !== "x-blog-editorial" && v !== "article-elegant") {
+      if (v !== "raw" && v !== "x-card" && v !== "blog-hero" && v !== "x-blog-editorial" && v !== "article-elegant" && v !== "social-cover" && v !== "info-card") {
         throw new Error(`Invalid preset: ${v}`);
       }
       out.preset = v;
@@ -175,6 +192,41 @@ function parseArgs(argv: string[]): CliArgs {
       if (!v) throw new Error("Missing value for --n");
       out.n = parseInt(v, 10);
       if (isNaN(out.n) || out.n < 1) throw new Error(`Invalid count: ${v}`);
+      continue;
+    }
+
+    if (a === "--broth") {
+      const v = argv[++i];
+      if (!v) throw new Error("Missing value for --broth");
+      out.broth = v;
+      continue;
+    }
+
+    if (a === "--seasoning") {
+      const v = argv[++i];
+      if (!v) throw new Error("Missing value for --seasoning");
+      out.seasoning = v;
+      continue;
+    }
+
+    if (a === "--title") {
+      const v = argv[++i];
+      if (!v) throw new Error("Missing value for --title");
+      out.visibleTitle = v;
+      continue;
+    }
+
+    if (a === "--subtitle") {
+      const v = argv[++i];
+      if (!v) throw new Error("Missing value for --subtitle");
+      out.visibleSubtitle = v;
+      continue;
+    }
+
+    if (a === "--text-mode") {
+      const v = argv[++i];
+      if (v !== "none" && v !== "headline" && v !== "headline-subtitle" && v !== "labels") throw new Error(`Invalid text mode: ${v}`);
+      out.textMode = v;
       continue;
     }
 
@@ -258,33 +310,56 @@ function normalizeOutputImagePath(p: string): string {
 function applyPromptPreset(prompt: string, args: CliArgs): string {
   if (args.preset === "raw") return prompt;
 
+  const isArticle = args.preset === "blog-hero" || args.preset === "article-elegant";
   const target = args.preset === "blog-hero"
     ? "blog hero image"
     : args.preset === "article-elegant"
       ? "minimal elegant article illustration"
-    : args.preset === "x-card"
-      ? "X.com feed card"
-      : "X.com/blog editorial image";
+      : args.preset === "x-card"
+        ? "X.com feed card"
+        : args.preset === "social-cover"
+          ? "social media cover / recommendation card"
+          : args.preset === "info-card"
+            ? "structured social media information card"
+            : "X.com/blog editorial image";
 
-  const defaultRatio = args.aspectRatio || (args.preset === "blog-hero" || args.preset === "article-elegant" ? "16:9" : "3:4");
-  const exactTextPolicy = args.preset === "blog-hero" || args.preset === "article-elegant"
-    ? "Prefer no text inside the image. If text is necessary, use only one short quoted headline."
-    : "Use at most one short quoted headline inside the image; avoid paragraphs, UI clutter, fake logos, and tiny illegible labels.";
+  const platform = isArticle ? "blog / newsletter / article header" : "X.com timeline image or cross-platform social image";
+  const defaultRatio = args.aspectRatio || "16:9";
+  const defaultTextMode = args.textMode || (isArticle ? "none" : args.preset === "info-card" ? "labels" : args.visibleSubtitle ? "headline-subtitle" : "headline");
+  const titleLine = args.visibleTitle ? `- Exact headline text: "${args.visibleTitle}"` : "- Exact headline text: not provided; do not invent a large headline unless the content brief explicitly asks for one.";
+  const subtitleLine = args.visibleSubtitle ? `- Exact subtitle text: "${args.visibleSubtitle}"` : "- Exact subtitle text: not provided; avoid subtitles unless explicitly needed.";
+  const baseBroth = args.broth || "restrained editorial taste, mobile readability, clear hierarchy, generous whitespace, low text density, and one visible recommendation reason";
+  const seasoning = args.seasoning || "choose exactly one main style seasoning from blueprint order, product manual, cinematic title, eastern literati, exhibition wall, garden journal, or variety preview, based on the content brief";
+  const exactTextPolicy = buildTextPolicy(defaultTextMode);
 
   return `Create a polished ${target} for a tech founder audience.
 
 Output artifact:
-- Platform: ${args.preset === "blog-hero" || args.preset === "article-elegant" ? "blog / newsletter / article header" : "X.com timeline image"}
+- Platform: ${platform}
 - Aspect ratio: ${defaultRatio}
+- Deliverable: one finished publishable image, not a moodboard, template sheet, multi-option grid, screenshot collage, or prompt poster
 - Visual direction: simple, elegant editorial technology design; calm, useful, and mature
 - Aesthetic anchors: Swiss grid, generous negative space, restrained typography, off-white / graphite / ink palette, one precise accent color
-- Preferred styles: minimalist editorial illustration, quiet product diagram, clean article hero, or understated workspace scene
 - Avoid: generic blue-purple AI glow, random robot mascots, glossy Dribbble 3D blobs, bokeh orbs, cyberpunk neon, busy collage, cluttered infographic text, unreadable tiny type, fake brand logos, watermark, low-effort clipart
 
+Visual recipe:
+- Base broth: ${baseBroth}
+- Style seasoning: ${seasoning}
+- Convert the seasoning into concrete layout grid, typography feel, accent color, annotation style, illustration/object relationship, and an avoid list.
+- Use one main seasoning only. Add a secondary seasoning only if it clarifies the content brief.
+
+Content variables:
+${titleLine}
+${subtitleLine}
+- Reader task: infer from the content brief and make it visually obvious within 3 seconds on mobile.
+- Main subject: use one strong metaphor or object relationship; avoid unrelated icon soup.
+
 Typography and text:
+- Text mode: ${defaultTextMode}
 - ${exactTextPolicy}
 - Put any exact visible text in double quotes and name its role, for example headline or small footer.
 - Chinese and English text must be sharp, correctly spelled, and not warped.
+- No paragraphs inside the image. Use at most 1 headline, 1 subtitle, and 3 short labels unless the user explicitly asked for a dense infographic.
 
 Composition requirements:
 - One clear visual metaphor, not a collage of many unrelated symbols.
@@ -292,9 +367,24 @@ Composition requirements:
 - Foreground, midground, and background should be intentionally separated, but never visually noisy.
 - Leave safe margins for cropping in X/blog previews.
 - The image should communicate the idea before the viewer reads the post.
+- If this is a cover, the title area, subject area, and breathing space must be separate and stable.
+- If this is an information card, use 3-5 clearly separated blocks with short labels; no tiny footnotes.
 
 Content brief:
 ${prompt}`;
+}
+
+function buildTextPolicy(textMode: NonNullable<CliArgs["textMode"]>): string {
+  switch (textMode) {
+    case "none":
+      return "Prefer no visible text inside the image. If text is unavoidable, use only one short quoted headline.";
+    case "headline":
+      return "Use one short visible headline only. It must be readable on mobile and must not overlap the subject.";
+    case "headline-subtitle":
+      return "Use one short headline and one short subtitle only. Keep both in a dedicated text zone with generous margins.";
+    case "labels":
+      return "Use short labels only where they clarify the structure. Labels must be large enough to read on mobile and never become decorative microtext.";
+  }
 }
 
 function detectProvider(args: CliArgs): Provider {
@@ -358,14 +448,23 @@ async function main(): Promise<void> {
     return;
   }
 
+  prompt = applyPromptPreset(prompt, args);
+
+  if (args.printPrompt) {
+    if (args.json) {
+      console.log(JSON.stringify({ prompt }, null, 2));
+    } else {
+      console.log(prompt);
+    }
+    return;
+  }
+
   if (!args.imagePath) {
     console.error("Error: --image is required");
     printUsage();
     process.exitCode = 1;
     return;
   }
-
-  prompt = applyPromptPreset(prompt, args);
 
   const provider = detectProvider(args);
   const providerModule = await loadProviderModule(provider);

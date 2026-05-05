@@ -154,7 +154,7 @@
 
 - Owner: Codex
 - Source: User selected the orchestration angle and asked for a long article with images, then pointed out the workflow had skipped review / de-slop / formatting steps
-- Status: in_progress
+- Status: completed
 
 ### Cleanup Plan
 
@@ -612,7 +612,7 @@
 
 - Owner: Codex
 - Source: user report that inline images were being inserted into the header/cover area and overwriting the first image
-- Status: in_progress
+- Status: completed
 
 ### Cleanup Plan
 
@@ -665,3 +665,26 @@
 - Fixed the tracked `x-card` example from `3:4` to `16:9`, matching the X.com default image spec.
 - Verification passed: scoped `git diff --check`, visual-recipe keyword check, and trailing-whitespace check.
 - Publishing remains blocked until the user explicitly says publish; the original X status URL has not been verified yet.
+
+## 2026-05-05 Codex Image Gen Skill Evolution
+
+- Owner: Codex
+- Source: User clarified that the target is the Codex image generation skill itself, and asked to research GPT Image 2.0 cover / self-media image prompting patterns before deciding changes.
+- Status: in_progress
+
+### Cleanup Plan
+
+- [x] Audit the current `baoyu-image-gen` skill and script prompt preset assembly.
+- [x] Collect current X/search evidence around GPT Image 2 cover, self-media cards, Prompt-as-Code, and cover prompt patterns.
+- [x] Patch the script so reusable visual recipes are executable arguments, not just prose documentation.
+- [x] Add cover/info-card presets for self-media use cases.
+- [x] Run focused CLI checks, diff checks, and record the result.
+
+### Review
+
+- X research saved `05-选题研究/X-搜索-GPT-image2-封面提示词-2026-05-05.md` and `05-选题研究/X-搜索-GPT-Image-2-自媒体封面-2026-05-05.md`.
+- Added `social-cover` and `info-card` presets to `baoyu-image-gen`.
+- Added `--broth`, `--seasoning`, `--title`, `--subtitle`, `--text-mode`, and `--print-prompt`.
+- Fixed the actual script default so editorial/social presets default to `16:9`; Xiaohongshu vertical cards now require explicit `--ar 3:4`.
+- Added a research note at `docs/reports/2026-05-05-gpt-image2-cover-prompt-research.md`.
+- Verification passed: CLI help smoke, `social-cover --print-prompt`, `info-card --print-prompt --ar 3:4`, scoped `git diff --check`.

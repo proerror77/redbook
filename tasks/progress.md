@@ -4,6 +4,25 @@
 
 ---
 
+## [2026-05-05] 会话摘要：Codex 图片生成 skill 进化
+
+**完成了什么：**
+- 用户澄清目标不是泛化图像工作流，而是修正当前用 Codex 生成图片的 `baoyu-image-gen` skill。
+- 用当前登录 X/CDP `9224` 搜索两组资料：`GPT-image2 封面 提示词` 和 `GPT Image 2 自媒体 封面 prompt`，报告保存到 `05-选题研究/`。
+- 结合 OpenAI 图像文档 / Cookbook 示例和 X 热门样本，确认改造方向：Prompt-as-Code、显式文字预算、封面/信息卡分流、禁止 moodboard/拼贴。
+- 修改 `baoyu-image-gen` 脚本：新增 `social-cover` / `info-card` presets，以及 `--broth`、`--seasoning`、`--title`、`--subtitle`、`--text-mode`、`--print-prompt` 参数。
+- 修正脚本层 `x-card` / social editorial 默认比例为 `16:9`，小红书竖图需显式传 `--ar 3:4`。
+- 更新 `docs/standards/gpt-image-2-editorial-prompts.md` 和研究报告 `docs/reports/2026-05-05-gpt-image2-cover-prompt-research.md`。
+
+**验证 / 证据：**
+- `bun .agents/skills/baoyu-image-gen/scripts/main.ts --help` 显示新参数。
+- `--print-prompt` smoke 验证 `social-cover` 会输出 `Base broth / Style seasoning / Content variables`。
+- `--print-prompt` smoke 验证 `info-card --ar 3:4` 会保留竖图比例和 label text mode。
+- scoped `git diff --check` 通过。
+
+**未完成 / 遗留：**
+- 本轮未实际调用生图 API，只验证 prompt assembly，避免无必要消耗额度。
+
 ## [2026-05-05] 会话摘要：GPT-image2 封面配方短评与图像提示词内化
 
 **完成了什么：**

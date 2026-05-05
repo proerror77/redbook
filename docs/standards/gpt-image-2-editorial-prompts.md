@@ -1,6 +1,6 @@
 # GPT Image 2 Editorial Prompts
 
-> 来源：OpenAI image generation docs、OpenAI Cookbook image prompting examples、PixelDojo GPT Image 2 guide、Hello Soya ChatGPT Images 2.0 guide、X Business creative specs、X article `xiaoxiaodong01/status/2048443572119330853` | 最后更新：2026-04-29
+> 来源：OpenAI image generation docs、OpenAI Cookbook GPT Image examples、X 搜索 `GPT-image2 封面 提示词` / `GPT Image 2 自媒体 封面 prompt`、X article `xiaoxiaodong01/status/2048443572119330853` | 最后更新：2026-05-05
 
 ## 适用范围
 
@@ -21,6 +21,17 @@
 3. 佐料必须被翻译成可执行的视觉约束：版式、网格、字体气质、点缀方式、颜色强调、插画关系、禁用元素。
 4. X.com、小红书、blog 可以共享汤底和佐料，但必须分开画布比例、裁切、文字密度和最终文件。
 5. 如果某个佐料只是让图“更好看”，但不能服务观点或读者任务，删除它。
+
+在 Codex / `baoyu-image-gen` 中执行时，优先用结构化参数表达这套配方：
+
+- `--preset social-cover`：自媒体封面、推荐卡片、观点封面。
+- `--preset info-card`：结构化说明图、三段式方法卡、轻量信息图。
+- `--broth`：覆盖账号固定视觉底层；通常不用传，保持一致性。
+- `--seasoning`：传一个主佐料，例如 `product manual`、`blueprint order`、`cinematic title`。
+- `--title` / `--subtitle`：需要图内文字时传精确文本，避免模型自行发挥。
+- `--text-mode none|headline|headline-subtitle|labels`：先决定文字预算，再生图。
+
+不要把大段文章直接塞进 `--prompt`。先压成内容变量：对象、观点、读者任务、视觉主体、平台比例。
 
 常用佐料库：
 

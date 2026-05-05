@@ -52,10 +52,12 @@ npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image cat.png
 # With aspect ratio
 npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A landscape" --image out.png --ar 16:9
 
-# X.com / blog editorial preset
+# X.com / blog / social editorial presets
 npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "Agent is becoming the background workstation" --image x-card.png --preset x-card --ar 16:9
 npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "How AI agents enter enterprise workflows" --image hero.png --preset blog-hero --ar 16:9
 npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "Why AI agent adoption is an operations problem" --image article.png --preset article-elegant --ar 16:9
+npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "GPT Image 2 cover prompts are reusable visual recipes" --image cover.png --preset social-cover --title "封面不是 prompt" --subtitle "是可复用配方" --seasoning "product manual"
+npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "Three-layer image workflow: base broth, style seasoning, content variables" --image info-card.png --preset info-card --text-mode labels --seasoning "blueprint order"
 
 # High quality
 npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "A cat" --image out.png --quality 2k
@@ -85,13 +87,19 @@ npx -y bun ${SKILL_DIR}/scripts/main.ts --prompt "一只可爱的猫" --image ou
 | `--image <path>` | Output image path (required) |
 | `--provider google\|openai\|dashscope\|tuzi` | Force provider (auto-detect by API key; Tuzi first when available) |
 | `--model <id>`, `-m` | Model ID |
-| `--preset raw\|x-card\|blog-hero\|x-blog-editorial\|article-elegant` | Wrap prompt with X/blog editorial art direction and anti-slop constraints |
+| `--preset raw\|x-card\|blog-hero\|x-blog-editorial\|article-elegant\|social-cover\|info-card` | Wrap prompt with X/blog/social editorial art direction and anti-slop constraints |
 | `--ar <ratio>` | Aspect ratio (e.g., `16:9`, `1:1`, `4:3`) |
 | `--size <WxH>` | Size (e.g., `1024x1024`) |
 | `--quality normal\|2k` | Quality preset (default: 2k) |
 | `--imageSize 1K\|2K\|4K` | Image size for Google (default: from quality) |
 | `--ref <files...>` | Reference images (Google multimodal only) |
 | `--n <count>` | Number of images |
+| `--broth <text>` | Override the stable account-level visual recipe |
+| `--seasoning <text>` | Select one style module, e.g. `blueprint order`, `product manual`, `cinematic title` |
+| `--title <text>` | Exact visible headline for cover/card presets |
+| `--subtitle <text>` | Exact visible subtitle for cover/card presets |
+| `--text-mode none\|headline\|headline-subtitle\|labels` | Control in-image text budget |
+| `--print-prompt` | Print the final assembled prompt and exit without generating, useful for QA |
 | `--json` | JSON output |
 
 ## Environment Variables
@@ -139,15 +147,16 @@ Supported: `1:1`, `16:9`, `9:16`, `4:3`, `3:4`, `2.35:1`
 
 ## X / Blog Editorial Prompting
 
-For X.com or blog images, prefer `--preset article-elegant`, `--preset x-card`, `--preset blog-hero`, or `--preset x-blog-editorial`.
+For X.com, blog, or self-media images, prefer `--preset article-elegant`, `--preset x-card`, `--preset blog-hero`, `--preset x-blog-editorial`, `--preset social-cover`, or `--preset info-card`.
 
 The preset turns a short content brief into a publishable editorial prompt:
 - Explicit artifact: X.com feed card or blog hero.
 - Placement and audience: tech founders, AI builders, operators.
-- Composition: one visual metaphor, Swiss grid, generous negative space, safe margins.
-- Typography rule: preferably no text; at most one short headline; no paragraphs or tiny labels.
+- Composition: one visual metaphor, Swiss grid, generous negative space, safe margins; one finished publishable image, not a moodboard or prompt poster.
+- Typography rule: use `--text-mode`; preferably no text for article images, one exact headline for covers, short labels for info cards; no paragraphs or tiny labels.
 - Style rule: simple, elegant, calm article visual; off-white / graphite / ink palette with one precise accent.
-- Visual recipe rule: preserve the workspace base broth, then add one concrete style seasoning such as blueprint/manual/cinematic/exhibition. The seasoning must control grid, typography feel, accent color, annotation style, and avoid list instead of acting as vague decoration.
+- Visual recipe rule: preserve the workspace base broth, then add one concrete style seasoning such as blueprint/manual/cinematic/exhibition. The seasoning must control grid, typography feel, accent color, annotation style, object relationships, and avoid list instead of acting as vague decoration.
+- Content variable rule: pass exact headline/subtitle with `--title` / `--subtitle` when text matters; otherwise the model must not invent large extra text.
 - Avoid list: generic purple AI glow, robot mascots, glossy Dribbble 3D, bokeh orbs, cyberpunk neon, fake logos, watermark.
 
 Project standard: `docs/standards/gpt-image-2-editorial-prompts.md`.
