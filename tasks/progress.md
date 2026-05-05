@@ -23,6 +23,24 @@
 - 队列仍是半自动草稿；真实回复发布需要人工挑选/确认。
 - 后续可以继续优化评论草稿，让它更贴原帖语境，减少模板味。
 
+## [2026-05-05] 会话摘要：X 回复发布脚本稳定化
+
+**完成了什么：**
+- 修复 X 回复自动化的 Draft.js 输入问题：点击主帖回复后只使用弹窗内编辑器，不再误用页面底部 inline 回复框。
+- 新增默认 no-focus 行为：不再默认 `activate` / `bringToFront`；需要前台操作时必须显式 `--allow-focus`。
+- 新增 `--background-worker`：用 CDP background target 执行，不切到前台，结束后关闭临时 target。
+- 新增发布前审查门：默认拒绝未 `review.status=approved` 的回复；会拦截模板句、过长、抽象词过密、语言不匹配、链接和高风险词。
+- 追加 reviewed 回复文件和审查记录，补足今日 20 条回复。
+
+**验证：**
+- `node --check tools/auto-x/scripts/reply_engagement_queue.mjs`
+- `reply_engagement_queue.mjs --review-only`：旧模板回复 21/21 被挡下；reviewed 文件 2/2 通过。
+- `reply_engagement_queue.mjs --background-worker --targets 05-选题研究/X-互动回复-2026-05-05-reviewed.json`：2 条 reviewed 回复均有平台侧回读证据。
+
+**未完成 / 遗留：**
+- 早期已发的部分回复仍偏观点卡，后续应只用 reviewed JSON 作为发布输入，不再直接发送自动生成草稿。
+- `with_replies` 回读偶尔有延迟；脚本记录里已补 recovered 证据，后续可把延迟回查做成内置二次验证。
+
 ---
 
 ## [2026-05-01] 会话摘要：Stripe vs OKX Agent Payment X Article 工作流
