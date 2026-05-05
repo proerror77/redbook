@@ -13,6 +13,7 @@ const {
 const {
   buildEntry,
 } = require('../scripts/cdp_chat_triage_export');
+const { findTraceNavigationIssues, probeOnce } = require('../scripts/boss_trace_probe');
 
 test('boss_apply_playwright builds a non-empty identity from detail metadata', () => {
   const application = buildApplicationFromMeta({
@@ -152,4 +153,24 @@ test('chat triage entry classification uses opened message text, not just previe
   assert.equal(entry.category, 'explicit_rejection');
   assert.ok(entry.matchHints.includes('拒绝科技'));
   assert.equal(entry.messages[0].text, '抱歉，暂时不考虑，岗位匹配度有所差距。');
+});
+
+test('boss_trace_probe exports a probe runner for trace-backed dry-run checks', () => {
+  assert.equal(typeof probeOnce, 'function');
+});
+
+test('boss_trace_probe flags trace navigation to a different job detail', () => {
+  const issues = findTraceNavigationIssues({
+    pages: [
+      { pageId: 0, url: 'https://www.zhipin.com/job_detail/expected.html' },
+      { pageId: 1, url: 'https://www.zhipin.com/job_detail/other.html' },
+      { pageId: 2, url: 'about:blank' },
+    ],
+  }, 'https://www.zhipin.com/job_detail/expected.html');
+
+  assert.deepEqual(issues, [{
+    reason: 'trace_unstable_navigation',
+    pageId: 1,
+    url: 'https://www.zhipin.com/job_detail/other.html',
+  }]);
 });

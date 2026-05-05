@@ -24,6 +24,11 @@
 
 如果页面出现登录失效、滑块或 `访问受限 / 异常访问行为`，先人工处理，再重新运行脚本。
 
+异常登录 / 异常访问不是一次性报错，要作为后续策略输入：
+- 一旦出现 `访问受限 / 异常访问行为 / 账号异常行为 / _security_check / auth_gate / restricted`，必须先挂 `browser-trace` 到当前 CDP 会话，采集 network、console、page navigation、DOM 和截图证据。
+- 记录触发异常的浏览器 profile、CDP 端口、脚本入口、操作节奏、页面 URL 和 trace 摘要；下次不要无记录地重复同一条登录或自动化路径。
+- 恢复路径应是用户式恢复：复用已登录的普通浏览器，由用户完成 BOSS 第一方验证，再先跑只读 health check / dry-run；不要尝试绕过或对抗 BOSS 安全控制。
+
 ### 2. 默认保守，不默认发消息 / 投递
 
 - 回复默认只生成草稿
@@ -86,8 +91,87 @@ cp config.example.json config.local.json
 风控建议：
 - `chat.pollIntervalMs` 不要过于频繁，建议 `25s+`
 - 连续切搜索词、连续开详情页、连续点投递按钮，比单次扫描本身更容易触发验证
+- 遇到异常访问或异常登录时，先用 `browser-trace` 留证并复盘触发路径；没有 trace-backed 记录时，不要重复同一方式登录、打开详情页或批量 dry-run。
 - 如果页面出现 `访问受限 / 账号异常行为 / 暂时被限制访问`，应立即停止所有自动化，直到页面给出的恢复时间之后再由人工先确认状态
 - 如果之前已经触发过 `restricted`，恢复时间到了之后，第一轮运行只做健康探测，不直接继续投递或回复；需要第二次再显式重跑
+
+## Browser Trace 诊断门
+
+目的：当 BOSS 页面不稳定时，把“为什么失败”记录成证据，再决定下一步，而不是重复同一条登录或投递路径。
+
+触发条件：
+- `异常访问行为`、`账号异常行为`、`访问受限`
+- `_security_check`、`auth_gate`、`restricted`
+- 登录页反复跳转、chat 页打不开、详情页自动跳走
+- dry-run 出现 `target_url_mismatch` 或目标详情 URL 无法验证
+
+标准步骤：
+
+```bash
+cd /Users/proerror/Documents/redbook
+
+# 1. 启动只读 trace，挂到当前 CDP。优先用当前实际端口，例如 9224。
+RUN_ID=boss-debug-$(date +%Y%m%dT%H%M%S)
+O11Y_ROOT=/Users/proerror/Documents/redbook/.o11y \
+  node /Users/proerror/.agents/skills/browser-trace/scripts/start-capture.mjs 9224 "$RUN_ID" 1
+
+# 2. trace 运行中，只做只读检查或 dry-run。
+browse --ws 9224 pages --json
+npm --silent --prefix tools/auto-zhipin run boss:apply-cdp -- \
+  --cdp-endpoint http://127.0.0.1:9224 \
+  --url 'https://www.zhipin.com/job_detail/xxx.html' \
+  --dry-run true \
+  --focus false
+
+# 3. 停止并切分 trace。
+O11Y_ROOT=/Users/proerror/Documents/redbook/.o11y \
+  node /Users/proerror/.agents/skills/browser-trace/scripts/stop-capture.mjs "$RUN_ID"
+O11Y_ROOT=/Users/proerror/Documents/redbook/.o11y \
+  node /Users/proerror/.agents/skills/browser-trace/scripts/bisect-cdp.mjs "$RUN_ID"
+
+# 4. 看摘要和错误。
+O11Y_ROOT=/Users/proerror/Documents/redbook/.o11y \
+  node /Users/proerror/.agents/skills/browser-trace/scripts/query.mjs "$RUN_ID" summary
+O11Y_ROOT=/Users/proerror/Documents/redbook/.o11y \
+  node /Users/proerror/.agents/skills/browser-trace/scripts/query.mjs "$RUN_ID" errors
+```
+
+判定标准：
+- 可以继续：BOSS 页面稳定、没有 auth/security blocker、dry-run 的 `targetCheck.ok === true`。
+- 必须停止：出现异常访问、登录/安全页、`target_url_mismatch`、详情页连续跳转、chat 页无法稳定打开。
+- 记录要求：把 trace 摘要、导航序列、错误类型、触发脚本和恢复建议写入 `tasks/progress.md`。原始 `.o11y` 截图和 DOM 可能包含账号/招聘页面信息，默认不提交。
+
+### 固定脚本：trace-backed probe
+
+优先使用封装好的脚本，而不是手动拼 `browser-trace` 命令。它会：
+- 挂 `browser-trace` 到当前 CDP。
+- 对当前或指定 `job_detail` 做只读 dry-run gate。
+- 停止并切分 trace。
+- 默认删除原始 `.o11y` 截图/DOM，只保留摘要到 `data/boss-trace-probe-latest.json` 和 `data/boss-trace-probe-history.jsonl`。
+- 如果 trace 期间出现其他 `job_detail` 导航，会追加 `trace_unstable_navigation`，并强制 `okToLiveApply=false`。
+
+单次检查：
+
+```bash
+cd /Users/proerror/Documents/redbook/tools/auto-zhipin
+npm run boss:trace-probe -- \
+  --cdp-endpoint http://127.0.0.1:9224 \
+  --keep-trace false
+```
+
+轮询检查：
+
+```bash
+cd /Users/proerror/Documents/redbook/tools/auto-zhipin
+npm run boss:trace-probe -- \
+  --cdp-endpoint http://127.0.0.1:9224 \
+  --poll true \
+  --interval-ms 30000 \
+  --max-loops 10 \
+  --keep-trace false
+```
+
+只有当输出里 `okToLiveApply=true`，并且 `targetCheck.ok=true`、`gate.reasons=[]`、`trace.issues=[]` 时，才可以进入受监督的 live apply 决策。
 
 ## 使用方法
 

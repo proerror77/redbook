@@ -461,8 +461,11 @@ if (require.main === module) {
 
 module.exports = {
   buildCandidateFromMeta,
+  createCdpSession,
   extractCompanyProfileText,
+  extractMeta,
   extractJobDetailId,
   main,
+  pickReusableTarget,
   validateTargetUrl,
 };

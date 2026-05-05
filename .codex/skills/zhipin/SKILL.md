@@ -21,6 +21,9 @@ The workflow has real external side effects. Treat BOSS `立即沟通` / `投递
 - Do not use rapid search loops. Prefer browsing existing BOSS result pages, job tabs, and natural page recommendations like a human, with moderate scrolling.
 - Before any live apply, run detail dry-run and inspect the gate result.
 - If the page shows login, security check, restricted access, abnormal access, or bounce-back behavior, stop apply work and diagnose session health first.
+- On any abnormal access/login/security event, attach `browser-trace` to the current CDP browser before drawing conclusions or retrying. Capture enough evidence to identify the triggering profile, CDP route, script, cadence, page URL, network/console errors, DOM state, and screenshots.
+- Treat abnormal access/login events as durable workflow feedback. Record the trace-backed cause and do not retry the same login or automation path next time without a recovery note.
+- Prefer user-like session recovery after abnormal access: reuse an already logged-in normal browser, let the user complete any first-party verification, then resume with a read-only health check before applying. Do not attempt to bypass or defeat BOSS security controls.
 - If a candidate lacks company metadata, do not live apply. Open the detail page and extract company from the detail page.
 - Record and verify results through the local ledger, not only through button text or script stdout.
 
@@ -42,12 +45,13 @@ Hard-block roles or companies when any of these appear in title, company, compan
 - Duplicate identity: same normalized `company::title` already applied, skipped, or deduped.
 - Existing chat / `继续沟通` / `already_continuing`.
 - Chat triage shows prior rejection or disqualifying history.
-- Salary lower bound below `20K`, including `18-30K`, `15-25K`, daily-rate, or weekly-rate jobs.
+- Salary lower bound below `20K`, including `18-30K`, `15-25K`, daily-rate, weekly-rate, hourly-rate, or non-`K` yuan/month jobs.
 - Company size `1000-9999人` or `10000人以上`.
 - Big companies, groups, state-owned entities, research institutes, or hidden subsidiaries indicated by company intro.
 - Known blacklists including 字节, 阿里, 腾讯, 美团, 华为, 京东, 百度, 拼多多/PDD, 携程, 小红书, Shopee, SHEIN, OPPO, 吉利, 研究院, 实验室, 集团, 国企, 央企, 事业单位.
 - Auto/ADAS/vehicle/chip/compiler/facility-ops roles unless the user explicitly overrides for that specific role.
 - Sales, outsourcing, loan, insurance, trainer, internship, overseas assignment, IDC/facility operations.
+- Non-technical AI promotion/operations roles such as 主播, 推荐官, 互联网运营, 直播运营, 内容运营, or 投放.
 
 If a company appears small in the metadata but the company intro says it belongs to a big company, block it.
 
@@ -80,6 +84,65 @@ NODE
 If raw `applied` rows differ from this count, trust this count.
 
 ## Standard Flow
+
+### 0. Browser Trace Gate For Abnormal Or Unstable Sessions
+
+Use `browser-trace` before retrying any BOSS flow that has shown abnormal access, login bounce, `auth_gate`, `restricted`, `_security_check`, target URL mismatch, or unexpected page navigation.
+
+Prefer the repo wrapper for normal use:
+
+```bash
+cd /Users/proerror/Documents/redbook/tools/auto-zhipin
+npm run boss:trace-probe -- \
+  --cdp-endpoint http://127.0.0.1:9224 \
+  --keep-trace false
+```
+
+For polling:
+
+```bash
+cd /Users/proerror/Documents/redbook/tools/auto-zhipin
+npm run boss:trace-probe -- \
+  --cdp-endpoint http://127.0.0.1:9224 \
+  --poll true \
+  --interval-ms 30000 \
+  --max-loops 10 \
+  --keep-trace false
+```
+
+The wrapper records `data/boss-trace-probe-latest.json` and `data/boss-trace-probe-history.jsonl`, cleans raw `.o11y` by default, and treats trace navigation to a different `job_detail` as `trace_unstable_navigation`. Continue toward live apply only when `okToLiveApply=true`, `targetCheck.ok=true`, `gate.reasons=[]`, and `trace.issues=[]`.
+
+```bash
+cd /Users/proerror/Documents/redbook
+O11Y_ROOT=/Users/proerror/Documents/redbook/.o11y \
+  node /Users/proerror/.agents/skills/browser-trace/scripts/start-capture.mjs 9224 boss-debug-$(date +%Y%m%dT%H%M%S) 1
+```
+
+While the trace is running, perform only read-only checks or dry-run preflight:
+
+```bash
+browse --ws 9224 pages --json
+npm --silent --prefix tools/auto-zhipin run boss:apply-cdp -- \
+  --cdp-endpoint http://127.0.0.1:9224 \
+  --url 'https://www.zhipin.com/job_detail/xxx.html' \
+  --dry-run true \
+  --focus false
+```
+
+Stop and inspect:
+
+```bash
+O11Y_ROOT=/Users/proerror/Documents/redbook/.o11y \
+  node /Users/proerror/.agents/skills/browser-trace/scripts/stop-capture.mjs <run-id>
+O11Y_ROOT=/Users/proerror/Documents/redbook/.o11y \
+  node /Users/proerror/.agents/skills/browser-trace/scripts/bisect-cdp.mjs <run-id>
+O11Y_ROOT=/Users/proerror/Documents/redbook/.o11y \
+  node /Users/proerror/.agents/skills/browser-trace/scripts/query.mjs <run-id> summary
+O11Y_ROOT=/Users/proerror/Documents/redbook/.o11y \
+  node /Users/proerror/.agents/skills/browser-trace/scripts/query.mjs <run-id> errors
+```
+
+Completion rule: do not continue to live apply unless the trace-backed evidence shows a stable BOSS page, no active auth/security blocker, and the dry-run target URL matches the requested job URL. Summarize the trace in `tasks/progress.md`; do not commit raw `.o11y` screenshots or DOM dumps unless explicitly needed.
 
 ### 1. Check Browser And Ledger
 
