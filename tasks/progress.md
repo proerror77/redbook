@@ -4,6 +4,25 @@
 
 ---
 
+## [2026-05-05] 会话摘要：BOSS chat 复查与追加投递中断
+
+**完成了什么：**
+- 按用户要求先查 chat：`tools/redbookctl browser --json` 起初显示 BOSS CDP `9224` 可用，BOSS tab 在消息页；OpenCLI doctor 通过。
+- `chat:triage-cdp` 仍不稳定，本轮报 `No BOSS chat page found under /web/geek/chat`；随后用低层 CDP 尝试导航/读取 chat，但 `waitForChatReady` 超时，OpenCLI `boss chat-list --limit 20 -f json -v` 返回空数组。
+- 在没有可处理新回复的前提下，尝试继续从 `联合创始人(上海)` 推荐流补投 30 个；旧候选池 161 个全部被硬门槛排除，新增成功 0。
+- 重新深滚 `联合创始人(上海)` tab，仍只得到同一批 452 个职位，说明当前 tab 列表没有更多新增候选。
+- 尝试只读搜索相邻关键词补充候选时，OpenCLI/BOSS 返回 `您的环境存在异常，请登录后使用. (code=38)`；立即停止后续 live apply。
+
+**验证 / 证据：**
+- `node scripts/report.js` 初始仍为 `todaySuccessfulApplies: 30`。
+- 旧池续跑结果：`tools/auto-zhipin/data/union-founder-apply-20260505T063325Z.json`，`started: 30`、`ended: 30`、`newSuccesses: 0`、`exhausted: true`。
+- 异常后 `tools/redbookctl browser --json` 报 BOSS `needs_login_or_verification`。
+- `npm run boss:trace-probe -- --cdp-endpoint http://127.0.0.1:9224 --keep-trace false` 记录 `target_url_mismatch`，最新文件为 `tools/auto-zhipin/data/boss-trace-probe-latest.json`。
+
+**结论 / 遗留：**
+- 本轮没有继续投递到 60；因为已触发 BOSS code=38 和 trace target mismatch，按 BOSS 安全规则停止，避免继续刺激风控。
+- 浏览器/CDP 保留给用户手动查看或恢复；恢复后应先只读跑 `tools/redbookctl browser --json`、OpenCLI doctor、chat read 和 `boss:trace-probe`，全部稳定后才能继续 live apply。
+
 ## [2026-05-05] 会话摘要：BOSS 联合创始人推荐流投递 30 个
 
 **完成了什么：**
