@@ -391,10 +391,12 @@ def extract_tweets(snapshot: str) -> List[Dict]:
             'author': '',
             'handle': '',
             'content': '',
+            'status_url': '',
             'likes': 0,
             'retweets': 0,
             'replies': 0,
         }
+        tweet['status_url'] = _extract_status_url(article)
 
         lines = article.split('\n')
         text_lines = []
@@ -536,6 +538,19 @@ def _populate_tweet_from_article_header(tweet: Dict, header_line: str) -> None:
     likes_match = re.search(r'(\d[\d,.]*)\s*喜欢', header_line)
     if likes_match:
         tweet['likes'] = _parse_number(likes_match.group(1))
+
+
+def _extract_status_url(article: str) -> str:
+    """Extract the canonical status URL from an article block when available."""
+    absolute_match = re.search(r'https://x\.com/(\w{1,15})/status/(\d+)', article)
+    if absolute_match:
+        return f"https://x.com/{absolute_match.group(1)}/status/{absolute_match.group(2)}"
+
+    relative_match = re.search(r'(?<![\w/])/?(\w{1,15})/status/(\d+)', article)
+    if relative_match:
+        return f"https://x.com/{relative_match.group(1)}/status/{relative_match.group(2)}"
+
+    return ""
 
 
 def _extract_author_from_line(line: str, handle: str) -> str:

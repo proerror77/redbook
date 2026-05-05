@@ -2,6 +2,28 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-05-05 X Daily Engagement Queue
+
+- Owner: Codex
+- Source: User asked to add a daily task that replies to 20 high-interaction timeline posts to build account liveness.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Make the daily X engagement task prioritize high-interaction people/posts from the current timeline.
+- [x] Generate 20 reply candidates/drafts by default without auto-publishing.
+- [x] Preserve the language-matching and account-theme guardrails.
+- [x] Wire the task into the canonical daily workflow and docs.
+- [x] Run focused syntax/tests and record completion.
+
+### Review
+
+- Daily now generates `X-互动队列-YYYY-MM-DD.md` / `.json` from current X timeline by default.
+- The queue keeps a minimum weighted interaction threshold (`likes + retweets*2 + replies*3`) so low-energy posts do not fill the list just because they match keywords.
+- Reply drafts remain semi-automatic only: the workflow builds account liveness through reviewable, language-matched comments, not auto-posting.
+- Generated today's queue with 20 candidates using the existing logged-in Chrome/CDP `9224`.
+- Verification passed: Python compile, `test_x_utils.py`, shell syntax checks, and `git diff --check`.
+
 ## 2026-04-30 Beneficiary Cold-Read Review Workflow
 
 - Owner: Codex

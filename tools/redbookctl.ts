@@ -87,6 +87,7 @@ Run the canonical daily workflow.
 
 Common options passed through to tools/daily.sh:
   --skip-x                  Generate a report without live X capture.
+  --skip-engagement         Skip the 20-candidate X timeline reply queue.
   --with-following-audit    Include full following-list audit.
   -h, --help                Show this help.
 `);

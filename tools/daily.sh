@@ -24,4 +24,5 @@ TODAY="$(date +%Y-%m-%d)"
 
 echo ""
 echo "✅ 每日日程已生成：05-选题研究/X-每日日程-${TODAY}.md"
+echo "💬 X互动队列已生成：05-选题研究/X-互动队列-${TODAY}.md（20条候选，不自动发布）"
 echo "📌 Wiki daily-cycle 已自动记录；内容写回状态见 tools/auto-x/data/logs/${TODAY}.log"

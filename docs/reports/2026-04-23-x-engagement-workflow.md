@@ -83,7 +83,13 @@
 
 ## 每日节奏
 
-建议每天 2-3 轮。
+每日任务必须先生成 20 条候选，不等于每天必须发满 20 条。
+
+候选来源优先级：
+
+1. 当前 X timeline 中已经有回复、转帖、喜欢势能的人和帖子
+2. 账号主线相关的高互动创作者
+3. 搜索关键词补充候选
 
 每轮：
 
@@ -94,6 +100,7 @@
 
 日总量：
 
+- 候选池：20 条
 - 冷启动：5-8 条评论
 - 稳定后：8-15 条评论
 - 不建议超过 20 条
@@ -118,7 +125,7 @@
 ## 推荐命令
 
 ```bash
-python3 tools/auto-x/scripts/build_engagement_queue.py --limit 8
+python3 tools/auto-x/scripts/build_engagement_queue.py --source timeline --limit 20
 ```
 
 输出：

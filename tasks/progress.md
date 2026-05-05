@@ -4,6 +4,27 @@
 
 ---
 
+## [2026-05-05] 会话摘要：X 每日高互动回复队列
+
+**完成了什么：**
+- 将“每天从 timeline 找高互动人/帖做回复，建立账号活人感”固化进 Redbook daily workflow。
+- `tools/redbookctl daily` 现在默认生成 `05-选题研究/X-互动队列-YYYY-MM-DD.md` 和 `.json`，不自动发布评论。
+- `build_engagement_queue.py` 默认从当前 X timeline 取候选，按主题匹配、回复/转帖/喜欢加权互动、评论空间和风险打分。
+- 增加 `--min-engagement` 门槛，避免低互动帖子只因关键词匹配进入每日候选。
+- 今日已用已登录 Chrome/CDP `9224` 生成 20 条候选：`05-选题研究/X-互动队列-2026-05-05.md`。
+
+**验证：**
+- `python3 -m py_compile tools/auto-x/scripts/build_engagement_queue.py tools/auto-x/scripts/x_utils.py`
+- `python3 tools/auto-x/tests/test_x_utils.py`
+- `bash -n tools/auto-x/scripts/run_daily.sh tools/daily.sh`
+- `git diff --check`
+
+**未完成 / 遗留：**
+- 队列仍是半自动草稿；真实回复发布需要人工挑选/确认。
+- 后续可以继续优化评论草稿，让它更贴原帖语境，减少模板味。
+
+---
+
 ## [2026-05-01] 会话摘要：Stripe vs OKX Agent Payment X Article 工作流
 
 **完成了什么：**

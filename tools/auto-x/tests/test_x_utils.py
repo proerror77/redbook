@@ -46,6 +46,7 @@ class SnapshotValidationTests(unittest.TestCase):
         - link "meng shao 认证账号" [ref=e49]:
         - link "@shao__meng" [ref=e50]:
         - link "2月4日" [ref=e51]:
+          - /url: /shao__meng/status/1886649088888888888
         - text: 该用 Skills 还是 MCP？如果你也有这个困惑，可以看看
         - link "@llama_index" [ref=e54]:
         - text: 这篇文章，从 Skills 和 MCP 的本质特征出发，结合 LlamaIndex 的实践给出选择建议。
@@ -66,6 +67,10 @@ class SnapshotValidationTests(unittest.TestCase):
         self.assertEqual(tweets[0]["author"], "meng shao")
         self.assertEqual(tweets[0]["retweets"], 7)
         self.assertEqual(tweets[0]["likes"], 21)
+        self.assertEqual(
+            tweets[0]["status_url"],
+            "https://x.com/shao__meng/status/1886649088888888888",
+        )
         self.assertIn("Skills", tweets[0]["content"])
         self.assertEqual(tweets[1]["handle"], "vikas_ai_")
         self.assertEqual(tweets[1]["likes"], 101)

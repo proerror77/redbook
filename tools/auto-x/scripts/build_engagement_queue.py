@@ -2,8 +2,9 @@
 """
 Build a semi-automated X engagement queue.
 
-This script scans X search results for account-relevant topics, scores candidate
-posts, and writes human-reviewable comment drafts. It never posts comments.
+This script scans the current X timeline and/or X search results for
+account-relevant, high-interaction posts, then writes human-reviewable comment
+drafts. It never posts comments.
 """
 
 from __future__ import annotations
@@ -20,7 +21,15 @@ from urllib.parse import quote_plus
 sys.path.insert(0, str(Path(__file__).parent))
 
 from search_x import search_x_topic  # noqa: E402
-from x_utils import PROJECT_ROOT, ensure_browser, today_str  # noqa: E402
+from x_utils import (  # noqa: E402
+    PROJECT_ROOT,
+    dedupe_tweets,
+    ensure_browser,
+    extract_tweets,
+    navigate,
+    scroll_and_collect,
+    today_str,
+)
 
 
 DEFAULT_QUERIES = [
@@ -53,6 +62,12 @@ THEME_TERMS = {
     "mcp": 7,
     "runtime": 8,
     "sandbox": 7,
+    "permission": 9,
+    "permissions": 9,
+    "review": 8,
+    "audit": 8,
+    "rollback": 8,
+    "roi": 8,
     "tool": 4,
     "tools": 4,
     "模型": 7,
@@ -61,6 +76,11 @@ THEME_TERMS = {
     "编程": 8,
     "开发者": 7,
     "上下文": 7,
+    "权限": 9,
+    "审计": 8,
+    "回滚": 8,
+    "企业": 8,
+    "落地": 8,
 }
 
 RISK_TERMS = {
@@ -91,8 +111,12 @@ class Candidate:
     content: str
     likes: int
     retweets: int
+    replies: int
+    interaction_total: int
+    source: str
     query: str
     search_url: str
+    target_url: str
     language: str
     score: int
     reasons: list[str]
@@ -107,11 +131,13 @@ def clean_text(text: str) -> str:
 def detect_language(text: str) -> str:
     cjk = len(re.findall(r"[\u4e00-\u9fff]", text))
     ascii_letters = len(re.findall(r"[A-Za-z]", text))
-    return "zh" if cjk >= ascii_letters else "en"
+    if cjk >= 8 or cjk >= ascii_letters * 0.4:
+        return "zh"
+    return "en"
 
 
-def engagement_score(likes: int, retweets: int) -> int:
-    total = likes + retweets * 2
+def engagement_score(likes: int, retweets: int, replies: int = 0) -> int:
+    total = interaction_total(likes, retweets, replies)
     if total >= 10_000:
         return 20
     if total >= 2_000:
@@ -123,6 +149,10 @@ def engagement_score(likes: int, retweets: int) -> int:
     if total >= 20:
         return 6
     return 3
+
+
+def interaction_total(likes: int, retweets: int, replies: int = 0) -> int:
+    return likes + retweets * 2 + replies * 3
 
 
 def theme_score(content: str) -> tuple[int, list[str]]:
@@ -220,28 +250,73 @@ def make_comments(content: str, language: str) -> list[str]:
     ]
 
 
-def score_tweet(tweet: dict, query: str) -> Candidate:
+def collect_timeline_tweets(scrolls: int) -> list[dict]:
+    print("\n=== X/Twitter timeline engagement scan ===")
+    print("打开: https://x.com/home")
+    navigate("https://x.com/home", wait=3.0)
+
+    snapshots = scroll_and_collect(
+        times=scrolls,
+        wait=2.0,
+        distance=1600,
+        stop_when_stale=True,
+        max_stale_rounds=4,
+    )
+
+    tweets: list[dict] = []
+    for snapshot in snapshots:
+        tweets.extend(extract_tweets(snapshot))
+
+    unique = dedupe_tweets(tweets)
+    unique.sort(
+        key=lambda item: (
+            interaction_total(
+                int(item.get("likes", 0) or 0),
+                int(item.get("retweets", 0) or 0),
+                int(item.get("replies", 0) or 0),
+            )
+        ),
+        reverse=True,
+    )
+    print(f"timeline candidates: {len(unique)}")
+    return unique
+
+
+def score_tweet(tweet: dict, query: str, source: str, source_url: str) -> Candidate:
     content = clean_text(tweet.get("content", ""))
     likes = int(tweet.get("likes", 0) or 0)
     retweets = int(tweet.get("retweets", 0) or 0)
+    replies = int(tweet.get("replies", 0) or 0)
+    total_interaction = interaction_total(likes, retweets, replies)
     handle = tweet.get("handle", "?")
     language = detect_language(content)
+    target_url = tweet.get("status_url") or (f"https://x.com/{handle}" if handle and handle != "?" else source_url)
 
     theme, theme_reasons = theme_score(content)
-    engagement = engagement_score(likes, retweets)
+    engagement = engagement_score(likes, retweets, replies)
     space, space_reasons = conversation_space(content)
     penalty, risks = risk_penalty(content)
 
     score = max(0, theme + engagement + space + 15 - penalty)
-    reasons = theme_reasons + [f"互动分:{engagement}", f"评论空间:{space}"] + space_reasons
+    reasons = theme_reasons + [
+        f"互动分:{engagement}",
+        f"回复:{replies}",
+        f"转帖:{retweets}",
+        f"喜欢:{likes}",
+        f"评论空间:{space}",
+    ] + space_reasons
 
     return Candidate(
         handle=handle,
         content=content,
         likes=likes,
         retweets=retweets,
+        replies=replies,
+        interaction_total=total_interaction,
+        source=source,
         query=query,
-        search_url=f"https://x.com/search?q={quote_plus(query)}&src=typed_query&f=top",
+        search_url=source_url,
+        target_url=target_url,
         language=language,
         score=score,
         reasons=reasons,
@@ -271,10 +346,12 @@ def render_markdown(candidates: list[Candidate]) -> str:
         "## 使用规则",
         "",
         "- 每天选 5-8 条高质量评论即可",
+        "- 每日任务默认给 20 条候选，真正发布优先选最像真人、最贴近账号主线的 5-8 条",
+        "- 优先找已经有互动势能的人和帖子：回复、转帖、喜欢都要看",
         "- 优先保留像真人的短判断",
         "- 不要连续评论同一账号太多条",
         "- 避免政治争吵和纯 crypto shill",
-        "- 用搜索链接打开候选，再从页面进入原帖回复",
+        "- 优先打开原帖链接回复；没有原帖链接时，从搜索/主页链接进入",
         "",
         "## 候选",
         "",
@@ -287,10 +364,12 @@ def render_markdown(candidates: list[Candidate]) -> str:
             [
                 f"### {index}. @{item.handle} | score {item.score}",
                 "",
+                f"- 来源：`{item.source}`",
                 f"- 来源关键词：`{item.query}`",
-                f"- 搜索链接：{item.search_url}",
+                f"- 原帖/主页：{item.target_url}",
+                f"- 搜索/来源链接：{item.search_url}",
                 f"- 语言：`{item.language}`",
-                f"- 互动：❤️ {item.likes} / 🔁 {item.retweets}",
+                f"- 互动：💬 {item.replies} / 🔁 {item.retweets} / ❤️ {item.likes} / 加权 {item.interaction_total}",
                 f"- 风险：{risk_text}",
                 f"- 推荐理由：{reason_text}",
                 "",
@@ -310,26 +389,48 @@ def render_markdown(candidates: list[Candidate]) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Build X engagement queue")
+    parser.add_argument(
+        "--source",
+        choices=["timeline", "search", "both"],
+        default="timeline",
+        help="Candidate source. Default: timeline",
+    )
     parser.add_argument("--query", action="append", dest="queries", help="Search query; repeatable")
-    parser.add_argument("--limit", type=int, default=8, help="Number of candidates to keep")
-    parser.add_argument("--scrolls", type=int, default=2, help="Scroll count per query")
-    parser.add_argument("--min-score", type=int, default=42, help="Minimum score")
+    parser.add_argument("--limit", type=int, default=20, help="Number of candidates to keep")
+    parser.add_argument("--scrolls", type=int, default=4, help="Scroll count per source/query")
+    parser.add_argument("--min-score", type=int, default=25, help="Minimum score")
+    parser.add_argument(
+        "--min-engagement",
+        type=int,
+        default=20,
+        help="Minimum weighted interaction total: likes + retweets*2 + replies*3",
+    )
     args = parser.parse_args()
 
     if not ensure_browser():
         raise SystemExit(1)
 
-    queries = args.queries or DEFAULT_QUERIES
     candidates: list[Candidate] = []
 
-    for query in queries:
-        tweets = search_x_topic(query, scroll_times=args.scrolls)
-        candidates.extend(score_tweet(tweet, query) for tweet in tweets)
+    if args.source in {"timeline", "both"}:
+        tweets = collect_timeline_tweets(args.scrolls)
+        candidates.extend(
+            score_tweet(tweet, "home-timeline", "timeline", "https://x.com/home")
+            for tweet in tweets
+        )
+
+    if args.source in {"search", "both"}:
+        queries = args.queries or DEFAULT_QUERIES
+        for query in queries:
+            tweets = search_x_topic(query, scroll_times=args.scrolls)
+            source_url = f"https://x.com/search?q={quote_plus(query)}&src=typed_query&f=top"
+            candidates.extend(score_tweet(tweet, query, "search", source_url) for tweet in tweets)
 
     ranked = [
         item
         for item in sorted(dedupe(candidates), key=lambda item: item.score, reverse=True)
         if item.score >= args.min_score
+        and item.interaction_total >= args.min_engagement
     ][: args.limit]
 
     output_dir = PROJECT_ROOT / "05-选题研究"
