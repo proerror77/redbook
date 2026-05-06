@@ -4265,3 +4265,24 @@
 
 **遗留：**
 - 今日 BOSS 页面提示已沟通 120 位，还剩 30 次沟通机会；后续继续投递要注意次数上限和弹窗确认路径。
+
+## [2026-05-06] BOSS 非搜索推荐链继续补投 20 个
+
+**完成了什么：**
+- 用户要求再投 20 个，并纠正不要用搜索，因为搜索可能带出旧岗位。
+- 停止关键词搜索采集，改用非搜索来源：
+  - 当前岗位详情页底部 `看过该职位的人还看了 / 精选职位 / 更多职位` 推荐链。
+  - 已投详情页里的 `查看全部职位 / 更多职位` 公司职位页。
+- 继续复用 `http://127.0.0.1:9224` BOSS CDP 和 `tools/auto-zhipin` 自有脚本，不使用 OpenCLI/OpenSeal。
+- 成功数从 43 增至 63，本轮新增 20 个成功投递。
+
+**验证：**
+- `new ZhipinStore().getTodaySuccessfulApplies(new Date())` 回读 63。
+- 本轮结果文件：
+  - `tools/auto-zhipin/data/ai-shanghai-plus20-recommend-chain-latest.json`
+  - `tools/auto-zhipin/data/ai-shanghai-plus20-company-pages-latest.json`
+- 两阶段合计成功 20 个；所有 live apply 均由脚本确认 `success: true` 并使 ledger 计数递增。
+
+**遗留：**
+- 非搜索推荐链后半段开始混入更宽泛的平台/后端/算法岗位；没有继续使用搜索来强行补量。
+- 推荐链和公司职位页中重复、已沟通、大厂/黑名单、非上海 base、低薪岗位比例很高。
