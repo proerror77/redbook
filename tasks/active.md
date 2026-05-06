@@ -2,6 +2,28 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-05-06 X Longform Inline Image Guard
+
+- Owner: Codex
+- Source: User pointed out today's longform images were attached as a gallery instead of inline article illustrations, and asked why X shows AI-generated labels.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Verify the live X post layout and AI-generated label source with platform/asset evidence.
+- [x] Add a fail-closed guard so regular X posts cannot accidentally publish longform multi-image content as a gallery.
+- [x] Update Redbook workflow docs so X longform inline illustrations must use X Article markdown or a structured thread, not regular post attachments.
+- [x] Create a corrected X Article markdown artifact for today's longform so the intended inline structure is explicit.
+- [x] Run focused smoke checks, record progress, and commit.
+
+### Review
+
+- Live X status `2051856551867236845` contains `由 AI 生成`; local PNGs contain OpenAI C2PA metadata (`softwareAgent=gpt-image pre-2.0`, `trainedAlgorithmicMedia`), so the label is platform provenance handling rather than script text.
+- The published longform used a regular X post; X rendered four images as a gallery, so they could not bind to the intended article sections.
+- `x-browser.ts` now resolves image paths to absolute paths and refuses `--submit` for long text plus multiple images unless `--allow-longform-gallery` is explicit.
+- Workflow docs now require X Article inline images or a structured thread for longform body illustrations.
+- Added `X-Article发布版.md` with cover plus three inline body images for the corrected layout artifact.
+
 ## 2026-05-06 Three X Articles Agent Team
 
 - Owner: Codex + native subagents

@@ -105,10 +105,13 @@ npx -y bun ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png --subm
 | `--timeout-ms <ms>` | How long to wait for the X composer before failing |
 | `--login-wait-ms <ms>` | In headed mode, wait for manual login/verification recovery before failing (default: 600000) |
 | `--close-on-login-required` | Close the launched browser even if login recovery times out |
+| `--allow-longform-gallery` | Override the longform multi-image guard when a regular-post image gallery is intentional |
 
 **Image safety gate**:
 - If `--image` is provided and the file does not exist, the script aborts before opening X.
+- Image paths are resolved to absolute paths before upload because Chrome's `DOM.setFileInputFiles` is not reliable with repo-relative paths.
 - If images are provided but the active composer does not show the same number of attached media, the script refuses to submit. Page-wide images, avatars, quoted-post previews, and timeline media do not count.
+- Long text with multiple images is refused by default on `--submit`, because regular X posts render those images as a gallery, not inline article illustrations. Use `scripts/x-article.ts` for Markdown/body images, split into a structured thread, or pass `--allow-longform-gallery` only when gallery layout is intentional.
 - `--submit` fails closed unless `expected_handle` is configured (or `--expected-handle` is provided) and the visible account matches before any text, image, or click action.
 - `--submit` defaults to the configured publishing profile/new browser; implicit `127.0.0.1:9222` reuse is only allowed when `--cdp-endpoint` is passed explicitly and the handle check still passes.
 - After `--submit`, success is claimed only after a status URL from the expected account is found by matching the submitted text on that account's timeline or current status page.

@@ -1,6 +1,7 @@
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import { mkdir } from 'node:fs/promises';
+import path from 'node:path';
 import process from 'node:process';
 import {
   buildChromeLaunchArgs,
@@ -36,14 +37,23 @@ interface XBrowserOptions {
   headless?: boolean;
   cdpEndpoint?: string;
   newBrowser?: boolean;
+  allowLongformGallery?: boolean;
 }
 
 export async function postToX(options: XBrowserOptions): Promise<void> {
   const { text, images = [], submit = false, timeoutMs = 120_000 } = options;
+  const resolvedImages = images.map((imagePath) => path.resolve(imagePath));
   const headless = resolveHeadlessMode(options.headless);
-  const missingImages = images.filter((imagePath) => !fs.existsSync(imagePath));
+  const missingImages = resolvedImages.filter((imagePath) => !fs.existsSync(imagePath));
   if (missingImages.length > 0) {
     throw new Error(`Image file(s) not found; refusing to continue because this would risk a text-only X post: ${missingImages.join(', ')}`);
+  }
+  if (submit && resolvedImages.length > 1 && String(text || '').length > 1000 && !options.allowLongformGallery) {
+    throw new Error([
+      'Refusing to submit a longform regular X post with multiple images.',
+      'Regular X posts render images as a gallery, not inline article illustrations.',
+      'Use x-article.ts with Markdown inline images, split into a structured thread, or pass --allow-longform-gallery only when a gallery is intentional.',
+    ].join(' '));
   }
 
   let cdp: CdpConnection | null = null;
@@ -443,7 +453,7 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
       if (text && !verification.hasExpectedText) {
         throw new Error(`Published X post did not show the expected text snippet on the matched status page: ${normalizedPostUrl}`);
       }
-      if (images.length > 0 && (verification.mediaCount || 0) < 1) {
+      if (resolvedImages.length > 0 && (verification.mediaCount || 0) < 1) {
         throw new Error(`Published X post did not show an image/photo link on the matched status article: ${normalizedPostUrl}`);
       }
 
@@ -503,11 +513,11 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
       await sleep(500);
     }
 
-    if (images.length > 0) {
+    if (resolvedImages.length > 0) {
       await cdp.send('DOM.enable', {}, { sessionId });
     }
 
-    for (const imagePath of images) {
+    for (const imagePath of resolvedImages) {
       console.log(`[x-browser] Uploading image: ${imagePath}`);
 
       // Use DOM.setFileInputFiles to bypass clipboard entirely
@@ -533,10 +543,10 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
       await sleep(4000);
     }
 
-    if (images.length > 0) {
-      const uploadedCount = await waitForComposerMedia(images.length);
-      if (uploadedCount < images.length) {
-        throw new Error(`Expected ${images.length} attached image(s), but X composer only shows ${uploadedCount}. Refusing to submit a possible text-only post.`);
+    if (resolvedImages.length > 0) {
+      const uploadedCount = await waitForComposerMedia(resolvedImages.length);
+      if (uploadedCount < resolvedImages.length) {
+        throw new Error(`Expected ${resolvedImages.length} attached image(s), but X composer only shows ${uploadedCount}. Refusing to submit a possible text-only post.`);
       }
       console.log(`[x-browser] Verified composer media attachment count: ${uploadedCount}`);
     }
@@ -595,6 +605,7 @@ Options:
   --timeout-ms <ms>  How long to wait for the X composer before failing (default: 120000)
   --login-wait-ms <ms>  How long headed mode waits for manual login recovery (default: 600000)
   --close-on-login-required  Close launched browser even when login recovery times out
+  --allow-longform-gallery  Allow long text with multiple images as a regular post gallery
   --help           Show this help
 
 Examples:
@@ -624,6 +635,7 @@ async function main(): Promise<void> {
   let keepOpenOnLoginRequired = true;
   let checkLogin = false;
   let expectedHandle: string | undefined;
+  let allowLongformGallery = false;
   const headless = parseHeadlessFlag(args);
   const textParts: string[] = [];
 
@@ -642,6 +654,8 @@ async function main(): Promise<void> {
       newBrowser = true;
     } else if (arg === '--check-login') {
       checkLogin = true;
+    } else if (arg === '--allow-longform-gallery') {
+      allowLongformGallery = true;
     } else if (arg === '--expected-handle' && args[i + 1]) {
       expectedHandle = args[++i];
     } else if (arg === '--timeout-ms' && args[i + 1]) {
@@ -685,6 +699,7 @@ async function main(): Promise<void> {
     keepOpenOnLoginRequired,
     checkLogin,
     expectedHandle,
+    allowLongformGallery,
   });
 }
 

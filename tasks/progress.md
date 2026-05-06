@@ -4183,6 +4183,29 @@
 
 **遗留：**
 - 当前有效版本为 `2050444539060732188`；旧 ledger 中保留了旧错误发布事实，后续统计应以 corrected T+0 记录为准。
+## [2026-05-06] X 长文插图与 AI 标签诊断修复
+
+**完成了什么：**
+- 回读线上长文 `https://x.com/0xcybersmile/status/2051856551867236845`，确认页面显示 `由 AI 生成`，且 4 张图被 X 渲染成主帖 gallery。
+- 检查本地 PNG，确认 Codex / GPT Image 输出带 OpenAI C2PA / Content Credentials：`softwareAgent=gpt-image pre-2.0`、`trainedAlgorithmicMedia`。因此 X 的 AI 标签来自图片 provenance，不是发布脚本加字。
+- 修复 `.agents/skills/baoyu-post-to-x/scripts/x-browser.ts`：
+  - 图片路径统一 `path.resolve()` 成绝对路径再传给 `DOM.setFileInputFiles`。
+  - `--submit` 时默认拒绝“长文本 + 多图”的普通 X 发帖，避免把正文插图错发成 gallery。
+  - 新增 `--allow-longform-gallery`，只在发布清单明确 gallery 是故意时使用。
+- 更新 `.agents/skills/baoyu-post-to-x/SKILL.md`、`docs/shared/redbook-playbook.md`、`AGENTS.md`、`CLAUDE.md`、`docs/reference/skills-manifest.md`：X 长文正文插图必须走 X Article Markdown inline image 或结构化 thread。
+- 为今天长文新增 `X-Article发布版.md`，包含 `cover_image` 和 3 张正文 inline images。
+
+**验证：**
+- `bun .agents/skills/baoyu-post-to-x/scripts/x-browser.ts --help` 显示 `--allow-longform-gallery`。
+- `bun .agents/skills/baoyu-post-to-x/scripts/md-to-html.ts .../X-Article发布版.md --output json` 解析出 1 张 cover + 3 张 content images。
+- `npx -y bun build .agents/skills/baoyu-post-to-x/scripts/x-browser.ts --target=bun --outfile=/tmp/x-browser-check.js` 通过。
+- 长文本 + 多图 + `--submit` smoke 被 fail-closed 拦截，错误信息明确提示使用 X Article、thread 或 `--allow-longform-gallery`。
+- `git diff --check` 对相关脚本、文档和内容包通过。
+
+**遗留：**
+- 线上旧帖没有删除或重发；删除/重发属于外部破坏性动作，需要用户明确确认。
+- 如果不希望 X 显示 `由 AI 生成`，不能通过隐藏 provenance 解决；应改用真实截图、人工设计图或授权素材。
+
 ## [2026-05-06] LLM Wiki daily-cycle 执行
 
 **完成了什么：**
