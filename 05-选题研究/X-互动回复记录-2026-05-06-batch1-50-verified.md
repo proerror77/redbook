@@ -1,0 +1,61 @@
+# X 互动回复记录 2026-05-06 batch1 verified
+
+> 账号：@0xcybersmile | 来源：当前 X timeline + 主题搜索补充 | 审稿：batch1 reviewed + script review-only | 合并：主批次 + 延迟回读 + retry
+
+| # | 状态 | 对象 | 来源帖 | 回复验证 | 回复摘要 |
+| --- | --- | --- | --- | --- | --- |
+| 1 | already_exists | @servasyy_ai | [source](https://x.com/servasyy_ai/status/2009793044489630080) | [with replies](https://x.com/0xcybersmile/status/2051847780298314076) | 把架构、写码、审查、测试拆给不同模型，比单模型硬扛靠谱。难点会落在交接格式和失败重跑。 |
+| 2 | posted_verified | @claudeai | [source](https://x.com/claudeai/status/2051679629488865498) | [with replies](https://x.com/0xcybersmile/status/2051847989891838311) | The month-end close template is the most practical one. Finance teams will trust |
+| 3 | posted_verified | @xiaohu | [source](https://x.com/xiaohu/status/2047521587122106376) | [with replies](https://x.com/0xcybersmile/status/2051848158817460702) | 每会话沙箱和凭证隔离这两点很实用。团队要放心用，先得知道谁能碰哪些文件和密钥。 |
+| 4 | posted_verified | @_FORAB | [source](https://x.com/_FORAB/status/2044981286704730304) | [with replies](https://x.com/0xcybersmile/status/2051848304292680054) | Mac 上能看屏幕、点鼠标、打字，这一步很大。以后限制不在写不写代码，而在授权边界怎么收住。 |
+| 5 | posted_verified | @jiayuan_jy | [source](https://x.com/jiayuan_jy/status/2049027815195000840) | [with replies](https://x.com/0xcybersmile/status/2051848449918967818) | The interesting part is not picking one coding agent forever. It is letting task |
+| 6 | posted_verified | @eng_khairallah1 | [source](https://x.com/eng_khairallah1/status/2048060850901008408) | [with replies](https://x.com/0xcybersmile/status/2051848573898420576) | Autopilot sounds easy until exceptions show up. Production agents need handoff r |
+| 7 | posted_verified | @rileybrown | [source](https://x.com/rileybrown/status/2043240946578706732) | [with replies](https://x.com/0xcybersmile/status/2051848703011627476) | Persistent computers are the missing piece for me too. Chat is too temporary whe |
+| 8 | posted_verified | @berryxia | [source](https://x.com/berryxia/status/2051678496502722569) | [with replies](https://x.com/0xcybersmile/status/2051848820024291661) | MATLAB 直接接本地工程环境，对科研和仿真很有用。最怕的不是不会算，而是上下文和文件链路断掉。 |
+| 9 | posted_verified | @berryxia | [source](https://x.com/berryxia/status/2042749070050234451) | [with replies](https://x.com/0xcybersmile/status/2051848960390926405) | 终端能访问网页后，很多资料收集任务就顺了。最该省的是来回复制链接和整理结果的时间。 |
+| 10 | posted_verified | @DeRonin_ | [source](https://x.com/DeRonin_/status/2050236184647930112) | [with replies](https://x.com/0xcybersmile/status/2051855524266963375) | The cheap-versus-expensive model split is underrated. Token savings matter most  |
+| 11 | posted_verified | @PaulSolt | [source](https://x.com/PaulSolt/status/2042433108927005044) | [with replies](https://x.com/0xcybersmile/status/2051849267812392984) | iOS agents plus App Store Connect CLI is a practical combo. The boring release s |
+| 12 | posted_verified | @StockSavvyShay | [source](https://x.com/StockSavvyShay/status/2051724431412896076) | [with replies](https://x.com/0xcybersmile/status/2051849397567443345) | The control tower piece matters more than the demo. Enterprises need to see appr |
+| 13 | posted_verified | @shao__meng | [source](https://x.com/shao__meng/status/2046758188834267480) | [with replies](https://x.com/0xcybersmile/status/2051849528937164971) | DESIGN.md 如果能把 token 和 rationale 放在同一份文件里，设计交接会少很多猜测。 |
+| 14 | posted_verified | @rileybrown | [source](https://x.com/rileybrown/status/2045181631921832420) | [with replies](https://x.com/0xcybersmile/status/2051849674664149207) | Agreed. Design should probably be a mode inside the main assistant, not another  |
+| 15 | posted_verified | @gengdaJ | [source](https://x.com/gengdaJ/status/2050143504912077261) | [with replies](https://x.com/0xcybersmile/status/2051849806734311865) | App 形态确实降低门槛。普通人不想先学终端，能从角色和常用应用开始，会更容易持续用。 |
+| 16 | posted_verified | @WY_mask | [source](https://x.com/WY_mask/status/2051731151190904859) | [with replies](https://x.com/0xcybersmile/status/2051849923436638300) | 500 个案例比单个教程有用。新手最缺的不是概念，而是知道同一套能力能落在哪些行业。 |
+| 17 | posted_verified | @rohanpaul_ai | [source](https://x.com/rohanpaul_ai/status/2051769921265406110) | [with replies](https://x.com/0xcybersmile/status/2051850050159206651) | Phone access changes the usage pattern. If the remote computer keeps state, quic |
+| 18 | posted_verified | @bonsaixbt | [source](https://x.com/bonsaixbt/status/2051730180016631995) | [with replies](https://x.com/0xcybersmile/status/2051850172213375348) | Finance templates make more sense for SMBs than generic chat. The ROI is easiest |
+| 19 | posted_verified | @VibeCreAI | [source](https://x.com/VibeCreAI/status/2051469889982935336) | [with replies](https://x.com/0xcybersmile/status/2051850299170828457) | Direct scene access is a big deal. Game agents become much more useful when they |
+| 20 | posted_verified | @Legendaryy | [source](https://x.com/Legendaryy/status/2051658844657369502) | [with replies](https://x.com/0xcybersmile/status/2051850426962878892) | The pricing shift is real. If the $20 plan covers normal dev usage, the switchin |
+| 21 | posted_verified | @MahamDev | [source](https://x.com/MahamDev/status/2051675866946781560) | [with replies](https://x.com/0xcybersmile/status/2051850569980231834) | Harness quality matters more than model branding here. A cheap model with the ri |
+| 22 | posted_verified | @aigclink | [source](https://x.com/aigclink/status/1976462198827573266) | [with replies](https://x.com/0xcybersmile/status/2051850705309491370) | 企业里最难的是把文档、表格和业务应用接到一起。入口统一后，权限和审计就必须一起补上。 |
+| 23 | posted_verified | @WY_mask | [source](https://x.com/WY_mask/status/2045306315699093870) | [with replies](https://x.com/0xcybersmile/status/2051850828370284572) | 把岗位写成可复用角色很有价值。下一步不是角色越多越好，而是每个角色有清楚输入和验收标准。 |
+| 24 | posted_verified | @NFTCPS | [source](https://x.com/NFTCPS/status/2051177005467787575) | [with replies](https://x.com/0xcybersmile/status/2051850948910399715) | 金融研究助手如果能自己抓资料、列假设、再做自检，会比普通问答强很多。核心还是别让它直接替人拍板。 |
+| 25 | posted_verified | @berryxia | [source](https://x.com/berryxia/status/2051111809172852936) | [with replies](https://x.com/0xcybersmile/status/2051851084667421108) | 投研里 supervisor 这层很合理。多个子任务并行跑时，必须有人负责合并证据和指出冲突。 |
+| 26 | posted_verified | @shao__meng | [source](https://x.com/shao__meng/status/2035316234271764654) | [with replies](https://x.com/0xcybersmile/status/2051851218381914212) | 前端和设计类 skills 最适合沉淀成清单。每次都重新解释审美要求，太浪费上下文。 |
+| 27 | posted_verified | @jiayuan_jy | [source](https://x.com/jiayuan_jy/status/2044155895110848739) | [with replies](https://x.com/0xcybersmile/status/2051851366075953434) | Local routines are the right direction. The routine should live near the repo an |
+| 28 | posted_verified | @op7418 | [source](https://x.com/op7418/status/2043585003502948515) | [with replies](https://x.com/0xcybersmile/status/2051851497777012778) | 把多个编码工具放进一个原生 Mac 应用挺顺手。最省事的地方是不用在终端、浏览器、编辑器之间来回跳。 |
+| 29 | posted_verified | @1999_eth | [source](https://x.com/1999_eth/status/2051645515499200637) | [with replies](https://x.com/0xcybersmile/status/2051851631713833433) | /goal 适配模型这件事挺有意思。很多迁移不是换入口，而是把旧习惯和工具调用兼容好。 |
+| 30 | posted_verified | @zodchiii | [source](https://x.com/zodchiii/status/2049822778824499620) | [with replies](https://x.com/0xcybersmile/status/2051851766329933905) | Secret handling is the part most demos skip. The agent can write code, but the e |
+| 31 | posted_verified | @wquguru | [source](https://x.com/wquguru/status/2039519918291611656) | [with replies](https://x.com/0xcybersmile/status/2051851883661451624) | 一边读源码一边比工程实践，是学 harness 最快的方式。只看教程很难理解那些奇怪边界从哪来。 |
+| 32 | posted_verified | @laozhang2579 | [source](https://x.com/laozhang2579/status/2051622981462348110) | [with replies](https://x.com/0xcybersmile/status/2051852015450694137) | 把 repo 做成知识图谱很对。改代码前先知道调用链和影响范围，比事后靠测试猜错在哪里稳多了。 |
+| 33 | posted_verified | @givros | [source](https://x.com/givros/status/2048388647272022093) | [with replies](https://x.com/0xcybersmile/status/2051852163329278368) | Image-to-game is a great stress test. It forces the pipeline to handle assets, a |
+| 34 | posted_verified | @JiaweiShen2568 | [source](https://x.com/JiaweiShen2568/status/2051665033218707844) | [with replies](https://x.com/0xcybersmile/status/2051852304887021750) | 24 小时电台主播这个方向很有温度。歌单、日程和声音都接上，才不像一个单纯播放器。 |
+| 35 | posted_verified | @GoSailGlobal | [source](https://x.com/GoSailGlobal/status/2051681890651066762) | [with replies](https://x.com/0xcybersmile/status/2051852429059293525) | 一个人管 40 家公司听着夸张，但演示里最该看的是任务分派、复盘和异常处理怎么做。 |
+| 36 | posted_verified | @IndieDevHailey | [source](https://x.com/IndieDevHailey/status/2037354775143227877) | [with replies](https://x.com/0xcybersmile/status/2051852558160056534) | 手机端查看进度和插话很实用。长任务跑着的时候，人不应该被绑在电脑前等结果。 |
+| 37 | posted_verified | @lifeof_jer | [source](https://x.com/lifeof_jer/status/2048239829914423543) | [with replies](https://x.com/0xcybersmile/status/2051852683800391824) | This is why destructive actions need a separate approval rail. Speed is great un |
+| 38 | posted_verified | @berryxia | [source](https://x.com/berryxia/status/2051548809579446476) | [with replies](https://x.com/0xcybersmile/status/2051852821088334240) | 设计还原度做到 95% 很吸引人。更想看的是它面对真实品牌约束时，能不能稳定保持风格。 |
+| 39 | posted_verified | @gudanglifehack | [source](https://x.com/gudanglifehack/status/2051682160369885554) | [with replies](https://x.com/0xcybersmile/status/2051852966429409786) | Finance is a good vertical for templates because the work is repetitive but evid |
+| 40 | posted_verified | @coder_left | [source](https://x.com/coder_left/status/2051646570228043806) | [with replies](https://x.com/0xcybersmile/status/2051853167206486464) | 图形界面、命令行、IDE 都覆盖，对新手很友好。入门教程最重要的是少掉第一小时的挫败感。 |
+| 41 | posted_verified | @edsim | [source](https://x.com/edsim/status/2051704713322680739) | [with replies](https://x.com/0xcybersmile/status/2051853296219161010) | The services layer is underrated. Enterprise agents still need integration, data |
+| 42 | posted_verified | @annbordetsky | [source](https://x.com/annbordetsky/status/2051354117713609142) | [with replies](https://x.com/0xcybersmile/status/2051853448497496491) | Daily operating systems is the right frame. The prize is not another chatbot; it |
+| 43 | posted_verified | @seelffff | [source](https://x.com/seelffff/status/2051327163048005653) | [with replies](https://x.com/0xcybersmile/status/2051853614571032791) | The one markdown file part is underrated. Most people need a small starting loop |
+| 44 | posted_verified | @chamath | [source](https://x.com/chamath/status/2051348569739649524) | [with replies](https://x.com/0xcybersmile/status/2051853740794421321) | Multi-player is the hard part. If no one knows why a rule changed, the AI rollou |
+| 45 | posted_verified | @shao__meng | [source](https://x.com/shao__meng/status/2042400859846582328) | [with replies](https://x.com/0xcybersmile/status/2051853866136924431) | 100 美元档看起来像是给高频使用者补中间层。Plus 不够、Pro 太贵的人确实会犹豫。 |
+| 46 | posted_verified | @StockSavvyShay | [source](https://x.com/StockSavvyShay/status/2048747597268197644) | [with replies](https://x.com/0xcybersmile/status/2051853986970652850) | Governance plus real-time data is the useful combination. Without both, automati |
+| 47 | posted_verified | @0xMulight | [source](https://x.com/0xMulight/status/2051660900357329345) | [with replies](https://x.com/0xcybersmile/status/2051854119791644943) | 视觉生产和变现都做成原生 skills 后，本地助手就不只是写字了。重点是输出能不能进真实交付。 |
+| 48 | posted_verified | @oragnes | [source](https://x.com/oragnes/status/2051467770530025472) | [with replies](https://x.com/0xcybersmile/status/2051854260946825565) | 3 个文件拉起多智能体团队很诱人。落地时我会先看工具权限、任务日志和失败重跑。 |
+| 49 | posted_verified | @JYdmnLFG | [source](https://x.com/JYdmnLFG/status/2046061305899958334) | [with replies](https://x.com/0xcybersmile/status/2051854430400819488) | 从不会开终端到搭出全平台内容流程，这条路径很有参考价值。最难的是把每一步留下来复用。 |
+| 50 | posted_verified | @higgsfield | [source](https://x.com/higgsfield/status/2049866594114027843) | [with replies](https://x.com/0xcybersmile/status/2051854618075037945) | Node graphs make sense for video because every team wants repeatable variants. T |
+
+- success=50
+- failed=0
+- unique_sources=50
+- unique_verify_urls=50
