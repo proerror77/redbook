@@ -4183,3 +4183,27 @@
 
 **遗留：**
 - 当前有效版本为 `2050444539060732188`；旧 ledger 中保留了旧错误发布事实，后续统计应以 corrected T+0 记录为准。
+## [2026-05-06] X 三篇文章发布：第四篇、第二篇、第一篇
+
+**完成了什么：**
+- 使用 Agent Teams 分别完成三条内容包：企业 AI 组织记忆长文、Coinbase AI 裁员新闻短评、Codex/Claude workflow 入口短文。
+- 使用 Codex 原生 `image_gen` 生成并落盘配图；没有使用 SVG。
+- 根据复核意见修正文案和发布清单：
+  - 长文补齐图片模型、插入位置、锚定短句、视觉隐喻和排版 QA。
+  - Coinbase 短评把 Coinbase 官方博文升为 primary source，主帖只保留官方原文链接，互动数字改为“高互动讨论”。
+  - Codex/Claude 短文软化 Symphony / Claude templates / Codex 日常入口相关判断，并重生更克制的观点卡。
+- 按用户指定顺序发布：
+  - 第四篇长文：`https://x.com/0xcybersmile/status/2051856551867236845`
+  - 第二篇新闻短评：`https://x.com/0xcybersmile/status/2051856799318626347`
+  - 第一篇短文：`https://x.com/0xcybersmile/status/2051856982580297819`
+- 已追加 T+0 发布记录到 `04-内容数据统计/publish-records.jsonl`。
+
+**验证：**
+- `tools/redbookctl x-login --timeout-ms 45000` 通过，账号为 `Smileyface @0xcybersmile`。
+- 长文第一次发布尝试因相对图片路径导致 composer 媒体数为 0，被 `x-browser.ts` fail-closed 拦截，没有提交文字裸帖。
+- 长文重试使用绝对图片路径后，composer 媒体数验证为 4，发布后回读主帖媒体存在。
+- 第二篇和第一篇均在 submit 前验证 composer 媒体数为 1，发布后回读主帖媒体存在。
+- `git diff --check` 对三篇内容包通过。
+
+**遗留：**
+- 本轮发现 `x-browser.ts` 的图片上传对相对路径不够友好；后续应在脚本内把图片路径统一 resolve 成绝对路径，避免再次出现 composer 媒体数为 0 的预提交失败。
