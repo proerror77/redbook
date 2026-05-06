@@ -4207,3 +4207,20 @@
 
 **遗留：**
 - 本轮发现 `x-browser.ts` 的图片上传对相对路径不够友好；后续应在脚本内把图片路径统一 resolve 成绝对路径，避免再次出现 composer 媒体数为 0 的预提交失败。
+
+## [2026-05-06] BOSS 上海 AI 相关岗位投递 20 个
+
+**完成了什么：**
+- 按用户要求不用 OpenCLI/OpenSeal，复用现有 BOSS Chrome/CDP 会话和 `tools/auto-zhipin` 自有脚本。
+- 先刷新 BOSS chat triage，并用本地 ledger 的 `company::title` 去重；`继续沟通` 和历史已投不计入新成功。
+- 放开 `1000-9999人` / `10000人以上` 公司规模限制，但继续保留重复、低于 20K、销售/外包/训练/驻外、汽车/智驾/芯片、研究院/集团/大厂黑名单等门控。
+- 根据用户纠正，后半程改为只看上海，并扩大到 AI 架构、AI 咨询、AI 管理、研发总监、技术总监、CTO、企业 AI、组织效率、AI 解决方案、Agent/智能体等关键词。
+- 今日成功投递数从 0 增至 20。
+
+**验证：**
+- `node scripts/report.js` 回读 `todaySuccessfulApplies: 20`。
+- `new ZhipinStore().getTodaySuccessfulApplies(new Date())` 回读 20。
+- 最后两条补齐投递为：芯极客 `AI应用架构师`、景才咨询 `Senior principal Engineer(AI 架构)`，按钮状态由 `立即沟通` 变为 `继续沟通` 并落账。
+
+**遗留：**
+- BOSS 直接 URL 搜索有时会回落到推荐页；后续找 AI 架构/咨询/管理类岗位时优先用页面内搜索框提交关键词，再抽取结果。
