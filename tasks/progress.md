@@ -4183,6 +4183,28 @@
 
 **遗留：**
 - 当前有效版本为 `2050444539060732188`；旧 ledger 中保留了旧错误发布事实，后续统计应以 corrected T+0 记录为准。
+## [2026-05-06] LLM Wiki daily-cycle 执行
+
+**完成了什么：**
+- 按用户要求执行一次 LLM Wiki workflow：`python3 tools/wiki_workflow.py daily-cycle --date 2026-05-06`。
+- 本次 workflow 复用了今天已有的显式 run：
+  - ingest run：`20260506-020404-llm-wiki-ingest-2026-05-06-0d66d6`
+  - lint run：`20260506-020404-llm-wiki-lint-2026-05-06-7f9cc3`
+- ingest 已挂接 3 份当日研究源：
+  - `05-选题研究/X-每日日程-2026-05-06.md`
+  - `05-选题研究/HN-每日热点-2026-05-06.md`
+  - `05-选题研究/Reddit-每日监控-2026-05-06.md`
+
+**验证：**
+- ingest checks：`materials_queried=true`、`research_complete=true`。
+- lint summary：`missing_from_index=0`、`dangling_in_index=0`、`orphan_pages=0`、`stale_index_dates=0`、`overview_stale=false`。
+- 报告文件已生成：
+  - `docs/reports/wiki-ingest-2026-05-06.md`
+  - `docs/reports/wiki-lint-2026-05-06.md`
+
+**遗留：**
+- 本次是 workflow run / lint 证据闭环，没有自动改写具体 wiki 页面内容。
+
 ## [2026-05-06] X 三篇文章发布：第四篇、第二篇、第一篇
 
 **完成了什么：**
