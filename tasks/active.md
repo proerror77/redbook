@@ -732,3 +732,24 @@
 - Fixed the actual script default so editorial/social presets default to `16:9`; Xiaohongshu vertical cards now require explicit `--ar 3:4`.
 - Added a research note at `docs/reports/2026-05-05-gpt-image2-cover-prompt-research.md`.
 - Verification passed: CLI help smoke, `social-cover --print-prompt`, `info-card --print-prompt --ar 3:4`, scoped `git diff --check`.
+
+## 2026-05-06 X Article Longform Correction
+
+- Owner: Codex
+- Source: User confirmed delete and resend because the previous X longform images rendered as a gallery instead of article inline illustrations.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Verify the old gallery post is owned and delete it.
+- [x] Reuse the existing X Article draft with Markdown inline images.
+- [x] Patch the Article publish click path so it can click the visible topbar publish button and the confirmation dialog publish button.
+- [x] Publish the corrected X Article and verify public page title, body, and media count.
+- [x] Record publish evidence in the content package, publish ledger, and progress log.
+
+### Review
+
+- Old URL deleted: `https://x.com/0xcybersmile/status/2051856551867236845`.
+- Corrected URL published: `https://x.com/0xcybersmile/status/2051900903901569131`.
+- Public readback found the expected title, body key phrases, and 4 large media images.
+- Script fix is scoped to `.agents/skills/baoyu-post-to-x/scripts/x-article.ts` publish-button selection.

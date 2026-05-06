@@ -4309,3 +4309,19 @@
 **遗留：**
 - 非搜索推荐链后半段开始混入更宽泛的平台/后端/算法岗位；没有继续使用搜索来强行补量。
 - 推荐链和公司职位页中重复、已沟通、大厂/黑名单、非上海 base、低薪岗位比例很高。
+
+## [2026-05-06] X Article 长文删帖重发修正
+
+**完成了什么：**
+- 删除错误 gallery 版长帖：`https://x.com/0xcybersmile/status/2051856551867236845`。
+- 复用已排好正文插图的 X Article 草稿，重发为：`https://x.com/0xcybersmile/status/2051900903901569131`。
+- 修补 `.agents/skills/baoyu-post-to-x/scripts/x-article.ts` 的发布按钮点击逻辑：支持 `innerText`，并优先点击确认面板里的 `发布` 按钮。
+- 回写 `发布清单.md`、新增 `发布记录.md`，并追加 T+0 发布账本。
+
+**验证：**
+- `x-delete.ts --dry-run` 回读旧 URL 目标不可见，按已删除确认。
+- 新公开页可打开，标题和正文关键句可见。
+- 新公开页可见 4 张 `pbs.twimg.com/media` 大图，对应 1 张封面 + 3 张正文 inline 插图。
+
+**遗留：**
+- X 对 Codex / GPT Image 输出图显示 `由 AI 生成` 是 C2PA / Content Credentials 来源标签，不应通过剥离 provenance 隐藏；如果内容策略需要避开该标签，后续改用真实截图、人工设计图或授权素材。

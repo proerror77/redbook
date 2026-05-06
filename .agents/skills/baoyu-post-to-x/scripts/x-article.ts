@@ -1370,19 +1370,38 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
       const clickPublish = async (): Promise<boolean> => {
         const result = await cdp!.send<{ result: { value: boolean } }>('Runtime.evaluate', {
           expression: `(() => {
+            const isVisible = (el) => {
+              const rect = el.getBoundingClientRect();
+              const style = getComputedStyle(el);
+              return rect.width > 0 && rect.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
+            };
+            const isEnabled = (el) => !el.disabled && el.getAttribute('aria-disabled') !== 'true';
+            const labelOf = (el) => (el.innerText || el.textContent || el.getAttribute('aria-label') || '').trim();
+            const isPublishLabel = (label) => label === '发布' || /^publish$/i.test(label);
+            const buttons = Array.from(document.querySelectorAll('button, a, [role="button"]'));
+            const matchingButtons = buttons.filter((el) => isVisible(el) && isEnabled(el) && isPublishLabel(labelOf(el)));
+            const dialogButton = matchingButtons.find((el) => el.closest('[role="dialog"], [aria-modal="true"]'));
+            if (dialogButton) { dialogButton.click(); return true; }
+            const ariaConfirmButton = matchingButtons.find((el) => el.getAttribute('aria-label') && isPublishLabel(el.getAttribute('aria-label')));
+            if (ariaConfirmButton) { ariaConfirmButton.click(); return true; }
             const selectors = ${publishSelectors};
             for (const sel of selectors) {
               const el = document.querySelector(sel);
-              if (el && !el.disabled && el.getAttribute('aria-disabled') !== 'true') { el.click(); return true; }
+              if (el && isVisible(el) && isEnabled(el)) { el.click(); return true; }
             }
-            const textButton = Array.from(document.querySelectorAll('button, a, [role="button"]'))
-              .find((el) => {
-                const text = (el.textContent || '').trim();
-                return (text === '发布' || /^publish$/i.test(text) || el.getAttribute('aria-label') === '发布' || /^publish$/i.test(el.getAttribute('aria-label') || ''))
-                  && !el.disabled
-                  && el.getAttribute('aria-disabled') !== 'true';
-              });
+            const textButton = matchingButtons[0];
             if (textButton) { textButton.click(); return true; }
+            window.__xArticlePublishCandidates = Array.from(document.querySelectorAll('button, a, [role="button"]'))
+              .filter(isVisible)
+              .map((el) => ({
+                tag: el.tagName,
+                label: labelOf(el),
+                aria: el.getAttribute('aria-label'),
+                testid: el.getAttribute('data-testid'),
+                disabled: el.disabled || el.getAttribute('aria-disabled'),
+                rect: (() => { const r = el.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; })(),
+              }))
+              .slice(0, 40);
             return false;
           })()`,
           returnByValue: true,
