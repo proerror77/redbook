@@ -4246,3 +4246,22 @@
 
 **遗留：**
 - BOSS 直接 URL 搜索有时会回落到推荐页；后续找 AI 架构/咨询/管理类岗位时优先用页面内搜索框提交关键词，再抽取结果。
+
+## [2026-05-06] BOSS 上海 AI 相关岗位继续补投 20 个
+
+**完成了什么：**
+- 用户指出不是只补到 21，而是要在 21 的基础上再多投 20 个成功投递。
+- 继续只使用 `tools/auto-zhipin` 自有 CDP 脚本，不使用 OpenCLI/OpenSeal BOSS 适配器。
+- 继续限定上海岗位；对前面 2 个不够匹配的记录（`base合肥`、`外派`）做额外偏移，所以目标从 41 提高到 43。
+- 修复 `scripts/cdp_apply_job.js`：BOSS 出现“今天已与120位BOSS沟通，还剩30次沟通机会”弹窗时，脚本现在用 CDP 鼠标事件点击确认按钮，并用页面尾部成功文案辅助验证。
+- 成功补投到今日 `todaySuccessfulApplies: 43`。
+
+**验证：**
+- `node -c scripts/cdp_apply_job.js` 通过。
+- 修复后实测小宿科技 `AI平台大模型研发工程师` 从 `立即沟通` 变为 `继续沟通` 并落账。
+- 推荐位继续投递成功：仁励窝 `AI Agent开发工程师`、迪塔班克 `AI研发工程师`。
+- `new ZhipinStore().getTodaySuccessfulApplies(new Date())` 回读 43。
+- `node scripts/report.js` 回读 `todaySuccessfulApplies: 43`。
+
+**遗留：**
+- 今日 BOSS 页面提示已沟通 120 位，还剩 30 次沟通机会；后续继续投递要注意次数上限和弹窗确认路径。

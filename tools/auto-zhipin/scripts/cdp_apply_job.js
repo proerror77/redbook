@@ -126,7 +126,7 @@ async function extractMeta(session) {
         return values;
       }
       const fullBody = document.body ? String(document.body.innerText || '') : '';
-      const bodyText = fullBody.slice(0, 3000);
+      const bodyText = fullBody.slice(0, 3000) + '\\n' + fullBody.slice(-1000);
       const lines = fullBody.split(/\\n+/).map((item) => clean(item)).filter(Boolean);
       const companyInfoIndex = lines.findIndex((line) => line.includes('公司基本信息'));
       const companyFromBody = companyInfoIndex >= 0 ? (lines[companyInfoIndex + 1] || '') : '';
@@ -180,7 +180,7 @@ async function extractMeta(session) {
 }
 
 async function clickApply(session) {
-  return evaluate(session, `(() => {
+  const target = await evaluate(session, `(() => {
     function normalize(value) {
       return String(value || '').replace(/\\s+/g, ' ').trim();
     }
@@ -202,14 +202,100 @@ async function clickApply(session) {
     for (const selector of selectors) {
       const node = document.querySelector(selector);
       if (!isVisible(node)) continue;
-      const rect = node.getBoundingClientRect();
       node.scrollIntoView({block:'center'});
-      ['pointerdown','mousedown','mouseup','click'].forEach(type => node.dispatchEvent(new MouseEvent(type,{bubbles:true,cancelable:true,clientX:rect.left+rect.width/2,clientY:rect.top+rect.height/2,view:window})));
-      if (typeof node.click === 'function') node.click();
-      return {ok:true, selector, text: normalize(node.innerText || node.textContent || '')};
+      const rect = node.getBoundingClientRect();
+      return {
+        ok:true,
+        selector,
+        text: normalize(node.innerText || node.textContent || ''),
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2,
+      };
     }
     return {ok:false, reason:'apply_button_not_found'};
   })()`);
+  if (!target?.ok) {
+    return target || { ok: false, reason: 'apply_button_not_found' };
+  }
+  await session.send('Input.dispatchMouseEvent', {
+    type: 'mouseMoved',
+    x: target.x,
+    y: target.y,
+    button: 'none',
+  });
+  await session.send('Input.dispatchMouseEvent', {
+    type: 'mousePressed',
+    x: target.x,
+    y: target.y,
+    button: 'left',
+    clickCount: 1,
+  });
+  await session.send('Input.dispatchMouseEvent', {
+    type: 'mouseReleased',
+    x: target.x,
+    y: target.y,
+    button: 'left',
+    clickCount: 1,
+  });
+  return target;
+}
+
+async function clickPostApplyReminder(session) {
+  const target = await evaluate(session, `(() => {
+    function normalize(value) {
+      return String(value || '').replace(/\\s+/g, ' ').trim();
+    }
+    function isVisible(node) {
+      if (!node) return false;
+      const style = window.getComputedStyle(node);
+      if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) return false;
+      const rect = node.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    }
+    const dialog = Array.from(document.querySelectorAll('.dialog-wrap, .dialog-container, [class*="dialog"]'))
+      .find((node) => isVisible(node) && /温馨提示|沟通机会|今天已与/.test(normalize(node.innerText || node.textContent || '')));
+    if (!dialog) {
+      return { ok: false, reason: 'post_apply_reminder_not_found' };
+    }
+    const button = Array.from(dialog.querySelectorAll('.btn-sure, a, button, [role="button"], [class*="btn"], .dialog-footer'))
+      .find((node) => isVisible(node) && /^(好|确定|知道了)$/.test(normalize(node.innerText || node.textContent || '')));
+    if (!button) {
+      return { ok: false, reason: 'post_apply_reminder_button_not_found' };
+    }
+    button.scrollIntoView({ block: 'center' });
+    const rect = button.getBoundingClientRect();
+    return {
+      ok: true,
+      selector: String(button.className || button.tagName || ''),
+      text: normalize(button.innerText || button.textContent || ''),
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2,
+    };
+  })()`);
+  if (!target?.ok) {
+    return target || { ok: false, reason: 'post_apply_reminder_not_found' };
+  }
+  await session.send('Input.dispatchMouseEvent', {
+    type: 'mouseMoved',
+    x: target.x,
+    y: target.y,
+    button: 'none',
+  });
+  await session.send('Input.dispatchMouseEvent', {
+    type: 'mousePressed',
+    x: target.x,
+    y: target.y,
+    button: 'left',
+    clickCount: 1,
+  });
+  await session.send('Input.dispatchMouseEvent', {
+    type: 'mouseReleased',
+    x: target.x,
+    y: target.y,
+    button: 'left',
+    clickCount: 1,
+  });
+  return target;
 }
 
 function parseBoolean(value, fallback) {
@@ -405,9 +491,12 @@ async function main() {
       return;
     }
     const clickResult = await clickApply(session);
+    await new Promise((resolve) => setTimeout(resolve, 1800));
+    const reminderResult = await clickPostApplyReminder(session);
     await new Promise((resolve) => setTimeout(resolve, 2500));
     const after = await extractMeta(session);
-    const success = String(after.actionText || '').includes('继续沟通');
+    const success = String(after.actionText || after.body || '').includes('继续沟通')
+      || String(after.body || '').includes('已向BOSS发送消息');
     const finalCandidate = buildCandidateFromMeta({
       ...before,
       ...after,
@@ -434,7 +523,7 @@ async function main() {
       status: success ? 'applied' : 'failed',
       appliedAt: success ? nowIso() : undefined,
       reasons: success ? [] : [clickResult.reason || 'apply_not_verified'],
-      applyResult: { clickResult, before, after, gate },
+      applyResult: { clickResult, reminderResult, before, after, gate },
       source: 'cdp_apply_job',
       identityKey: finalCandidate.identityKey,
     });
@@ -444,6 +533,7 @@ async function main() {
       dryRun: false,
       success,
       clickResult,
+      reminderResult,
       before,
       after,
     }, null, 2));
