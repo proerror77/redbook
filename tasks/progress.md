@@ -4326,6 +4326,22 @@
 **遗留：**
 - X 对 Codex / GPT Image 输出图显示 `由 AI 生成` 是 C2PA / Content Credentials 来源标签，不应通过剥离 provenance 隐藏；如果内容策略需要避开该标签，后续改用真实截图、人工设计图或授权素材。
 
+## [2026-05-07] X 短文：Coding Agent 从 prompt 迁移到 workflow
+
+**完成了什么：**
+- 用户确认按今日 X timeline 计划发出后，选择 `keep-codex-fast` + Addy Osmani `agent-skills` 合并角度。
+- 新建内容包：`01-内容生产/02-制作中的选题/2026-05-07-Coding-Agent-Skill-Handoff-Archive-短文/`。
+- 完成 wiki query、来源记录、X 短文、x-mastery-mentor 审稿、发布清单和发布记录。
+- 已发布：`https://x.com/0xcybersmile/status/2052234804482248787`。
+
+**验证：**
+- `tools/redbookctl x-login --timeout-ms 45000` 通过，账号为 `Smileyface @0xcybersmile`。
+- `x-browser.ts --submit --expected-handle 0xcybersmile` 返回并验证自有 status URL。
+- 独立状态页回读确认作者、核心正文和两个来源链接可见。
+
+**遗留：**
+- 这条没有配图，目的是避免 AI 图片标签干扰；如后续要图，建议用人工信息图或真实截图，不走生成图。
+
 ## [2026-05-07] BOSS 后台投递点击路径 Browser Trace
 
 **完成了什么：**
