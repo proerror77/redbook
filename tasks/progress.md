@@ -4386,6 +4386,24 @@
 - 后台 chat triage 这轮没有在 30 秒内 ready；本轮依赖本地 ledger identity 去重、`继续沟通` 状态和 live 前详情 gate。
 - 当前仍按用户前面要求允许 1000+ 公司规模。
 
+## [2026-05-07] BOSS Chat 明确拒绝公司记录
+
+**完成了什么：**
+- 按用户要求打开 BOSS Chat 查看近期回复。
+- 自动 triage 被 Chat 页面导航打断后，改用只读 DOM 快照抽取可见会话，不发送消息、不投递。
+- 识别到两个明确拒绝 / 不匹配回复，并写入本地 `opencli-chat-triage` block 记录：
+  - `象冠`：回复“暂时与该职位不够匹配，有合适机会之后再沟通”。
+  - `得物App`：回复“职位需求不太匹配，后续有合适的机会再联系”。
+
+**验证：**
+- `matchJobAgainstChatTriage({ company: "象冠" })` 命中 `象冠`。
+- `matchJobAgainstChatTriage({ company: "得物App" })` 命中 `得物App`。
+- `matchJobAgainstChatTriage({ company: "其它公司" })` 不命中，避免泛化误伤。
+
+**遗留：**
+- 本次只处理了可见 Chat 列表里的明显拒绝；更深历史列表可后续在页面稳定时继续滚动补采。
+- 聊天快照和 block 数据保存在 `tools/auto-zhipin/data/` 本地数据目录，因包含私密会话内容不提交到 git。
+
 ## [2026-05-07] X timeline 互动回复 50 条
 
 **完成了什么：**
