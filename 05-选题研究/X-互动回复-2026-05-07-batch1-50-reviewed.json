@@ -1,0 +1,352 @@
+[
+  {
+    "handle": "aehyok",
+    "url": "https://x.com/aehyok/status/2052010046578626773",
+    "language": "zh",
+    "reply": "多账号管理最实用的地方是少掉手机验证和额度猜测。对 Codex 重度用户来说，登录态稳定比多一个窗口更省心。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "chenchengpro",
+    "url": "https://x.com/chenchengpro/status/2052174531419361472",
+    "language": "zh",
+    "reply": "Dreams 这个方向我挺想看实际效果。会整理旧 session 还不够，难点是能不能把错过的模式变成下次可用的提醒。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "teach_fireworks",
+    "url": "https://x.com/teach_fireworks/status/2052000647277621387",
+    "language": "zh",
+    "reply": "CLI 和 App 的分工确实会越来越明显。一个适合接流水线，一个适合看屏幕和确认结果，不是换个壳那么简单。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "sitinme",
+    "url": "https://x.com/sitinme/status/2051912662360141919",
+    "language": "zh",
+    "reply": "50 个命令里我最看重分叉和上下文管理。省 token 只是表层，能把长任务拆开继续跑，才真的能减少返工。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "cjzafir",
+    "url": "https://x.com/cjzafir/status/2052110266566107321",
+    "language": "en",
+    "reply": "The useful part is the confidence loop, not the wording. It forces Codex to inspect its own plan before it burns time implementing the wrong thing.",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "keyahayek",
+    "url": "https://x.com/keyahayek/status/2051926162541273208",
+    "language": "zh",
+    "reply": "这波半导体讨论很有意思。很多人离产业逻辑很近，却只把它当工具账单看，没把算力链条当投资线索。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "WY_mask",
+    "url": "https://x.com/WY_mask/status/2052198982919836050",
+    "language": "zh",
+    "reply": "这种项目合集最适合当练手地图。比看教程有效，因为每个模板都能逼你想清楚输入、记忆、工具和交付。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "claudeai",
+    "url": "https://x.com/claudeai/status/2052060691893227611",
+    "language": "en",
+    "reply": "Compute capacity is the hidden product feature for Claude Code. Higher limits change what people dare to hand over to agents in real projects.",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "elliotchen100",
+    "url": "https://x.com/elliotchen100/status/2052190071454065062",
+    "language": "zh",
+    "reply": "Dream 的价值要看它怎么处理矛盾记忆。合并重复内容容易，把过期经验从上下文里拿掉才更难。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "vista8",
+    "url": "https://x.com/vista8/status/2052199176218259752",
+    "language": "zh",
+    "reply": "TypeScript 版框架对前端团队很友好。能不能跑起来不是终点，后面还要看工具权限、日志和失败恢复。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "NFTCPS",
+    "url": "https://x.com/NFTCPS/status/2051865696834097494",
+    "language": "zh",
+    "reply": "Obsidian 和代码助手接起来很实用。很多项目不是缺笔记，而是笔记进不了执行现场，最后只能重新解释一遍。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "tualatrix",
+    "url": "https://x.com/tualatrix/status/2052193263453634874",
+    "language": "zh",
+    "reply": "兄弟 repo 这个写法很接地气。很多团队没必要先迁 monorepo，先把跨目录约定写进 AGENTS 就够用。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "_HIT_SZ_",
+    "url": "https://x.com/_HIT_SZ_/status/2051992769258766463",
+    "language": "zh",
+    "reply": "网页审美 Skill 很需要。现在页面能生成，差距常常卡在留白、层级和品牌感，这些靠提示词硬补很累。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "viviennaBTC",
+    "url": "https://x.com/viviennaBTC/status/2052036309167014315",
+    "language": "zh",
+    "reply": "把教材做成小程序这个方向很好。金融学这种内容最怕只记概念，能动手调参数，理解会扎实很多。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "noahduck283",
+    "url": "https://x.com/noahduck283/status/2052015559060209815",
+    "language": "zh",
+    "reply": "涨粉案例里最想看的是流程细节。Kimi 写稿不稀奇，能把选题、排版和复盘接住才有用。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "Saccc_c",
+    "url": "https://x.com/Saccc_c/status/2052191684880916794",
+    "language": "zh",
+    "reply": "视频教程这类内容很适合自动化。安装、素材、字幕、镜头节奏都能拆成步骤，人工只保留审美验收就好。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "GitTrend0x",
+    "url": "https://x.com/GitTrend0x/status/2052016202906825140",
+    "language": "zh",
+    "reply": "Hermes 这类项目有意思的地方是把搜索、值班和桌面入口揉到一起。后面要看哪部分会被高频留下来。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "GoSailGlobal",
+    "url": "https://x.com/GoSailGlobal/status/2052017866418126929",
+    "language": "zh",
+    "reply": "前端排第一我认同。它反馈最快、可视化最强，错误也容易被人发现，所以最适合先被 coding agent 吃掉。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "fiapp_pro",
+    "url": "https://x.com/fiapp_pro/status/2051900724104311110",
+    "language": "zh",
+    "reply": "18 小时 goal 很能说明长任务的变化。不是只提速，而是把人不愿意反复盯的脏活慢慢接过去。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "Eejoylove",
+    "url": "https://x.com/Eejoylove/status/2051966294833131745",
+    "language": "zh",
+    "reply": "视频这块最吸引我的不是一键生成，而是从脚本到素材到字幕能连续跑完。少一次手动搬运就少一次断点。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "WEB3_furture",
+    "url": "https://x.com/WEB3_furture/status/2052039083140980983",
+    "language": "zh",
+    "reply": "把官网丢进去自动拆素材很实用。视频工具如果能先读懂品牌和页面，再剪辑，成片稳定性会高很多。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "li9292",
+    "url": "https://x.com/li9292/status/2052021205431984209",
+    "language": "zh",
+    "reply": "中转站检测工具会越来越必要。便宜只是第一层，用户更关心有没有换模型、偷缓存、乱记账这些隐性坑。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "rtk17025",
+    "url": "https://x.com/rtk17025/status/2051971392569250209",
+    "language": "zh",
+    "reply": "用量估算这件事很值得做成习惯。Claude Code 烧不烧，很多时候取决于有没有提前拆任务和清上下文。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "0xKingsKuan",
+    "url": "https://x.com/0xKingsKuan/status/2051946076299501671",
+    "language": "zh",
+    "reply": "本地跑的吸引力在于可控。Docker 沙箱、长期记忆、子任务协作如果都打通，小团队会很愿意试。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "yaohui12138",
+    "url": "https://x.com/yaohui12138/status/2051857350861197363",
+    "language": "zh",
+    "reply": "我喜欢 agent in the loop 这条线。人不该只当下单方，还要留下验收、边界和节奏。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "IceBearMiner",
+    "url": "https://x.com/IceBearMiner/status/2052083827242414591",
+    "language": "zh",
+    "reply": "额度刷新这种细节很影响使用方式。限制一松，大家交给 Codex 的任务就会从小修小补变成整块交付。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "0xbisc",
+    "url": "https://x.com/0xbisc/status/2051992429080064424",
+    "language": "en",
+    "reply": "Nice use of the image-to-video chain. The style works because the workflow is visible, not just the final clip.",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "xiaohu",
+    "url": "https://x.com/xiaohu/status/2051975604355096926",
+    "language": "zh",
+    "reply": "Mac 本地工作站这个方向我很关注。能操作电脑比只会回答更进一步，但性能和权限边界都得先做好。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "billtheinvestor",
+    "url": "https://x.com/billtheinvestor/status/2052016917062492249",
+    "language": "zh",
+    "reply": "Blender 连接一旦顺滑，3D 门槛会降很多。文字生成模型只是开始，后面还得看修改和版本管理。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "jakevin7",
+    "url": "https://x.com/jakevin7/status/2052079383729557873",
+    "language": "zh",
+    "reply": "信息 Agent 最有价值的点是替人过滤，而不是替人刷更多。每天少打开十个网页，注意力就省下来了。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "Morris_LT",
+    "url": "https://x.com/Morris_LT/status/2051475680156897287",
+    "language": "zh",
+    "reply": "3 分钟描述练习很适合训练表达。它逼人把观察、结构和联想连起来，比单纯背话术更有迁移性。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "VersunPan",
+    "url": "https://x.com/VersunPan/status/2051983641409138944",
+    "language": "zh",
+    "reply": "HTML-native 视频这点很妙。对 agent 来说，能用代码改每一帧，比只能调时间线更容易自动化。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "qkl2058",
+    "url": "https://x.com/qkl2058/status/2052028604247089508",
+    "language": "zh",
+    "reply": "少儿编程如果能直接接触真实实验室资源，价值会比买课高很多。重点是让孩子动手试，而不是只看宣传页。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "localhost_4173",
+    "url": "https://x.com/localhost_4173/status/2052030227447242923",
+    "language": "zh",
+    "reply": "五倍速绑定域名这种小活很适合交给 Codex。步骤固定、风险可控，人只要检查 DNS 和证书结果。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "geekbb",
+    "url": "https://x.com/geekbb/status/2051913780070879657",
+    "language": "zh",
+    "reply": "多 agent 平台跑在 Cloudflare 上会很省部署心智。后面最难的部分是共享上下文和冲突处理。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "lexi_labs",
+    "url": "https://x.com/lexi_labs/status/2051815804203844014",
+    "language": "zh",
+    "reply": "软件工业这句话我认。以后差距不只在会写代码，而在能把需求、测试、发布都装进流水线。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "dotey",
+    "url": "https://x.com/dotey/status/2052056444330000513",
+    "language": "zh",
+    "reply": "网络协议开源这个动作很值得看。训练规模继续上去，瓶颈会越来越多地落在连接、拥塞和可靠性上。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "knowledgefxg",
+    "url": "https://x.com/knowledgefxg/status/2051994597379969205",
+    "language": "zh",
+    "reply": "把抽象主题变成 3D 交互页很适合教学。学生能自己拖动和试错，理解会比看 PPT 深很多。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "bitfish",
+    "url": "https://x.com/bitfish/status/2052038490817499403",
+    "language": "zh",
+    "reply": "离信号最近却没转成仓位，这个教训很真实。技术人常看到趋势，但最后买的是设备和订阅。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "Krystal_Eth",
+    "url": "https://x.com/Krystal_Eth/status/2052049005623083106",
+    "language": "zh",
+    "reply": "中转站热起来不奇怪。需求是真的，但能不能长期做下去，要看账单透明、模型质量和故障赔付。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "justloveabit",
+    "url": "https://x.com/justloveabit/status/2052009726112841750",
+    "language": "zh",
+    "reply": "免费模型清单很适合做备用方案。不是所有任务都值得烧高级额度，日常内容和小工具可以先走低成本路线。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "xiaojietongxue",
+    "url": "https://x.com/xiaojietongxue/status/2052155243278860432",
+    "language": "zh",
+    "reply": "这几天生成效果波动我也有感。多模型工作流里最好保留备用模型，不然一个环节抽风整条链就停。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "Xuegaogx",
+    "url": "https://x.com/Xuegaogx/status/2051903281656741995",
+    "language": "zh",
+    "reply": "模型映射这个坑很隐蔽。用户看到的是名字，实际拿到的可能是另一套能力，所以对账和测试样例不能省。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "hasantoxr",
+    "url": "https://x.com/hasantoxr/status/2051868316239896820",
+    "language": "en",
+    "reply": "Real-time layout is the compelling part. Home design tools get much more useful when you can sketch, inspect, and revise in one loop.",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "manateelazycat",
+    "url": "https://x.com/manateelazycat/status/2051896682166813067",
+    "language": "zh",
+    "reply": "这个旋钮很适合做物理快捷入口。切 Claude、Codex、终端视图，比在屏幕上找按钮更顺手。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "servasyy_ai",
+    "url": "https://x.com/servasyy_ai/status/2052011175551144387",
+    "language": "zh",
+    "reply": "120 秒拆成 8 段很实用。视频自动化最怕一口气生成，先拆节奏和镜头节点会稳很多。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "Mercy_okx",
+    "url": "https://x.com/Mercy_okx/status/2051876598606090665",
+    "language": "zh",
+    "reply": "我最想改进的是交易后回看。比如手续费、滑点、失败原因能不能更直观地复盘，重度用户会很需要。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "WSInsights",
+    "url": "https://x.com/WSInsights/status/2051851786856939831",
+    "language": "zh",
+    "reply": "每天 5 分钟信息套餐很适合执行。信息源不用太多，能稳定留下三四个高信噪比入口就够了。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "lxfater",
+    "url": "https://x.com/lxfater/status/2051947576769872126",
+    "language": "zh",
+    "reply": "推理提速 6 倍如果质量不掉，会很有用。很多本地模型体验卡住，不是答案差，而是等待太长。",
+    "review": { "status": "approved" }
+  },
+  {
+    "handle": "holegots",
+    "url": "https://x.com/holegots/status/2051930035804864548",
+    "language": "zh",
+    "reply": "这个类比有点狠但有道理。很多产品确实是在重包装模型入口，差异最后落在场景和分发。",
+    "review": { "status": "approved" }
+  }
+]

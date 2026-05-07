@@ -4365,3 +4365,21 @@
 **遗留：**
 - 这次继续允许 1000+ 公司规模，因为用户已明确放开该条件。
 - DOM click 是当前不抢焦点的可用 live 路径；后续不要再为批量投递默认打开 `--focus true`。
+
+## [2026-05-07] X timeline 互动回复 50 条
+
+**完成了什么：**
+- 按 `docs/reference/x-engagement-reply-workflow.md` 跑 X 互动流程：浏览器/CDP 预检、X 登录账号确认、timeline 队列筛选、历史 source URL 去重、x-mastery 内容审稿、脚本 gate、smoke reply、批量发布、逐条 `with_replies` 回读。
+- 预检确认可复用 CDP：`http://127.0.0.1:9224`；发布账号：`Smileyface @0xcybersmile`。
+- 从 `X-互动队列-2026-05-07` 中筛选并重写 50 条回复，避开政治/低俗/纯娱乐/低契合帖子，保留 AI agent、coding、workflow、权限、记忆、工程交付、AI 工具 ROI、中转站信任、信息系统等账号主线内容。
+- 第 1 条先做 smoke reply；剩余 49 条批量执行。`@sitinme` 首次提交后未验证，搜索和原帖页未发现发布痕迹，单独重试后验证成功。
+
+**验证：**
+- 内容审稿：`05-选题研究/X-互动回复内容审稿-2026-05-07-batch1-50.md`。
+- 脚本审查：`reply_engagement_queue.mjs --review-only --limit 50`，结果 `approved=50 blocked=0`。
+- 历史 source URL 去重：50 个 source URL 与既有 `X-互动回复记录-*.jsonl` 无交集。
+- 最终汇总：`05-选题研究/X-互动回复记录-2026-05-07-batch1-50-verified.jsonl` / `.md`。
+- 最终计数：`posted_verified=50`，`unique_sources=50`，`unique_verify_urls=50`。
+
+**遗留：**
+- 本轮没有把旧的未验证/failed 中间记录删除；保留在 `batch1-50-final.jsonl` 里作为审计轨迹，最终以 `batch1-50-verified` 为准。
