@@ -4366,6 +4366,26 @@
 - 这次继续允许 1000+ 公司规模，因为用户已明确放开该条件。
 - DOM click 是当前不抢焦点的可用 live 路径；后续不要再为批量投递默认打开 `--focus true`。
 
+## [2026-05-07] BOSS 再新增 50 个非猎头投递
+
+**完成了什么：**
+- 按用户要求，在已有 `todaySuccessfulApplies: 51` 基础上再新增 50 个成功投递，目标达到 `101`。
+- 将“以后严格禁止投递猎头栏位”写入 `.codex/skills/zhipin/SKILL.md`，作为后续 BOSS 投递的永久硬规则。
+- 继续使用 `tools/auto-zhipin` 自有 CDP 脚本，`--focus false --click-mode dom`，没有使用 OpenCLI/OpenSeal，也没有使用搜索页。
+- 候选来自 BOSS 当前职位页已有上海 tab：`联合创始人(上海)`、`架构师(上海)`、`算法工程师(上海)`。
+- live 前继续硬拦截：猎头、代招、代招公司、代理招聘、委托招聘、匿名 `某...公司`、非上海、重复、已沟通和不符合职位方向的候选。
+
+**验证：**
+- `new ZhipinStore().getTodaySuccessfulApplies(new Date())` 回读 101。
+- 本轮结果文件：`tools/auto-zhipin/data/ai-shanghai-20260507-domclick-plus50-noheadhunter.json`。
+- 本轮 `beforeRun: 51`，`afterRun: 101`，`appliedThisBatch: 50`。
+- 本轮新增成功列表检查 `猎头|代招|代招公司|代理招聘|委托招聘|某大型|某知名|某中型|某小型|^某` 命中数为 0。
+- `ps` 确认无残留 `cdp_apply_job` / trace / collect / chat triage 进程。
+
+**遗留：**
+- 后台 chat triage 这轮没有在 30 秒内 ready；本轮依赖本地 ledger identity 去重、`继续沟通` 状态和 live 前详情 gate。
+- 当前仍按用户前面要求允许 1000+ 公司规模。
+
 ## [2026-05-07] X timeline 互动回复 50 条
 
 **完成了什么：**

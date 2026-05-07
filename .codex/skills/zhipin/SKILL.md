@@ -27,6 +27,7 @@ The workflow has real external side effects. Treat BOSS `立即沟通` / `投递
 - Prefer user-like session recovery after abnormal access: reuse an already logged-in normal browser, let the user complete any first-party verification, then resume with a read-only health check before applying. Do not attempt to bypass or defeat BOSS security controls.
 - If a candidate lacks company metadata, do not live apply. Open the detail page and extract company from the detail page.
 - Record and verify results through the local ledger, not only through button text or script stdout.
+- Never apply to headhunter, agency, proxy-recruiting, or anonymous-company listings. Treat `猎头`, `代招`, `代招公司`, `代理招聘`, `委托招聘`, and anonymous companies such as `某大型公司` / `某知名互联网公司` / any company name beginning with `某` as hard live-apply blockers. This is a permanent user preference.
 
 ## Selection Policy
 
@@ -44,6 +45,7 @@ Prefer roles matching the user's target:
 Hard-block roles or companies when any of these appear in title, company, company intro, description, or detail metadata:
 
 - Duplicate identity: same normalized `company::title` already applied, skipped, or deduped.
+- Headhunter / agency / proxy recruiting / anonymous-company listings, including `猎头`, `代招`, `代招公司`, `代理招聘`, `委托招聘`, and `某...公司` placeholders.
 - Existing chat / `继续沟通` / `already_continuing`.
 - Chat triage shows prior rejection or disqualifying history.
 - Salary lower bound below `20K`, including `18-30K`, `15-25K`, daily-rate, weekly-rate, hourly-rate, or non-`K` yuan/month jobs.
