@@ -4510,3 +4510,23 @@
 
 **遗留：**
 - `batch2-50-final.jsonl` 保留 3 条中间失败/漏检审计记录；最终发布事实以 `batch2-50-verified` 为准。
+
+## [2026-05-07] X timeline 互动回复 50 条 batch3
+
+**完成了什么：**
+- 用户要求再次回复 50 个；继续使用 `docs/reference/x-engagement-reply-workflow.md`。
+- 预检确认 CDP `http://127.0.0.1:9224` 可用，X 发布账号仍为 `Smileyface @0xcybersmile`。
+- 先保留 timeline base 队列，再用 agent / coding workflow / memory / Codex 关键词补采候选；合并后对 276 个历史已回复 source URL 做硬排重。
+- 筛出 50 条唯一 source / 50 个唯一 handle，英文 29 条、中文 21 条，按源帖语言回复。
+- 内容审稿和脚本 gate 均通过后，第 1 条 smoke 成功，再批量发布剩余 49 条。
+- `@bcherny` 和 `@yanhua1010` 出现 `with_replies` 漏检，后续用 X live search 精确文本补到回复 URL；未把中间 `posted_unverified` / `failed` 计入完成。
+
+**验证：**
+- 内容审稿：`05-选题研究/X-互动回复内容审稿-2026-05-07-batch3-50.md`。
+- 脚本审查：`reply_engagement_queue.mjs --review-only --limit 50`，结果 `approved=50 blocked=0`。
+- 历史 source URL 去重：50 个 source URL 与既有 `X-互动回复记录-*.jsonl` 无交集。
+- 最终汇总：`05-选题研究/X-互动回复记录-2026-05-07-batch3-50-verified.jsonl` / `.md`。
+- 最终计数：`posted_verified=50`，`unique_sources=50`，`unique_verify_urls=50`，`bad_status=0`。
+
+**遗留：**
+- `batch3-50-final.jsonl` / `retry.jsonl` 保留中间漏检和重试审计记录；最终发布事实以 `batch3-50-verified` 为准。

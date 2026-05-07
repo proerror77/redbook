@@ -1,0 +1,452 @@
+[
+  {
+    "handle": "eng_khairallah1",
+    "url": "https://x.com/eng_khairallah1/status/2051710903129972922",
+    "language": "en",
+    "reply": "Useful because it shows Claude Code as an operating routine, not a prompt trick. The next frontier is review and recovery, not just longer commands.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "browomo",
+    "url": "https://x.com/browomo/status/2051606666454426091",
+    "language": "en",
+    "reply": "The interesting part is the single operator serving many stores. For Shopify, agents matter when they compress repeated ops, not when they demo well.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "alex_frantic",
+    "url": "https://x.com/alex_frantic/status/2048827429708550407",
+    "language": "en",
+    "reply": "That 3-5 supervision ceiling feels real. The bottleneck is not launching more coding agents, it is knowing which ones deserve attention.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "Saboo_Shubham_",
+    "url": "https://x.com/Saboo_Shubham_/status/2034097031120359667",
+    "language": "en",
+    "reply": "The org-structure framing is underrated. Once agents share goals and review paths, the company starts looking more like a queueing system.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "RetroChainer",
+    "url": "https://x.com/RetroChainer/status/2048142467929657757",
+    "language": "en",
+    "reply": "Repos change the whole Claude Code experience. Skills and memory make it feel less like autocomplete and more like a repeatable workspace.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "rileybrown",
+    "url": "https://x.com/rileybrown/status/2047388125375484146",
+    "language": "en",
+    "reply": "The crazy part is how fast Codex shifted from editor helper to full build surface. Browser use and review loops make that jump feel real.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "shao__meng",
+    "url": "https://x.com/shao__meng/status/2048736470152904867",
+    "language": "zh",
+    "reply": "本地跑这套最吸引我的不是省钱，而是权限和材料都留在自己机器上。企业内部会很在意这一点。",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "unitygames",
+    "url": "https://x.com/unitygames/status/2051316135836995774",
+    "language": "en",
+    "reply": "Control is the right emphasis here. Creators will accept AI faster when it stays inside their existing Unity loop instead of replacing the craft.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "thsottiaux",
+    "url": "https://x.com/thsottiaux/status/2047387017974337611",
+    "language": "en",
+    "reply": "Auto-review is the feature I would watch most. Full browser use is powerful, but the review layer decides whether people trust longer runs.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "higgsfield_ai",
+    "url": "https://x.com/higgsfield_ai/status/2052062257450991757",
+    "language": "en",
+    "reply": "Paid ads are a great test for agents because the loop has clear inputs, outputs, and measurable feedback. That makes automation less hand-wavy.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "bcherny",
+    "url": "https://x.com/bcherny/status/2036286592089022699",
+    "language": "en",
+    "reply": "Seeing MCP, Skills, Desktop, and Claude Code come from one Labs culture explains a lot. They were building the workflow surface piece by piece.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "lidangzzz",
+    "url": "https://x.com/lidangzzz/status/2044235116281471169",
+    "language": "zh",
+    "reply": "我也更信 goal-driven。没有目标和验收标准，Codex 跑得越久，偏航成本反而越高。",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "shiri_shh",
+    "url": "https://x.com/shiri_shh/status/2052082294165578189",
+    "language": "en",
+    "reply": "Hermes sounds compelling because it learns from past conversations, not just the current tab. Cross-session memory is where agents start to compound.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "WY_mask",
+    "url": "https://x.com/WY_mask/status/2045464862537761241",
+    "language": "zh",
+    "reply": "永久记忆最有用的地方是少解释背景。很多任务不是缺模型能力，是每次都从零开始太浪费。",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "pashmerepat",
+    "url": "https://x.com/pashmerepat/status/2050984230272848250",
+    "language": "en",
+    "reply": "The pitfall section is probably the most valuable part. /goal is powerful only when the objective and stopping criteria are tight.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "mattlam_",
+    "url": "https://x.com/mattlam_/status/2049907603829121354",
+    "language": "en",
+    "reply": "The /goal shift matters because it makes Codex accountable to an outcome. I am more interested in failure recovery than the happy path.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "ziwenxu_",
+    "url": "https://x.com/ziwenxu_/status/2051894548993888338",
+    "language": "en",
+    "reply": "The execute-plans part is the real shift. Once tools and permissions are attached, agents become process workers, not just answer engines.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "OpenAI",
+    "url": "https://x.com/OpenAI/status/2049535650626785334",
+    "language": "en",
+    "reply": "Weekly builds are a good filter. GPT-5.5 plus image generation will surface who can turn model capability into a real product loop.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "wey_gu",
+    "url": "https://x.com/wey_gu/status/2051821666150539496",
+    "language": "zh",
+    "reply": "实时插入消息对长任务很实用。跑到一半能补上下文，比事前把 prompt 写到完美更接近真实开发。",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "GitHub_Daily",
+    "url": "https://x.com/GitHub_Daily/status/1985248103944069536",
+    "language": "zh",
+    "reply": "五阶段拆法适合新手，因为它把“想法”先变成可检查的材料。直接开写代码，agent 反而更容易跑偏。",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "Voxyz_ai",
+    "url": "https://x.com/Voxyz_ai/status/2048128758901510159",
+    "language": "en",
+    "reply": "Voice reaching the full agent is a bigger deal than it sounds. Dictation only helps when the spoken instruction can travel through the whole run.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "elliotchen100",
+    "url": "https://x.com/elliotchen100/status/2042226564851720291",
+    "language": "zh",
+    "reply": "卖 Agent 运行时这条线会越来越清楚。沙箱、状态、权限、调度，都是企业不想自己重复造的部分。",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "0x0funky",
+    "url": "https://x.com/0x0funky/status/2048433528162193854",
+    "language": "zh",
+    "reply": "半天做出完整玩法很惊人。我最想看的是素材、地图、战斗、图鉴能不能被同一套流程持续迭代。",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "Teknium",
+    "url": "https://x.com/Teknium/status/2051001156005151226",
+    "language": "en",
+    "reply": "Kanban is a natural UI for multi-agent work. Dependencies and handoffs are where most orchestration demos usually fall apart.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "coreyganim",
+    "url": "https://x.com/coreyganim/status/2050196287052747226",
+    "language": "en",
+    "reply": "Most teams rush from prompting to agents and skip the workflow layer. That middle step is where tasks become measurable and repeatable.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "0xKingsKuan",
+    "url": "https://x.com/0xKingsKuan/status/2052023961337401751",
+    "language": "zh",
+    "reply": "代码 Wiki 如果能随仓库变化自动更新，价值很大。最怕的是文档漂亮，但落后代码两周。",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "robinebers",
+    "url": "https://x.com/robinebers/status/2046998815060947260",
+    "language": "en",
+    "reply": "Cheap models are useful as long as the routing is honest. I would still reserve the hardest coding and review paths for the strongest model.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "dishashah66",
+    "url": "https://x.com/dishashah66/status/2051667555623026841",
+    "language": "en",
+    "reply": "Agree with this. Design systems fail when they become static docs; AI tools need to respect tokens, variants, and messy handoff paths.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "sodawhite_dev",
+    "url": "https://x.com/sodawhite_dev/status/2051860014902763689",
+    "language": "zh",
+    "reply": "这套组合很像个人工作台：本地模型做轻任务，Codex 处理长任务，再用设计工具补视觉。分工比全塞一个工具稳。",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "dotey",
+    "url": "https://x.com/dotey/status/2050028108787450148",
+    "language": "zh",
+    "reply": "开启方式写得很实用。/goal 最大的价值是让 Codex 记住终点，但验收条件还是得人先想清楚。",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "op7418",
+    "url": "https://x.com/op7418/status/2047492666729132205",
+    "language": "zh",
+    "reply": "PPT 这类任务很适合新版 Codex：能预览、能改局部、还能补图。排版反馈链路短了很多。",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "cryptopunk7213",
+    "url": "https://x.com/cryptopunk7213/status/2048598327311176030",
+    "language": "en",
+    "reply": "A personal AI device only makes sense if it owns context and permissions. Otherwise it is just another screen with a better assistant.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "yetone",
+    "url": "https://x.com/yetone/status/2052363325061898751",
+    "language": "zh",
+    "reply": "Render stall 这个点很细但很重要。工具再强，只要输出过程卡顿，人就很难把它当成可持续工作台。",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "WesRoth",
+    "url": "https://x.com/WesRoth/status/2052267187919090035",
+    "language": "en",
+    "reply": "TypeScript parity matters for adoption. A lot of agent products live in web stacks, so SDK friction directly changes what teams build.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "YuLin807",
+    "url": "https://x.com/YuLin807/status/2041857516414628176",
+    "language": "zh",
+    "reply": "模型接入面越宽，Hermes 越像统一控制台。后面难点是不同模型能力和成本的路由策略。",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "tom_doerr",
+    "url": "https://x.com/tom_doerr/status/2051457919972004079",
+    "language": "en",
+    "reply": "Repeatability is the important word. Coding agents become useful when the workflow can be rerun, inspected, and improved after each task.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "ClaudeDevs",
+    "url": "https://x.com/ClaudeDevs/status/2052064938840228237",
+    "language": "en",
+    "reply": "Higher limits change behavior more than people admit. Once the ceiling moves, developers start giving Claude Code bigger chunks of work.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "gkxspace",
+    "url": "https://x.com/gkxspace/status/2047494444857913663",
+    "language": "zh",
+    "reply": "把十年设计经验压进 Skill，这个方向很对。对普通人来说，最缺的不是会生成，而是有一套审美约束。",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "Lonely__MH",
+    "url": "https://x.com/Lonely__MH/status/2050601931165532632",
+    "language": "zh",
+    "reply": "步骤写清楚了，很适合转给刚升级的人。/goal 不难开，难的是给它一个够明确的结束条件。",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "indigox",
+    "url": "https://x.com/indigox/status/2052251216751858044",
+    "language": "zh",
+    "reply": "Dream 这个名字很妙。它把 memory 从被动记录推进到主动整理，后面会影响 agent 怎么学会长期协作。",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "yanhua1010",
+    "url": "https://x.com/yanhua1010/status/2052224018095476953",
+    "language": "zh",
+    "reply": "gstack 的定位挺清楚：先判断想法值不值，再把执行团队拉起来。创业场景里，这两个阶段不能混在一起。",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "geniusvczh",
+    "url": "https://x.com/geniusvczh/status/2051754593667928075",
+    "language": "zh",
+    "reply": "围绕架构知识展开工作是对的。以后不是把文档写完给 AI，而是让它在执行中持续更新上下文。",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "benhylak",
+    "url": "https://x.com/benhylak/status/2051728516828614892",
+    "language": "en",
+    "reply": "Exposing the agent as an MCP tool is a smart boundary. It keeps orchestration flexible without exploding the number of tiny tool endpoints.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "stacy_muur",
+    "url": "https://x.com/stacy_muur/status/2052081724402839646",
+    "language": "en",
+    "reply": "The diary analogy lands because memory failures feel mundane, not dramatic. The agent forgets small context, then the whole run drifts.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "GitTrend0x",
+    "url": "https://x.com/GitTrend0x/status/2051668511278420087",
+    "language": "zh",
+    "reply": "Hermes 这轮有意思的是不只加工具，而是在补记忆、协作和技能生态。它开始像一个开发者工作台。",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "shannholmberg",
+    "url": "https://x.com/shannholmberg/status/2043630276262432892",
+    "language": "en",
+    "reply": "Autoreason is a useful framing for strategy work. When there is no test to pass, the review loop has to make uncertainty visible.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "RoundtableSpace",
+    "url": "https://x.com/RoundtableSpace/status/2052187910053785866",
+    "language": "en",
+    "reply": "Trading workflows are a hard test for Claude because live data, rules, and execution risk all collide. The audit trail matters as much as speed.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "beefnoode",
+    "url": "https://x.com/beefnoode/status/2052355324389347410",
+    "language": "zh",
+    "reply": "把网站链接丢进去直接生成宣传片，这条链路很适合产品冷启动。半小时能出可看的版本，测试成本会降很多。",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "rohit4verse",
+    "url": "https://x.com/rohit4verse/status/2049199654626263281",
+    "language": "en",
+    "reply": "Memory methods are only useful if they survive the messy middle of a run. The 4,096-token example is a good reminder of where things break.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "turingou",
+    "url": "https://x.com/turingou/status/2052115312758448476",
+    "language": "zh",
+    "reply": "垂直行业会很快出现这种 agent matrix。售前、设计、施工、售后放在一起，价值比单点工具大很多。",
+    "review": {
+      "status": "approved"
+    }
+  }
+]
