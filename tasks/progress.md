@@ -4455,6 +4455,25 @@
 - 本次只处理了可见 Chat 列表里的明显拒绝；更深历史列表可后续在页面稳定时继续滚动补采。
 - 聊天快照和 block 数据保存在 `tools/auto-zhipin/data/` 本地数据目录，因包含私密会话内容不提交到 git。
 
+## [2026-05-07] BOSS 再投 29 个前置 Chat 检查被登录门拦截
+
+**完成了什么：**
+- 用户要求再成功投递 29 个，并且先看 Chat。
+- 先回读本地账本，`todaySuccessfulApplies` 仍为 101，因此本轮目标应为 130。
+- 扫描 CDP 端口，仅 `http://127.0.0.1:9224` 可用；当前 BOSS tabs 均为 `https://www.zhipin.com/web/user/` 登录页。
+- 执行 `chat:triage-cdp --focus false --open-if-missing true`，Chat 页面 `/web/geek/chat` 被重定向到 `/web/user/`。
+- 执行 `boss:trace-probe`，因当前没有可用 `job_detail` 目标，确认不具备 trace-backed live apply 条件。
+
+**验证：**
+- `tools/redbookctl browser` 显示 BOSS 直聘为 `needs_login_or_verification`。
+- `/json/list` 回读到 3 个 BOSS tab，全部 title 为 `【BOSS直聘注册登录】boss直聘在线注册登录-BOSS直聘`。
+- `chat:triage-cdp` 失败原因为 `chat blocked: redirected:https://www.zhipin.com/web/user/`。
+- 未执行 live apply；本地成功投递计数仍为 101。
+
+**遗留：**
+- 需要用户在当前 BOSS 页面完成登录或一方验证后，才能继续读取 Chat 并投递到 130。
+- 登录恢复后继续使用 `--focus false --click-mode dom`，严格排除猎头/代招/匿名公司，且只投上海相关职位。
+
 ## [2026-05-07] X timeline 互动回复 50 条
 
 **完成了什么：**
