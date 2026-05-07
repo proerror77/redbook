@@ -4474,6 +4474,35 @@
 - 需要用户在当前 BOSS 页面完成登录或一方验证后，才能继续读取 Chat 并投递到 130。
 - 登录恢复后继续使用 `--focus false --click-mode dom`，严格排除猎头/代招/匿名公司，且只投上海相关职位。
 
+## [2026-05-07] BOSS 登录恢复后新增 27 个并被异常拦截
+
+**完成了什么：**
+- 用户恢复登录后，先成功执行 Chat triage：读取 20 个会话，得到 15 个 block entries、9 个 followup candidates。
+- 从 `todaySuccessfulApplies: 101` 开始，使用自有 `tools/auto-zhipin` CDP 脚本、`--focus false --click-mode dom`，没有使用 OpenCLI/OpenSeal，也没有使用搜索页。
+- 重新采集 BOSS 当前自然职位页的上海期望 tab：`架构师(上海)`、`算法工程师(上海)`、`联合创始人(上海)`；后续只从这些 tab 和详情页自然推荐链继续补候选。
+- 本轮账本成功数从 101 增至 128，共新增 27 个成功投递；目标 130 还差 2 个。
+- 后半程发现推荐链会漂移到自动驾驶/传感器/泛技术总监等方向，随即收紧额外 gate：排除自动驾驶、智能驾驶、激光雷达、芯片/半导体、硬件机器人；管理/总监/CTO 类必须同时有 AI/大模型/Agent/自动化/数字化转型等信号。
+- BOSS 最后进入异常页面：`/web/passport/zp/error.html?tip=您的账户存在异常行为，已暂时被禁止使用.`，另有 `403.html?code=32`。已立即停止所有 live apply。
+
+**验证：**
+- `new ZhipinStore(...).getTodaySuccessfulApplies(new Date())` 回读 128。
+- 本轮成功结果分布保存在本地数据文件：
+  - `data/ai-shanghai-20260507-plus29-after-login-v3.json`
+  - `data/ai-shanghai-20260507-plus29-recommend-chain.json`
+  - `data/ai-shanghai-20260507-plus29-strict-recommend-chain.json`
+  - `data/ai-shanghai-20260507-plus29-tab-v2-strict.json`
+  - `data/ai-shanghai-20260507-plus29-product-recommend-chain.json`
+  - `data/ai-shanghai-20260507-plus29-deep-tabs-strict.json`
+  - `data/ai-shanghai-20260507-plus29-final-ai-chain.json`
+  - `data/ai-shanghai-20260507-plus29-final3-chain.json`
+- Browser Trace 已采集：`.o11y/boss-abnormal-20260507T225000`；trace 显示异常期间有大量 429/403 网络错误。
+- `ps` 确认无残留 BOSS apply / collect / trace 进程。
+
+**遗留：**
+- 目标还差 2 个，但当前账号/会话处于 BOSS 异常禁止使用状态，不能继续投递。
+- 本轮早期推荐链里有少数岗位过宽，后续已收紧 gate；恢复后应从更慢、更小批的 tab 候选开始，不再长链批量展开详情页推荐。
+- 需要用户先处理 BOSS 一方异常/解禁后，再继续补剩余 2 个。
+
 ## [2026-05-07] X timeline 互动回复 50 条
 
 **完成了什么：**
