@@ -179,7 +179,39 @@ async function extractMeta(session) {
   })()`);
 }
 
-async function clickApply(session) {
+function normalizeClickMode(value) {
+  const mode = String(value || 'mouse').trim().toLowerCase();
+  if (['dom', 'element', 'element-click'].includes(mode)) {
+    return 'dom';
+  }
+  return 'mouse';
+}
+
+async function dispatchMouseClick(session, target) {
+  await session.send('Input.dispatchMouseEvent', {
+    type: 'mouseMoved',
+    x: target.x,
+    y: target.y,
+    button: 'none',
+  });
+  await session.send('Input.dispatchMouseEvent', {
+    type: 'mousePressed',
+    x: target.x,
+    y: target.y,
+    button: 'left',
+    clickCount: 1,
+  });
+  await session.send('Input.dispatchMouseEvent', {
+    type: 'mouseReleased',
+    x: target.x,
+    y: target.y,
+    button: 'left',
+    clickCount: 1,
+  });
+}
+
+async function clickApply(session, options = {}) {
+  const clickMode = normalizeClickMode(options.clickMode);
   const target = await evaluate(session, `(() => {
     function normalize(value) {
       return String(value || '').replace(/\\s+/g, ' ').trim();
@@ -217,30 +249,40 @@ async function clickApply(session) {
   if (!target?.ok) {
     return target || { ok: false, reason: 'apply_button_not_found' };
   }
-  await session.send('Input.dispatchMouseEvent', {
-    type: 'mouseMoved',
-    x: target.x,
-    y: target.y,
-    button: 'none',
-  });
-  await session.send('Input.dispatchMouseEvent', {
-    type: 'mousePressed',
-    x: target.x,
-    y: target.y,
-    button: 'left',
-    clickCount: 1,
-  });
-  await session.send('Input.dispatchMouseEvent', {
-    type: 'mouseReleased',
-    x: target.x,
-    y: target.y,
-    button: 'left',
-    clickCount: 1,
-  });
-  return target;
+  if (clickMode === 'dom') {
+    const domResult = await evaluate(session, `(() => {
+      function normalize(value) {
+        return String(value || '').replace(/\\s+/g, ' ').trim();
+      }
+      function isVisible(node) {
+        if (!node) return false;
+        const style = window.getComputedStyle(node);
+        if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) return false;
+        const rect = node.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0;
+      }
+      const selector = ${JSON.stringify(target.selector)};
+      const node = document.querySelector(selector);
+      if (!isVisible(node)) return { ok: false, reason: 'apply_button_not_visible_for_dom_click', selector };
+      node.scrollIntoView({ block: 'center' });
+      const beforeUrl = location.href;
+      const text = normalize(node.innerText || node.textContent || '');
+      node.click();
+      return { ok: true, selector, text, beforeUrl, afterUrl: location.href };
+    })()`);
+    return {
+      ...target,
+      ...domResult,
+      clickMode,
+      eventTrusted: false,
+    };
+  }
+  await dispatchMouseClick(session, target);
+  return { ...target, clickMode };
 }
 
-async function clickPostApplyReminder(session) {
+async function clickPostApplyReminder(session, options = {}) {
+  const clickMode = normalizeClickMode(options.clickMode);
   const target = await evaluate(session, `(() => {
     function normalize(value) {
       return String(value || '').replace(/\\s+/g, ' ').trim();
@@ -275,27 +317,37 @@ async function clickPostApplyReminder(session) {
   if (!target?.ok) {
     return target || { ok: false, reason: 'post_apply_reminder_not_found' };
   }
-  await session.send('Input.dispatchMouseEvent', {
-    type: 'mouseMoved',
-    x: target.x,
-    y: target.y,
-    button: 'none',
-  });
-  await session.send('Input.dispatchMouseEvent', {
-    type: 'mousePressed',
-    x: target.x,
-    y: target.y,
-    button: 'left',
-    clickCount: 1,
-  });
-  await session.send('Input.dispatchMouseEvent', {
-    type: 'mouseReleased',
-    x: target.x,
-    y: target.y,
-    button: 'left',
-    clickCount: 1,
-  });
-  return target;
+  if (clickMode === 'dom') {
+    const domResult = await evaluate(session, `(() => {
+      function normalize(value) {
+        return String(value || '').replace(/\\s+/g, ' ').trim();
+      }
+      function isVisible(node) {
+        if (!node) return false;
+        const style = window.getComputedStyle(node);
+        if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) return false;
+        const rect = node.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0;
+      }
+      const dialog = Array.from(document.querySelectorAll('.dialog-wrap, .dialog-container, [class*="dialog"]'))
+        .find((node) => isVisible(node) && /温馨提示|沟通机会|今天已与/.test(normalize(node.innerText || node.textContent || '')));
+      if (!dialog) return { ok: false, reason: 'post_apply_reminder_not_found' };
+      const button = Array.from(dialog.querySelectorAll('.btn-sure, a, button, [role="button"], [class*="btn"], .dialog-footer'))
+        .find((node) => isVisible(node) && /^(好|确定|知道了)$/.test(normalize(node.innerText || node.textContent || '')));
+      if (!button) return { ok: false, reason: 'post_apply_reminder_button_not_found' };
+      const text = normalize(button.innerText || button.textContent || '');
+      button.click();
+      return { ok: true, text };
+    })()`);
+    return {
+      ...target,
+      ...domResult,
+      clickMode,
+      eventTrusted: false,
+    };
+  }
+  await dispatchMouseClick(session, target);
+  return { ...target, clickMode };
 }
 
 function parseBoolean(value, fallback) {
@@ -435,6 +487,7 @@ async function main() {
   const cdpEndpoint = args['cdp-endpoint'] || DEFAULT_CDP_ENDPOINT;
   const dryRun = parseBoolean(args['dry-run'], true);
   const focus = parseBoolean(args.focus, false);
+  const clickMode = normalizeClickMode(args['click-mode']);
   const { config } = loadConfig(args.config);
   const store = new ZhipinStore();
   const triage = readChatTriage();
@@ -490,9 +543,9 @@ async function main() {
       }, null, 2));
       return;
     }
-    const clickResult = await clickApply(session);
+    const clickResult = await clickApply(session, { clickMode });
     await new Promise((resolve) => setTimeout(resolve, 1800));
-    const reminderResult = await clickPostApplyReminder(session);
+    const reminderResult = await clickPostApplyReminder(session, { clickMode });
     await new Promise((resolve) => setTimeout(resolve, 2500));
     const after = await extractMeta(session);
     const success = String(after.actionText || after.body || '').includes('继续沟通')
@@ -556,6 +609,7 @@ module.exports = {
   extractMeta,
   extractJobDetailId,
   main,
+  normalizeClickMode,
   pickReusableTarget,
   validateTargetUrl,
 };

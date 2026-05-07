@@ -34,6 +34,13 @@ function parseBoolean(value, fallback = false) {
   return fallback;
 }
 
+function readOption(options, camelKey, dashedKey) {
+  if (options[camelKey] !== undefined) {
+    return options[camelKey];
+  }
+  return options[dashedKey];
+}
+
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -232,7 +239,7 @@ async function probeOnce(options) {
     ]));
   }
 
-  if (parseBoolean(options.keepTrace, false) !== true) {
+  if (parseBoolean(readOption(options, 'keepTrace', 'keep-trace'), false) !== true) {
     cleanupTrace(runId);
     result.trace.cleaned = true;
   }
@@ -293,4 +300,5 @@ if (require.main === module) {
 module.exports = {
   findTraceNavigationIssues,
   probeOnce,
+  readOption,
 };

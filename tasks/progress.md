@@ -4325,3 +4325,24 @@
 
 **遗留：**
 - X 对 Codex / GPT Image 输出图显示 `由 AI 生成` 是 C2PA / Content Credentials 来源标签，不应通过剥离 provenance 隐藏；如果内容策略需要避开该标签，后续改用真实截图、人工设计图或授权素材。
+
+## [2026-05-07] BOSS 后台投递点击路径 Browser Trace
+
+**完成了什么：**
+- 停止今天的 live 投递 runner，避免继续把 BOSS tab 拉到前台；账本保持 `todaySuccessfulApplies: 39`。
+- 用 Browser Trace 对 `--focus false` 路径做了三组验证：
+  - dry-run 复用详情页时抓到 `target_url_mismatch` / `trace_unstable_navigation`，说明后台复用详情页会发生目标漂移。
+  - 对已沟通职位执行 CDP `Input.dispatchMouseEvent`，页面只收到 `mouseover/mousemove`，没有收到 `mousedown/mouseup/click`。
+  - 对同一个已沟通职位执行页面内 `HTMLElement.click()`，后台成功跳转到 `/web/geek/chat?...jobId=...`，没有抢焦点，也没有新增投递。
+- 给 `scripts/cdp_apply_job.js` 增加显式 `--click-mode dom`，保留默认 `mouse` 行为；给申请按钮和投递后提醒弹窗都支持 DOM click。
+- 修复 `scripts/boss_trace_probe.js` 对 `--keep-trace true` 的解析，避免 dashed CLI 参数被忽略后误删 trace。
+
+**验证：**
+- `npm --prefix tools/auto-zhipin test -- tests/boss_preapply_scripts.test.js` 通过，实际跑完整 auto-zhipin 测试集：127 passed。
+- `node -c tools/auto-zhipin/scripts/cdp_apply_job.js && node -c tools/auto-zhipin/scripts/boss_trace_probe.js` 通过。
+- `boss-keeptrace-regression-1` trace 目录保留，`boss-trace-probe-latest.json` 显示 `cleaned: null`。
+- `ps` 确认无残留 `start-capture` / `snapshot-loop` / `cdp_apply_job` 进程。
+
+**遗留：**
+- 目前只证明 DOM click 能在已沟通按钮上后台触发 BOSS 页面逻辑；还没有对新的 `立即沟通` 做 live 计数验证。
+- 后续如继续投递，建议先用 1 个严格合格候选做 `--focus false --click-mode dom` 单点 live 验证，只有 ledger 增加后再批量使用。

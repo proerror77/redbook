@@ -8,12 +8,13 @@ const {
 const {
   buildCandidateFromMeta,
   extractCompanyProfileText,
+  normalizeClickMode,
   validateTargetUrl: validateCdpTargetUrl,
 } = require('../scripts/cdp_apply_job');
 const {
   buildEntry,
 } = require('../scripts/cdp_chat_triage_export');
-const { findTraceNavigationIssues, probeOnce } = require('../scripts/boss_trace_probe');
+const { findTraceNavigationIssues, probeOnce, readOption } = require('../scripts/boss_trace_probe');
 
 test('boss_apply_playwright builds a non-empty identity from detail metadata', () => {
   const application = buildApplicationFromMeta({
@@ -121,6 +122,14 @@ test('cdp_apply_job carries company profile text for hidden company blacklist ch
   assert.match(candidate.summary, /NASDAQ：PDD/);
 });
 
+test('cdp_apply_job keeps mouse click as default and accepts explicit DOM click mode', () => {
+  assert.equal(normalizeClickMode(), 'mouse');
+  assert.equal(normalizeClickMode('mouse'), 'mouse');
+  assert.equal(normalizeClickMode('dom'), 'dom');
+  assert.equal(normalizeClickMode('element-click'), 'dom');
+  assert.equal(normalizeClickMode('unexpected'), 'mouse');
+});
+
 test('apply target validators reject URL mismatches', () => {
   assert.deepEqual(
     validatePlaywrightTargetUrl('https://www.zhipin.com/job_detail/expected.html', {
@@ -157,6 +166,11 @@ test('chat triage entry classification uses opened message text, not just previe
 
 test('boss_trace_probe exports a probe runner for trace-backed dry-run checks', () => {
   assert.equal(typeof probeOnce, 'function');
+});
+
+test('boss_trace_probe accepts dashed keep-trace CLI options', () => {
+  assert.equal(readOption({ 'keep-trace': 'true' }, 'keepTrace', 'keep-trace'), 'true');
+  assert.equal(readOption({ keepTrace: 'false', 'keep-trace': 'true' }, 'keepTrace', 'keep-trace'), 'false');
 });
 
 test('boss_trace_probe flags trace navigation to a different job detail', () => {
