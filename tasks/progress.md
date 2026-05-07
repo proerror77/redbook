@@ -4456,3 +4456,22 @@
 
 **遗留：**
 - 本轮没有把旧的未验证/failed 中间记录删除；保留在 `batch1-50-final.jsonl` 里作为审计轨迹，最终以 `batch1-50-verified` 为准。
+
+## [2026-05-07] X timeline 互动回复 50 条 batch2
+
+**完成了什么：**
+- 用户要求再次互动回复 50 个；继续使用 `docs/reference/x-engagement-reply-workflow.md`。
+- 预检确认 CDP `http://127.0.0.1:9224` 可用，X 发布账号仍为 `Smileyface @0xcybersmile`。
+- 首次 timeline 自动采集抓到 0 条，按用户 `retry` 重新指定 `AUTO_X_AGENT_BROWSER_CDP_PORT=9224`，最终从当前 timeline + AI/agent/coding 搜索补到 85 条候选。
+- 对 226 个历史已回复 source URL 做硬排重；batch2 50 条 source URL 与历史记录交集为 0。
+- 50 条回复先过内容审稿，再过脚本 gate；第 1 条 smoke 成功后批量发布剩余 49 条。
+- 主批次中 `@Saboo_Shubham_` 的 `with_replies` 回读漏检，后续用 X live search 精确文本查到回复 URL；`@hasantoxr` 和 `@gengdaJ` 页面加载超时，单独重试后均验证成功。
+
+**验证：**
+- 内容审稿：`05-选题研究/X-互动回复内容审稿-2026-05-07-batch2-50.md`。
+- 脚本审查：`reply_engagement_queue.mjs --review-only --limit 50`，结果 `approved=50 blocked=0`。
+- 最终汇总：`05-选题研究/X-互动回复记录-2026-05-07-batch2-50-verified.jsonl` / `.md`。
+- 最终计数：`posted_verified=50`，`unique_sources=50`，`unique_verify_urls=50`。
+
+**遗留：**
+- `batch2-50-final.jsonl` 保留 3 条中间失败/漏检审计记录；最终发布事实以 `batch2-50-verified` 为准。
