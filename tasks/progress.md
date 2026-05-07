@@ -4346,3 +4346,22 @@
 **遗留：**
 - 目前只证明 DOM click 能在已沟通按钮上后台触发 BOSS 页面逻辑；还没有对新的 `立即沟通` 做 live 计数验证。
 - 后续如继续投递，建议先用 1 个严格合格候选做 `--focus false --click-mode dom` 单点 live 验证，只有 ledger 增加后再批量使用。
+
+## [2026-05-07] BOSS 恢复投递并排除猎头/代招
+
+**完成了什么：**
+- 按用户新增要求，把猎头/代招/匿名“某公司”写成 `scripts/cdp_apply_job.js` 的 live 前硬拦截。
+- 继续不使用 OpenCLI/OpenSeal BOSS 适配器，也不使用搜索页；候选来自 BOSS 职位页已有 tab：`联合创始人(上海)`、`架构师(上海)`、`算法工程师(上海)`。
+- 用 `--focus false --click-mode dom` 做单点 live 验证：`AI产品经理` / `猜猜看` 从账本 39 增至 40，证明后台 DOM click 可真实计数且不抢焦点。
+- 随后同一路径补投到 raw `todaySuccessfulApplies: 51`；抵扣今天早先 1 个北京代招误投后，严格上海有效投递达到 50。
+
+**验证：**
+- `new ZhipinStore().getTodaySuccessfulApplies(new Date())` 回读 51。
+- 本轮结果文件：`tools/auto-zhipin/data/ai-shanghai-20260507-domclick-to51-noheadhunter.json`，记录本轮新增 11 个成功。
+- 本轮新增成功列表里，脚本检查 `猎头|代招|某大型|某知名|某中型|某小型|^某` 命中数为 0。
+- `ps` 确认无残留 `cdp_apply_job` / trace / collect 进程。
+- `node -c tools/auto-zhipin/scripts/cdp_apply_job.js` 通过；auto-zhipin 测试 129 passed。
+
+**遗留：**
+- 这次继续允许 1000+ 公司规模，因为用户已明确放开该条件。
+- DOM click 是当前不抢焦点的可用 live 路径；后续不要再为批量投递默认打开 `--focus true`。

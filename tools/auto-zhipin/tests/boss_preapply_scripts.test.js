@@ -8,6 +8,8 @@ const {
 const {
   buildCandidateFromMeta,
   extractCompanyProfileText,
+  getHeadhunterBlockReasons,
+  isChatNavigationSuccess,
   normalizeClickMode,
   validateTargetUrl: validateCdpTargetUrl,
 } = require('../scripts/cdp_apply_job');
@@ -128,6 +130,43 @@ test('cdp_apply_job keeps mouse click as default and accepts explicit DOM click 
   assert.equal(normalizeClickMode('dom'), 'dom');
   assert.equal(normalizeClickMode('element-click'), 'dom');
   assert.equal(normalizeClickMode('unexpected'), 'mouse');
+});
+
+test('cdp_apply_job blocks headhunter and anonymous agency detail pages', () => {
+  assert.deepEqual(
+    getHeadhunterBlockReasons({
+      company: '某大型互联网公司',
+      location: '代招公司：上海某大型电子商务公司',
+      summary: '负责 AI Agent 平台',
+    }, {}),
+    ['headhunter_or_agency_recruiter', 'anonymous_headhunter_company']
+  );
+
+  assert.deepEqual(
+    getHeadhunterBlockReasons({
+      company: '上海真实智能科技',
+      location: '上海',
+      summary: '负责企业 AI Agent 落地',
+    }, {}),
+    []
+  );
+});
+
+test('cdp_apply_job treats matching BOSS chat navigation as an apply success signal', () => {
+  assert.equal(
+    isChatNavigationSuccess(
+      'https://www.zhipin.com/job_detail/abc123.html',
+      'https://www.zhipin.com/web/geek/chat?id=x&jobId=abc123&securityId=y'
+    ),
+    true
+  );
+  assert.equal(
+    isChatNavigationSuccess(
+      'https://www.zhipin.com/job_detail/abc123.html',
+      'https://www.zhipin.com/web/geek/chat?id=x&jobId=other&securityId=y'
+    ),
+    false
+  );
 });
 
 test('apply target validators reject URL mismatches', () => {

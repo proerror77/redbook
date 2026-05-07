@@ -380,6 +380,41 @@ function validateTargetUrl(expectedUrl, actualUrl) {
   return { ok: true, expectedUrl, actualUrl };
 }
 
+function getHeadhunterBlockReasons(candidate = {}, meta = {}) {
+  const agencyHaystack = normalizeWhitespace([
+    candidate.company,
+    candidate.location,
+    candidate.summary,
+    candidate.recruiterTitle,
+    meta.title,
+    meta.body,
+  ].filter(Boolean).join(' | '));
+  const anonymousHaystack = normalizeWhitespace([
+    candidate.company,
+    candidate.location,
+    candidate.summary,
+    candidate.recruiterTitle,
+    meta.title,
+  ].filter(Boolean).join(' | '));
+  const reasons = [];
+  if (/猎头|代招|代招公司|代理招聘|委托招聘/.test(agencyHaystack)) {
+    reasons.push('headhunter_or_agency_recruiter');
+  }
+  if (/^某/.test(normalizeWhitespace(candidate.company || '')) || /某(?:大型|知名|中型|小型|头部|互联网|人工智能|电子商务|金融|上市)?[^，。|\n]{0,24}公司/.test(anonymousHaystack)) {
+    reasons.push('anonymous_headhunter_company');
+  }
+  return Array.from(new Set(reasons));
+}
+
+function isChatNavigationSuccess(expectedUrl = '', actualUrl = '') {
+  const expectedId = extractJobDetailId(expectedUrl);
+  if (!expectedId) {
+    return false;
+  }
+  const url = String(actualUrl || '');
+  return url.includes('/web/geek/chat') && url.includes(`jobId=${expectedId}`);
+}
+
 function extractCompanyProfileText(bodyText = '') {
   const lines = String(bodyText || '')
     .split(/\n+/)
@@ -503,6 +538,7 @@ async function main() {
     const before = await extractMeta(session) || {};
     const beforeCandidate = buildCandidateFromMeta(before, args.url);
     const targetCheck = validateTargetUrl(args.url, before.url || '');
+    const headhunterReasons = getHeadhunterBlockReasons(beforeCandidate, before);
     const gate = targetCheck.ok
       ? checkPreApplyCandidate({
         store,
@@ -517,6 +553,10 @@ async function main() {
         existingApplication: null,
         blockedEntry: null,
       };
+    if (headhunterReasons.length) {
+      gate.allow = false;
+      gate.reasons = Array.from(new Set([...(gate.reasons || []), ...headhunterReasons]));
+    }
     if (dryRun) {
       console.log(JSON.stringify({
         timestamp: nowIso(),
@@ -549,10 +589,12 @@ async function main() {
     await new Promise((resolve) => setTimeout(resolve, 2500));
     const after = await extractMeta(session);
     const success = String(after.actionText || after.body || '').includes('继续沟通')
-      || String(after.body || '').includes('已向BOSS发送消息');
+      || String(after.body || '').includes('已向BOSS发送消息')
+      || isChatNavigationSuccess(args.url, after.url || '');
     const finalCandidate = buildCandidateFromMeta({
       ...before,
       ...after,
+      url: before.url || args.url,
       company: after.company || before.company,
       jobName: after.jobName || before.jobName,
       salaryText: after.salaryText || before.salaryText,
@@ -608,6 +650,8 @@ module.exports = {
   extractCompanyProfileText,
   extractMeta,
   extractJobDetailId,
+  getHeadhunterBlockReasons,
+  isChatNavigationSuccess,
   main,
   normalizeClickMode,
   pickReusableTarget,
