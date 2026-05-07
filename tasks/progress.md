@@ -4342,6 +4342,25 @@
 **遗留：**
 - 这条没有配图，目的是避免 AI 图片标签干扰；如后续要图，建议用人工信息图或真实截图，不走生成图。
 
+## [2026-05-07] 补发今日 X timeline / HN 短评 3 条
+
+**完成了什么：**
+- 用户指出不应只发一篇，已按前面计划补发 3 条短评。
+- 第 2 条：AI 生成标签与内容资产类型判断
+  `https://x.com/0xcybersmile/status/2052259983077875787`
+- 第 3 条：Cloudflare + Stripe，Agent 开始接触账号、付款、域名和 token
+  `https://x.com/0xcybersmile/status/2052260091349680606`
+- 第 4 条：Simon Willison，vibe coding 与 agentic engineering 的真正分界线是验收系统
+  `https://x.com/0xcybersmile/status/2052260198405005736`
+
+**验证：**
+- 三条均由 `x-browser.ts --submit --expected-handle 0xcybersmile` 返回并验证自有 status URL。
+- 三条均做了独立状态页回读，确认作者 `Smileyface @0xcybersmile` 和核心正文可见。
+- 三条均无配图，避免 AI 图片 provenance 标签干扰。
+
+**遗留：**
+- 今天共发 4 条 X 短文 / 短评，后续应观察是否过密影响互动；T+1 需要回收表现数据。
+
 ## [2026-05-07] BOSS 后台投递点击路径 Browser Trace
 
 **完成了什么：**
