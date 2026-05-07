@@ -4503,6 +4503,30 @@
 - 本轮早期推荐链里有少数岗位过宽，后续已收紧 gate；恢复后应从更慢、更小批的 tab 候选开始，不再长链批量展开详情页推荐。
 - 需要用户先处理 BOSS 一方异常/解禁后，再继续补剩余 2 个。
 
+## [2026-05-08] BOSS 固定现有页面工作流
+
+**完成了什么：**
+- 将用户纠正规则写入 `.codex/skills/zhipin/SKILL.md`：BOSS 工作必须只操作当前 Chrome/CDP 里已经存在的 BOSS 页面；不能新开窗口、新开 tab，不能用 `/json/new` 或 `open-if-missing` 自动补页面。
+- 将登录/验证/异常/403 工作流固定为硬停规则：一旦现有页面出现 `/web/user/`、登录、扫码、验证码、安全验证、异常、403 或 `/web/passport/zp/error`，必须停止并提醒用户，不能继续导航或投递。
+- 将投递范围补充为：`AI组织负责人`、`AI技术总监`、`AI管理/AI转型负责人`、`AI应用平台负责人`、以及明确带 AI/Agent/LLM/自动化/数字化转型上下文的 CTO/技术负责人/技术总监/研发总监/联合创始人。
+- 修正公司规模规则：公司规模本身不再是 blocker，1000 人以上允许；猎头/代招/匿名公司仍然硬禁。
+- 加固脚本默认行为：
+  - `cdp_collect_current_jobs.js` 默认要求已有 jobs 页面，不再自动导航或新开 tab；只有显式传 `--allow-existing-navigation` / `--allow-new-tab` 才放开。
+  - `cdp_apply_job.js` 默认要求已有可复用 BOSS 页面，不再自动新建 job tab；只有显式传 `--allow-new-tab` 才放开。
+- 对现有 `9224` 会话做只读健康检查，没有新开 tab、没有导航、没有点击。
+
+**验证：**
+- 当前现有 BOSS 页面：`https://www.zhipin.com/web/geek/jobs`。
+- 当前页面不是登录页、不是异常页，DOM 里可见 `架构师(上海)`、`算法工程师(上海)`、`联合创始人(上海)` tab。
+- 当前页面可见匹配岗位示例：`Soly.ai - AI Agent Product Lead`、`AI 应用生成平台负责人`、`ai技术总监`、`AI应用工程师（To B或企业管理软件）`、`AI Agent 工程师`、`AI Technical Director`、`AI产品负责人`。
+- `node --check tools/auto-zhipin/scripts/cdp_collect_current_jobs.js` 通过。
+- `node --check tools/auto-zhipin/scripts/cdp_apply_job.js` 通过。
+- `npm test -- --test-name-pattern 'cdp_apply_job|preapply|target|chat'` 通过：129 passed。
+
+**遗留：**
+- 本次只做 workflow 固化和只读登录态检查，没有继续投递。
+- 后续如果要继续补投，必须从这个现有页面小批量执行；页面一旦出现登录/验证/异常/403，立即停。
+
 ## [2026-05-07] X timeline 互动回复 50 条
 
 **完成了什么：**

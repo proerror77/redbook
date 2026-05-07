@@ -16,10 +16,14 @@ The workflow has real external side effects. Treat BOSS `立即沟通` / `投递
 ## Operating Rules
 
 - Reuse the existing logged-in Chrome/CDP session when available.
+- Existing-page-only rule: for BOSS work, operate only on BOSS pages that are already open in the current Chrome/CDP session. Do not create a new browser window, do not create a new tab, and do not use `/json/new` or `open-if-missing` recovery paths unless the user explicitly asks for a new page.
+- If no existing BOSS page is available, stop and tell the user. Do not open one yourself.
+- If an existing BOSS page shows login, QR login, phone verification, security verification, restricted access, abnormal access, `403`, `/web/user/`, or `/web/passport/zp/error`, stop immediately and tell the user. Do not navigate around it, do not retry, and do not continue applying.
 - Do not steal focus. Pass `--focus false` and do not call `Page.bringToFront` unless the user explicitly asks for foreground control.
 - Prefer the current normal browser/CDP route for this user's BOSS work. Use Computer Use only as a fallback for blocked visual/manual cases.
 - Do not use OpenCLI/OpenSeal BOSS adapters as the main path for BOSS work. As of 2026-05-05, OpenCLI `1.7.12` did not show a BOSS-specific fix, `boss chat-list` was no longer compatible, `boss chatlist` reported expired BOSS cookies, and `boss search` still failed with browser/network errors. Treat OpenCLI/OpenSeal as version/doctor evidence only unless the user explicitly asks to repair that adapter; operate BOSS through the existing web page/CDP scripts instead.
 - Do not use rapid search loops. Prefer browsing existing BOSS result pages, job tabs, and natural page recommendations like a human, with moderate scrolling.
+- Do not run long recommendation-chain batches. Use small, observable batches from the existing jobs page tabs or the current detail page. After each small batch, re-check page health and ledger count before continuing.
 - Before any live apply, run detail dry-run and inspect the gate result.
 - If the page shows login, security check, restricted access, abnormal access, or bounce-back behavior, stop apply work and diagnose session health first.
 - On any abnormal access/login/security event, attach `browser-trace` to the current CDP browser before drawing conclusions or retrying. Capture enough evidence to identify the triggering profile, CDP route, script, cadence, page URL, network/console errors, DOM state, and screenshots.
@@ -37,9 +41,13 @@ Prefer roles matching the user's target:
 - AI Agent / 智能体
 - AI efficiency / 效能 / workflow automation
 - enterprise AI adoption / 企业智能化 / 企业导入
+- AI organization leadership / AI 组织负责人
+- AI technical director / AI 技术总监
+- AI management / AI 管理 / AI 转型负责人
 - AI platform / AI middle platform
+- AI application platform owner / AI 应用平台负责人
 - AI application architecture / solution architecture
-- CTO / 技术负责人 / 联合创始人 when the company is small or medium
+- CTO / 技术负责人 / 技术总监 / 研发总监 / 联合创始人 when the role description clearly connects to AI, Agent, LLM, automation, enterprise AI adoption, workflow, digital transformation, or AI-enabled organizational efficiency
 - AI backend / full-stack / LLM / RAG / AIGC roles when business context is relevant
 
 Hard-block roles or companies when any of these appear in title, company, company intro, description, or detail metadata:
@@ -49,7 +57,7 @@ Hard-block roles or companies when any of these appear in title, company, compan
 - Existing chat / `继续沟通` / `already_continuing`.
 - Chat triage shows prior rejection or disqualifying history.
 - Salary lower bound below `20K`, including `18-30K`, `15-25K`, daily-rate, weekly-rate, hourly-rate, or non-`K` yuan/month jobs.
-- Company size `1000-9999人` or `10000人以上`.
+- Company size alone is not a blocker. The user explicitly allows companies above 1000 people.
 - Big companies, groups, state-owned entities, research institutes, or hidden subsidiaries indicated by company intro.
 - Known blacklists including 字节, 阿里, 腾讯, 美团, 华为, 京东, 百度, 拼多多/PDD, 携程, 小红书, Shopee, SHEIN, OPPO, 吉利, 研究院, 实验室, 集团, 国企, 央企, 事业单位.
 - Auto/ADAS/vehicle/chip/compiler/facility-ops roles unless the user explicitly overrides for that specific role.
@@ -160,6 +168,13 @@ node scripts/report.js
 
 If checking CDP manually, prefer current endpoint `http://127.0.0.1:9224` when available. Verify `/json/version` or `/json/list` before assuming the port is live.
 
+Existing-page health check:
+
+- Inspect only existing CDP targets from `/json/list`.
+- A usable BOSS target must already be a `page` under `zhipin.com`, must not be `/web/user/`, must not be `/web/passport/zp/error`, and must not show login/security/abnormal/403 text in the current DOM.
+- This check is read-only. Do not navigate, open a new tab, click, or focus the page during health checks.
+- If the only BOSS target is login/security/abnormal/403, stop and report the blocker to the user.
+
 ### 2. Refresh Chat Triage When Needed
 
 Use chat triage before larger apply runs, especially if the user mentions prior applications or rejections:
@@ -171,9 +186,11 @@ npm run chat:triage-cdp -- --cdp-endpoint http://127.0.0.1:9224 --focus false
 
 The chat triage snapshot may be incomplete if it only sees the visible conversation slice. Treat it as a blocking signal when it finds a match, not as proof that no prior rejection exists.
 
+Do not pass `--open-if-missing true` unless the user explicitly authorizes opening/navigating a missing Chat page. If Chat is not already available from the existing BOSS session and opening it would require a new page or unexpected navigation, stop and tell the user.
+
 ### 3. Collect Candidates Without Focus Steal
 
-Use the current jobs page and scroll naturally:
+Use the current already-open jobs page and scroll naturally. Do not create or navigate to a new jobs page when the current one is missing or blocked:
 
 ```bash
 cd /Users/proerror/Documents/redbook/tools/auto-zhipin
@@ -191,6 +208,8 @@ node -e "const r=require('./data/cdp-collect-current-jobs-latest.json'); console
 ```
 
 If the target tab is missing on a search page, navigate back to `https://www.zhipin.com/web/geek/jobs?ka=header-jobs` through the existing CDP page, wait, then collect again. Avoid opening a new visible tab.
+
+Current override: do not navigate back automatically when the user has said not to open or change pages. In that case, stop and report that the expected jobs tab is not available on the existing page.
 
 ### 4. Detail Dry-Run Gate
 
@@ -215,10 +234,12 @@ Proceed only when all are true:
 - `gate.candidate.salaryText` lower bound is at least `20K`
 - `result.actionText` is not `继续沟通`
 - company intro does not reveal a hidden big-company background
+- the detail role still matches the user's scope: AI organization leadership, AI technical director, AI management, AI architecture, AI consulting, AI product/platform leadership, CTO/technical leadership with explicit AI/Agent/LLM/automation/digital-transformation context, Agent, LLM, RAG, AIGC, AI application engineering, or AI-enabled enterprise efficiency
+- the detail role is not merely generic technical management, generic algorithm work, auto/ADAS, sensor/laser radar, chip/semiconductor, hardware robotics, facility operations, sales, or non-technical promotion
 
 ### 5. Live Apply
 
-Live apply only for candidates that passed detail dry-run:
+Live apply only for candidates that passed detail dry-run and only while the existing page remains healthy:
 
 ```bash
 cd /Users/proerror/Documents/redbook/tools/auto-zhipin

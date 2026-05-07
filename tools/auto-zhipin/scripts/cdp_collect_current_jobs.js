@@ -102,14 +102,17 @@ function matchesKeywords(job, keywords) {
   return keywords.some((keyword) => haystack.includes(String(keyword).toLowerCase()));
 }
 
-async function ensureJobsPage(cdpEndpoint) {
+async function ensureJobsPage(cdpEndpoint, { allowExistingNavigation = false, allowNewTab = false } = {}) {
   const pages = await getJson(new URL('/json/list', cdpEndpoint).toString());
   const existing = pages.find((page) => String(page.url || '').includes('/web/geek/jobs'));
   if (existing) {
     return;
   }
+  if (!allowExistingNavigation && !allowNewTab) {
+    throw new Error('No existing BOSS jobs page found. Existing-page-only mode refuses navigation or new tabs.');
+  }
   const reusable = pages.find((page) => page.type === 'page' && String(page.url || '').includes('zhipin.com'));
-  if (reusable) {
+  if (reusable && allowExistingNavigation) {
     const session = await createCdpSession(reusable.webSocketDebuggerUrl);
     try {
       await session.send('Page.enable');
@@ -119,6 +122,9 @@ async function ensureJobsPage(cdpEndpoint) {
     } finally {
       session.close();
     }
+  }
+  if (!allowNewTab) {
+    throw new Error('No existing BOSS jobs page found. Existing-page-only mode refuses new tabs.');
   }
   await putJson(new URL(`/json/new?${DEFAULT_JOBS_URL}`, cdpEndpoint).toString());
 }
@@ -282,8 +288,10 @@ async function main() {
   const keywords = aiKeywords.length ? aiKeywords : DEFAULT_AI_KEYWORDS;
   const focus = parseBoolean(args.focus, false);
   const scrollSteps = Math.max(0, Number(args['scroll-steps'] || 0));
+  const allowExistingNavigation = parseBoolean(args['allow-existing-navigation'], false);
+  const allowNewTab = parseBoolean(args['allow-new-tab'], false);
 
-  await ensureJobsPage(cdpEndpoint);
+  await ensureJobsPage(cdpEndpoint, { allowExistingNavigation, allowNewTab });
   const target = await getJobsTarget(cdpEndpoint);
   const session = await createCdpSession(target.webSocketDebuggerUrl);
   try {

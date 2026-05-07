@@ -497,7 +497,7 @@ function upsertSkippedApplication(store, candidate, reasons, applyResult = {}) {
   });
 }
 
-async function pickReusableTarget(cdpEndpoint, targetUrl) {
+async function pickReusableTarget(cdpEndpoint, targetUrl, { allowNewTab = false } = {}) {
   const pages = await getJson(new URL('/json/list', cdpEndpoint).toString());
   const preferred = pages.find((entry) => String(entry.url || '').includes('/job_detail/'));
   if (preferred) {
@@ -511,6 +511,9 @@ async function pickReusableTarget(cdpEndpoint, targetUrl) {
   if (chatPage) {
     return chatPage;
   }
+  if (!allowNewTab) {
+    throw new Error('No existing reusable BOSS page found. Existing-page-only mode refuses new tabs.');
+  }
   return ensureJobTab(cdpEndpoint, targetUrl);
 }
 
@@ -523,10 +526,11 @@ async function main() {
   const dryRun = parseBoolean(args['dry-run'], true);
   const focus = parseBoolean(args.focus, false);
   const clickMode = normalizeClickMode(args['click-mode']);
+  const allowNewTab = parseBoolean(args['allow-new-tab'], false);
   const { config } = loadConfig(args.config);
   const store = new ZhipinStore();
   const triage = readChatTriage();
-  const target = await pickReusableTarget(cdpEndpoint, args.url);
+  const target = await pickReusableTarget(cdpEndpoint, args.url, { allowNewTab });
   const session = await createCdpSession(target.webSocketDebuggerUrl);
   try {
     await session.send('Page.enable');
