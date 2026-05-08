@@ -159,7 +159,7 @@ function classifyUrl(url = '') {
   const text = String(url || '');
   if (/\/web\/passport\/zp\/error/i.test(text)) return 'abnormal_account_page';
   if (/\/web\/user(?:[/?#]|$)/i.test(text)) return 'login_page';
-  if (/403(?:\.html)?/i.test(text) || /[?&]code=(?:32|38)(?:[&#]|$)/i.test(text)) return 'restricted_page';
+  if (/\/403(?:\.html)?(?:[/?#]|$)/i.test(text) || /[?&]code=(?:32|38)(?:[&#]|$)/i.test(text)) return 'restricted_page';
   if (/security|verify|captcha|_security_check/i.test(text)) return 'security_page';
   return '';
 }
@@ -185,6 +185,16 @@ function isTraceHardStop(issue) {
 
 function isCandidateBlockOnly(reasons = []) {
   return reasons.length > 0 && reasons.every((reason) => !/^trace_|target_url_|auth|restricted|security|login/i.test(reason));
+}
+
+function isProbeSkipOnly(reasons = [], traceIssues = []) {
+  if ((traceIssues || []).some(isTraceHardStop)) return false;
+  return (reasons || []).every((reason) => {
+    if (/^(target_url_mismatch|target_url_not_verified|target_url_not_a_job_detail|trace_unstable_navigation)$/.test(reason)) {
+      return true;
+    }
+    return !/^trace_|auth|restricted|security|login/i.test(reason);
+  });
 }
 
 function findExistingApplicationByUrl(store, url = '', statuses = []) {
@@ -260,6 +270,8 @@ async function main() {
   const targetSuccesses = Math.max(1, Number(args['target-successes'] || 1));
   const maxProbes = Math.max(targetSuccesses, Number(args['max-probes'] || targetSuccesses * 6));
   const delayMs = Math.max(15000, Number(args['delay-ms'] || 60000));
+  const probeDelayMs = Math.max(0, Number(args['probe-delay-ms'] || 5000));
+  const maxDriftSkips = Math.max(0, Number(args['max-drift-skips'] || targetSuccesses * 2));
   const clickMode = String(args['click-mode'] || 'dom');
   const keepTrace = parseBoolean(args['keep-trace'], false);
   const startedCount = store.getTodaySuccessfulApplies(new Date());
@@ -270,6 +282,8 @@ async function main() {
     targetSuccesses,
     maxProbes,
     delayMs,
+    probeDelayMs,
+    maxDriftSkips,
     startedCount,
     applied: [],
     eligibleDryRun: [],
@@ -277,6 +291,7 @@ async function main() {
     failed: [],
     hardStop: null,
   };
+  let driftSkips = 0;
 
   for (const candidate of candidates.slice(0, maxProbes)) {
     const existingByUrl = findExistingApplicationByUrl(store, candidate.url, ['applied', 'skipped']);
@@ -329,9 +344,19 @@ async function main() {
         traceIssues: probe.trace?.issues || [],
       };
       output.skipped.push(record);
-      if (!isCandidateBlockOnly(reasons) || (probe.trace?.issues || []).some(isTraceHardStop)) {
+      if (!isProbeSkipOnly(reasons, probe.trace?.issues || [])) {
         output.hardStop = { reason: 'probe_not_safe_for_live_apply', record };
         break;
+      }
+      if ((reasons || []).some((reason) => /target_url_|trace_unstable_navigation/.test(reason))) {
+        driftSkips += 1;
+        if (driftSkips > maxDriftSkips) {
+          output.hardStop = { reason: 'too_many_probe_drifts', driftSkips, maxDriftSkips, record };
+          break;
+        }
+      }
+      if (probeDelayMs > 0) {
+        await sleep(probeDelayMs);
       }
       continue;
     }
@@ -422,5 +447,6 @@ module.exports = {
   classifyUrl,
   findExistingApplicationByUrl,
   isCandidateBlockOnly,
+  isProbeSkipOnly,
   loadCandidates,
 };

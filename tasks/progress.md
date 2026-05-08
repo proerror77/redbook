@@ -4592,6 +4592,25 @@
 **遗留：**
 - 本轮无法继续完成 50 个投递。需要用户先在现有浏览器里恢复 BOSS 账号/解除异常页面；恢复后只能从只读健康检查开始，且必须降低自动化节奏。
 
+## [2026-05-08] BOSS trace 批量投递第 5 个测试
+
+**完成了什么：**
+- 修正 trace 封控页识别：只把真实 `/403` / `/403.html` 路径或 `code=32/38` 当成 restricted，不再把职位 ID 里包含 `403` 的正常 job_detail URL 误判为封控。
+- 保留 trace-supervised batch 的刹车逻辑：候选级 `target_url_mismatch` / `trace_unstable_navigation` 先跳过，不等同登录异常；漂移次数超过阈值后停止整批，避免误投。
+- 按现有 `9224` BOSS 页面测试，没有新开 tab、没有抢焦点、没有 live 点击。
+
+**验证：**
+- `node --check tools/auto-zhipin/scripts/boss_trace_probe.js` 通过。
+- `node --check tools/auto-zhipin/scripts/boss_trace_apply_batch.js` 通过。
+- `npm --prefix tools/auto-zhipin test -- --test-name-pattern 'trace_apply|boss_trace|cdp_apply_job'` 通过：136 passed。
+- 当前 BOSS CDP 页面不是登录/异常/403，今日成功投递计数仍为 `1`。
+- 5 个目标 dry-run：`data/boss-trace-apply-test5-dryrun-20260508-r4.json`，发现 `eligibleDryRun=2`，但因 `target_url_mismatch` / `trace_unstable_navigation` 累计 9 次，触发 `too_many_probe_drifts`，未进入 live。
+- 单 URL 复测：`data/boss-trace-apply-single-681b-20260508-dryrun.json`，仍出现目标 URL 漂移，未点击。
+
+**遗留：**
+- 这轮不能安全批量 live；问题不是登录封控，而是 BOSS 当前页在自动化 probe 后会跳到其它推荐职位，目标职位无法稳定锁定。
+- 下一步需要把投递路径改成“当前页/当前详情稳定锁定后再点击”，或先降低为人工监督的单页确认流；在目标 URL 漂移消失前不能继续自动 live 投递。
+
 ## [2026-05-08] BOSS 固定现有页面工作流
 
 **完成了什么：**

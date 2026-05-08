@@ -149,7 +149,7 @@ function classifyBlockingUrl(url = '') {
   if (!text) return '';
   if (/\/web\/passport\/zp\/error/i.test(text)) return 'trace_abnormal_account_navigation';
   if (/\/web\/user(?:[/?#]|$)/i.test(text)) return 'trace_login_navigation';
-  if (/403(?:\.html)?/i.test(text) || /[?&]code=(?:32|38)(?:[&#]|$)/i.test(text)) return 'trace_restricted_navigation';
+  if (/\/403(?:\.html)?(?:[/?#]|$)/i.test(text) || /[?&]code=(?:32|38)(?:[&#]|$)/i.test(text)) return 'trace_restricted_navigation';
   if (/security|verify|captcha|_security_check/i.test(text)) return 'trace_security_navigation';
   return '';
 }

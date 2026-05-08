@@ -27,6 +27,7 @@ const {
   classifyUrl: classifyTraceApplyUrl,
   findExistingApplicationByUrl,
   isCandidateBlockOnly,
+  isProbeSkipOnly,
 } = require('../scripts/boss_trace_apply_batch');
 
 test('boss_apply_playwright builds a non-empty identity from detail metadata', () => {
@@ -332,15 +333,32 @@ test('boss_trace_probe flags auth security and abnormal account trace pages', ()
   ]);
 });
 
+test('boss_trace_probe does not treat 403-like job ids as restricted pages', () => {
+  const jobUrl = 'https://www.zhipin.com/job_detail/26b57679f530aa5403J62dm5FlFQ.html';
+  const issues = findTraceBlockingIssues({
+    pages: [
+      { pageId: 0, url: jobUrl },
+    ],
+  });
+
+  assert.deepEqual(issues, []);
+});
+
 test('boss_trace_apply_batch separates candidate blocks from session blockers', () => {
   assert.equal(classifyTraceApplyUrl('https://www.zhipin.com/web/passport/zp/error.html?tip=x'), 'abnormal_account_page');
   assert.equal(classifyTraceApplyUrl('https://www.zhipin.com/web/user/'), 'login_page');
   assert.equal(classifyTraceApplyUrl('https://www.zhipin.com/403.html?code=38'), 'restricted_page');
+  assert.equal(classifyTraceApplyUrl('https://www.zhipin.com/job_detail/26b57679f530aa5403J62dm5FlFQ.html'), '');
   assert.equal(classifyTraceApplyUrl('https://www.zhipin.com/job_detail/target.html'), '');
 
   assert.equal(isCandidateBlockOnly(['salary_below_minimum', 'duplicate_identity']), true);
   assert.equal(isCandidateBlockOnly(['trace_abnormal_account_navigation']), false);
   assert.equal(isCandidateBlockOnly(['target_url_mismatch']), false);
+  assert.equal(isProbeSkipOnly(['target_url_mismatch'], []), true);
+  assert.equal(isProbeSkipOnly(['trace_unstable_navigation'], []), true);
+  assert.equal(isProbeSkipOnly(['trace_abnormal_account_navigation'], [{
+    reason: 'trace_abnormal_account_navigation',
+  }]), false);
 });
 
 test('boss_trace_apply_batch finds existing applications by normalized URL before probing', () => {
