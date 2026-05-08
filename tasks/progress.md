@@ -4503,6 +4503,24 @@
 - 本轮早期推荐链里有少数岗位过宽，后续已收紧 gate；恢复后应从更慢、更小批的 tab 候选开始，不再长链批量展开详情页推荐。
 - 需要用户先处理 BOSS 一方异常/解禁后，再继续补剩余 2 个。
 
+## [2026-05-08] BOSS trace-supervised test5 未进入 live
+
+**完成了什么：**
+- 按用户要求测试是否能批量投 5 个，继续使用 trace supervisor，没有直接长批量 `apply-cdp`。
+- 先跑 `--live false --probe-post-wait-ms 0`：已正确跳过今天已投的 `e676604d...`，找到 1 个 eligible dry-run（`灼蕾 / 技术总监（算法/AI背景）`），但继续探测下一个候选时出现 `target_url_mismatch` / `trace_unstable_navigation`。
+- 只对唯一 eligible 候选做单点 live 前 probe；仍在 probe 阶段漂移，页面最终停到 `UNOMI 由里健康 / 后端开发工程师（AI Agent）`，因此没有点击投递。
+
+**验证：**
+- `tools/auto-zhipin/data/boss-trace-apply-test5-dryrun-20260508-r2.json`：`eligibleDryRun: 1`，但有 hardStop。
+- `tools/auto-zhipin/data/boss-trace-apply-single-11b9-20260508.json`：`applied: 0`，`hardStop: probe_not_safe_for_live_apply`。
+- 本日成功投递仍为 `1`。
+- 当前 BOSS 页面不是登录/异常页，停在普通 `job_detail`。
+- 无残留 BOSS apply / collect / trace 进程。
+
+**遗留：**
+- 当前不能批量运行 5 个；问题是 BOSS 详情页在同一 CDP tab 中会被站点/推荐流带到其他岗位，supervisor 按规则刹车。
+- 继续自动化前需要改变候选打开策略或候选来源策略，不能在当前不稳定详情页链上直接放量。
+
 ## [2026-05-08] BOSS trace hardStop 原因复查
 
 **完成了什么：**
