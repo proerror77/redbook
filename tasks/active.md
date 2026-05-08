@@ -2,6 +2,20 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-05-08 BOSS Current Chrome Script Repair
+
+- Owner: Codex
+- Source: User asked whether the BOSS page can be operated after login, then asked to try repairing the script.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Reproduce the current blockers from existing scripts and browser state: no CDP endpoint plus post-apply success overlay remaining on the page.
+- [x] Fix the post-apply cleanup path so successful "已向BOSS发送消息" overlays do not block the next job.
+- [x] Add a small current-Chrome diagnostic script for the no-CDP / AppleScript-JS fallback boundary.
+- [x] Run focused BOSS script tests and syntax checks.
+- [x] Record outcome in `tasks/progress.md` and commit scoped changes.
+
 ## 2026-05-06 X Longform Inline Image Guard
 
 - Owner: Codex

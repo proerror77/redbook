@@ -14,6 +14,7 @@
     "boss:trace-apply-batch": "node scripts/boss_trace_apply_batch.js",
     "boss:trace-apply-recommendations": "node scripts/boss_trace_apply_recommendations.js",
     "boss:trace-probe": "node scripts/boss_trace_probe.js",
+    "boss:current-chrome-doctor": "node scripts/current_chrome_boss_doctor.js",
     "chrome:collect": "node scripts/chrome_collect_queue.js",
     "chrome:monitor": "node scripts/chrome_monitor_queue.js",
     "jobs:collect-cdp": "node scripts/cdp_collect_current_jobs.js",

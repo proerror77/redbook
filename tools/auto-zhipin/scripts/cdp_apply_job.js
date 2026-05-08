@@ -412,10 +412,27 @@ async function clickPostApplyReminder(session, options = {}) {
       const rect = node.getBoundingClientRect();
       return rect.width > 0 && rect.height > 0;
     }
-    const dialog = Array.from(document.querySelectorAll('.dialog-wrap, .dialog-container, [class*="dialog"]'))
-      .find((node) => isVisible(node) && /温馨提示|沟通机会|今天已与/.test(normalize(node.innerText || node.textContent || '')));
+    const dialog = Array.from(document.querySelectorAll('.dialog-wrap, .dialog-container, [class*="dialog"], [class*="modal"], [class*="toast"], body > div'))
+      .find((node) => isVisible(node) && /温馨提示|沟通机会|今天已与|已向BOSS发送消息/.test(normalize(node.innerText || node.textContent || '')));
     if (!dialog) {
       return { ok: false, reason: 'post_apply_reminder_not_found' };
+    }
+    const dialogText = normalize(dialog.innerText || dialog.textContent || '');
+    const stayButton = /已向BOSS发送消息/.test(dialogText)
+      ? Array.from(dialog.querySelectorAll('a, button, [role="button"], [class*="btn"]'))
+        .find((node) => isVisible(node) && /^留在此页$/.test(normalize(node.innerText || node.textContent || '')))
+      : null;
+    if (stayButton) {
+      stayButton.scrollIntoView({ block: 'center' });
+      const rect = stayButton.getBoundingClientRect();
+      return {
+        ok: true,
+        selector: String(stayButton.className || stayButton.tagName || ''),
+        text: normalize(stayButton.innerText || stayButton.textContent || ''),
+        kind: 'success_overlay_stay',
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2,
+      };
     }
     const button = Array.from(dialog.querySelectorAll('.btn-sure, a, button, [role="button"], [class*="btn"], .dialog-footer'))
       .find((node) => isVisible(node) && /^(好|确定|知道了)$/.test(normalize(node.innerText || node.textContent || '')));
@@ -428,6 +445,7 @@ async function clickPostApplyReminder(session, options = {}) {
       ok: true,
       selector: String(button.className || button.tagName || ''),
       text: normalize(button.innerText || button.textContent || ''),
+      kind: 'generic_reminder',
       x: rect.left + rect.width / 2,
       y: rect.top + rect.height / 2,
     };
@@ -447,15 +465,25 @@ async function clickPostApplyReminder(session, options = {}) {
         const rect = node.getBoundingClientRect();
         return rect.width > 0 && rect.height > 0;
       }
-      const dialog = Array.from(document.querySelectorAll('.dialog-wrap, .dialog-container, [class*="dialog"]'))
-        .find((node) => isVisible(node) && /温馨提示|沟通机会|今天已与/.test(normalize(node.innerText || node.textContent || '')));
+      const dialog = Array.from(document.querySelectorAll('.dialog-wrap, .dialog-container, [class*="dialog"], [class*="modal"], [class*="toast"], body > div'))
+        .find((node) => isVisible(node) && /温馨提示|沟通机会|今天已与|已向BOSS发送消息/.test(normalize(node.innerText || node.textContent || '')));
       if (!dialog) return { ok: false, reason: 'post_apply_reminder_not_found' };
+      const dialogText = normalize(dialog.innerText || dialog.textContent || '');
+      const stayButton = /已向BOSS发送消息/.test(dialogText)
+        ? Array.from(dialog.querySelectorAll('a, button, [role="button"], [class*="btn"]'))
+          .find((node) => isVisible(node) && /^留在此页$/.test(normalize(node.innerText || node.textContent || '')))
+        : null;
+      if (stayButton) {
+        const text = normalize(stayButton.innerText || stayButton.textContent || '');
+        stayButton.click();
+        return { ok: true, text, kind: 'success_overlay_stay' };
+      }
       const button = Array.from(dialog.querySelectorAll('.btn-sure, a, button, [role="button"], [class*="btn"], .dialog-footer'))
         .find((node) => isVisible(node) && /^(好|确定|知道了)$/.test(normalize(node.innerText || node.textContent || '')));
       if (!button) return { ok: false, reason: 'post_apply_reminder_button_not_found' };
       const text = normalize(button.innerText || button.textContent || '');
       button.click();
-      return { ok: true, text };
+      return { ok: true, text, kind: 'generic_reminder' };
     })()`);
     return {
       ...target,

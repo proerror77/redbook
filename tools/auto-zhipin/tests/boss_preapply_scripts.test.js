@@ -7,6 +7,7 @@ const {
 } = require('../scripts/boss_apply_playwright');
 const {
   buildCandidateFromMeta,
+  clickPostApplyReminder,
   clickJobAnchor,
   pickReusableTarget,
   extractCompanyProfileText,
@@ -217,6 +218,77 @@ test('cdp_apply_job clicks existing job anchors with mouse events instead of dir
     sent.filter((entry) => entry.method === 'Input.dispatchMouseEvent').map((entry) => entry.params.type),
     ['mouseMoved', 'mousePressed', 'mouseReleased']
   );
+});
+
+test('cdp_apply_job closes post-apply success overlay by staying on the current page', async () => {
+  const sent = [];
+  const session = {
+    async send(method, params = {}) {
+      sent.push({ method, params });
+      if (method === 'Runtime.evaluate') {
+        return {
+          result: {
+            result: {
+              value: {
+                ok: true,
+                selector: 'btn-cancel',
+                text: '留在此页',
+                kind: 'success_overlay_stay',
+                x: 320,
+                y: 240,
+              },
+            },
+          },
+        };
+      }
+      return {};
+    },
+  };
+
+  const result = await clickPostApplyReminder(session, { clickMode: 'mouse' });
+
+  assert.equal(result.ok, true);
+  assert.equal(result.kind, 'success_overlay_stay');
+  assert.equal(result.text, '留在此页');
+  assert.deepEqual(
+    sent.filter((entry) => entry.method === 'Input.dispatchMouseEvent').map((entry) => entry.params.type),
+    ['mouseMoved', 'mousePressed', 'mouseReleased']
+  );
+});
+
+test('cdp_apply_job can dismiss post-apply success overlay with DOM click mode', async () => {
+  const sent = [];
+  const session = {
+    async send(method, params = {}) {
+      sent.push({ method, params });
+      if (method !== 'Runtime.evaluate') {
+        return {};
+      }
+      const value = sent.filter((entry) => entry.method === 'Runtime.evaluate').length === 1
+        ? {
+          ok: true,
+          selector: 'btn-cancel',
+          text: '留在此页',
+          kind: 'success_overlay_stay',
+          x: 320,
+          y: 240,
+        }
+        : {
+          ok: true,
+          text: '留在此页',
+          kind: 'success_overlay_stay',
+        };
+      return { result: { result: { value } } };
+    },
+  };
+
+  const result = await clickPostApplyReminder(session, { clickMode: 'dom' });
+
+  assert.equal(result.ok, true);
+  assert.equal(result.kind, 'success_overlay_stay');
+  assert.equal(result.eventTrusted, false);
+  assert.equal(sent.some((entry) => entry.method === 'Input.dispatchMouseEvent'), false);
+  assert.equal(sent.filter((entry) => entry.method === 'Runtime.evaluate').length, 2);
 });
 
 test('apply target validators reject URL mismatches', () => {

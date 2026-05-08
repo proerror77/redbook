@@ -4639,6 +4639,28 @@
 - 本次没有对 BOSS 页面做新的点击或投递。
 - 现在若现有 tab 只停在旧猎头详情页且页面内没有目标岗位 anchor，脚本会停止；需要先由用户手动把现有 tab 恢复到正常 jobs 列表页或可用推荐区。
 
+## [2026-05-08] BOSS 当前 Chrome 接管卡点诊断
+
+**完成了什么：**
+- 修复 `cdp_apply_job.js` 的投递后弹窗处理：当 BOSS 显示 `已向BOSS发送消息` 成功弹窗时，脚本会识别 `留在此页`，并支持 mouse / DOM click 两条路径关闭遮挡。
+- 新增 `boss:current-chrome-doctor`，只读检查当前 Chrome 是否能被现有脚本接管：CDP 端口、最前台 Chrome tab、AppleScript JS fallback 状态。
+- 为成功弹窗新增 focused tests，避免后续又把“已投递但弹窗挡住下一轮”的问题回退。
+
+**当前卡点证据：**
+- `boss:current-chrome-doctor` 显示 `9222`、`9223`、`9224` 全部 `ECONNREFUSED`，所以 CDP 脚本无法 attach 到当前登录 Chrome。
+- Chrome 最前台 tab 是 `Clipal 管理界面` / `http://127.0.0.1:3333/`，不是 BOSS 页面。
+- AppleScript JS fallback 被 Chrome 设置关闭，错误提示要求开启 `查看 > 开发者 > 允许 Apple 事件中的 JavaScript`。
+
+**验证：**
+- `node --check tools/auto-zhipin/scripts/cdp_apply_job.js` 通过。
+- `node --check tools/auto-zhipin/scripts/current_chrome_boss_doctor.js` 通过。
+- `npm --prefix tools/auto-zhipin test -- --test-name-pattern 'cdp_apply_job|boss_trace'` 通过：140 passed。
+- `npm --prefix tools/auto-zhipin run boss:current-chrome-doctor` 通过并输出上述诊断。
+
+**遗留：**
+- 这次没有继续真实投递。
+- 要恢复脚本批量投递，需要至少满足一个控制通道：用带 CDP 的现有 Chrome 会话，或用户手动开启 Chrome 的 AppleScript JS fallback；否则只能用 Computer Use 做低速受监督点击。
+
 ## [2026-05-08] BOSS 固定现有页面工作流
 
 **完成了什么：**
