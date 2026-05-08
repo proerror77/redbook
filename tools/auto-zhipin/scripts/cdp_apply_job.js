@@ -656,6 +656,8 @@ if (require.main === module) {
 
 module.exports = {
   buildCandidateFromMeta,
+  clickApply,
+  clickPostApplyReminder,
   createCdpSession,
   extractCompanyProfileText,
   extractMeta,
