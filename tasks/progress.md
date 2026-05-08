@@ -4639,6 +4639,22 @@
 - 本次没有对 BOSS 页面做新的点击或投递。
 - 现在若现有 tab 只停在旧猎头详情页且页面内没有目标岗位 anchor，脚本会停止；需要先由用户手动把现有 tab 恢复到正常 jobs 列表页或可用推荐区。
 
+## [2026-05-08] BOSS live apply 主路径降级为 Computer Use
+
+**结论：**
+- 不能证明 BOSS 是直接检测本机 CDP 端口后跳回页面；网页通常也不能直接读取本机调试端口。
+- 但 2026-05-08 的 trace / 实测已经证明 CDP-launched profile、脚本化详情页进入、CDP 点击/导航这一整条路径会触发目标漂移、script-initiated restore 或异常风险。
+- 因此 BOSS live apply 不再默认使用新开 CDP Chrome 或 trace-supervised CDP live batch。
+
+**工作流变更：**
+- 更新 `.codex/skills/zhipin/SKILL.md` 和 `.agents/skills/zhipin/SKILL.md`。
+- 新规则：真实投递默认使用用户普通已登录 Chrome + Computer Use 慢速监督；脚本只做候选筛选、账本、计数、doctor 和非 live gate。
+- Browser Trace / CDP 仅用于用户明确接受风险的诊断，且优先挂已有 CDP；不得为了恢复 live apply 新开 `--remote-debugging-port` Chrome。
+- 已关闭本轮刚启动的 `9224` / `boss-cdp` Chrome，并清理临时 `.browser-profiles/`。
+
+**遗留：**
+- 后续如果继续投递，只能从普通 Chrome 可见页面开始；出现登录、验证、异常、403 或自动跳回时立即停。
+
 ## [2026-05-08] BOSS 当前 Chrome 接管卡点诊断
 
 **完成了什么：**

@@ -15,18 +15,20 @@ The workflow has real external side effects. Treat BOSS `立即沟通` / `投递
 
 ## Operating Rules
 
-- Reuse the existing logged-in Chrome/CDP session when available.
-- Existing-page-only rule: for BOSS work, operate only on BOSS pages that are already open in the current Chrome/CDP session. Do not create a new browser window, do not create a new tab, and do not use `/json/new` or `open-if-missing` recovery paths unless the user explicitly asks for a new page.
+- Default live-apply path is the user's normal, already logged-in Chrome page with Computer Use, slow cadence, and human-supervised stops. Use scripts for candidate filtering, ledger/counting, diagnostics, and gates; do not make CDP the live-clicking default.
+- Treat newly launched `--remote-debugging-port` Chrome profiles as high-risk for BOSS. Do not start a new CDP Chrome, new browser window, or new tab for BOSS live applications unless the user explicitly overrides this risk for a diagnostic-only run.
+- Existing-page-only rule: for BOSS work, operate only on BOSS pages that are already open in the current normal Chrome session, or on an already-running CDP session the user explicitly accepts. Do not use `/json/new` or `open-if-missing` recovery paths unless the user explicitly asks for a new diagnostic page.
 - If no existing BOSS page is available, stop and tell the user. Do not open one yourself.
 - If an existing BOSS page shows login, QR login, phone verification, security verification, restricted access, abnormal access, `403`, `/web/user/`, or `/web/passport/zp/error`, stop immediately and tell the user. Do not navigate around it, do not retry, and do not continue applying.
 - Do not steal focus. Pass `--focus false` and do not call `Page.bringToFront` unless the user explicitly asks for foreground control.
-- Prefer the current normal browser/CDP route for this user's BOSS work. Use Computer Use only as a fallback for blocked visual/manual cases.
+- CDP/Browser Trace evidence from 2026-05-08 showed script-initiated BOSS page restoration and repeated target drift. It is not proven that BOSS directly detects the CDP port, but the CDP-launched/profile/scripted-navigation path is unsafe enough that it must not be used for live batches by default.
+- Use Computer Use as the practical live fallback when CDP is unavailable or suspicious. Keep it slow, visible, and supervised; after every small batch, verify page health and ledger count before continuing.
 - Do not use OpenCLI/OpenSeal BOSS adapters as the main path for BOSS work. As of 2026-05-05, OpenCLI `1.7.12` did not show a BOSS-specific fix, `boss chat-list` was no longer compatible, `boss chatlist` reported expired BOSS cookies, and `boss search` still failed with browser/network errors. Treat OpenCLI/OpenSeal as version/doctor evidence only unless the user explicitly asks to repair that adapter; operate BOSS through the existing web page/CDP scripts instead.
 - Do not use rapid search loops. Prefer browsing existing BOSS result pages, job tabs, and natural page recommendations like a human, with moderate scrolling.
 - Do not run long recommendation-chain batches. Use small, observable batches from the existing jobs page tabs or the current detail page. After each small batch, re-check page health and ledger count before continuing.
 - Before any live apply, run detail dry-run and inspect the gate result.
 - If the page shows login, security check, restricted access, abnormal access, or bounce-back behavior, stop apply work and diagnose session health first.
-- On any abnormal access/login/security event, attach `browser-trace` to the current CDP browser before drawing conclusions or retrying. Capture enough evidence to identify the triggering profile, CDP route, script, cadence, page URL, network/console errors, DOM state, and screenshots.
+- On any abnormal access/login/security event, stop first. Use `browser-trace` only when an already-running CDP session exists and the user accepts the diagnostic risk; otherwise rely on visible page state, local logs, and Computer Use observations instead of starting a fresh CDP browser.
 - Treat abnormal access/login events as durable workflow feedback. Record the trace-backed cause and do not retry the same login or automation path next time without a recovery note.
 - Prefer user-like session recovery after abnormal access: reuse an already logged-in normal browser, let the user complete any first-party verification, then resume with a read-only health check before applying. Do not attempt to bypass or defeat BOSS security controls.
 - If a candidate lacks company metadata, do not live apply. Open the detail page and extract company from the detail page.
@@ -96,11 +98,20 @@ If raw `applied` rows differ from this count, trust this count.
 
 ## Standard Flow
 
-### 0. Browser Trace Gate For Abnormal Or Unstable Sessions
+### 0. Diagnostic Gate For Abnormal Or Unstable Sessions
 
-Use `browser-trace` before retrying any BOSS flow that has shown abnormal access, login bounce, `auth_gate`, `restricted`, `_security_check`, target URL mismatch, or unexpected page navigation.
+Before retrying any BOSS flow that has shown abnormal access, login bounce, `auth_gate`, `restricted`, `_security_check`, target URL mismatch, or unexpected page navigation, stop and classify the session. Do not launch a new `--remote-debugging-port` Chrome for live apply recovery.
 
-Prefer the repo wrapper for normal use:
+Preferred recovery is visible, normal Chrome + Computer Use:
+
+- User manually restores or confirms the normal logged-in BOSS page.
+- Agent uses Computer Use for slow, supervised clicks only.
+- Scripts are used for local ledger/counting and non-live gates, not for live CDP clicks.
+- If login/security/abnormal/403 appears, stop immediately.
+
+Use `browser-trace` only as an explicit diagnostic tool on an already-running CDP session that the user accepts as safe enough to inspect. Trace evidence is useful for root cause, but trace/CDP itself can be part of the risky path and must not become the default live workflow.
+
+When a CDP diagnostic session is explicitly available, the repo wrapper is:
 
 ```bash
 cd /Users/proerror/Documents/redbook/tools/auto-zhipin
@@ -126,7 +137,7 @@ It also treats trace navigation to `/web/user/`, `/web/passport/zp/error`, `403/
 
 Do not use CDP `Page.navigate` to open BOSS `job_detail` URLs. Trace evidence on 2026-05-08 showed BOSS security/front-end code can accept the target page with HTTP 200 and then restore the previous detail page through `historyDifferentDocument` / `BackForwardCacheRestore`. The safe path is current-page entry only: the target job must already be the current detail page or must have a visible `a[href*="/job_detail/"]` anchor on the existing page, then enter it with mouse click events. If the anchor is missing, stop with `target_url_anchor_not_found`; do not paste/navigate the URL.
 
-For any automated live batch, prefer the trace-supervised batch runner instead of calling `boss:apply-cdp` repeatedly:
+For automated batch exploration, keep the trace-supervised runner in dry-run/eligibility mode unless the user explicitly overrides the CDP risk. Do not use it as the default live apply path:
 
 ```bash
 cd /Users/proerror/Documents/redbook/tools/auto-zhipin
@@ -138,7 +149,7 @@ npm run boss:trace-apply-batch -- \
   --live false
 ```
 
-Default `--live false` only identifies trace-backed eligible candidates. Live mode requires both `BOSS_ENABLE_LIVE_APPLY=1` and `--live true`. The runner performs a health check, trace-backed probe, one current-page mouse-click live apply, live trace replay, ledger-count verification, and cooldown for each candidate. Stop immediately when it reports `hardStop`.
+Default `--live false` only identifies trace-backed eligible candidates. Live mode requires both `BOSS_ENABLE_LIVE_APPLY=1` and `--live true`, plus an explicit user override acknowledging CDP risk. Prefer Computer Use for actual live applications. Stop immediately when the runner reports `hardStop`.
 
 ```bash
 cd /Users/proerror/Documents/redbook
