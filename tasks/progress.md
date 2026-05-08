@@ -4503,6 +4503,23 @@
 - 本轮早期推荐链里有少数岗位过宽，后续已收紧 gate；恢复后应从更慢、更小批的 tab 候选开始，不再长链批量展开详情页推荐。
 - 需要用户先处理 BOSS 一方异常/解禁后，再继续补剩余 2 个。
 
+## [2026-05-08] BOSS 投递异常硬停
+
+**完成了什么：**
+- 按用户要求使用 Browser Trace 诊断 BOSS 投递异常，没有继续新开页面或绕过风控。
+- 停止并切分 trace：`.o11y/boss-health-after-one-20260508T081303`。
+- 当前 BOSS CDP 页面已经跳转到 `/web/passport/zp/error.html`，URL `tip` 明确为“您的账户存在异常行为，已暂时被禁止使用”。
+- 因这是 zhipin 工作流的硬停条件，已中断投递；没有继续点击、没有重试、没有绕过验证。
+
+**验证：**
+- Browser Trace summary 显示页面序列从 `https://www.zhipin.com/web/geek/jobs` / `chat` / 多个 `job_detail` 最后跳到 BOSS 异常页。
+- 当前 `/json/list` 只看到一个 BOSS page，URL 为异常页。
+- 本日成功投递计数仍为 `1`，未把异常后的任何状态计入成功。
+- 无残留 `cdp_apply_job` / `jobs:collect-cdp` / `chat:triage-cdp` / trace 采样进程。
+
+**遗留：**
+- 本轮无法继续完成 50 个投递。需要用户先在现有浏览器里恢复 BOSS 账号/解除异常页面；恢复后只能从只读健康检查开始，且必须降低自动化节奏。
+
 ## [2026-05-08] BOSS 固定现有页面工作流
 
 **完成了什么：**
