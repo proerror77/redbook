@@ -2,6 +2,25 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-05-08 BOSS Codex Chrome Extension Priority
+
+- Owner: Codex
+- Source: User installed the Codex Chrome extension and requested that BOSS apply work prefer it, with Computer Use only as fallback.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Confirm current callable browser tool surfaces and stop using the rejected Playwright MCP path.
+- [x] Update BOSS workflow docs/skill so Codex Chrome extension is the preferred live-apply surface.
+- [x] Keep scripts scoped to filtering, local ledger, dry-run gates, and evidence recording; do not claim shell scripts can call the Codex extension unless a real extension API is exposed.
+- [x] Run focused checks and record the result in `tasks/progress.md`.
+
+### Review
+
+- Codex Chrome Extension is now the documented first-choice browser control surface for Codex App browser work.
+- BOSS live apply docs now prefer Codex Chrome Extension + the user's normal logged-in Chrome profile.
+- Playwright MCP, Chrome DevTools/CDP, and Computer Use are documented as fallback / diagnostic / explicit-experiment paths, not default substitutes.
+
 ## 2026-05-08 BOSS Current Chrome Script Repair
 
 - Owner: Codex

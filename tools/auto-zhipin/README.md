@@ -9,20 +9,22 @@
 
 ## 运行模型
 
-### 1. 默认后端是「Playwright CLI + 持久化 profile」
+### 1. 默认 live 后端是「Codex Chrome extension + 用户真实 Chrome profile」
 
 当前推荐主路径是：
 
-1. 用 Playwright CLI 打开 BOSS 页面，并把登录态写入 `tools/auto-zhipin/.auth/profile`
-2. 后续扫描 / 监看 / 投递都复用同一个 Playwright 持久化 profile
-3. 只有在明确要兼容旧链路时，才回退到 `boss:apply-current` 这类 current-tab / CDP 入口
+1. 用户在日常使用的 Chrome profile 里打开并登录 BOSS。
+2. Codex Chrome extension 连接到当前 Codex chat，并获准操作 `zhipin.com`。
+3. Codex 通过 extension 控制真实 BOSS 页面做低速、小批量、可见的 live apply。
+4. 本目录脚本只负责候选筛选、本地台账、dry-run gate、计数和证据记录；不要声称普通 Node 脚本能直接调用 Codex chat 里的 extension 工具句柄。
+5. 只有 extension 控制面不可用且用户接受 fallback 时，才使用 Computer Use。CDP / Playwright / 持久化 profile 只保留为诊断、历史兼容或显式实验路径。
 
 这样做的原因是：
-- 比 current-tab / 外部 CDP 更适合处理 BOSS 的反爬 / 风控波动
-- 登录一次后，后续 Playwright 脚本可直接复用同一 profile
-- 扫描、消息监看和投递都能收口到同一套浏览器上下文
+- extension 使用用户真实登录态，不需要新开 `--remote-debugging-port` Chrome 或分离 profile。
+- live click 更接近用户当前页面，不把 Playwright/CDP 作为默认申请路径。
+- 脚本仍然保留可验证的筛选、台账和安全门，避免只靠页面按钮文字统计成功。
 
-如果页面出现登录失效、滑块或 `访问受限 / 异常访问行为`，先人工处理，再重新运行脚本。
+如果页面出现登录失效、滑块或 `访问受限 / 异常访问行为`，先人工处理，再做只读 health check；不要尝试绕过或对抗 BOSS 安全控制。
 
 异常登录 / 异常访问不是一次性报错，要作为后续策略输入：
 - 一旦出现 `访问受限 / 异常访问行为 / 账号异常行为 / _security_check / auth_gate / restricted`，必须先挂 `browser-trace` 到当前 CDP 会话，采集 network、console、page navigation、DOM 和截图证据。
@@ -59,7 +61,7 @@ cd tools/auto-zhipin
 npm install
 ```
 
-项目内已经带了 `playwright` 依赖。主链路建议直接使用仓库里的 Playwright CLI / 持久化 profile。
+项目内仍保留 `playwright` 依赖和历史脚本，但它们不是默认 live 后端。真实网页操作优先使用 Codex Chrome Extension 连接用户日常 Chrome；本目录脚本默认只承担筛选、台账、dry-run gate、计数和证据记录。
 
 ## 配置
 
@@ -211,17 +213,13 @@ BOSS_ENABLE_LIVE_APPLY=1 npm run boss:trace-apply-batch -- \
 
 ### 1. 登录并准备浏览器上下文
 
-```bash
-npm run bootstrap
-npm run boss:login
-```
+默认准备方式：
 
-这条命令会：
-- 通过 Playwright CLI 打开可见浏览器
-- 复用 `tools/auto-zhipin/.auth/profile`
-- 默认落到第一条搜索页（如果配置了 `jobs.searchUrls`）
+1. 用户在日常 Chrome profile 里打开 BOSS，并确认已登录。
+2. Codex App 使用 `Chrome` 插件 / Codex Chrome Extension 连接该真实 Chrome。
+3. Codex 通过 `agent.browsers.get("extension")`、`browser.user.openTabs()`、`claimTab()` 复用已有 BOSS 页。
 
-登录完成后直接关闭窗口即可；后续脚本会复用这个 profile。
+历史命令 `npm run bootstrap` / `npm run boss:login` 仍可用于诊断或显式实验，但它们会走独立自动化 profile，不作为 live apply 默认入口。
 
 ### 2. 监看消息
 
@@ -233,7 +231,7 @@ npm run reply
 ```
 
 默认行为：
-- 打开持久化 profile 下的聊天页
+- 默认先由 Codex Chrome Extension/真实 Chrome 页面确认聊天页状态；脚本只做消息采集、ledger 和 action queue
 - 检测是否命中登录失效 / 风控
 - 轮询会话列表和当前会话消息
 - 按保守节奏轮询，避免过于频繁刷新
@@ -263,19 +261,23 @@ npm run scan
 
 ### 4. 自动投递
 
-Playwright profile 主路径：
+默认 live 路径：
+
+1. Codex Chrome Extension 操作用户真实 Chrome 里的 BOSS 页面，低速、小批量执行。
+2. 每次 live click 前后用脚本台账和页面证据交叉核对。
+3. 脚本投递命令默认只作为 dry-run gate 或显式 fallback，不是默认 live click 面。
+
+Dry-run / 诊断命令：
 
 ```bash
 cd tools/auto-zhipin
 npm run boss:apply -- --url https://www.zhipin.com/job_detail/xxx.html --dry-run true
-npm run boss:apply -- --url https://www.zhipin.com/job_detail/xxx.html --dry-run false
 ```
 
 说明：
-- 会复用 `tools/auto-zhipin/.auth/profile`
 - 默认按 `config.apply.dryRun` 执行；仓库默认是 `true`
 - `--dry-run true` 只做预检路径，不写成真实已投
-- 真实投递必须显式传 `--dry-run false`，或在配置里把 `apply.dryRun` 改成 `false`
+- 真实投递优先由 Codex Chrome Extension 在真实页面操作；只有用户明确要求脚本 fallback，才显式传 `--dry-run false` 或调整配置
 - 真正需要兼容旧的 current-tab / CDP 流程时，再手动运行 `boss:apply-current`
 
 旧入口保留为 fallback：
@@ -286,7 +288,7 @@ npm run boss:apply-current -- --probe true
 npm run boss:apply-opencli -- --url https://www.zhipin.com/job_detail/xxx.html
 ```
 
-如果 BOSS 对 current-tab / CDP 路线触发了更强检测，优先回到 Playwright profile 主链，不要继续硬试旧入口。
+如果 BOSS 对 current-tab / CDP / Playwright 路线触发了更强检测，优先回到 Codex Chrome Extension + 用户真实 Chrome 的可见页面；不要继续硬试旧入口。
 
 ### 5. PinchTab 动作层（实验）
 
@@ -328,7 +330,7 @@ npm run pinchtab:reply -- --run-actions
 
 说明：
 - 这条后端目前是实验性的
-- 搜索结果页的岗位抽取主路径是 Playwright profile；PinchTab 只保留为动作执行实验层
+- 搜索结果页的岗位抽取默认应由 Codex Chrome Extension/真实 Chrome 页面配合本地 ledger 完成；PinchTab 只保留为动作执行实验层
 - `pinchtab eval` 在当前本机版本里表现不稳定，所以动作层直接改用了 PinchTab 的 HTTP API
 - 当前已接：
   - `自动回复管理`
@@ -352,7 +354,7 @@ npm run pinchtab:reply -- --run-actions
 ## 已知限制
 
 - 首登和登录失效恢复仍然要人工参与
-- 这套主链路依赖同一个 Playwright 持久化 profile，因此不要并发运行多个写入型脚本
+- live 主链路依赖同一个用户真实 Chrome 会话，因此不要并发运行多个写入型浏览器动作或脚本 fallback
 - 若已经触发 `访问受限`，继续重试只会放大风险；这类状态必须视为硬停机
 - 原型会把最近一次站点健康状态写入 `ledger.json`；命中过 `restricted` 后会触发本地 circuit breaker
 - DOM 选择器可能变化，所以抽取逻辑用了较多候选选择器和文本兜底
@@ -361,10 +363,11 @@ npm run pinchtab:reply -- --run-actions
 
 ## 建议的真实使用顺序
 
-1. `npm run boss:login`，先把登录态写进 Playwright profile
-2. `npm run chrome:collect` 先看过滤效果
+1. 用户在日常 Chrome 打开 BOSS，并确认登录/安全状态正常。
+2. Codex 用 Chrome 插件 / Codex Chrome Extension claim 现有 BOSS tab。
+3. `npm run chrome:collect` 先看过滤效果或用页面直接筛选候选。
 3. 调整 `filters`
-4. 真正投递前，先用 `npm run boss:apply -- --url ... --dry-run true` 做预检
-5. 确认无误后，使用 `npm run boss:apply -- --url ... --dry-run false` 正式投递
-6. 只有 Playwright profile 路线失效时，才退回 `npm run boss:apply-current` 或 `npm run boss:apply-opencli`
+4. 真正投递前，先用 `npm run boss:apply -- --url ... --dry-run true` 做预检或用页面做保守核对。
+5. 确认无误后，通过 Codex Chrome Extension 在真实页面低速投递，并写入/核对 ledger。
+6. 只有 extension 控制面不可用且用户接受 fallback 时，才考虑 Computer Use、`boss:apply-current`、`boss:apply-opencli` 或 Playwright 脚本。
 7. 需要消息处理时再运行 `npm run chrome:monitor` 或 `npm run reply`

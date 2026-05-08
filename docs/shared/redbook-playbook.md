@@ -37,6 +37,7 @@
 - 小红书默认不做“开发者工具新闻搬运”和“X 长文切片”：每张卡必须回答一个企业读者任务，例如为什么相关、怎么判断、落在哪个部门/流程、有什么风险、下一步怎么做。
 - 计划内容发稿前必须过 `受益人 + 冷读审稿门`：确认“我是那个 __ 型账号”、这篇具体让哪类人受益、陌生读者最可能在哪里划走；长文/小红书默认至少隔一次上下文再改稿，时间敏感内容可用独立冷读审稿替代实际等待。
 - 新增 workflow / publish / browser / image pipeline 代码默认使用 TypeScript / Bun；Python 只保留 legacy、wiki/harness/daily research 或一次性数据脚本。详细规则见 `docs/reference/runtime-language-policy.md`。
+- Codex App 里的浏览器调用优先使用 `Chrome` 插件 / Codex Chrome Extension：通过 `agent.browsers.get("extension")` 连接用户真实 Chrome，先 `browser.user.openTabs()` / `claimTab()` 复用现有页；需要新页时也在 extension backend 下新建。不要把 Playwright MCP 或 Chrome DevTools MCP 当作默认替代，除非 extension 不可用、任务是诊断/QA，或用户明确指定。
 - 浏览器工作先跑 `tools/redbookctl browser` 检查现有 Chrome/CDP tabs；X 发布 profile 先跑 `tools/redbookctl x-login` 检查 composer 和 `expected_handle`；小红书发布前先跑 `tools/redbookctl xhs-health`，需要管理页证据时加 `--with-content-data`；优先复用已登录 tab 或已配置 profile，不默认新开未登录 profile、空白页或可见窗口。
 - 每日 X 运营必须生成 `X-互动队列-YYYY-MM-DD.md`：从当前 X timeline 找 20 条高互动人/帖，给出语言匹配的回复草稿，目标是建立账号活人感；默认只生成候选和草稿，不自动发布评论。
 - X timeline 批量回复必须使用 `docs/reference/x-engagement-reply-workflow.md`：先预检账号与当前浏览器，排除已回复 source status，只选账号主线相关帖，先做真人感 / 原帖细节 / 账号契合的内容审稿，再跑脚本 gate；候选不足时少回，不硬凑数量。

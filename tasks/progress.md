@@ -4,6 +4,23 @@
 
 ---
 
+## [2026-05-08] 会话摘要：Codex Chrome Extension 浏览器优先级固化
+
+**完成了什么：**
+- 将 Codex App 浏览器调用默认优先级固定为 `Chrome` 插件 / Codex Chrome Extension：`agent.browsers.get("extension")`、`browser.user.openTabs()`、`claimTab()`，优先连接用户真实 Chrome 并复用现有 tab。
+- 更新 `docs/standards/browser-modes.md`、`docs/shared/redbook-playbook.md`、`docs/reference/skills-manifest.md`，并同步到 `AGENTS.md` / `CLAUDE.md`。
+- 更新 `.codex/skills/zhipin/SKILL.md`、`.agents/skills/zhipin/SKILL.md` 和 `tools/auto-zhipin/README.md`：BOSS live apply 默认走 Codex Chrome Extension + 用户普通已登录 Chrome profile；Computer Use、Chrome DevTools/CDP、Playwright 仅作为 fallback / 诊断 / 显式实验路径。
+- 写入长期记忆 note，避免后续浏览器任务又默认退回 Playwright 或 DevTools。
+
+**验证：**
+- `python3 tools/sync_redbook_playbook.py` 已同步共享 playbook 到 `AGENTS.md` / `CLAUDE.md`。
+- `rg` 检查确认不再有 BOSS 默认 Playwright profile 主链残留。
+- `rg` 检查确认 Codex Chrome Extension 优先规则出现在 browser standards、shared playbook、skills manifest、zhipin skill 和 README。
+- `git diff --check` 通过。
+
+**遗留：**
+- 本轮只固化规则，没有继续执行 BOSS 投递或 live click。
+
 ## [2026-05-06] 会话摘要：X timeline 新帖回复 50 条
 
 **完成了什么：**

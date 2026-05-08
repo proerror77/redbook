@@ -27,6 +27,7 @@
 - 小红书同步前必须先有 `核心命题` 与 `平台编排`，并确认选题能落到企业/商业场景；不能落地时只发 X，不强行做卡片。
 - 小红书图文不能直接拆 X 长文段落；每张卡必须绑定一个企业读者任务，如场景、判断标准、流程影响、成本/风险、行动清单。
 - 新增 workflow / publish / browser / image pipeline 代码默认使用 TypeScript / Bun；Python 入口保留为 legacy 或专项例外，见 `docs/reference/runtime-language-policy.md`。
+- Codex App 浏览器调用优先使用 `Chrome` 插件 / Codex Chrome Extension，连接用户真实 Chrome 并复用现有 tab；不要默认改用 Playwright MCP 或 Chrome DevTools MCP。
 - 浏览器类任务先用 `tools/redbookctl browser` 检查当前 Chrome/CDP 登录态；发布和账号操作优先复用已有 tab，避免重复开新页面和新 profile。
 - Lane A 选题研究必须用当日研究区或当前 X timeline 证据；`tools/redbookctl daily` 里的发布提醒/制作中旧稿只作 backlog，不得当作“今天值得写”的来源。
 
@@ -47,7 +48,7 @@
 | `/baoyu-post-to-wechat` | active | `.agents/skills/baoyu-post-to-wechat/SKILL.md` | 发布到微信公众号 | 用户明确确认发布后 |
 | `/baoyu-image-gen` | active | `.agents/skills/baoyu-image-gen/SKILL.md` | 通用 AI 图片生成，Tuzi 优先且默认 `gpt-image-2.0` | 非小红书专用图像 |
 | `/baoyu-infographic` | active | `.agents/skills/baoyu-infographic/SKILL.md` | 信息图生成 | 单张视觉总结 |
-| `/zhipin` | active | `.codex/skills/zhipin/SKILL.md` | BOSS/Zhipin 职位浏览、去重、聊天 triage、dry-run gate、保守 live apply | 任何 BOSS 投递、继续投递、修复投递流程或达成每日投递目标前 |
+| `/zhipin` | active | `.codex/skills/zhipin/SKILL.md` | BOSS/Zhipin 职位浏览、去重、聊天 triage、dry-run gate、Codex Chrome Extension 优先的保守 live apply | 任何 BOSS 投递、继续投递、修复投递流程或达成每日投递目标前 |
 
 ## Script Entrypoints
 

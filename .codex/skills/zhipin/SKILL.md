@@ -15,14 +15,16 @@ The workflow has real external side effects. Treat BOSS `立即沟通` / `投递
 
 ## Operating Rules
 
-- Default live-apply path is the user's normal, already logged-in Chrome page with Computer Use, slow cadence, and human-supervised stops. Use scripts for candidate filtering, ledger/counting, diagnostics, and gates; do not make CDP the live-clicking default.
+- Default live-apply path is the Codex Chrome extension attached to the user's normal, already logged-in Chrome profile, slow cadence, and human-supervised stops. It should operate on the real BOSS page/session, not a newly launched automation profile.
+- Treat Computer Use as the fallback live-clicking surface only when the Codex Chrome extension control surface is unavailable or blocked. Use scripts for candidate filtering, ledger/counting, diagnostics, and gates; do not make CDP, Playwright MCP, or Computer Use the first-choice live-clicking default.
+- Do not substitute a Playwright MCP relay for the Codex Chrome extension lane when the user explicitly asks for the Codex Chrome extension. If this Codex thread does not expose a non-CDP extension control tool, report that limitation and stop before live clicks rather than silently falling back.
 - Treat newly launched `--remote-debugging-port` Chrome profiles as high-risk for BOSS. Do not start a new CDP Chrome, new browser window, or new tab for BOSS live applications unless the user explicitly overrides this risk for a diagnostic-only run.
 - Existing-page-only rule: for BOSS work, operate only on BOSS pages that are already open in the current normal Chrome session, or on an already-running CDP session the user explicitly accepts. Do not use `/json/new` or `open-if-missing` recovery paths unless the user explicitly asks for a new diagnostic page.
 - If no existing BOSS page is available, stop and tell the user. Do not open one yourself.
 - If an existing BOSS page shows login, QR login, phone verification, security verification, restricted access, abnormal access, `403`, `/web/user/`, or `/web/passport/zp/error`, stop immediately and tell the user. Do not navigate around it, do not retry, and do not continue applying.
 - Do not steal focus. Pass `--focus false` and do not call `Page.bringToFront` unless the user explicitly asks for foreground control.
 - CDP/Browser Trace evidence from 2026-05-08 showed script-initiated BOSS page restoration and repeated target drift. It is not proven that BOSS directly detects the CDP port, but the CDP-launched/profile/scripted-navigation path is unsafe enough that it must not be used for live batches by default.
-- Use Computer Use as the practical live fallback when CDP is unavailable or suspicious. Keep it slow, visible, and supervised; after every small batch, verify page health and ledger count before continuing.
+- Use Computer Use as the practical live fallback when the Codex Chrome extension is unavailable and the user accepts fallback control. Keep it slow, visible, and supervised; after every small batch, verify page health and ledger count before continuing.
 - Do not use OpenCLI/OpenSeal BOSS adapters as the main path for BOSS work. As of 2026-05-05, OpenCLI `1.7.12` did not show a BOSS-specific fix, `boss chat-list` was no longer compatible, `boss chatlist` reported expired BOSS cookies, and `boss search` still failed with browser/network errors. Treat OpenCLI/OpenSeal as version/doctor evidence only unless the user explicitly asks to repair that adapter; operate BOSS through the existing web page/CDP scripts instead.
 - Do not use rapid search loops. Prefer browsing existing BOSS result pages, job tabs, and natural page recommendations like a human, with moderate scrolling.
 - Do not run long recommendation-chain batches. Use small, observable batches from the existing jobs page tabs or the current detail page. After each small batch, re-check page health and ledger count before continuing.
@@ -102,10 +104,11 @@ If raw `applied` rows differ from this count, trust this count.
 
 Before retrying any BOSS flow that has shown abnormal access, login bounce, `auth_gate`, `restricted`, `_security_check`, target URL mismatch, or unexpected page navigation, stop and classify the session. Do not launch a new `--remote-debugging-port` Chrome for live apply recovery.
 
-Preferred recovery is visible, normal Chrome + Computer Use:
+Preferred recovery is visible, normal Chrome + Codex Chrome extension:
 
 - User manually restores or confirms the normal logged-in BOSS page.
-- Agent uses Computer Use for slow, supervised clicks only.
+- Agent uses the Codex Chrome extension for slow, supervised clicks when that control surface is exposed in the current Codex thread.
+- Agent uses Computer Use only as fallback when the extension surface is unavailable and the user accepts fallback control.
 - Scripts are used for local ledger/counting and non-live gates, not for live CDP clicks.
 - If login/security/abnormal/403 appears, stop immediately.
 

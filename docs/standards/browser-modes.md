@@ -17,10 +17,12 @@
 
 ## 全局偏好
 
+- Codex App 会话里只要 `Chrome` 插件 / Codex Chrome Extension 可用，浏览器调用优先走 Codex Chrome Extension：通过 `agent.browsers.get("extension")` 连接用户真实 Chrome，使用 `browser.user.openTabs()` / `claimTab()` 复用现有页，或在该 extension backend 下新建 tab。
+- 不要把 Playwright MCP 或 Chrome DevTools MCP 当作 Codex Chrome Extension 的等价替代。只有 extension 通道不可用、任务明确是 QA/诊断，或用户显式要求时，才退到 DevTools/CDP、Computer Use 或 Playwright。
 - 尽量不要使用 Playwright。
-- 默认优先级：真实 Chrome + CDP/current-tab > 非 Playwright 兼容桥接 > Playwright fallback。
+- 默认优先级：Codex Chrome Extension + 用户真实 Chrome > 真实 Chrome + CDP/current-tab > 非 Playwright 兼容桥接 / Computer Use fallback > Playwright fallback。
 - 如果某能力当前只能依赖 Playwright，必须在该 skill 或 README 里明确标注原因，不能把它写成默认主入口。
-- 例外：BOSS 当前主链已经收口到 `tools/auto-zhipin` 的 Playwright CLI + 持久化 profile，因为近期验证显示它比 current-tab/CDP 更稳定；BOSS current-tab 只保留为 fallback。
+- BOSS live apply 当前主链：Codex Chrome Extension + 用户普通已登录 Chrome profile；`tools/auto-zhipin` 只负责筛选、台账、dry-run gate 和证据记录。Computer Use、CDP、Playwright 只保留为 fallback / 诊断 / 用户显式实验路径。
 
 ## 默认执行姿态
 
@@ -52,7 +54,8 @@
 默认承载：
 
 - 真实 Chrome 或命名 profile
-- CDP
+- Codex Chrome Extension
+- CDP fallback
 
 默认执行姿态：
 
@@ -64,14 +67,15 @@
 - X 发布
 - 小红书发布
 - 微信 browser 发布
-- BOSS：`tools/auto-zhipin` Playwright profile 主链；current-tab 仅 fallback
+- BOSS：Codex Chrome Extension + 用户真实 Chrome profile 主链；Computer Use / CDP / Playwright 仅 fallback 或诊断
 
 默认原则：
 
 - 优先复用真实浏览器会话
+- Codex Chrome Extension 可用时优先使用 extension backend，不先开 Playwright MCP 或 Chrome DevTools MCP
 - 优先无头执行
 - 不默认新起可见私有浏览器
-- 不默认要求扩展桥接
+- 不默认新开 `--remote-debugging-port` Chrome
 - 进入业务动作前，先用 `tools/redbookctl browser` 或 `node tools/browser-core/interactive/session.mjs` 读取现有 CDP tabs；只有没有可复用 tab 时才允许创建新 tab。
 
 备注：
