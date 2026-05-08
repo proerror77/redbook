@@ -149,6 +149,7 @@ O11Y_ROOT=/Users/proerror/Documents/redbook/.o11y \
 - 停止并切分 trace。
 - 默认删除原始 `.o11y` 截图/DOM，只保留摘要到 `data/boss-trace-probe-latest.json` 和 `data/boss-trace-probe-history.jsonl`。
 - 如果 trace 期间出现其他 `job_detail` 导航，会追加 `trace_unstable_navigation`，并强制 `okToLiveApply=false`。
+- 如果 trace 期间出现 `/web/user/`、`/web/passport/zp/error`、`403/code=32/code=38`、security/verify/captcha URL，也会追加 trace blocker 并强制 `okToLiveApply=false`。
 
 单次检查：
 
@@ -172,6 +173,39 @@ npm run boss:trace-probe -- \
 ```
 
 只有当输出里 `okToLiveApply=true`，并且 `targetCheck.ok=true`、`gate.reasons=[]`、`trace.issues=[]` 时，才可以进入受监督的 live apply 决策。
+
+### trace-supervised batch apply
+
+需要自动投递时，不要直接跑长批量 `apply-cdp`。使用 trace supervisor 包住每一个候选：
+
+```bash
+cd /Users/proerror/Documents/redbook/tools/auto-zhipin
+npm run boss:trace-apply-batch -- \
+  --cdp-endpoint http://127.0.0.1:9224 \
+  --candidates data/cdp-collect-联合创始人_上海_-20260508-batch1.json,data/cdp-collect-架构师_上海_-20260508-batch1.json \
+  --target-successes 3 \
+  --delay-ms 60000 \
+  --live false
+```
+
+默认 `--live false` 只输出 `eligibleDryRun`，不会点击投递。真正 live 必须同时满足：
+
+```bash
+BOSS_ENABLE_LIVE_APPLY=1 npm run boss:trace-apply-batch -- \
+  --cdp-endpoint http://127.0.0.1:9224 \
+  --candidates data/cdp-collect-联合创始人_上海_-20260508-batch1.json \
+  --target-successes 1 \
+  --delay-ms 60000 \
+  --live true
+```
+
+这个 runner 每个候选都执行：
+- live 前健康检查：现有 BOSS page 不能是登录/异常/安全/403 页面。
+- trace-backed probe：`okToLiveApply=true` 才允许继续。
+- 单个 live apply：固定 `--focus false --click-mode dom`。
+- live trace 回放：出现目标漂移、登录页、异常页、安全页、403/code=32/code=38 立即硬停。
+- 账本验证：只有 `getTodaySuccessfulApplies()` 增加 1 才计为成功。
+- 成功后等待 `--delay-ms`，避免连续详情页/投递节奏触发风控。
 
 ## 使用方法
 

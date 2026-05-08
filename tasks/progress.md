@@ -4503,6 +4503,24 @@
 - 本轮早期推荐链里有少数岗位过宽，后续已收紧 gate；恢复后应从更慢、更小批的 tab 候选开始，不再长链批量展开详情页推荐。
 - 需要用户先处理 BOSS 一方异常/解禁后，再继续补剩余 2 个。
 
+## [2026-05-08] BOSS trace 自动投递 supervisor
+
+**完成了什么：**
+- 复盘 `.o11y/boss-health-after-one-20260508T081303`：异常不是普通 HTTP 失败，trace 中所有 response 都是 200，但页面导航在约 28 秒内从 jobs/chat 连续切到 6 个 `job_detail`，最后进入 `/web/passport/zp/error.html?tip=您的账户存在异常行为...`。
+- 加固 `scripts/boss_trace_probe.js`：除了 `trace_unstable_navigation`，现在也识别 `/web/user/`、`/web/passport/zp/error`、`403/code=32/code=38`、security/verify/captcha 导航，并把这些加入 `trace.issues`，强制 `okToLiveApply=false`。
+- 新增 `scripts/boss_trace_apply_batch.js` 和 npm 入口 `boss:trace-apply-batch`：默认 `--live false` 只做 trace-backed eligibility；真正 live 必须同时传 `BOSS_ENABLE_LIVE_APPLY=1` 和 `--live true`。
+- 新 runner 的自动化策略是每个候选单独包一层：现有页面健康检查 -> trace probe -> 单次 `--focus false --click-mode dom` live apply -> live trace 回放 -> ledger 计数必须 +1 -> 冷却等待；任何 trace blocker 或计数不一致都 hard stop。
+- 更新 `tools/auto-zhipin/README.md` 和 `.codex/skills/zhipin/SKILL.md`，固定以后不要直接长批量跑 `apply-cdp`。
+
+**验证：**
+- `node --check tools/auto-zhipin/scripts/boss_trace_probe.js` 通过。
+- `node --check tools/auto-zhipin/scripts/boss_trace_apply_batch.js` 通过。
+- `npm --prefix tools/auto-zhipin test -- --test-name-pattern 'boss_trace|trace_apply|cdp_apply_job'` 通过：131 passed。
+
+**遗留：**
+- 当前 BOSS 账号刚出现过异常页，本轮没有跑任何 live apply 或 trace dry-run 去刺激页面。
+- 用户人工确认现有页面恢复稳定后，先用 `--live false` 跑 trace eligibility；只有输出无 `hardStop` 且有 `eligibleDryRun`，才可用 `target-successes 1` 做单点 live。
+
 ## [2026-05-08] BOSS 投递异常硬停
 
 **完成了什么：**

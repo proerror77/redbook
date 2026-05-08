@@ -136,6 +136,33 @@ function findTraceNavigationIssues(traceSummary, expectedUrl = '') {
     .filter(Boolean);
 }
 
+function classifyBlockingUrl(url = '') {
+  const text = String(url || '');
+  if (!text) return '';
+  if (/\/web\/passport\/zp\/error/i.test(text)) return 'trace_abnormal_account_navigation';
+  if (/\/web\/user(?:[/?#]|$)/i.test(text)) return 'trace_login_navigation';
+  if (/403(?:\.html)?/i.test(text) || /[?&]code=(?:32|38)(?:[&#]|$)/i.test(text)) return 'trace_restricted_navigation';
+  if (/security|verify|captcha|_security_check/i.test(text)) return 'trace_security_navigation';
+  return '';
+}
+
+function findTraceBlockingIssues(traceSummary) {
+  if (!traceSummary) {
+    return [];
+  }
+  return (traceSummary.pages || [])
+    .map((page) => {
+      const reason = classifyBlockingUrl(page.url || '');
+      if (!reason) return null;
+      return {
+        reason,
+        pageId: page.pageId,
+        url: page.url,
+      };
+    })
+    .filter(Boolean);
+}
+
 function cleanupTrace(runId) {
   fs.rmSync(path.join(TRACE_ROOT, runId), { recursive: true, force: true });
 }
@@ -218,7 +245,10 @@ async function probeOnce(options) {
   }
 
   const trace = readErrors(runId);
-  const traceIssues = findTraceNavigationIssues(trace.summary, result.requestedUrl);
+  const traceIssues = [
+    ...findTraceNavigationIssues(trace.summary, result.requestedUrl),
+    ...findTraceBlockingIssues(trace.summary),
+  ];
   result.trace = {
     runId,
     totalEvents: trace.summary?.totalEvents || 0,
@@ -299,6 +329,7 @@ if (require.main === module) {
 
 module.exports = {
   findTraceNavigationIssues,
+  findTraceBlockingIssues,
   probeOnce,
   readOption,
 };

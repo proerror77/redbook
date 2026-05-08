@@ -11,6 +11,7 @@
     "boss:apply-opencli": "node ../opencli/bin/redbook-opencli.js boss apply",
     "boss:apply-current": "node scripts/opencli_apply_current_tab.js",
     "boss:apply-cdp": "node scripts/cdp_apply_job.js",
+    "boss:trace-apply-batch": "node scripts/boss_trace_apply_batch.js",
     "boss:trace-probe": "node scripts/boss_trace_probe.js",
     "chrome:collect": "node scripts/chrome_collect_queue.js",
     "chrome:monitor": "node scripts/chrome_monitor_queue.js",

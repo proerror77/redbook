@@ -122,6 +122,21 @@ npm run boss:trace-probe -- \
 ```
 
 The wrapper records `data/boss-trace-probe-latest.json` and `data/boss-trace-probe-history.jsonl`, cleans raw `.o11y` by default, and treats trace navigation to a different `job_detail` as `trace_unstable_navigation`. Continue toward live apply only when `okToLiveApply=true`, `targetCheck.ok=true`, `gate.reasons=[]`, and `trace.issues=[]`.
+It also treats trace navigation to `/web/user/`, `/web/passport/zp/error`, `403/code=32/code=38`, security, verify, or captcha URLs as blockers.
+
+For any automated live batch, prefer the trace-supervised batch runner instead of calling `boss:apply-cdp` repeatedly:
+
+```bash
+cd /Users/proerror/Documents/redbook/tools/auto-zhipin
+npm run boss:trace-apply-batch -- \
+  --cdp-endpoint http://127.0.0.1:9224 \
+  --candidates data/cdp-collect-联合创始人_上海_-20260508-batch1.json,data/cdp-collect-架构师_上海_-20260508-batch1.json \
+  --target-successes 3 \
+  --delay-ms 60000 \
+  --live false
+```
+
+Default `--live false` only identifies trace-backed eligible candidates. Live mode requires both `BOSS_ENABLE_LIVE_APPLY=1` and `--live true`. The runner performs a health check, trace-backed probe, one DOM-click live apply, live trace replay, ledger-count verification, and cooldown for each candidate. Stop immediately when it reports `hardStop`.
 
 ```bash
 cd /Users/proerror/Documents/redbook

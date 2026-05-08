@@ -16,7 +16,16 @@ const {
 const {
   buildEntry,
 } = require('../scripts/cdp_chat_triage_export');
-const { findTraceNavigationIssues, probeOnce, readOption } = require('../scripts/boss_trace_probe');
+const {
+  findTraceBlockingIssues,
+  findTraceNavigationIssues,
+  probeOnce,
+  readOption,
+} = require('../scripts/boss_trace_probe');
+const {
+  classifyUrl: classifyTraceApplyUrl,
+  isCandidateBlockOnly,
+} = require('../scripts/boss_trace_apply_batch');
 
 test('boss_apply_playwright builds a non-empty identity from detail metadata', () => {
   const application = buildApplicationFromMeta({
@@ -226,4 +235,34 @@ test('boss_trace_probe flags trace navigation to a different job detail', () => 
     pageId: 1,
     url: 'https://www.zhipin.com/job_detail/other.html',
   }]);
+});
+
+test('boss_trace_probe flags auth security and abnormal account trace pages', () => {
+  const issues = findTraceBlockingIssues({
+    pages: [
+      { pageId: 0, url: 'https://www.zhipin.com/job_detail/expected.html' },
+      { pageId: 1, url: 'https://www.zhipin.com/web/user/' },
+      { pageId: 2, url: 'https://www.zhipin.com/web/passport/zp/error.html?tip=x' },
+      { pageId: 3, url: 'https://www.zhipin.com/403.html?code=38' },
+      { pageId: 4, url: 'https://www.zhipin.com/web/common/security-check' },
+    ],
+  });
+
+  assert.deepEqual(issues.map((issue) => issue.reason), [
+    'trace_login_navigation',
+    'trace_abnormal_account_navigation',
+    'trace_restricted_navigation',
+    'trace_security_navigation',
+  ]);
+});
+
+test('boss_trace_apply_batch separates candidate blocks from session blockers', () => {
+  assert.equal(classifyTraceApplyUrl('https://www.zhipin.com/web/passport/zp/error.html?tip=x'), 'abnormal_account_page');
+  assert.equal(classifyTraceApplyUrl('https://www.zhipin.com/web/user/'), 'login_page');
+  assert.equal(classifyTraceApplyUrl('https://www.zhipin.com/403.html?code=38'), 'restricted_page');
+  assert.equal(classifyTraceApplyUrl('https://www.zhipin.com/job_detail/target.html'), '');
+
+  assert.equal(isCandidateBlockOnly(['salary_below_minimum', 'duplicate_identity']), true);
+  assert.equal(isCandidateBlockOnly(['trace_abnormal_account_navigation']), false);
+  assert.equal(isCandidateBlockOnly(['target_url_mismatch']), false);
 });
