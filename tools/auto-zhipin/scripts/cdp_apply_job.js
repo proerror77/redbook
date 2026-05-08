@@ -499,17 +499,23 @@ function upsertSkippedApplication(store, candidate, reasons, applyResult = {}) {
 
 async function pickReusableTarget(cdpEndpoint, targetUrl, { allowNewTab = false } = {}) {
   const pages = await getJson(new URL('/json/list', cdpEndpoint).toString());
-  const preferred = pages.find((entry) => String(entry.url || '').includes('/job_detail/'));
+  const bossPages = pages.filter((entry) => entry.type === 'page' && String(entry.url || '').includes('zhipin.com'));
+  const isBlockedBossUrl = (url = '') => /\/web\/user(?:[/?#]|$)|\/web\/passport\/zp\/error|403(?:\.html)?|security|verify|captcha|_security_check/i.test(String(url || ''));
+  const preferred = bossPages.find((entry) => String(entry.url || '').includes('/job_detail/'));
   if (preferred) {
     return preferred;
   }
-  const jobsPage = pages.find((entry) => String(entry.url || '').includes('/web/geek/jobs'));
+  const jobsPage = bossPages.find((entry) => String(entry.url || '').includes('/web/geek/jobs'));
   if (jobsPage) {
     return jobsPage;
   }
-  const chatPage = pages.find((entry) => String(entry.url || '').includes('/web/geek/chat'));
+  const chatPage = bossPages.find((entry) => String(entry.url || '').includes('/web/geek/chat'));
   if (chatPage) {
     return chatPage;
+  }
+  const safeBossPage = bossPages.find((entry) => !isBlockedBossUrl(entry.url || ''));
+  if (safeBossPage) {
+    return safeBossPage;
   }
   if (!allowNewTab) {
     throw new Error('No existing reusable BOSS page found. Existing-page-only mode refuses new tabs.');

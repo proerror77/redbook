@@ -7,6 +7,7 @@ const {
 } = require('../scripts/boss_apply_playwright');
 const {
   buildCandidateFromMeta,
+  pickReusableTarget,
   extractCompanyProfileText,
   getHeadhunterBlockReasons,
   isChatNavigationSuccess,
@@ -193,6 +194,64 @@ test('apply target validators reject URL mismatches', () => {
     ).reason,
     'target_url_not_verified'
   );
+});
+
+test('cdp_apply_job can reuse an existing safe BOSS homepage tab', async () => {
+  const server = await new Promise((resolve) => {
+    const http = require('node:http');
+    const instance = http.createServer((request, response) => {
+      if (request.url === '/json/list') {
+        response.setHeader('content-type', 'application/json');
+        response.end(JSON.stringify([
+          {
+            type: 'page',
+            url: 'https://www.zhipin.com/',
+            webSocketDebuggerUrl: 'ws://127.0.0.1/devtools/page/home',
+          },
+        ]));
+        return;
+      }
+      response.statusCode = 404;
+      response.end('not found');
+    }).listen(0, () => resolve(instance));
+  });
+  try {
+    const port = server.address().port;
+    const target = await pickReusableTarget(`http://127.0.0.1:${port}`, 'https://www.zhipin.com/job_detail/target.html');
+    assert.equal(target.url, 'https://www.zhipin.com/');
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('cdp_apply_job refuses to reuse an existing blocked BOSS page', async () => {
+  const server = await new Promise((resolve) => {
+    const http = require('node:http');
+    const instance = http.createServer((request, response) => {
+      if (request.url === '/json/list') {
+        response.setHeader('content-type', 'application/json');
+        response.end(JSON.stringify([
+          {
+            type: 'page',
+            url: 'https://www.zhipin.com/web/passport/zp/error.html?tip=x',
+            webSocketDebuggerUrl: 'ws://127.0.0.1/devtools/page/error',
+          },
+        ]));
+        return;
+      }
+      response.statusCode = 404;
+      response.end('not found');
+    }).listen(0, () => resolve(instance));
+  });
+  try {
+    const port = server.address().port;
+    await assert.rejects(
+      () => pickReusableTarget(`http://127.0.0.1:${port}`, 'https://www.zhipin.com/job_detail/target.html'),
+      /Existing-page-only mode refuses new tabs/
+    );
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
 });
 
 test('chat triage entry classification uses opened message text, not just preview', () => {

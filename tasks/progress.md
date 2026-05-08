@@ -4503,6 +4503,24 @@
 - 本轮早期推荐链里有少数岗位过宽，后续已收紧 gate；恢复后应从更慢、更小批的 tab 候选开始，不再长链批量展开详情页推荐。
 - 需要用户先处理 BOSS 一方异常/解禁后，再继续补剩余 2 个。
 
+## [2026-05-08] BOSS trace-supervised try5 硬停
+
+**完成了什么：**
+- 按用户要求尝试用 trace supervisor 投 5 个，但没有进入任何 live apply 成功。
+- 第一次运行 `boss:trace-apply-batch` 时，现有 BOSS tab 被页面带回 `https://www.zhipin.com/` 首页；旧 `pickReusableTarget` 只接受 jobs/detail/chat，导致 probe 阶段停止。
+- 修正 `cdp_apply_job.js`：允许复用安全的现有 BOSS page（例如首页）作为同 tab 导航承载页；仍拒绝 `/web/user/`、`/web/passport/zp/error`、`403`、security/verify/captcha 页面。
+- 第二次运行进入 trace preflight，但 requested job `e676604d...` 期间页面连续漂移到多个其他 `job_detail`，触发 `target_url_mismatch` + `trace_unstable_navigation` hardStop。
+
+**验证：**
+- 本轮 `applied: 0`，本日成功投递仍为 `1`。
+- hardStop 输出保存在本地：`tools/auto-zhipin/data/boss-trace-apply-try5-20260508-r2.json`。
+- 当前 BOSS 页面最终停在普通职位详情页 `首席AI官`，不是异常页；无残留 BOSS apply / collect / trace 进程。
+- `node --check tools/auto-zhipin/scripts/cdp_apply_job.js` 通过。
+- `npm --prefix tools/auto-zhipin test -- --test-name-pattern 'cdp_apply_job|trace_apply'` 通过：133 passed。
+
+**遗留：**
+- 这次证明 supervisor 正常踩刹车；不能继续投 5 个。当前问题是 BOSS 详情页在 probe 期间发生目标漂移，继续投会增加风控风险。
+
 ## [2026-05-08] BOSS trace 自动投递 supervisor
 
 **完成了什么：**
