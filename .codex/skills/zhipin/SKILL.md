@@ -124,6 +124,8 @@ npm run boss:trace-probe -- \
 The wrapper records `data/boss-trace-probe-latest.json` and `data/boss-trace-probe-history.jsonl`, cleans raw `.o11y` by default, and treats trace navigation to a different `job_detail` as `trace_unstable_navigation`. Continue toward live apply only when `okToLiveApply=true`, `targetCheck.ok=true`, `gate.reasons=[]`, and `trace.issues=[]`.
 It also treats trace navigation to `/web/user/`, `/web/passport/zp/error`, `403/code=32/code=38`, security, verify, or captcha URLs as blockers.
 
+Do not use CDP `Page.navigate` to open BOSS `job_detail` URLs. Trace evidence on 2026-05-08 showed BOSS security/front-end code can accept the target page with HTTP 200 and then restore the previous detail page through `historyDifferentDocument` / `BackForwardCacheRestore`. The safe path is current-page entry only: the target job must already be the current detail page or must have a visible `a[href*="/job_detail/"]` anchor on the existing page, then enter it with mouse click events. If the anchor is missing, stop with `target_url_anchor_not_found`; do not paste/navigate the URL.
+
 For any automated live batch, prefer the trace-supervised batch runner instead of calling `boss:apply-cdp` repeatedly:
 
 ```bash
@@ -136,7 +138,7 @@ npm run boss:trace-apply-batch -- \
   --live false
 ```
 
-Default `--live false` only identifies trace-backed eligible candidates. Live mode requires both `BOSS_ENABLE_LIVE_APPLY=1` and `--live true`. The runner performs a health check, trace-backed probe, one DOM-click live apply, live trace replay, ledger-count verification, and cooldown for each candidate. Stop immediately when it reports `hardStop`.
+Default `--live false` only identifies trace-backed eligible candidates. Live mode requires both `BOSS_ENABLE_LIVE_APPLY=1` and `--live true`. The runner performs a health check, trace-backed probe, one current-page mouse-click live apply, live trace replay, ledger-count verification, and cooldown for each candidate. Stop immediately when it reports `hardStop`.
 
 ```bash
 cd /Users/proerror/Documents/redbook
@@ -222,13 +224,11 @@ Inspect matched and skipped results:
 node -e "const r=require('./data/cdp-collect-current-jobs-latest.json'); console.log(JSON.stringify({sourceUrl:r.sourceUrl, matched:r.matched, skipped:r.skipped.slice(0,10)}, null, 2));"
 ```
 
-If the target tab is missing on a search page, navigate back to `https://www.zhipin.com/web/geek/jobs?ka=header-jobs` through the existing CDP page, wait, then collect again. Avoid opening a new visible tab.
-
-Current override: do not navigate back automatically when the user has said not to open or change pages. In that case, stop and report that the expected jobs tab is not available on the existing page.
+If the target tab or jobs list is missing, stop and report that the expected page is not available in the existing browser. Do not navigate back automatically, open a new tab, or recover by URL navigation unless the user explicitly changes the existing-page-only rule.
 
 ### 4. Detail Dry-Run Gate
 
-For each candidate URL, run detail dry-run:
+For each candidate URL, run detail dry-run. This no longer navigates directly to the URL; it succeeds only when the target is already the current detail page or when the current page has a matching visible job-detail anchor that can be clicked:
 
 ```bash
 cd /Users/proerror/Documents/redbook/tools/auto-zhipin

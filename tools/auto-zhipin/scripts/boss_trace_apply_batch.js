@@ -13,6 +13,17 @@ const {
   findTraceNavigationIssues,
   probeOnce,
 } = require('./boss_trace_probe');
+const {
+  buildCandidateFromMeta,
+  clickApply,
+  clickPostApplyReminder,
+  createCdpSession,
+  ensureTargetJobDetail,
+  extractMeta,
+  isChatNavigationSuccess,
+  pickReusableTarget,
+  validateTargetUrl,
+} = require('./cdp_apply_job');
 
 const DEFAULT_CDP_ENDPOINT = 'http://127.0.0.1:9224';
 const TRACE_ROOT = path.resolve(__dirname, '..', '..', '..', '.o11y');
@@ -208,20 +219,117 @@ function findExistingApplicationByUrl(store, url = '', statuses = []) {
   }) || null;
 }
 
-async function tracedLiveApply({ cdpEndpoint, url, config, clickMode, keepTrace, runId }) {
+function recordStickyRedirect(redirectCounts, url = '', threshold = 3) {
+  const normalized = normalizeUrl(url);
+  if (!normalized || !normalized.includes('/job_detail/')) {
+    return null;
+  }
+  const count = (redirectCounts.get(normalized) || 0) + 1;
+  redirectCounts.set(normalized, count);
+  if (count >= threshold) {
+    return { url: normalized, count, threshold };
+  }
+  return null;
+}
+
+function extractRedirectUrl(record = {}) {
+  const traceUrl = (record.traceIssues || [])
+    .map((issue) => normalizeUrl(issue.url || ''))
+    .find((url) => url.includes('/job_detail/'));
+  if (traceUrl) return traceUrl;
+  return normalizeUrl(record.actualUrl || record.before?.url || record.trace?.pages?.at?.(-1)?.url || '');
+}
+
+async function tracedLiveApply({ cdpEndpoint, url, clickMode, keepTrace, runId, store }) {
   const port = String(new URL(cdpEndpoint).port || 9224);
   await runNodeScript('start-capture.mjs', [port, runId, '1']);
   let applyResult;
   try {
-    const args = [
-      '--cdp-endpoint', cdpEndpoint,
-      '--url', url,
-      '--dry-run', 'false',
-      '--focus', 'false',
-      '--click-mode', clickMode,
-    ];
-    if (config) args.push('--config', config);
-    applyResult = await runApply(args);
+    const target = await pickReusableTarget(cdpEndpoint, url);
+    const session = await createCdpSession(target.webSocketDebuggerUrl);
+    try {
+      await session.send('Page.enable');
+      const detail = await ensureTargetJobDetail(session, url, {
+        clickMode,
+        timeoutMs: 8000,
+      });
+      const before = detail.meta || await extractMeta(session) || {};
+      const targetCheck = detail.targetCheck || validateTargetUrl(url, before.url || '');
+      if (!targetCheck.ok) {
+        applyResult = {
+          code: 0,
+          stdout: '',
+          stderr: '',
+          parsed: {
+            success: false,
+            skipped: true,
+            reason: targetCheck.reason,
+            targetCheck,
+            targetEntry: {
+              ok: detail.ok,
+              mode: detail.mode,
+              clickResult: detail.clickResult,
+            },
+            before,
+          },
+        };
+      } else {
+        const clickResult = await clickApply(session, { clickMode });
+        await sleep(1800);
+        const reminderResult = await clickPostApplyReminder(session, { clickMode });
+        await sleep(2500);
+        const after = await extractMeta(session) || {};
+        const success = String(after.actionText || after.body || '').includes('继续沟通')
+          || String(after.body || '').includes('已向BOSS发送消息')
+          || isChatNavigationSuccess(url, after.url || '');
+        const finalCandidate = buildCandidateFromMeta({
+          ...before,
+          ...after,
+          url: before.url || url,
+          company: after.company || before.company,
+          jobName: after.jobName || before.jobName,
+          salaryText: after.salaryText || before.salaryText,
+          infoTags: after.infoTags?.length ? after.infoTags : before.infoTags,
+          companyTags: after.companyTags?.length ? after.companyTags : before.companyTags,
+        }, url);
+        store.upsertJob({
+          ...finalCandidate,
+          collectedAt: nowIso(),
+        });
+        store.upsertApplication({
+          jobId: finalCandidate.jobId,
+          url: finalCandidate.url,
+          title: finalCandidate.title,
+          company: finalCandidate.company,
+          salary: finalCandidate.salaryText,
+          salaryText: finalCandidate.salaryText,
+          location: finalCandidate.location,
+          companySize: finalCandidate.companySize,
+          summary: finalCandidate.summary,
+          status: success ? 'applied' : 'failed',
+          appliedAt: success ? nowIso() : undefined,
+          reasons: success ? [] : [clickResult.reason || 'apply_not_verified'],
+          applyResult: { clickResult, reminderResult, before, after },
+          source: 'boss_trace_apply_batch_current_page',
+          identityKey: finalCandidate.identityKey,
+        });
+        store.save({ operation: 'boss_trace_apply_batch', phase: success ? 'finish' : 'failed', url: after.url || url });
+        applyResult = {
+          code: 0,
+          stdout: '',
+          stderr: '',
+          parsed: {
+            success,
+            clickResult,
+            reminderResult,
+            before,
+            after,
+          },
+        };
+      }
+    } finally {
+      session.close();
+    }
   } finally {
     await sleep(1200);
     await runNodeScript('stop-capture.mjs', [runId]).catch(() => {});
@@ -272,7 +380,8 @@ async function main() {
   const delayMs = Math.max(15000, Number(args['delay-ms'] || 60000));
   const probeDelayMs = Math.max(0, Number(args['probe-delay-ms'] || 5000));
   const maxDriftSkips = Math.max(0, Number(args['max-drift-skips'] || targetSuccesses * 2));
-  const clickMode = String(args['click-mode'] || 'dom');
+  const stickyRedirectThreshold = Math.max(2, Number(args['sticky-redirect-threshold'] || 2));
+  const clickMode = String(args['click-mode'] || 'mouse');
   const keepTrace = parseBoolean(args['keep-trace'], false);
   const startedCount = store.getTodaySuccessfulApplies(new Date());
   const output = {
@@ -284,6 +393,7 @@ async function main() {
     delayMs,
     probeDelayMs,
     maxDriftSkips,
+    stickyRedirectThreshold,
     startedCount,
     applied: [],
     eligibleDryRun: [],
@@ -292,6 +402,7 @@ async function main() {
     hardStop: null,
   };
   let driftSkips = 0;
+  const stickyRedirectCounts = new Map();
 
   for (const candidate of candidates.slice(0, maxProbes)) {
     const existingByUrl = findExistingApplicationByUrl(store, candidate.url, ['applied', 'skipped']);
@@ -350,6 +461,11 @@ async function main() {
       }
       if ((reasons || []).some((reason) => /target_url_|trace_unstable_navigation/.test(reason))) {
         driftSkips += 1;
+        const stickyRedirect = recordStickyRedirect(stickyRedirectCounts, extractRedirectUrl(record), stickyRedirectThreshold);
+        if (stickyRedirect) {
+          output.hardStop = { reason: 'sticky_redirect_to_previous_job', stickyRedirect, record };
+          break;
+        }
         if (driftSkips > maxDriftSkips) {
           output.hardStop = { reason: 'too_many_probe_drifts', driftSkips, maxDriftSkips, record };
           break;
@@ -376,16 +492,17 @@ async function main() {
     const liveResult = await tracedLiveApply({
       cdpEndpoint,
       url: candidate.url,
-      config: args.config,
       clickMode,
       keepTrace,
       runId,
+      store,
     });
     const afterCount = store.getTodaySuccessfulApplies(new Date());
     const traceIssues = liveResult.trace?.issues || [];
     const success = liveResult.applyResult?.parsed?.success === true
       && afterCount === beforeCount + 1
       && !traceIssues.length;
+    const liveSkipReason = liveResult.applyResult?.parsed?.reason || '';
 
     const record = {
       url: candidate.url,
@@ -400,6 +517,27 @@ async function main() {
     };
     if (success) {
       output.applied.push(record);
+    } else if (liveResult.applyResult?.parsed?.skipped === true && /target_url_/.test(liveSkipReason) && !traceIssues.some(isTraceHardStop)) {
+      const skipRecord = {
+        ...record,
+        reasons: [liveSkipReason],
+        phase: 'live_pre_click_recheck',
+      };
+      output.skipped.push(skipRecord);
+      driftSkips += 1;
+      const stickyRedirect = recordStickyRedirect(stickyRedirectCounts, liveResult.applyResult?.parsed?.before?.url || '', stickyRedirectThreshold);
+      if (stickyRedirect) {
+        output.hardStop = { reason: 'sticky_redirect_to_previous_job', stickyRedirect, record: skipRecord };
+        break;
+      }
+      if (driftSkips > maxDriftSkips) {
+        output.hardStop = { reason: 'too_many_live_target_drifts', driftSkips, maxDriftSkips, record: skipRecord };
+        break;
+      }
+      if (probeDelayMs > 0) {
+        await sleep(probeDelayMs);
+      }
+      continue;
     } else {
       output.failed.push(record);
       output.hardStop = {
@@ -448,5 +586,7 @@ module.exports = {
   findExistingApplicationByUrl,
   isCandidateBlockOnly,
   isProbeSkipOnly,
+  recordStickyRedirect,
+  extractRedirectUrl,
   loadCandidates,
 };

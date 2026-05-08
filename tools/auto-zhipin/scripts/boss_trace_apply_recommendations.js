@@ -11,10 +11,14 @@ const { DATA_DIR } = require('../lib/paths');
 const { checkPreApplyCandidate } = require('../lib/opencli_apply_queue');
 const { ZhipinStore } = require('../lib/store');
 const { nowIso, parseArgs } = require('../lib/utils');
-const { classifyUrl } = require('./boss_trace_apply_batch');
+const {
+  classifyUrl,
+  recordStickyRedirect,
+} = require('./boss_trace_apply_batch');
 const {
   buildCandidateFromMeta,
   clickApply,
+  clickJobAnchor,
   clickPostApplyReminder,
   createCdpSession,
   extractMeta,
@@ -179,23 +183,12 @@ async function readCurrentUrl(session) {
   return String(result.result?.result?.value || '');
 }
 
-async function clickRecommendationLink(session, url) {
-  return session.send('Runtime.evaluate', {
-    returnByValue: true,
-    expression: `(() => {
-      function clean(value) { return String(value || '').replace(/\\s+/g, ' ').trim(); }
-      const expected = ${JSON.stringify(normalizeUrl(url))};
-      const nodes = Array.from(document.querySelectorAll('a[href*="/job_detail/"]'));
-      const node = nodes.find((item) => String(item.href || '').split('#')[0] === expected);
-      if (!node) return { ok: false, reason: 'recommendation_anchor_not_found', expected };
-      node.setAttribute('target', '_self');
-      node.scrollIntoView({ block: 'center' });
-      const beforeUrl = location.href;
-      const text = clean(node.innerText || node.textContent || '');
-      node.click();
-      return { ok: true, expected, beforeUrl, text };
-    })()`,
-  }).then((result) => result.result?.result?.value || { ok: false, reason: 'recommendation_click_no_result' });
+async function clickRecommendationLink(session, url, { clickMode = 'mouse' } = {}) {
+  const result = await clickJobAnchor(session, url, { clickMode });
+  if (!result.ok && result.reason === 'target_url_anchor_not_found') {
+    return { ...result, reason: 'recommendation_anchor_not_found' };
+  }
+  return result;
 }
 
 async function waitForExpectedDetail(session, expectedUrl, timeoutMs = 8000) {
@@ -239,7 +232,7 @@ async function runCandidate({ session, cdpEndpoint, store, config, triage, link,
   let gate;
   let applyResult = null;
   try {
-    clickResult = await clickRecommendationLink(session, link.url);
+    clickResult = await clickRecommendationLink(session, link.url, { clickMode });
     if (!clickResult.ok) {
       return { phase: 'click_recommendation', link, clickResult, trace: { runId }, hardStop: false };
     }
@@ -353,8 +346,9 @@ async function main() {
   const maxCandidates = Math.max(targetSuccesses, Number(args['max-candidates'] || targetSuccesses * 10));
   const waitMs = Math.max(2000, Number(args['wait-ms'] || 8000));
   const delayMs = Math.max(15000, Number(args['delay-ms'] || 60000));
-  const clickMode = String(args['click-mode'] || 'dom');
+  const clickMode = String(args['click-mode'] || 'mouse');
   const keepTrace = parseBoolean(args['keep-trace'], false);
+  const stickyRedirectThreshold = Math.max(2, Number(args['sticky-redirect-threshold'] || 2));
   const { config } = loadConfig(args.config);
   const store = new ZhipinStore();
   const triage = readChatTriage();
@@ -387,6 +381,7 @@ async function main() {
     await session.send('Page.enable');
     await session.send('Runtime.enable');
     const seenUrls = new Set();
+    const stickyRedirectCounts = new Map();
 
     while (output.links.length < maxCandidates && output.applied.length < targetSuccesses) {
       const beforeHealth = await readHealth(cdpEndpoint);
@@ -434,6 +429,16 @@ async function main() {
       if (traceIssues.some(isTraceHardStop)) {
         output.hardStop = { reason: 'trace_hard_stop', record: result };
         break;
+      }
+      if (traceIssues.some((issue) => issue.reason === 'trace_unstable_navigation')) {
+        const redirectUrl = traceIssues.find((issue) => issue.reason === 'trace_unstable_navigation')?.url
+          || result.meta?.url
+          || '';
+        const stickyRedirect = recordStickyRedirect(stickyRedirectCounts, redirectUrl, stickyRedirectThreshold);
+        if (stickyRedirect) {
+          output.hardStop = { reason: 'sticky_redirect_to_previous_job', stickyRedirect, record: result };
+          break;
+        }
       }
 
       if (result.phase === 'dry_run_eligible' && result.gate?.allow) {

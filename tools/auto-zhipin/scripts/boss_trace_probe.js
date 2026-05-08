@@ -13,6 +13,7 @@ const { nowIso, parseArgs } = require('../lib/utils');
 const {
   buildCandidateFromMeta,
   createCdpSession,
+  ensureTargetJobDetail,
   extractMeta,
   pickReusableTarget,
   validateTargetUrl,
@@ -202,11 +203,13 @@ async function probeOnce(options) {
       if (parseBoolean(options.focus, false)) {
         await session.send('Page.bringToFront');
       }
-      await session.send('Page.navigate', { url: targetUrl });
-      await sleep(Number(options.waitMs || 2500));
-      const meta = await extractMeta(session) || {};
+      const detail = await ensureTargetJobDetail(session, targetUrl, {
+        clickMode: options.clickMode || 'mouse',
+        timeoutMs: Number(options.waitMs || 8000),
+      });
+      const meta = detail.meta || await extractMeta(session) || {};
       const candidate = buildCandidateFromMeta(meta, targetUrl);
-      const targetCheck = validateTargetUrl(targetUrl, meta.url || '');
+      const targetCheck = detail.targetCheck || validateTargetUrl(targetUrl, meta.url || '');
       const gate = targetCheck.ok
         ? checkPreApplyCandidate({
           store,
@@ -230,6 +233,11 @@ async function probeOnce(options) {
         title: meta.title || '',
         actionText: meta.actionText || '',
         targetCheck,
+        targetEntry: {
+          ok: detail.ok,
+          mode: detail.mode,
+          clickResult: detail.clickResult,
+        },
         gate: {
           allow: gate.allow,
           reasons: gate.reasons,

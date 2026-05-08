@@ -4618,6 +4618,27 @@
 - 这轮不能安全批量 live；问题不是登录封控，而是 BOSS 当前页在自动化 probe 后会跳到其它推荐职位，目标职位无法稳定锁定。
 - 推荐链路径已新增，但当前可见推荐职位不是大厂/已沟通/重复，就是目标漂移；在目标 URL 漂移消失且出现合格候选前不能继续自动 live 投递。
 
+## [2026-05-08] BOSS 禁用 job_detail direct navigate
+
+**完成了什么：**
+- 根据 Browser Trace 证据修正 BOSS 投递入口：`cdp_apply_job.js` 不再默认用 CDP `Page.navigate` 打开岗位详情 URL。
+- 新增 `clickJobAnchor()` / `ensureTargetJobDetail()`：目标岗位必须已经是当前详情页，或当前页面存在匹配 `job_detail` 的可见 anchor，脚本才会用鼠标事件点击进入。
+- `boss_trace_probe.js`、`boss_trace_apply_batch.js`、`boss_trace_apply_recommendations.js` 全部改为 current-page anchor click 路径；没有 anchor 时 fail-closed，不再硬跳 URL。
+- 将 trace 结论写入 `.codex/skills/zhipin/SKILL.md`：遇到 `historyDifferentDocument` / `BackForwardCacheRestore` 风险时，禁止用 direct URL navigation 恢复。
+- 保留 sticky redirect 硬停：反复回到同一个旧岗位时停止批量流程。
+
+**验证：**
+- `node --check tools/auto-zhipin/scripts/cdp_apply_job.js` 通过。
+- `node --check tools/auto-zhipin/scripts/boss_trace_probe.js` 通过。
+- `node --check tools/auto-zhipin/scripts/boss_trace_apply_batch.js` 通过。
+- `node --check tools/auto-zhipin/scripts/boss_trace_apply_recommendations.js` 通过。
+- `npm --prefix tools/auto-zhipin test -- --test-name-pattern 'cdp_apply_job|boss_trace'` 通过：138 passed。
+- `npm --prefix tools/auto-zhipin test` 通过：138 passed。
+
+**遗留：**
+- 本次没有对 BOSS 页面做新的点击或投递。
+- 现在若现有 tab 只停在旧猎头详情页且页面内没有目标岗位 anchor，脚本会停止；需要先由用户手动把现有 tab 恢复到正常 jobs 列表页或可用推荐区。
+
 ## [2026-05-08] BOSS 固定现有页面工作流
 
 **完成了什么：**

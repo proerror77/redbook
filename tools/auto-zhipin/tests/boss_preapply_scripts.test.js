@@ -7,6 +7,7 @@ const {
 } = require('../scripts/boss_apply_playwright');
 const {
   buildCandidateFromMeta,
+  clickJobAnchor,
   pickReusableTarget,
   extractCompanyProfileText,
   getHeadhunterBlockReasons,
@@ -28,6 +29,7 @@ const {
   findExistingApplicationByUrl,
   isCandidateBlockOnly,
   isProbeSkipOnly,
+  recordStickyRedirect,
 } = require('../scripts/boss_trace_apply_batch');
 
 test('boss_apply_playwright builds a non-empty identity from detail metadata', () => {
@@ -178,6 +180,42 @@ test('cdp_apply_job treats matching BOSS chat navigation as an apply success sig
       'https://www.zhipin.com/web/geek/chat?id=x&jobId=other&securityId=y'
     ),
     false
+  );
+});
+
+test('cdp_apply_job clicks existing job anchors with mouse events instead of direct navigation', async () => {
+  const sent = [];
+  const session = {
+    async send(method, params = {}) {
+      sent.push({ method, params });
+      if (method === 'Runtime.evaluate') {
+        return {
+          result: {
+            result: {
+              value: {
+                ok: true,
+                href: 'https://www.zhipin.com/job_detail/target.html',
+                text: 'AI Agent 架构师',
+                beforeUrl: 'https://www.zhipin.com/web/geek/jobs',
+                x: 123,
+                y: 456,
+              },
+            },
+          },
+        };
+      }
+      return {};
+    },
+  };
+
+  const result = await clickJobAnchor(session, 'https://www.zhipin.com/job_detail/target.html', { clickMode: 'mouse' });
+
+  assert.equal(result.ok, true);
+  assert.equal(result.eventTrusted, true);
+  assert.equal(sent.some((entry) => entry.method === 'Page.navigate'), false);
+  assert.deepEqual(
+    sent.filter((entry) => entry.method === 'Input.dispatchMouseEvent').map((entry) => entry.params.type),
+    ['mouseMoved', 'mousePressed', 'mouseReleased']
   );
 });
 
@@ -383,4 +421,15 @@ test('boss_trace_apply_batch finds existing applications by normalized URL befor
     findExistingApplicationByUrl(store, 'https://www.zhipin.com/job_detail/already.html', ['skipped']),
     null
   );
+});
+
+test('boss_trace_apply_batch hard-stops repeated sticky redirects to a previous job', () => {
+  const counts = new Map();
+  assert.equal(recordStickyRedirect(counts, 'https://www.zhipin.com/web/geek/jobs', 2), null);
+  assert.equal(recordStickyRedirect(counts, 'https://www.zhipin.com/job_detail/old.html#ignore', 2), null);
+  assert.deepEqual(recordStickyRedirect(counts, 'https://www.zhipin.com/job_detail/old.html', 2), {
+    url: 'https://www.zhipin.com/job_detail/old.html',
+    count: 2,
+    threshold: 2,
+  });
 });

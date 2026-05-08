@@ -66,6 +66,10 @@ async function evaluate(session, expression) {
   return result.result?.result?.value;
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function ensureJobTab(cdpEndpoint, targetUrl) {
   const pages = await getJson(new URL('/json/list', cdpEndpoint).toString());
   const existing = pages.find((entry) => String(entry.url || '').includes('/job_detail/'));
@@ -90,15 +94,6 @@ async function ensureJobTab(cdpEndpoint, targetUrl) {
     request.end();
   });
   return created;
-}
-
-async function navigateToJob(session, url, { focus = false } = {}) {
-  await session.send('Page.enable');
-  if (focus) {
-    await session.send('Page.bringToFront');
-  }
-  await session.send('Page.navigate', { url });
-  await new Promise((resolve) => setTimeout(resolve, 2500));
 }
 
 async function extractMeta(session) {
@@ -208,6 +203,129 @@ async function dispatchMouseClick(session, target) {
     button: 'left',
     clickCount: 1,
   });
+}
+
+async function clickJobAnchor(session, targetUrl, options = {}) {
+  const clickMode = normalizeClickMode(options.clickMode);
+  const targetId = extractJobDetailId(targetUrl);
+  if (!targetId) {
+    return { ok: false, reason: 'target_url_not_a_job_detail', targetUrl };
+  }
+  const target = await evaluate(session, `(() => {
+    function normalize(value) {
+      return String(value || '').replace(/\\s+/g, ' ').trim();
+    }
+    function isVisible(node) {
+      if (!node) return false;
+      const style = window.getComputedStyle(node);
+      if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) return false;
+      const rect = node.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    }
+    const targetId = ${JSON.stringify(targetId)};
+    const nodes = Array.from(document.querySelectorAll('a[href*="/job_detail/"]'));
+    const node = nodes.find((item) => {
+      const href = String(item.href || '').split('#')[0];
+      return href.includes('/job_detail/' + targetId + '.html');
+    });
+    if (!node) {
+      return { ok: false, reason: 'target_url_anchor_not_found', targetId, currentUrl: location.href };
+    }
+    node.setAttribute('target', '_self');
+    node.scrollIntoView({ block: 'center', inline: 'center' });
+    if (!isVisible(node)) {
+      return { ok: false, reason: 'target_url_anchor_not_visible', targetId, currentUrl: location.href };
+    }
+    const rect = node.getBoundingClientRect();
+    return {
+      ok: true,
+      href: String(node.href || '').split('#')[0],
+      text: normalize(node.innerText || node.textContent || ''),
+      beforeUrl: location.href,
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2,
+    };
+  })()`);
+  if (!target?.ok) {
+    return target || { ok: false, reason: 'target_url_anchor_not_found', targetUrl };
+  }
+  if (clickMode === 'dom') {
+    const domResult = await evaluate(session, `(() => {
+      const targetId = ${JSON.stringify(targetId)};
+      const node = Array.from(document.querySelectorAll('a[href*="/job_detail/"]'))
+        .find((item) => String(item.href || '').split('#')[0].includes('/job_detail/' + targetId + '.html'));
+      if (!node) return { ok: false, reason: 'target_url_anchor_not_found', targetId, currentUrl: location.href };
+      node.setAttribute('target', '_self');
+      node.scrollIntoView({ block: 'center', inline: 'center' });
+      const beforeUrl = location.href;
+      node.click();
+      return { ok: true, beforeUrl, afterUrl: location.href };
+    })()`);
+    return {
+      ...target,
+      ...domResult,
+      clickMode,
+      eventTrusted: false,
+    };
+  }
+  await dispatchMouseClick(session, target);
+  return { ...target, clickMode, eventTrusted: true };
+}
+
+async function ensureTargetJobDetail(session, targetUrl, options = {}) {
+  const timeoutMs = Math.max(1000, Number(options.timeoutMs || 8000));
+  const current = await extractMeta(session) || {};
+  const currentCheck = validateTargetUrl(targetUrl, current.url || '');
+  if (currentCheck.ok && current.jobName) {
+    return {
+      ok: true,
+      mode: 'already_on_target',
+      targetCheck: currentCheck,
+      clickResult: null,
+      meta: current,
+    };
+  }
+
+  const clickResult = await clickJobAnchor(session, targetUrl, { clickMode: options.clickMode });
+  if (!clickResult.ok) {
+    return {
+      ok: false,
+      mode: 'anchor_click',
+      targetCheck: {
+        ok: false,
+        reason: clickResult.reason || currentCheck.reason || 'target_url_anchor_not_found',
+        expectedUrl: targetUrl,
+        actualUrl: current.url || '',
+      },
+      clickResult,
+      meta: current,
+    };
+  }
+
+  const deadline = Date.now() + timeoutMs;
+  let latest = current;
+  while (Date.now() < deadline) {
+    await sleep(350);
+    latest = await extractMeta(session) || {};
+    const targetCheck = validateTargetUrl(targetUrl, latest.url || '');
+    if (targetCheck.ok && latest.jobName) {
+      return {
+        ok: true,
+        mode: 'anchor_click',
+        targetCheck,
+        clickResult,
+        meta: latest,
+      };
+    }
+  }
+  const targetCheck = validateTargetUrl(targetUrl, latest?.url || '');
+  return {
+    ok: false,
+    mode: 'anchor_click',
+    targetCheck,
+    clickResult,
+    meta: latest || {},
+  };
 }
 
 async function clickApply(session, options = {}) {
@@ -543,11 +661,13 @@ async function main() {
     if (focus) {
       await session.send('Page.bringToFront');
     }
-    await session.send('Page.navigate', { url: args.url });
-    await new Promise((resolve) => setTimeout(resolve, 2500));
-    const before = await extractMeta(session) || {};
+    const detail = await ensureTargetJobDetail(session, args.url, {
+      clickMode,
+      timeoutMs: args['target-wait-ms'] || 8000,
+    });
+    const before = detail.meta || {};
     const beforeCandidate = buildCandidateFromMeta(before, args.url);
-    const targetCheck = validateTargetUrl(args.url, before.url || '');
+    const targetCheck = detail.targetCheck || validateTargetUrl(args.url, before.url || '');
     const headhunterReasons = getHeadhunterBlockReasons(beforeCandidate, before);
     const gate = targetCheck.ok
       ? checkPreApplyCandidate({
@@ -573,6 +693,11 @@ async function main() {
         dryRun: true,
         ok: Boolean(before.jobName) && gate.allow,
         targetCheck,
+        targetEntry: {
+          ok: detail.ok,
+          mode: detail.mode,
+          clickResult: detail.clickResult,
+        },
         gate,
         result: before,
       }, null, 2));
@@ -588,6 +713,11 @@ async function main() {
         skipped: true,
         reason: gate.reasons[0] || 'pre_apply_blocked',
         targetCheck,
+        targetEntry: {
+          ok: detail.ok,
+          mode: detail.mode,
+          clickResult: detail.clickResult,
+        },
         gate,
         before,
       }, null, 2));
@@ -657,8 +787,10 @@ if (require.main === module) {
 module.exports = {
   buildCandidateFromMeta,
   clickApply,
+  clickJobAnchor,
   clickPostApplyReminder,
   createCdpSession,
+  ensureTargetJobDetail,
   extractCompanyProfileText,
   extractMeta,
   extractJobDetailId,
