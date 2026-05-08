@@ -25,6 +25,7 @@ const {
 } = require('../scripts/boss_trace_probe');
 const {
   classifyUrl: classifyTraceApplyUrl,
+  findExistingApplicationByUrl,
   isCandidateBlockOnly,
 } = require('../scripts/boss_trace_apply_batch');
 
@@ -296,6 +297,22 @@ test('boss_trace_probe flags trace navigation to a different job detail', () => 
   }]);
 });
 
+test('boss_trace_probe ignores pre-existing detail pages before the expected target appears', () => {
+  const issues = findTraceNavigationIssues({
+    pages: [
+      { pageId: 0, url: 'https://www.zhipin.com/job_detail/old.html' },
+      { pageId: 1, url: 'https://www.zhipin.com/job_detail/expected.html' },
+      { pageId: 2, url: 'https://www.zhipin.com/job_detail/other.html' },
+    ],
+  }, 'https://www.zhipin.com/job_detail/expected.html');
+
+  assert.deepEqual(issues, [{
+    reason: 'trace_unstable_navigation',
+    pageId: 2,
+    url: 'https://www.zhipin.com/job_detail/other.html',
+  }]);
+});
+
 test('boss_trace_probe flags auth security and abnormal account trace pages', () => {
   const issues = findTraceBlockingIssues({
     pages: [
@@ -324,4 +341,28 @@ test('boss_trace_apply_batch separates candidate blocks from session blockers', 
   assert.equal(isCandidateBlockOnly(['salary_below_minimum', 'duplicate_identity']), true);
   assert.equal(isCandidateBlockOnly(['trace_abnormal_account_navigation']), false);
   assert.equal(isCandidateBlockOnly(['target_url_mismatch']), false);
+});
+
+test('boss_trace_apply_batch finds existing applications by normalized URL before probing', () => {
+  const store = {
+    ledger: {
+      applications: {
+        one: {
+          jobId: 'https://www.zhipin.com/job_detail/already.html',
+          url: 'https://www.zhipin.com/job_detail/already.html#ignored',
+          status: 'applied',
+          identityKey: 'company::title',
+        },
+      },
+    },
+  };
+
+  assert.equal(
+    findExistingApplicationByUrl(store, 'https://www.zhipin.com/job_detail/already.html')?.status,
+    'applied'
+  );
+  assert.equal(
+    findExistingApplicationByUrl(store, 'https://www.zhipin.com/job_detail/already.html', ['skipped']),
+    null
+  );
 });

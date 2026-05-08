@@ -120,11 +120,19 @@ function findTraceNavigationIssues(traceSummary, expectedUrl = '') {
     return [];
   }
 
+  let sawExpected = false;
   return (traceSummary.pages || [])
     .map((page) => {
       const url = String(page.url || '');
       const actualId = url.match(/\/job_detail\/([^/.?#]+)\.html/i)?.[1] || '';
-      if (!actualId || actualId === expectedId) {
+      if (!actualId) {
+        return null;
+      }
+      if (actualId === expectedId) {
+        sawExpected = true;
+        return null;
+      }
+      if (!sawExpected) {
         return null;
       }
       return {

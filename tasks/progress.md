@@ -4503,6 +4503,24 @@
 - 本轮早期推荐链里有少数岗位过宽，后续已收紧 gate；恢复后应从更慢、更小批的 tab 候选开始，不再长链批量展开详情页推荐。
 - 需要用户先处理 BOSS 一方异常/解禁后，再继续补剩余 2 个。
 
+## [2026-05-08] BOSS trace hardStop 原因复查
+
+**完成了什么：**
+- 复查 `data/boss-trace-apply-try5-20260508-r2.json` 和 `data/boss-trace-probe-latest.json`，确认这次 try5 不是登录异常：没有 `/web/user/`、`/web/passport/zp/error`、403、security/verify/captcha blocker。
+- trace 显示 requested URL `e676604d...` 确实出现过一次，但随后页面继续跳到其他 `job_detail`，最终 `actualUrl` 是另一个职位，所以 supervisor 以 `target_url_mismatch` / `trace_unstable_navigation` 硬停。
+- 查账本确认 `e676604d...` 今天已经成功投过一次（上海语生科学技术 / AI Agent 产品负责人），runner 不应再次 probe 这个 URL。
+- 修正 `boss_trace_apply_batch.js`：live/probe 前先按 normalized URL 跳过本地账本里已经 `applied` / `skipped` 的候选，避免反复打开已处理详情页。
+- 修正 `boss_trace_probe.js`：trace 中 expected target 出现之前的旧 `job_detail` 不再计为目标漂移；只有 expected target 出现后又跳到其他 `job_detail` 才算 `trace_unstable_navigation`。
+
+**验证：**
+- `node --check tools/auto-zhipin/scripts/boss_trace_probe.js` 通过。
+- `node --check tools/auto-zhipin/scripts/boss_trace_apply_batch.js` 通过。
+- `npm --prefix tools/auto-zhipin test -- --test-name-pattern 'boss_trace|trace_apply|cdp_apply_job'` 通过：135 passed。
+
+**遗留：**
+- 本次只修正 supervisor 判定和已处理 URL 跳过，没有继续 live apply。
+- 下一次如果继续试投，应先跑 `boss:trace-apply-batch --live false`，确认它跳过已投 URL并找到新的 eligible candidate，再做单点 live。
+
 ## [2026-05-08] BOSS trace-supervised try5 硬停
 
 **完成了什么：**

@@ -187,6 +187,17 @@ function isCandidateBlockOnly(reasons = []) {
   return reasons.length > 0 && reasons.every((reason) => !/^trace_|target_url_|auth|restricted|security|login/i.test(reason));
 }
 
+function findExistingApplicationByUrl(store, url = '', statuses = []) {
+  const targetUrl = normalizeUrl(url);
+  if (!targetUrl) return null;
+  return Object.values(store.ledger.applications || {}).find((application) => {
+    const applicationUrl = normalizeUrl(application.url || application.jobId || '');
+    if (applicationUrl !== targetUrl) return false;
+    if (!statuses.length) return true;
+    return statuses.includes(application.status);
+  }) || null;
+}
+
 async function tracedLiveApply({ cdpEndpoint, url, config, clickMode, keepTrace, runId }) {
   const port = String(new URL(cdpEndpoint).port || 9224);
   await runNodeScript('start-capture.mjs', [port, runId, '1']);
@@ -268,6 +279,23 @@ async function main() {
   };
 
   for (const candidate of candidates.slice(0, maxProbes)) {
+    const existingByUrl = findExistingApplicationByUrl(store, candidate.url, ['applied', 'skipped']);
+    if (existingByUrl) {
+      output.skipped.push({
+        url: candidate.url,
+        title: candidate.title || existingByUrl.title || '',
+        company: candidate.company || existingByUrl.company || '',
+        reasons: [`existing_${existingByUrl.status}_url`],
+        existingApplication: {
+          jobId: existingByUrl.jobId,
+          status: existingByUrl.status,
+          identityKey: existingByUrl.identityKey,
+          appliedAt: existingByUrl.appliedAt,
+        },
+      });
+      continue;
+    }
+
     const beforeHealth = await readHealth(cdpEndpoint);
     if (!beforeHealth.ok) {
       output.hardStop = { reason: 'pre_health_blocked', health: beforeHealth };
@@ -392,6 +420,7 @@ if (require.main === module) {
 
 module.exports = {
   classifyUrl,
+  findExistingApplicationByUrl,
   isCandidateBlockOnly,
   loadCandidates,
 };
