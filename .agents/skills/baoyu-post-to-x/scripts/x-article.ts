@@ -1377,7 +1377,13 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
             };
             const isEnabled = (el) => !el.disabled && el.getAttribute('aria-disabled') !== 'true';
             const labelOf = (el) => (el.innerText || el.textContent || el.getAttribute('aria-label') || '').trim();
-            const isPublishLabel = (label) => label === '发布' || /^publish$/i.test(label);
+            const isPublishLabel = (label) => {
+              const normalized = (label || '').trim();
+              return normalized === '发布'
+                || normalized === '公开'
+                || /^publish$/i.test(normalized)
+                || /发布文章|publish article/i.test(normalized);
+            };
             const buttons = Array.from(document.querySelectorAll('button, a, [role="button"]'));
             const matchingButtons = buttons.filter((el) => isVisible(el) && isEnabled(el) && isPublishLabel(labelOf(el)));
             const dialogButton = matchingButtons.find((el) => el.closest('[role="dialog"], [aria-modal="true"]'));
@@ -1401,7 +1407,8 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
                 disabled: el.disabled || el.getAttribute('aria-disabled'),
                 rect: (() => { const r = el.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; })(),
               }))
-              .slice(0, 40);
+              .filter((item) => item.label || item.aria || item.testid)
+              .slice(-120);
             return false;
           })()`,
           returnByValue: true,
@@ -1409,9 +1416,95 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
         return result.result.value;
       };
 
-      const openedPublishSheet = await clickPublish();
+      const openPreviewAndVerify = async (): Promise<boolean> => {
+        const previewSelectors = JSON.stringify(I18N_SELECTORS.previewButton);
+        const previewClicked = await cdp!.send<{ result: { value: boolean } }>('Runtime.evaluate', {
+          expression: `(() => {
+            const selectors = ${previewSelectors};
+            for (const sel of selectors) {
+              const el = document.querySelector(sel);
+              if (el) { el.click(); return true; }
+            }
+            const textButton = Array.from(document.querySelectorAll('button, a, [role="button"]'))
+              .find((el) => (el.textContent || '').trim() === '预览' || /^preview$/i.test((el.textContent || '').trim()));
+            if (textButton) { textButton.click(); return true; }
+            return false;
+          })()`,
+          returnByValue: true,
+        }, { sessionId });
+
+        if (!previewClicked.result.value) return false;
+        console.log('[x-article] Preview opened before publish');
+        await sleep(3000);
+        if (parsed.contentImages.length > 0) {
+          const expectedMediaImages = parsed.contentImages.length + (parsed.coverImage ? 1 : 0);
+          const previewImageCheck = await cdp!.send<{ result: { value: { mediaImages: number; bodyText: string } } }>('Runtime.evaluate', {
+            expression: `(() => {
+              const mediaImages = Array.from(document.images)
+                .filter((img) => (img.currentSrc || img.src || '').includes('pbs.twimg.com/media') && img.naturalWidth > 500)
+                .length;
+              return { mediaImages, bodyText: document.body.innerText.slice(0, 1000) };
+            })()`,
+            returnByValue: true,
+          }, { sessionId });
+
+          const { mediaImages, bodyText } = previewImageCheck.result.value;
+          if (mediaImages < expectedMediaImages) {
+            throw new Error(`X Article preview persisted ${mediaImages}/${expectedMediaImages} expected media images before publish. Body: ${bodyText.slice(0, 160)}`);
+          }
+          console.log(`[x-article] Preview media verification passed (${mediaImages}/${expectedMediaImages}) before publish`);
+        }
+        return true;
+      };
+
+      let openedPublishSheet = await clickPublish();
       if (!openedPublishSheet) {
-        throw new Error('Publish button not found');
+        const previewOpened = await openPreviewAndVerify();
+        if (previewOpened) {
+          openedPublishSheet = await clickPublish();
+        }
+      }
+      if (!openedPublishSheet) {
+        console.log('[x-article] Publish button not visible; reopening latest article draft...');
+        await cdp.send('Page.navigate', { url: X_ARTICLES_URL }, { sessionId });
+        await sleep(4000);
+
+        const openedDraft = await cdp.send<{ result: { value: { ok: boolean; url: string; bodyText: string } } }>('Runtime.evaluate', {
+          expression: `(() => {
+            const title = ${JSON.stringify(parsed.title)};
+            const isVisible = (el) => {
+              const rect = el.getBoundingClientRect();
+              const style = getComputedStyle(el);
+              return rect.width > 0 && rect.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
+            };
+            const titleCards = Array.from(document.querySelectorAll('a'))
+              .filter((el) => isVisible(el) && (el.innerText || '').includes(title));
+            const card = titleCards[0];
+            if (card) card.click();
+            return { ok: !!card, url: location.href, bodyText: document.body.innerText.slice(0, 1200) };
+          })()`,
+          returnByValue: true,
+        }, { sessionId });
+
+        if (openedDraft.result.value.ok) {
+          console.log('[x-article] Latest article draft opened');
+          await sleep(4000);
+          openedPublishSheet = await clickPublish();
+        } else {
+          console.log(`[x-article] Latest article draft not found. URL: ${openedDraft.result.value.url}. Body: ${openedDraft.result.value.bodyText.slice(0, 240)}`);
+        }
+
+        if (!openedPublishSheet) {
+        const candidates = await cdp.send<{ result: { value: unknown } }>('Runtime.evaluate', {
+          expression: `(() => ({
+            url: location.href,
+            bodyText: document.body.innerText.slice(0, 1200),
+            candidates: window.__xArticlePublishCandidates || [],
+          }))()`,
+          returnByValue: true,
+        }, { sessionId });
+        throw new Error(`Publish button not found. Candidates: ${JSON.stringify(candidates.result.value).slice(0, 1200)}`);
+        }
       }
       await sleep(2500);
       const confirmedPublish = await clickPublish();

@@ -46,6 +46,8 @@ Persona：
 - [x] 未使用普通 X 主帖多图 gallery 结构。
 - [x] 参考来源集中放在文末，正文只保留必要来源锚点。
 - [x] 结尾有可转发判断公式。
+- [x] 已补充正式 X 文章审核：`X文章审核报告.md`，结论为 pass for X Article publish。
+- [x] X Article 发布版已移除 Markdown 表格，改为条目式结构，避免平台渲染成表格源码。
 - [x] 风险：正式发布前需要确认 X Article 后台是否可用；如果只能发普通 X，应改成 thread-per-image。
 
 ## 小红书审稿
@@ -63,10 +65,14 @@ Persona：
 - [x] 选择 `infographic-engine` 模板，不用泛科技插画。
 - [x] Prompt 约束了标题、文字预算、安全边距和禁用元素。
 - [x] 实际图片已生成并人工检查：4 张 PNG 均为 1920x1080，非空白，未发现明显错字、随机小字或主体文字重叠。
-- [x] 生成 API 状态已记录：Tuzi token 失效，Google image quota 用尽；本轮改用本地 HTML/CSS 信息图渲染成 PNG，保留 GPT-Image2 prompt 供后续重生。
+- [x] 生成 API 状态已记录：Tuzi token 失效，Google image quota 用尽；已按用户纠正改用 Codex native Image generation 生成 4 张 16:9 PNG。
+- [x] Codex 图片人工检查：四张图均为 16:9，非空白，未发现明显错字、随机小字或主体文字重叠。
 
 ## 发布状态
 
-- [ ] 用户尚未明确说“发布 / 直接发”，所以不能 submit。
-- [ ] 待用户确认发布后，X 需走 `tools/redbookctl x-login` + X Article / thread 载体确认。
+- [x] 用户已明确要求“上传到 x 网站的长文版发布”，可以 submit。
+- [x] X 登录检查通过：`Smileyface @0xcybersmile`。
+- [x] X Article 已发布：`https://x.com/0xcybersmile/status/2052944836538630189`。
+- [x] 发布后回读公开 URL：状态页正文可见，页面标题匹配文章标题。
+- [x] 图片持久化证据：状态页检测到 4 张 `pbs.twimg.com/media` 图片。
 - [ ] 小红书需走 `tools/redbookctl xhs-health` 并回读平台侧证据。

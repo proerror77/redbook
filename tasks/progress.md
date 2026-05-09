@@ -25,6 +25,19 @@
 - X 长文若无法使用 X Article，必须改成 thread-per-image；不能用普通 X 主帖多图 gallery 冒充正文插图。
 - 小红书图文还未生成 3:4 最终卡片，目前完成的是卡片稿和分镜。
 
+## [2026-05-09] 纠偏：企业导入 AI 长文改用 Codex Image + X Article 发布门
+
+**完成了什么：**
+- 按用户纠正，补走 Codex native Image generation：生成并接入 4 张 X Article 16:9 配图。
+- `X-Article发布版.md` 已替换为 Codex 图片引用，不再使用本地 HTML/CSS fallback 图作为发布资产。
+- 补充 `X文章审核报告.md`，结论为 `pass for X Article publish`。
+- `tools/redbookctl x-login --timeout-ms 45000` 通过，发布账号为 `Smileyface @0xcybersmile`。
+
+**待验证：**
+- X Article 已发布并验证：`https://x.com/0xcybersmile/status/2052944836538630189`。
+- 平台侧回读检测到 4 张 `pbs.twimg.com/media` 图片，正文标题和首段可见。
+- 小红书图文仍未发布；当前仅完成稿件与分镜。
+
 ## [2026-05-08] 会话摘要：Codex Chrome Extension 浏览器优先级固化
 
 **完成了什么：**
