@@ -4,6 +4,27 @@
 
 ---
 
+## [2026-05-09] 会话摘要：企业导入 AI 长文与配图内容包
+
+**完成了什么：**
+- 按 Lane C 创建内容 run：`20260509-020521-企业导入ai不是买模型而是重构管理系统-86c12b`。
+- 完成内容包：`01-内容生产/02-制作中的选题/2026-05-09-企业导入AI不是买模型而是重构管理系统/`。
+- 产出 `素材来源.md`、`平台编排.md`、`长文发布版.md`、`X-Article发布版.md`、`小红书图文稿.md`、`图文分镜.md`、`QA报告.md`、`发布清单.md`、`发布记录.md`。
+- 核验官方来源：Microsoft AI strategy、NIST AI RMF、Google Cloud data governance、ISO/IEC 42001。
+- 使用 `gpt-image-2-style-library` 的 `infographic-engine` 方向做视觉分镜和 prompt；Tuzi key 失效、Google 图像额度耗尽后，改用本地 HTML/CSS artboard + Playwright screenshot 生成 4 张 16:9 PNG。
+
+**验证：**
+- `python3 tools/wiki_workflow.py query --topic "企业导入AI AI Ready 数位员工 Agent OS 权限治理 流程标准化 数据可用性" --date 2026-05-09` 生成 wiki query 报告。
+- Harness review gate 通过：`qa_report` 和 `publish_checklist` 均 `ok: true`。
+- 4 张图片均为 `PNG image data, 1920 x 1080, 8-bit/color RGB, non-interlaced`。
+- 人工查看 4 张图：非空白，未发现明显错字、随机小字或主体文字重叠；重渲染了第 4 张路线图以避免标题区压迫。
+- `git diff --check` 通过。
+
+**遗留：**
+- 未发布。必须等用户明确说“发布 / 直接发”后再 submit。
+- X 长文若无法使用 X Article，必须改成 thread-per-image；不能用普通 X 主帖多图 gallery 冒充正文插图。
+- 小红书图文还未生成 3:4 最终卡片，目前完成的是卡片稿和分镜。
+
 ## [2026-05-08] 会话摘要：Codex Chrome Extension 浏览器优先级固化
 
 **完成了什么：**

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="./style.css">
+  <title>AI Ready 五要素</title>
+  <style>
+    .header { position: absolute; left: 112px; top: 86px; right: 112px; display: flex; justify-content: space-between; align-items: flex-start; }
+    .main-title { font-size: 72px; font-weight: 880; margin: 0; }
+    .system { position: absolute; left: 220px; top: 270px; width: 1480px; height: 600px; }
+    .flow { position: absolute; left: 120px; right: 120px; top: 282px; height: 26px; background: #26302c; border-radius: 18px; }
+    .arrow { position: absolute; right: 92px; top: 260px; width: 0; height: 0; border-top: 36px solid transparent; border-bottom: 36px solid transparent; border-left: 64px solid #26302c; }
+    .ai { left: 620px; top: 210px; width: 240px; height: 170px; border-radius: 18px; background: #e9dfcf; font-size: 34px; }
+    .n1 { left: 48px; top: 34px; width: 270px; height: 150px; border-radius: 10px; color: #2f756f; }
+    .n2 { left: 438px; top: 0; width: 270px; height: 150px; border-radius: 10px; }
+    .n3 { right: 438px; top: 0; width: 270px; height: 150px; border-radius: 10px; color: #b7792b; }
+    .n4 { right: 48px; top: 34px; width: 270px; height: 150px; border-radius: 10px; }
+    .n5 { left: 605px; bottom: 0; width: 300px; height: 150px; border-radius: 10px; color: #b7792b; }
+    .connector { position: absolute; width: 3px; background: #9aa096; opacity: .8; }
+    .c1 { left: 182px; top: 184px; height: 118px; transform: rotate(-48deg); }
+    .c2 { left: 560px; top: 150px; height: 130px; transform: rotate(-18deg); }
+    .c3 { right: 560px; top: 150px; height: 130px; transform: rotate(18deg); }
+    .c4 { right: 182px; top: 184px; height: 118px; transform: rotate(48deg); }
+    .c5 { left: 748px; top: 380px; height: 96px; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="header">
+      <div>
+        <div class="eyebrow">Operating Blueprint</div>
+        <h1 class="main-title">AI Ready 五要素</h1>
+      </div>
+      <div class="caption" style="width:470px;margin-top:20px;">不是一套工具，而是一套能让 AI 安全接手流程的组织系统。</div>
+    </div>
+    <section class="system">
+      <div class="flow"></div><div class="arrow"></div>
+      <div class="connector c1"></div><div class="connector c2"></div><div class="connector c3"></div><div class="connector c4"></div><div class="connector c5"></div>
+      <div class="node ai">AI 接入流程</div>
+      <div class="node n1">流程可描述</div>
+      <div class="node n2">数据可检索</div>
+      <div class="node n3">权限可控制</div>
+      <div class="node n4">结果可评估</div>
+      <div class="node n5">风险可治理</div>
+    </section>
+    <div class="footer">AI Ready = workflow + data + permission + evaluation + governance</div>
+  </main>
+</body>
+</html>

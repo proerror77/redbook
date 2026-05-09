@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="./style.css">
+  <title>不是缺模型</title>
+  <style>
+    .copy { position: absolute; left: 112px; top: 118px; width: 620px; }
+    .building { position: absolute; right: 112px; top: 118px; width: 1020px; height: 790px; border: 4px solid #26302c; background: rgba(255,255,255,.42); }
+    .floor { position: absolute; left: 54px; right: 54px; height: 104px; border: 3px solid #d6cdbc; background: rgba(255,255,255,.54); }
+    .f1 { top: 86px; } .f2 { top: 230px; } .f3 { top: 374px; } .f4 { top: 518px; }
+    .module { position: absolute; top: 22px; width: 150px; height: 54px; border: 2px solid #26302c; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; background: #fbfaf5; }
+    .m1 { left: 80px; } .m2 { left: 280px; } .m3 { left: 500px; } .m4 { right: 80px; }
+    .pipe { position: absolute; left: 76px; right: 76px; height: 12px; top: 50px; background: #2f756f; }
+    .break { position: absolute; top: 38px; width: 42px; height: 36px; background: #f6f3ec; border-left: 4px solid #b7792b; border-right: 4px solid #b7792b; transform: rotate(8deg); }
+    .b1 { left: 420px; } .b2 { left: 705px; }
+    .roof { position: absolute; left: 295px; top: -74px; width: 430px; height: 74px; border: 4px solid #26302c; border-bottom: 0; background: #e9dfcf; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 850; }
+    .audit { position: absolute; right: 62px; bottom: 54px; width: 260px; height: 96px; border: 2px dashed #b7792b; padding: 16px; font-size: 22px; font-weight: 800; color: #76501f; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <section class="copy">
+      <div class="eyebrow">AI Readiness</div>
+      <h1 class="title">不是缺模型</h1>
+      <div class="subtitle">是流程还没准备好</div>
+      <p class="caption" style="margin-top:54px;width:520px;">企业导入 AI 的第一问，不是买哪个模型，而是哪段工作已经清楚到可以被 AI 接管。</p>
+    </section>
+    <section class="building">
+      <div class="roof">AI Model</div>
+      <div class="floor f1"><div class="pipe"></div><div class="module m1">客户资料</div><div class="module m2">销售流程</div><div class="module m3">审批</div><div class="module m4">复核</div></div>
+      <div class="floor f2"><div class="pipe"></div><div class="break b1"></div><div class="module m1">合同</div><div class="module m2">权限</div><div class="module m3">法务</div><div class="module m4">日志</div></div>
+      <div class="floor f3"><div class="pipe"></div><div class="break b2"></div><div class="module m1">工单</div><div class="module m2">SOP</div><div class="module m3">升级</div><div class="module m4">指标</div></div>
+      <div class="floor f4"><div class="pipe"></div><div class="module m1">数据</div><div class="module m2">语义</div><div class="module m3">工具</div><div class="module m4">治理</div></div>
+      <div class="audit">Audit trail<br>Review gate</div>
+    </section>
+    <div class="footer">企业 AI 导入成熟度诊断</div>
+  </main>
+</body>
+</html>

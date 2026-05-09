@@ -2,6 +2,29 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-05-09 企业导入 AI 长文与配图
+
+- Owner: Codex
+- Source: User provided a detailed AI Readiness thesis and asked to complete the longform post with images through the Redbook workflow.
+- Status: review_ready_pending_publish_confirmation
+- Harness run: `20260509-020521-企业导入ai不是买模型而是重构管理系统-86c12b`
+
+### Cleanup Plan
+
+- [x] Query wiki and confirm this belongs to the AI Agent enterprise-adoption main line.
+- [x] Verify official external references for Microsoft AI strategy, NIST AI RMF, Google Cloud data governance, and ISO/IEC 42001.
+- [x] Create the Lane C content package: sources, platform orchestration, longform draft, X Article version, Xiaohongshu card copy, storyboard, QA, and publish checklist.
+- [x] Generate or prepare image assets with the GPT-Image2 editorial prompt workflow.
+- [x] Run harness gates plus markdown/link checks, update progress, and commit scoped changes.
+
+### Review
+
+- Created the full Lane C content package under `01-内容生产/02-制作中的选题/2026-05-09-企业导入AI不是买模型而是重构管理系统/`.
+- Drafted the longform article, X Article inline-image version, Xiaohongshu enterprise card copy, storyboard, QA report, and publish checklist.
+- Generated 4 local-rendered 16:9 PNG article images after Tuzi returned `Invalid Token` and Google image generation returned quota exhaustion.
+- Harness review gate passed; publishing remains blocked until the user explicitly confirms.
+
+
 ## 2026-05-08 BOSS Codex Chrome Extension Priority
 
 - Owner: Codex

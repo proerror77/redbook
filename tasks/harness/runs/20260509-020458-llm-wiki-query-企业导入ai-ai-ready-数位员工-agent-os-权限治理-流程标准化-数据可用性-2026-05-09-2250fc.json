@@ -1,0 +1,87 @@
+{
+  "run_id": "20260509-020458-llm-wiki-query-企业导入ai-ai-ready-数位员工-agent-os-权限治理-流程标准化-数据可用性-2026-05-09-2250fc",
+  "kind": "content_pipeline",
+  "topic": "LLM Wiki query 企业导入AI AI Ready 数位员工 Agent OS 权限治理 流程标准化 数据可用性 2026-05-09",
+  "summary": "显式记录一次 wiki query：企业导入AI AI Ready 数位员工 Agent OS 权限治理 流程标准化 数据可用性",
+  "source": "wiki/index.md",
+  "owner": "Codex",
+  "priority": "P1",
+  "current_stage": "research",
+  "status": "done",
+  "created_at": "2026-05-09T02:04:58+00:00",
+  "updated_at": "2026-05-09T02:04:58+00:00",
+  "artifacts": [
+    {
+      "id": "2fee140caf",
+      "type": "research_report",
+      "path": "docs/reports/wiki-query-企业导入ai-ai-ready-数位员工-agent-os-权限治理-流程标准化-数据可用性-2026-05-09.md",
+      "description": "Wiki query report for topic: 企业导入AI AI Ready 数位员工 Agent OS 权限治理 流程标准化 数据可用性",
+      "stage": "research",
+      "created_at": "2026-05-09T02:04:58+00:00"
+    }
+  ],
+  "checks": {
+    "materials_queried": true,
+    "research_complete": true,
+    "outline_locked": false,
+    "draft_written": false,
+    "facts_checked": false,
+    "platform_ready": false,
+    "published": false,
+    "progress_updated": false,
+    "wiki_logged": false,
+    "lessons_reviewed": false
+  },
+  "incidents": [],
+  "events": [
+    {
+      "at": "2026-05-09T02:04:58+00:00",
+      "type": "run_created",
+      "stage": "research",
+      "message": "Run created for topic: LLM Wiki query 企业导入AI AI Ready 数位员工 Agent OS 权限治理 流程标准化 数据可用性 2026-05-09",
+      "meta": {}
+    },
+    {
+      "at": "2026-05-09T02:04:58+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: research_report",
+      "meta": {
+        "path": "docs/reports/wiki-query-企业导入ai-ai-ready-数位员工-agent-os-权限治理-流程标准化-数据可用性-2026-05-09.md",
+        "artifact_id": "2fee140caf"
+      }
+    },
+    {
+      "at": "2026-05-09T02:04:58+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-05-09T02:04:58+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check research_complete set to True",
+      "meta": {
+        "check_name": "research_complete",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-05-09T02:04:58+00:00",
+      "type": "run_closed",
+      "stage": "research",
+      "message": "Run closed with status: done",
+      "meta": {
+        "status": "done",
+        "note": "Wiki query is a research-only maintenance run.",
+        "closed_at": "2026-05-09T02:04:58+00:00"
+      }
+    }
+  ],
+  "closed_at": "2026-05-09T02:04:58+00:00"
+}

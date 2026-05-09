@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="./style.css">
+  <title>100 分诊断</title>
+  <style>
+    .left { position: absolute; left: 112px; top: 92px; width: 620px; }
+    .stairs { position: absolute; left: 112px; top: 380px; width: 690px; height: 520px; }
+    .step { position: absolute; left: 0; height: 74px; border: 3px solid #26302c; background: rgba(255,255,255,.56); display: flex; align-items: center; justify-content: space-between; padding: 0 26px; font-size: 28px; font-weight: 850; }
+    .s1 { bottom: 0; width: 330px; } .s2 { bottom: 86px; width: 420px; } .s3 { bottom: 172px; width: 510px; } .s4 { bottom: 258px; width: 600px; } .s5 { bottom: 344px; width: 690px; background: #e9dfcf; }
+    .panel { position: absolute; right: 112px; top: 156px; width: 900px; height: 750px; border: 4px solid #26302c; background: rgba(255,255,255,.48); padding: 58px; }
+    .metric { display: grid; grid-template-columns: 130px 1fr 52px; align-items: center; gap: 24px; margin-bottom: 30px; font-size: 26px; font-weight: 780; }
+    .bar { height: 24px; border: 2px solid #d7cfbf; background: #f6f3ec; }
+    .fill { height: 100%; background: #2f756f; }
+    .fill.warn { background: #b7792b; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <section class="left">
+      <div class="eyebrow">Readiness Scorecard</div>
+      <h1 class="title" style="font-size:92px;">100 分诊断</h1>
+      <p class="subtitle" style="font-size:36px;">分数不是为了好看，是为了决定企业现在能做哪一级 AI 项目。</p>
+    </section>
+    <section class="stairs">
+      <div class="step s5"><span>86+</span><span>Agent OS</span></div>
+      <div class="step s4"><span>71-85</span><span>跨部门员工</span></div>
+      <div class="step s3"><span>51-70</span><span>流程 Agent</span></div>
+      <div class="step s2"><span>31-50</span><span>部门助手</span></div>
+      <div class="step s1"><span>0-30</span><span>个人工具</span></div>
+    </section>
+    <section class="panel">
+      <div class="metric"><span>战略</span><div class="bar"><div class="fill" style="width:75%"></div></div><span>15</span></div>
+      <div class="metric"><span>流程</span><div class="bar"><div class="fill" style="width:75%"></div></div><span>15</span></div>
+      <div class="metric"><span>数据</span><div class="bar"><div class="fill" style="width:100%"></div></div><span>20</span></div>
+      <div class="metric"><span>权限</span><div class="bar"><div class="fill warn" style="width:75%"></div></div><span>15</span></div>
+      <div class="metric"><span>连接</span><div class="bar"><div class="fill" style="width:50%"></div></div><span>10</span></div>
+      <div class="metric"><span>组织</span><div class="bar"><div class="fill" style="width:50%"></div></div><span>10</span></div>
+      <div class="metric"><span>治理</span><div class="bar"><div class="fill warn" style="width:50%"></div></div><span>10</span></div>
+      <div class="metric"><span>评估</span><div class="bar"><div class="fill" style="width:25%"></div></div><span>5</span></div>
+    </section>
+    <div class="footer">很多企业的问题，是 40 分的基础，想做 85 分的项目。</div>
+  </main>
+</body>
+</html>
