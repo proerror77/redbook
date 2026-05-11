@@ -4,6 +4,24 @@
 
 ---
 
+## [2026-05-12] Redbook Agents OS 语义层
+
+**完成了什么：**
+- 新增 `docs/reference/agents-os-semantic-layer.md`，把 Redbook 定义为内容与发布 Agents OS，而不是普通资料夹。
+- 固定六层语义模型：Intent、Policy、Memory、Workflow、Evidence、Recovery。
+- 固定启动合约：确认用户意图、映射 Lane、读取 `tasks/active.md`、选择权威 workflow、先定义完成证据、外部副作用先确认 publish gate 和 verifier。
+- 固定状态语义：`review_ready`、`publish_ready`、`published_pending_verification`、`published_verified`、`blocked_user_action`、`blocked_tooling` 等。
+- 更新 `docs/shared/redbook-playbook.md` 的 `Agents OS 启动语义`，并同步到 `AGENTS.md` / `CLAUDE.md`。
+
+**验证：**
+- `python3 tools/sync_redbook_playbook.py` 已同步 `AGENTS.md` 和 `CLAUDE.md`。
+- `git diff --check` 通过。
+- `rg` 已确认 `Agents OS`、`published_pending_verification`、`verify_engagement_replies` 等关键规则出现在 `AGENTS.md`、`CLAUDE.md`、shared playbook 和语义层文档中。
+- 同步块一致性检查通过：`AGENTS.md synced=True`，`CLAUDE.md synced=True`。
+
+**遗留：**
+- 本轮先完成 OS 语义层和 boot policy。后续可把 `tools/redbookctl status` 扩展成直接输出 Agents OS state snapshot。
+
 ## [2026-05-11] 会话摘要：OpenAI Deployment Company 企业 AI native 评论发布
 
 **完成了什么：**

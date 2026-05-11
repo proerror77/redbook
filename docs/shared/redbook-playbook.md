@@ -1,6 +1,31 @@
 ## 🎯 Redbook Lean Playbook（四条 Lane）
 
-> 主流程只保留可执行规则。选题决策门详见 `docs/reference/editorial-decision-workflow.md`；长篇系统优化方法见 `docs/reference/system-optimization-methods.md`；技能入口见 `docs/reference/skills-manifest.md`。
+> 主流程只保留可执行规则。Agents OS 语义层详见 `docs/reference/agents-os-semantic-layer.md`；选题决策门详见 `docs/reference/editorial-decision-workflow.md`；长篇系统优化方法见 `docs/reference/system-optimization-methods.md`；技能入口见 `docs/reference/skills-manifest.md`。
+
+### Agents OS 启动语义
+
+Redbook 是用户的内容与发布 Agents OS，不只是资料夹。每个非简单任务先按语义层启动：
+
+1. 用一句话确认用户最新意图。
+2. 映射到 Lane A/B/C/D 或发布子流程。
+3. 读取 `tasks/active.md`，确认是否有未完成发布、验证或恢复事项。
+4. 选择权威 workflow doc / skill，再执行工具。
+5. 先定义完成证据：本轮完成后应该有哪个文件、URL、JSONL、报告或 commit。
+6. 任何外部副作用先确认 publish/submit gate 和 verifier；发布后不能只看 stdout。
+
+统一状态语义：
+- `review_ready`：已有草稿或候选，等待审稿或用户确认。
+- `publish_ready`：用户已明确批准发布，且必要 gate 已通过。
+- `published_pending_verification`：平台 submit 可能已发生，但证据未闭环；这是验证 backlog，不是失败。
+- `published_verified`：平台侧 URL / 管理页 / note id / verifier 证据已记录。
+- `blocked_user_action`：需要用户登录、扫码、验证码、权限或人工确认。
+- `blocked_tooling`：浏览器、API、脚本、账号状态不可用或不一致。
+
+恢复规则：
+- 中断或恢复后，先看 `tasks/active.md`、`git status --short` 和最新证据文件，再继续。
+- 从“最后已验证状态”继续，而不是从“最后尝试动作”继续。
+- 如果失败暴露了可重复缺口，优先修工具 gate，其次修 `docs/reference/` workflow，再同步 shared playbook 到 `AGENTS.md / CLAUDE.md`。
+- 对 X 批量回复，`posted_pending_verification` 必须先跑 `tools/auto-x/scripts/verify_engagement_replies.mjs`，不得直接重试。
 
 ### 快速路由
 

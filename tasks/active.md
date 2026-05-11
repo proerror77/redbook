@@ -2,6 +2,25 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-05-12 Redbook Agents OS 语义层
+
+- Owner: Codex
+- Source: User asked whether this project should have a semantic layer and make the folder an Agents OS system.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Define the project-level Agents OS semantic contract: intent, lane, state, evidence, publish gate, recovery.
+- [x] Add the contract to `docs/reference/agents-os-semantic-layer.md`.
+- [x] Wire the startup rules into `docs/shared/redbook-playbook.md` and sync to `AGENTS.md` / `CLAUDE.md`.
+- [x] Run focused checks, record progress, and commit scoped changes.
+
+### Review
+
+- Added `docs/reference/agents-os-semantic-layer.md` as the stable semantic contract for Redbook as an Agents OS.
+- Shared playbook now has an `Agents OS 启动语义` section that forces lane routing, active-state read, evidence target, publish gate, verifier, and recovery behavior.
+- Synced the shared block into `AGENTS.md` and `CLAUDE.md`.
+
 ## 2026-05-12 OpenAI Deployment Company 评论内容包
 
 - Owner: Codex
