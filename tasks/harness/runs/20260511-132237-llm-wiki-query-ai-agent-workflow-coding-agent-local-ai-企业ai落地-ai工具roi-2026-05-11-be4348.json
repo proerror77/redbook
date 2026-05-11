@@ -1,0 +1,87 @@
+{
+  "run_id": "20260511-132237-llm-wiki-query-ai-agent-workflow-coding-agent-local-ai-企业ai落地-ai工具roi-2026-05-11-be4348",
+  "kind": "content_pipeline",
+  "topic": "LLM Wiki query AI agent workflow coding agent local AI 企业AI落地 AI工具ROI 2026-05-11",
+  "summary": "显式记录一次 wiki query：AI agent workflow coding agent local AI 企业AI落地 AI工具ROI",
+  "source": "wiki/index.md",
+  "owner": "Codex",
+  "priority": "P1",
+  "current_stage": "research",
+  "status": "done",
+  "created_at": "2026-05-11T13:22:37+00:00",
+  "updated_at": "2026-05-11T13:22:37+00:00",
+  "artifacts": [
+    {
+      "id": "3bb6bf3b79",
+      "type": "research_report",
+      "path": "docs/reports/wiki-query-ai-agent-workflow-coding-agent-local-ai-企业ai落地-ai工具roi-2026-05-11.md",
+      "description": "Wiki query report for topic: AI agent workflow coding agent local AI 企业AI落地 AI工具ROI",
+      "stage": "research",
+      "created_at": "2026-05-11T13:22:37+00:00"
+    }
+  ],
+  "checks": {
+    "materials_queried": true,
+    "research_complete": true,
+    "outline_locked": false,
+    "draft_written": false,
+    "facts_checked": false,
+    "platform_ready": false,
+    "published": false,
+    "progress_updated": false,
+    "wiki_logged": false,
+    "lessons_reviewed": false
+  },
+  "incidents": [],
+  "events": [
+    {
+      "at": "2026-05-11T13:22:37+00:00",
+      "type": "run_created",
+      "stage": "research",
+      "message": "Run created for topic: LLM Wiki query AI agent workflow coding agent local AI 企业AI落地 AI工具ROI 2026-05-11",
+      "meta": {}
+    },
+    {
+      "at": "2026-05-11T13:22:37+00:00",
+      "type": "artifact_added",
+      "stage": "research",
+      "message": "Artifact added: research_report",
+      "meta": {
+        "path": "docs/reports/wiki-query-ai-agent-workflow-coding-agent-local-ai-企业ai落地-ai工具roi-2026-05-11.md",
+        "artifact_id": "3bb6bf3b79"
+      }
+    },
+    {
+      "at": "2026-05-11T13:22:37+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-05-11T13:22:37+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check research_complete set to True",
+      "meta": {
+        "check_name": "research_complete",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-05-11T13:22:37+00:00",
+      "type": "run_closed",
+      "stage": "research",
+      "message": "Run closed with status: done",
+      "meta": {
+        "status": "done",
+        "note": "Wiki query is a research-only maintenance run.",
+        "closed_at": "2026-05-11T13:22:37+00:00"
+      }
+    }
+  ],
+  "closed_at": "2026-05-11T13:22:37+00:00"
+}

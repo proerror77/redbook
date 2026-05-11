@@ -1,0 +1,541 @@
+[
+  {
+    "handle": "Jason23818126",
+    "content": "Dr. Moyu｜摸鱼局长 mattpocock/skills 这个高星开源项目，我建议所有重度用 Claude Code / Codex 写代码的人都看一下 它不是一套神奇 Prompt，而是由 TypeScript 大神 Matt Pocock 公开的 .claude 工作流，用一个个 SKILL.md，把自己和 AI 协作时的工程规矩写下来 我现在用 AI",
+    "likes": 66,
+    "retweets": 7,
+    "replies": 38,
+    "interaction_total": 194,
+    "source": "timeline",
+    "query": "home-timeline",
+    "search_url": "https://x.com/home",
+    "target_url": "https://x.com/Jason23818126/status/2053661364259029479",
+    "language": "zh",
+    "score": 73,
+    "reasons": [
+      "主题匹配:code",
+      "主题匹配:codex",
+      "主题匹配:claude",
+      "主题匹配:工作流",
+      "互动分:10",
+      "回复:38",
+      "转帖:7",
+      "喜欢:66",
+      "评论空间:13",
+      "有反差判断可接"
+    ],
+    "risks": [],
+    "comments": [
+      "这点其实比 IDE 体验更关键。\n\nAI coding 最后拼的不是谁补全更快，而是谁能拿到真实工程流里的反馈数据。\n\n入口只是第一层，workflow data 才是护城河。",
+      "我觉得这里真正的分水岭是：coding agent 能不能进真实 repo、真实 CI、真实 review 流程。\n\n只停在 demo 里，模型再强也很快会被追平。",
+      "这事不能只看模型 benchmark。\n\n谁掌握工程师每天工作的入口，谁才更接近下一代 coding platform。"
+    ]
+  },
+  {
+    "handle": "cryptoresetlife",
+    "content": "我跟你们说， 电脑装上codex ，给它完全访问权限，chrome 安装 codex 插件。你我都可以成为脚本科学家",
+    "likes": 68,
+    "retweets": 9,
+    "replies": 32,
+    "interaction_total": 182,
+    "source": "timeline",
+    "query": "home-timeline",
+    "search_url": "https://x.com/home",
+    "target_url": "https://x.com/cryptoresetlife/status/2053780294491316383",
+    "language": "zh",
+    "score": 59,
+    "reasons": [
+      "主题匹配:code",
+      "主题匹配:codex",
+      "主题匹配:权限",
+      "互动分:10",
+      "回复:32",
+      "转帖:9",
+      "喜欢:68",
+      "评论空间:8"
+    ],
+    "risks": [],
+    "comments": [
+      "这点其实比 IDE 体验更关键。\n\nAI coding 最后拼的不是谁补全更快，而是谁能拿到真实工程流里的反馈数据。\n\n入口只是第一层，workflow data 才是护城河。",
+      "我觉得这里真正的分水岭是：coding agent 能不能进真实 repo、真实 CI、真实 review 流程。\n\n只停在 demo 里，模型再强也很快会被追平。",
+      "这事不能只看模型 benchmark。\n\n谁掌握工程师每天工作的入口，谁才更接近下一代 coding platform。"
+    ]
+  },
+  {
+    "handle": "VincentLogic",
+    "content": "Vincent Logic | 信号＞噪音 卧槽，发现一个超硬核的教程！ 有个老哥零基础用 Claude Code，4天就肝出了一款 iOS App，还已经提交苹果审核了！ App 叫 Picnote，解决了一个贼痛的痛点： 平时刷视频看到好东西就截图，结果相册里堆了几百张截图，想找的时候根本找不到 这个 App 的操作超丝滑： 1. 在相册选好截图 2.",
+    "likes": 23,
+    "retweets": 2,
+    "replies": 4,
+    "interaction_total": 39,
+    "source": "timeline",
+    "query": "home-timeline",
+    "search_url": "https://x.com/home",
+    "target_url": "https://x.com/VincentLogic/status/2053784294276178147",
+    "language": "zh",
+    "score": 50,
+    "reasons": [
+      "主题匹配:code",
+      "主题匹配:claude",
+      "互动分:6",
+      "回复:4",
+      "转帖:2",
+      "喜欢:23",
+      "评论空间:13",
+      "有反差判断可接"
+    ],
+    "risks": [],
+    "comments": [
+      "这点其实比 IDE 体验更关键。\n\nAI coding 最后拼的不是谁补全更快，而是谁能拿到真实工程流里的反馈数据。\n\n入口只是第一层，workflow data 才是护城河。",
+      "我觉得这里真正的分水岭是：coding agent 能不能进真实 repo、真实 CI、真实 review 流程。\n\n只停在 demo 里，模型再强也很快会被追平。",
+      "这事不能只看模型 benchmark。\n\n谁掌握工程师每天工作的入口，谁才更接近下一代 coding platform。"
+    ]
+  },
+  {
+    "handle": "whyyoutouzhele",
+    "content": "5月9日，2026福布斯中国经济论坛在郑州西亚斯学院举行， 浙江大学求是特聘教授郑强在接受采访时表示，他不认同“中国大学生就业难”这个概念，“不是找不到工作，是享受的工作真的难找。”他建议大学生，少点抱怨，不要太挑剔。",
+    "likes": 176,
+    "retweets": 18,
+    "replies": 102,
+    "interaction_total": 518,
+    "source": "timeline",
+    "query": "home-timeline",
+    "search_url": "https://x.com/home",
+    "target_url": "https://x.com/whyyoutouzhele/status/2053792237360906688",
+    "language": "zh",
+    "score": 42,
+    "reasons": [
+      "互动分:14",
+      "回复:102",
+      "转帖:18",
+      "喜欢:176",
+      "评论空间:13",
+      "有反差判断可接"
+    ],
+    "risks": [],
+    "comments": [
+      "这点很关键。\n\n真正变化不是单个功能变强，而是它开始进入真实工作流，变成可复用的生产环节。",
+      "我觉得这里最值得看的不是表面新闻，而是底层结构变了：入口、数据、工作流开始比单点能力更重要。"
+    ]
+  },
+  {
+    "handle": "FeiyanXie",
+    "content": "5小时 前 伴娘：防的就是你 嵌入式视频 播放 视频",
+    "likes": 2227,
+    "retweets": 47,
+    "replies": 267,
+    "interaction_total": 3122,
+    "source": "timeline",
+    "query": "home-timeline",
+    "search_url": "https://x.com/home",
+    "target_url": "https://x.com/FeiyanXie/status/2053739514758332758",
+    "language": "zh",
+    "score": 40,
+    "reasons": [
+      "互动分:17",
+      "回复:267",
+      "转帖:47",
+      "喜欢:2227",
+      "评论空间:8"
+    ],
+    "risks": [],
+    "comments": [
+      "这点很关键。\n\n真正变化不是单个功能变强，而是它开始进入真实工作流，变成可复用的生产环节。",
+      "我觉得这里最值得看的不是表面新闻，而是底层结构变了：入口、数据、工作流开始比单点能力更重要。"
+    ]
+  },
+  {
+    "handle": "tuzi_ai",
+    "content": "中了个标，百万级 gpt-image-2；看着很大吧，实际也就6 位数的合同。 因为一张 gpt-image-2 才 0.042 元 \"，我们还提供的是 cn2/gia 的下载带宽（有时候都在怀疑模型费用都比带宽便宜了） by:\" \"@tuzi_ai\" gpt-image-2 已上线api.tu-zi.com 的 defalut 分组 价格那是真的屠夫，香蕉 Pro 的十分之一了快 兔子已经清空了谷歌的股票 ，春天又来了",
+    "likes": 58,
+    "retweets": 1,
+    "replies": 19,
+    "interaction_total": 117,
+    "source": "timeline",
+    "query": "home-timeline",
+    "search_url": "https://x.com/home",
+    "target_url": "https://x.com/tuzi_ai/status/2053753772669591804",
+    "language": "zh",
+    "score": 40,
+    "reasons": [
+      "主题匹配:模型",
+      "互动分:10",
+      "回复:19",
+      "转帖:1",
+      "喜欢:58",
+      "评论空间:8"
+    ],
+    "risks": [],
+    "comments": [
+      "图像模型真正的竞争不只是画质了。\n\n下一步是能不能接进完整视觉工作流：研究、文案、排版、出图、多尺寸、发布。",
+      "单次出图已经不稀奇。\n\n能稳定把一整套视觉素材生产链跑完，才会变成真正的产品能力。"
+    ]
+  },
+  {
+    "handle": "maoshen",
+    "content": "网友地铁偶遇邓紫棋，还和她热情 聊天 宾主双方在亲切友好的气氛中到达终点站 并达成了下次再次共同坐地铁，以巩固传统友谊的共识 现在明星也这么低调，亲自站地铁吗？",
+    "likes": 112,
+    "retweets": 4,
+    "replies": 57,
+    "interaction_total": 291,
+    "source": "timeline",
+    "query": "home-timeline",
+    "search_url": "https://x.com/home",
+    "target_url": "https://x.com/maoshen/status/2053804139746922844",
+    "language": "zh",
+    "score": 38,
+    "reasons": [
+      "互动分:10",
+      "回复:57",
+      "转帖:4",
+      "喜欢:112",
+      "评论空间:13",
+      "有问题/讨论入口"
+    ],
+    "risks": [],
+    "comments": [
+      "这点很关键。\n\n真正变化不是单个功能变强，而是它开始进入真实工作流，变成可复用的生产环节。",
+      "我觉得这里最值得看的不是表面新闻，而是底层结构变了：入口、数据、工作流开始比单点能力更重要。"
+    ]
+  },
+  {
+    "handle": "VicentYip",
+    "content": "跟儿子吃饭时父亲突然说妈妈辛苦",
+    "likes": 348,
+    "retweets": 18,
+    "replies": 306,
+    "interaction_total": 1302,
+    "source": "timeline",
+    "query": "home-timeline",
+    "search_url": "https://x.com/home",
+    "target_url": "https://x.com/VicentYip/status/2053675032996614257",
+    "language": "zh",
+    "score": 37,
+    "reasons": [
+      "互动分:14",
+      "回复:306",
+      "转帖:18",
+      "喜欢:348",
+      "评论空间:8"
+    ],
+    "risks": [],
+    "comments": [
+      "这点很关键。\n\n真正变化不是单个功能变强，而是它开始进入真实工作流，变成可复用的生产环节。",
+      "我觉得这里最值得看的不是表面新闻，而是底层结构变了：入口、数据、工作流开始比单点能力更重要。"
+    ]
+  },
+  {
+    "handle": "Jingyuan_521",
+    "content": "干货分享：到底如何做爆款？4月一个月内：我全网涨粉6万+，浏览量800万+，5个平台上共收获10多条爆款。做自媒体2年多，我曾是一个周更/月更博主，爆款对我来说曾是未解之谜，是运气，是碰巧，是无法复刻的算法奇迹。去年底入行AI后，在高强度的学习和输出后，我发现了做爆款的规律，学会了如何让AI",
+    "likes": 45,
+    "retweets": 9,
+    "replies": 10,
+    "interaction_total": 93,
+    "source": "timeline",
+    "query": "home-timeline",
+    "search_url": "https://x.com/home",
+    "target_url": "https://x.com/Jingyuan_521/status/2053808604009123942",
+    "language": "zh",
+    "score": 34,
+    "reasons": [
+      "互动分:6",
+      "回复:10",
+      "转帖:9",
+      "喜欢:45",
+      "评论空间:13",
+      "有问题/讨论入口"
+    ],
+    "risks": [],
+    "comments": [
+      "这点很关键。\n\n真正变化不是单个功能变强，而是它开始进入真实工作流，变成可复用的生产环节。",
+      "我觉得这里最值得看的不是表面新闻，而是底层结构变了：入口、数据、工作流开始比单点能力更重要。"
+    ]
+  },
+  {
+    "handle": "giantcutie666",
+    "content": "大漂亮| C Labs 美股币圈要地震了——但不是黑天鹅，是 三 只灰犀牛同时来！ 5月 15 号鲍威尔的任期结束，新主席沃什接棒！ 5月 13 号到 15 号，特朗普访华！ 5月 15 号美股的月度期权到期了， AI 方面万亿独角兽的杠杆要被结算！",
+    "likes": 31,
+    "retweets": 1,
+    "replies": 11,
+    "interaction_total": 66,
+    "source": "timeline",
+    "query": "home-timeline",
+    "search_url": "https://x.com/home",
+    "target_url": "https://x.com/giantcutie666/status/2053819627550228907",
+    "language": "zh",
+    "score": 34,
+    "reasons": [
+      "互动分:6",
+      "回复:11",
+      "转帖:1",
+      "喜欢:31",
+      "评论空间:13",
+      "有反差判断可接"
+    ],
+    "risks": [],
+    "comments": [
+      "这点很关键。\n\n真正变化不是单个功能变强，而是它开始进入真实工作流，变成可复用的生产环节。",
+      "我觉得这里最值得看的不是表面新闻，而是底层结构变了：入口、数据、工作流开始比单点能力更重要。"
+    ]
+  },
+  {
+    "handle": "v3wanu",
+    "content": "李傻根 MORE MONEY 黄仁勋昨天在卡内基梅隆毕业典礼的演讲完整版（中文字幕），要点我给你速通一下 1. 老婆是学姐，实验室搭档 2. 我经历了每一个计算平台变革：大型机、个人电脑、互联网、移动设备和云，但AI比他们都更大 3. 我们不能恐惧AI，要拥抱它 4. AI让每个人都是程序员 5. AI基建是人类历史上规模最大的基建 6.",
+    "likes": 305,
+    "retweets": 77,
+    "replies": 6,
+    "interaction_total": 477,
+    "source": "timeline",
+    "query": "home-timeline",
+    "search_url": "https://x.com/home",
+    "target_url": "https://x.com/v3wanu/status/2053679563247640662",
+    "language": "zh",
+    "score": 33,
+    "reasons": [
+      "互动分:10",
+      "回复:6",
+      "转帖:77",
+      "喜欢:305",
+      "评论空间:8"
+    ],
+    "risks": [],
+    "comments": [
+      "这点很关键。\n\n真正变化不是单个功能变强，而是它开始进入真实工作流，变成可复用的生产环节。",
+      "我觉得这里最值得看的不是表面新闻，而是底层结构变了：入口、数据、工作流开始比单点能力更重要。"
+    ]
+  },
+  {
+    "handle": "IgnoredReal",
+    "content": "顺风车乘客拒付高速费，江苏00后车主直接掉头 原路返回，车主：下单时乘客已点击确定承担高速费，\"可以双输，但不能单赢\" 干得漂亮，就不惯着",
+    "likes": 298,
+    "retweets": 7,
+    "replies": 55,
+    "interaction_total": 477,
+    "source": "timeline",
+    "query": "home-timeline",
+    "search_url": "https://x.com/home",
+    "target_url": "https://x.com/IgnoredReal/status/2053618654936461320",
+    "language": "zh",
+    "score": 33,
+    "reasons": [
+      "互动分:10",
+      "回复:55",
+      "转帖:7",
+      "喜欢:298",
+      "评论空间:8"
+    ],
+    "risks": [],
+    "comments": [
+      "这点很关键。\n\n真正变化不是单个功能变强，而是它开始进入真实工作流，变成可复用的生产环节。",
+      "我觉得这里最值得看的不是表面新闻，而是底层结构变了：入口、数据、工作流开始比单点能力更重要。"
+    ]
+  },
+  {
+    "handle": "lijigang",
+    "content": "\"给这个世界的一份答卷:\" GitHub - lijigang/ljg-skills",
+    "likes": 171,
+    "retweets": 19,
+    "replies": 15,
+    "interaction_total": 254,
+    "source": "timeline",
+    "query": "home-timeline",
+    "search_url": "https://x.com/home",
+    "target_url": "https://x.com/lijigang/status/2053772293864857859",
+    "language": "zh",
+    "score": 33,
+    "reasons": [
+      "互动分:10",
+      "回复:15",
+      "转帖:19",
+      "喜欢:171",
+      "评论空间:8"
+    ],
+    "risks": [],
+    "comments": [
+      "这点很关键。\n\n真正变化不是单个功能变强，而是它开始进入真实工作流，变成可复用的生产环节。",
+      "我觉得这里最值得看的不是表面新闻，而是底层结构变了：入口、数据、工作流开始比单点能力更重要。"
+    ]
+  },
+  {
+    "handle": "btcbears",
+    "content": "大佬这波真的赢麻了！！！港股“ （07709）”，单日直接暴力拉升近 25% ，所以今天必须给大家死死按头推荐一位全网最强的“交易之神”： 冷静哥！ 南方两倍做多海力士（07709），短短一个月将近5倍，单日直接暴力拉升近 25%，价格疯了一样直逼 100",
+    "likes": 120,
+    "retweets": 18,
+    "replies": 28,
+    "interaction_total": 240,
+    "source": "timeline",
+    "query": "home-timeline",
+    "search_url": "https://x.com/home",
+    "target_url": "https://x.com/btcbears/status/2053659809816428957",
+    "language": "zh",
+    "score": 33,
+    "reasons": [
+      "互动分:10",
+      "回复:28",
+      "转帖:18",
+      "喜欢:120",
+      "评论空间:8"
+    ],
+    "risks": [],
+    "comments": [
+      "这点很关键。\n\n真正变化不是单个功能变强，而是它开始进入真实工作流，变成可复用的生产环节。",
+      "我觉得这里最值得看的不是表面新闻，而是底层结构变了：入口、数据、工作流开始比单点能力更重要。"
+    ]
+  },
+  {
+    "handle": "dnfpkwang888",
+    "content": "Captain Jim | MemeMax 河南人早期逼疯ai的珍贵影像",
+    "likes": 91,
+    "retweets": 6,
+    "replies": 23,
+    "interaction_total": 172,
+    "source": "timeline",
+    "query": "home-timeline",
+    "search_url": "https://x.com/home",
+    "target_url": "https://x.com/dnfpkwang888/status/2053626885670875404",
+    "language": "zh",
+    "score": 33,
+    "reasons": [
+      "互动分:10",
+      "回复:23",
+      "转帖:6",
+      "喜欢:91",
+      "评论空间:8"
+    ],
+    "risks": [],
+    "comments": [
+      "这点很关键。\n\n真正变化不是单个功能变强，而是它开始进入真实工作流，变成可复用的生产环节。",
+      "我觉得这里最值得看的不是表面新闻，而是底层结构变了：入口、数据、工作流开始比单点能力更重要。"
+    ]
+  },
+  {
+    "handle": "dnfpkwang888",
+    "content": "Captain Jim | MemeMax 河南人早期逼疯ai的珍贵影像 2:58",
+    "likes": 91,
+    "retweets": 6,
+    "replies": 23,
+    "interaction_total": 172,
+    "source": "timeline",
+    "query": "home-timeline",
+    "search_url": "https://x.com/home",
+    "target_url": "https://x.com/dnfpkwang888/status/2053626885670875404",
+    "language": "zh",
+    "score": 33,
+    "reasons": [
+      "互动分:10",
+      "回复:23",
+      "转帖:6",
+      "喜欢:91",
+      "评论空间:8"
+    ],
+    "risks": [],
+    "comments": [
+      "这点很关键。\n\n真正变化不是单个功能变强，而是它开始进入真实工作流，变成可复用的生产环节。",
+      "我觉得这里最值得看的不是表面新闻，而是底层结构变了：入口、数据、工作流开始比单点能力更重要。"
+    ]
+  },
+  {
+    "handle": "shadouyoua",
+    "content": "马斯克又出来炸场了 这次他做客全球顶流播客 Joe Rogan，抛出了一连串颠覆性预言，一口气聊了三个小时，全程火力全开啊。他说，App 时代将在 5 到 6 年内彻底终结，特斯拉几个月内就会推出飞行汽车。 而更劲爆的是，关于 AI 对就业的冲击、星舰计划和全民高收入时代即将来临。",
+    "likes": 67,
+    "retweets": 33,
+    "replies": 5,
+    "interaction_total": 148,
+    "source": "timeline",
+    "query": "home-timeline",
+    "search_url": "https://x.com/home",
+    "target_url": "https://x.com/shadouyoua/status/2053769532150587751",
+    "language": "zh",
+    "score": 33,
+    "reasons": [
+      "互动分:10",
+      "回复:5",
+      "转帖:33",
+      "喜欢:67",
+      "评论空间:8"
+    ],
+    "risks": [],
+    "comments": [
+      "这点很关键。\n\n真正变化不是单个功能变强，而是它开始进入真实工作流，变成可复用的生产环节。",
+      "我觉得这里最值得看的不是表面新闻，而是底层结构变了：入口、数据、工作流开始比单点能力更重要。"
+    ]
+  },
+  {
+    "handle": "igeekbb",
+    "content": "88年，三十八岁，55岁退休存钱养老计划。",
+    "likes": 52,
+    "retweets": 12,
+    "replies": 13,
+    "interaction_total": 115,
+    "source": "timeline",
+    "query": "home-timeline",
+    "search_url": "https://x.com/home",
+    "target_url": "https://x.com/igeekbb/status/2053763039313182770",
+    "language": "zh",
+    "score": 33,
+    "reasons": [
+      "互动分:10",
+      "回复:13",
+      "转帖:12",
+      "喜欢:52",
+      "评论空间:8"
+    ],
+    "risks": [],
+    "comments": [
+      "这点很关键。\n\n真正变化不是单个功能变强，而是它开始进入真实工作流，变成可复用的生产环节。",
+      "我觉得这里最值得看的不是表面新闻，而是底层结构变了：入口、数据、工作流开始比单点能力更重要。"
+    ]
+  },
+  {
+    "handle": "igeekbb",
+    "content": "88年，三十八岁，55岁退休存钱养老计划。 3:40",
+    "likes": 52,
+    "retweets": 12,
+    "replies": 13,
+    "interaction_total": 115,
+    "source": "timeline",
+    "query": "home-timeline",
+    "search_url": "https://x.com/home",
+    "target_url": "https://x.com/igeekbb/status/2053763039313182770",
+    "language": "zh",
+    "score": 33,
+    "reasons": [
+      "互动分:10",
+      "回复:13",
+      "转帖:12",
+      "喜欢:52",
+      "评论空间:8"
+    ],
+    "risks": [],
+    "comments": [
+      "这点很关键。\n\n真正变化不是单个功能变强，而是它开始进入真实工作流，变成可复用的生产环节。",
+      "我觉得这里最值得看的不是表面新闻，而是底层结构变了：入口、数据、工作流开始比单点能力更重要。"
+    ]
+  },
+  {
+    "handle": "igeekbb",
+    "content": "88年，三十八岁，55岁退休存钱养老计划。 0:02 / 3:42",
+    "likes": 52,
+    "retweets": 12,
+    "replies": 13,
+    "interaction_total": 115,
+    "source": "timeline",
+    "query": "home-timeline",
+    "search_url": "https://x.com/home",
+    "target_url": "https://x.com/igeekbb/status/2053763039313182770",
+    "language": "zh",
+    "score": 33,
+    "reasons": [
+      "互动分:10",
+      "回复:13",
+      "转帖:12",
+      "喜欢:52",
+      "评论空间:8"
+    ],
+    "risks": [],
+    "comments": [
+      "这点很关键。\n\n真正变化不是单个功能变强，而是它开始进入真实工作流，变成可复用的生产环节。",
+      "我觉得这里最值得看的不是表面新闻，而是底层结构变了：入口、数据、工作流开始比单点能力更重要。"
+    ]
+  }
+]

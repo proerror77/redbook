@@ -4728,6 +4728,23 @@
 - 这次没有继续真实投递。
 - 要恢复脚本批量投递，需要至少满足一个控制通道：用带 CDP 的现有 Chrome 会话，或用户手动开启 Chrome 的 AppleScript JS fallback；否则只能用 Computer Use 做低速受监督点击。
 
+## [2026-05-11] 今日选题研究 Lane A
+
+**完成了什么：**
+- 确认可复用 Chrome/CDP `http://127.0.0.1:9222`，X 标签页可用，发布 profile 登录检查通过：`Smileyface @0xcybersmile`。
+- 运行 `tools/redbookctl daily`，生成当日研究报告：`05-选题研究/X-每日日程-2026-05-11.md`、`HN-每日热点-2026-05-11.md`、`Reddit-每日监控-2026-05-11.md`。
+- 生成每日 X 互动队列：`05-选题研究/X-互动队列-2026-05-11.md` / `.json`，20 条候选，不自动发布。
+- 跑 `python3 tools/wiki_workflow.py query --topic "AI agent workflow coding agent local AI 企业AI落地 AI工具ROI" --date 2026-05-11`，确认今日线索与 `AI Agent企业导入与协作`、`AI工具与效率`、`低 token、本地 AI、端侧模型` 等 wiki 主线匹配。
+
+**验证：**
+- X Pro 多列抓取：4 列、30 条推文、4 条高互动推文；今日 X 研究区标记 `X timeline / X research: available`。
+- HN 抓取：30 条 stories，10 条高互动，6 条 AI/ML 相关。
+- Reddit 抓取：100 条帖子，10 条高互动，13 条 AI/ML 相关。
+- 本地 wiki daily-cycle 已记录；Claude CLI 额外 wiki ingest 因 `Not logged in · Please run /login` 失败，不影响日报和选题文件。
+
+**遗留：**
+- 本轮只做选题建议和互动候选，不写稿、不创建完整 content run、不发布。
+
 ## [2026-05-08] BOSS 固定现有页面工作流
 
 **完成了什么：**
