@@ -4,6 +4,29 @@
 
 ---
 
+## [2026-05-12] Agents OS 全面 review 与 Wiki OS 补强
+
+**完成了什么：**
+- 完成项目级 review，明确 Redbook 不只是 social media 发布工作流，而是包含 Social Publishing OS、Knowledge / Wiki OS、Research OS、Content Production OS、Evidence / Recovery OS 的综合 Agents OS。
+- 新增 review 报告：`docs/reports/2026-05-12-redbook-agents-os-review.md`。
+- 更新 `docs/reference/agents-os-semantic-layer.md`：
+  - 将 purpose 改为 content / publishing / knowledge Agents OS。
+  - 新增 `Knowledge OS Contract`。
+  - 明确 `wiki/` 是长期 semantic memory，不是原始素材仓库。
+  - 固定 Wiki query / ingest / lint 规则。
+  - 新增知识状态：`knowledge_queried`、`knowledge_ingest_pending`、`knowledge_ingested`、`knowledge_lint_clean`、`knowledge_conflict_detected`、`knowledge_stale`。
+- 更新 `docs/shared/redbook-playbook.md`，要求启动时判断是否需要 Wiki `query / ingest / lint`，并同步到 `AGENTS.md` / `CLAUDE.md`。
+
+**验证：**
+- `python3 tools/wiki_workflow.py lint --date 2026-05-12` 通过：`missing_from_index=0`、`dangling_in_index=0`、`orphan_pages=0`、`stale_index_dates=0`、`overview_stale=false`。
+- `python3 tools/sync_redbook_playbook.py` 已同步 `AGENTS.md` 和 `CLAUDE.md`。
+- `git diff --check` 通过。
+- `rg` 已确认 `Knowledge OS`、`knowledge_queried`、`knowledge_ingest_pending`、`Wiki query / ingest / lint` 等关键规则出现在语义层、shared playbook、`AGENTS.md`、`CLAUDE.md` 和 review 报告中。
+- 同步块一致性检查通过：`AGENTS.md synced=True`，`CLAUDE.md synced=True`。
+
+**遗留：**
+- 后续可把 `tools/redbookctl status` 扩展成 Agents OS state snapshot，把 active tasks、pending publish verification、latest wiki lint、latest wiki ingest/query report、dirty worktree 一次性输出。
+
 ## [2026-05-12] Redbook Agents OS 语义层
 
 **完成了什么：**

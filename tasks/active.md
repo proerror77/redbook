@@ -21,6 +21,27 @@
 - Shared playbook now has an `Agents OS 启动语义` section that forces lane routing, active-state read, evidence target, publish gate, verifier, and recovery behavior.
 - Synced the shared block into `AGENTS.md` and `CLAUDE.md`.
 
+## 2026-05-12 Agents OS 全面 review 与 Wiki OS 补强
+
+- Owner: Codex
+- Source: User asked for a comprehensive project review and pointed out the knowledge base / Wiki function should be in the semantic layer.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Review project roles beyond social media publishing: wiki, knowledge base, content package, evidence ledger, tools.
+- [x] Produce a concise review report under `docs/reports/`.
+- [x] Update `docs/reference/agents-os-semantic-layer.md` so Wiki / Knowledge OS is first-class.
+- [x] Update shared playbook and sync `AGENTS.md` / `CLAUDE.md`.
+- [x] Run wiki lint and consistency checks; record progress and commit.
+
+### Review
+
+- Review report: `docs/reports/2026-05-12-redbook-agents-os-review.md`.
+- Wiki lint clean on 2026-05-12: missing index 0, dangling index 0, orphan pages 0, stale dates 0, overview stale false.
+- Semantic layer now includes `Knowledge OS Contract`, query / ingest / lint rules, and knowledge states.
+- Shared playbook boot sequence now requires deciding whether a task needs Wiki query / ingest / lint.
+
 ## 2026-05-12 OpenAI Deployment Company 评论内容包
 
 - Owner: Codex
