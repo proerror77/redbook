@@ -3,6 +3,15 @@
 > Append-only。格式：`## [日期] 操作类型 | 描述`
 > 操作类型：ingest | query | lint | migrate
 
+## [2026-05-11] publish | OpenAI Deployment Company 企业 AI native 评论（UTC run date）
+
+触及页面：1个
+
+关键更新：
+- 本地发布时间为 2026-05-12 06:12 +0800；harness run created_at 为 2026-05-11 UTC。
+- `wiki/选题/AI Agent企业导入与协作.md` 已追加 OpenAI Deployment Company 信号。
+- 已发布 X Article：https://x.com/0xcybersmile/status/2053961416122700186
+
 ## [2026-04-17] ingest | 别再闭门写代码了-先聊用户再写产品 发布
 
 触及页面：2个
@@ -982,3 +991,11 @@
 - AI 工具讨论正在从“更快生成”转向“是否进入真实工作流，并且仍然可控”。
 - 本地 AI 的价值被重新定义为隐私、低延迟、成本和桌面级 agent runtime，而不是离线聊天玩具。
 - AI slop、inbox access 和 AI coding maintenance cost 共同说明：自动化越靠近业务关键入口，越需要权限、review、日志和回滚。
+## [2026-05-12] publish | OpenAI Deployment Company 企业 AI native 评论
+
+触及页面：1个
+
+关键更新：
+- `wiki/选题/AI Agent企业导入与协作.md` 追加 OpenAI Deployment Company 信号。
+- 记录 OpenAI 把企业 AI 落地推进到 deployment company / FDE / 咨询与系统集成供应链的判断。
+- 已发布 X Article：https://x.com/0xcybersmile/status/2053961416122700186

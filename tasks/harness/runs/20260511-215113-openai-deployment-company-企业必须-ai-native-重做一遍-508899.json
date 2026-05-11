@@ -6,10 +6,10 @@
   "source": "https://x.com/OpenAI/status/2053824997777457651",
   "owner": "Codex",
   "priority": "P1",
-  "current_stage": "review",
-  "status": "in_progress",
+  "current_stage": "retrospect",
+  "status": "done",
   "created_at": "2026-05-11T21:51:13+00:00",
-  "updated_at": "2026-05-11T21:59:13+00:00",
+  "updated_at": "2026-05-11T22:23:16+00:00",
   "artifacts": [
     {
       "id": "56bf2c4442",
@@ -42,6 +42,30 @@
       "description": "Publish options and verification checklist",
       "stage": "review",
       "created_at": "2026-05-11T21:59:13+00:00"
+    },
+    {
+      "id": "6785f2dc46",
+      "type": "publish_record",
+      "path": "01-内容生产/02-制作中的选题/2026-05-12-OpenAI-Deployment-Company企业必须AI-native重做一遍/发布记录.md",
+      "description": "X Article publish record and platform-side evidence",
+      "stage": "publish",
+      "created_at": "2026-05-11T22:22:06+00:00"
+    },
+    {
+      "id": "44772e74f0",
+      "type": "progress_log",
+      "path": "tasks/progress.md",
+      "description": "Session progress summary with publish evidence",
+      "stage": "retrospect",
+      "created_at": "2026-05-11T22:23:07+00:00"
+    },
+    {
+      "id": "ee6a74db21",
+      "type": "wiki_log",
+      "path": "wiki/log.md",
+      "description": "Wiki publish log entry",
+      "stage": "retrospect",
+      "created_at": "2026-05-11T22:23:07+00:00"
     }
   ],
   "checks": {
@@ -51,10 +75,10 @@
     "draft_written": true,
     "facts_checked": true,
     "platform_ready": true,
-    "published": false,
-    "progress_updated": false,
-    "wiki_logged": false,
-    "lessons_reviewed": false
+    "published": true,
+    "progress_updated": true,
+    "wiki_logged": true,
+    "lessons_reviewed": true
   },
   "incidents": [],
   "events": [
@@ -178,6 +202,97 @@
         "check_name": "platform_ready",
         "value": true
       }
+    },
+    {
+      "at": "2026-05-11T22:22:06+00:00",
+      "type": "artifact_added",
+      "stage": "review",
+      "message": "Artifact added: publish_record",
+      "meta": {
+        "path": "01-内容生产/02-制作中的选题/2026-05-12-OpenAI-Deployment-Company企业必须AI-native重做一遍/发布记录.md",
+        "artifact_id": "6785f2dc46"
+      }
+    },
+    {
+      "at": "2026-05-11T22:22:06+00:00",
+      "type": "check_updated",
+      "stage": "review",
+      "message": "Check published set to True",
+      "meta": {
+        "check_name": "published",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-05-11T22:22:06+00:00",
+      "type": "stage_promoted",
+      "stage": "publish",
+      "message": "Stage promoted to publish",
+      "meta": {}
+    },
+    {
+      "at": "2026-05-11T22:22:32+00:00",
+      "type": "stage_promoted",
+      "stage": "retrospect",
+      "message": "Stage promoted to retrospect",
+      "meta": {}
+    },
+    {
+      "at": "2026-05-11T22:23:07+00:00",
+      "type": "artifact_added",
+      "stage": "retrospect",
+      "message": "Artifact added: progress_log",
+      "meta": {
+        "path": "tasks/progress.md",
+        "artifact_id": "44772e74f0"
+      }
+    },
+    {
+      "at": "2026-05-11T22:23:07+00:00",
+      "type": "artifact_added",
+      "stage": "retrospect",
+      "message": "Artifact added: wiki_log",
+      "meta": {
+        "path": "wiki/log.md",
+        "artifact_id": "ee6a74db21"
+      }
+    },
+    {
+      "at": "2026-05-11T22:23:07+00:00",
+      "type": "check_updated",
+      "stage": "retrospect",
+      "message": "Check progress_updated set to True",
+      "meta": {
+        "check_name": "progress_updated",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-05-11T22:23:07+00:00",
+      "type": "check_updated",
+      "stage": "retrospect",
+      "message": "Check wiki_logged set to True",
+      "meta": {
+        "check_name": "wiki_logged",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-05-11T22:23:07+00:00",
+      "type": "check_updated",
+      "stage": "retrospect",
+      "message": "Check lessons_reviewed set to True",
+      "meta": {
+        "check_name": "lessons_reviewed",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-05-11T22:23:16+00:00",
+      "type": "run_completed",
+      "stage": "retrospect",
+      "message": "Run completed; final stage already reached.",
+      "meta": {}
     }
   ]
 }

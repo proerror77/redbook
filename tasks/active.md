@@ -6,7 +6,7 @@
 
 - Owner: Codex
 - Source: User provided OpenAI X status `2053824997777457651` and asked to use the workflow to write a related article/comment.
-- Status: review_ready_pending_publish_confirmation
+- Status: published_verified
 - Harness run: `20260511-215113-openai-deployment-company-企业必须-ai-native-重做一遍-508899`
 
 ### Cleanup Plan
@@ -24,6 +24,8 @@
 - Main recommendation: publish as X Article / X longform; optional quote version is available for faster hotspot response.
 - Publishing remains blocked until the user explicitly confirms.
 - Content package commit: `6111595` (`Add OpenAI deployment company content package`).
+- Published as X Article: https://x.com/0xcybersmile/status/2053961416122700186.
+- First publish included an internal `发布清单` section; fixed via X Article edit and verified the live article no longer contains it.
 
 ## 2026-05-11 Wiki ingest 改用 Codex CLI
 

@@ -4,6 +4,21 @@
 
 ---
 
+## [2026-05-11] 会话摘要：OpenAI Deployment Company 企业 AI native 评论发布
+
+**完成了什么：**
+- UTC run date 对应本地 2026-05-12 早晨发布任务。
+- 发布 X Article：`https://x.com/0xcybersmile/status/2053961416122700186`。
+- 已完成平台回读、T+0 publish record、wiki 信号沉淀和 harness publish gate。
+
+**验证：**
+- `tools/redbookctl x-login --timeout-ms 45000` 通过，账号 `Smileyface @0xcybersmile`。
+- X status 页面显示标题、正文首段、发布时间 `上午6:12 · 2026年5月12日`。
+- 修正后 Chrome DevTools 回读确认正文不含内部 `发布清单`。
+
+**遗留：**
+- T+1 / T+3 数据回读。
+
 ## [2026-05-12] OpenAI Deployment Company 企业 AI native 评论内容包
 
 **完成了什么：**
@@ -20,8 +35,11 @@
 - Harness review gate passed：`QA报告.md` + `发布清单.md`。
 
 **遗留：**
-- 未发布。必须等用户明确说“发布 / 直接发”后，再运行 `tools/redbookctl x-login` 并按 `/baoyu-post-to-x` 执行。
-- 如果发布 X Article，当前稿件无正文插图；后续若补图，必须使用 X Article inline image 或 thread-per-image，不能用普通主帖 gallery。
+- 已发布 X Article：`https://x.com/0xcybersmile/status/2053961416122700186`。
+- 首次发布后发现内部 `发布清单` 被带入正文；已用 X Article 编辑功能就地修正并重新发布，保留同一 status URL。
+- 修正后通过 Chrome DevTools 回读确认 `hasPublishChecklist=false`，标题和正文首段可见。
+- 已追加 T+0 账本记录：`2026-05-12-x-article-openai-ai-native-t0`。
+- 后续只剩 T+1 / T+3 数据回读。
 
 ## [2026-05-12] X timeline 互动回复 50 条 batch1 + 验证流程修复
 

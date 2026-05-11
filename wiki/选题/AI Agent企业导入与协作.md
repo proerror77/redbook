@@ -146,3 +146,13 @@ AI 进入企业以后，最先变化的可能不是岗位消失。
 - Reddit r/webdev 的高互动讨论认为“AI 让开发更快”可能是短视的，痛点不是速度本身，而是系统复杂度、可维护性和开发者判断力是否被削弱。
 - Reddit r/SaaS 的 inbox access 信任问题提醒：企业 AI 落地前，用户会先问“它能看到什么、会不会乱动、出了事谁负责”，这可以翻译成权限、日志、最小授权和可撤销动作清单。
 - 可写判断：企业 AI 导入要少讲“提效百分比”，多讲“维护成本有没有下降、审计链有没有变清楚、失败恢复有没有被设计出来”。
+
+## 今日信号（2026-05-12）
+
+**OpenAI Deployment Company 是企业 AI 从模型采购转向 deployment 供应链的信号。**
+
+- OpenAI 宣布成立 OpenAI Deployment Company，并在 X thread 中说明它由 OpenAI 控股和控制，整合 19 家投资机构、咨询公司、系统集成商，帮助组织把 frontier AI 部署到生产环境以产生 business impact。
+- OpenAI 同时同意收购 Tomoro，把 150 名 Forward Deployed Engineers 和 Deployment Specialists 带入新公司。
+- 内容判断：这不是普通咨询业务，而是 OpenAI 在补企业 AI 最难的能力：把模型能力放进真实业务流程、权限系统、review 链、审计链和 ROI 评估里。
+- 可复用表达：企业必须 AI native，不是给员工买聊天框，而是把关键流程改造成 AI 可以参与、可以执行、可以被限制、可以被审计、可以持续改进的系统。
+- 已发布：`OpenAI 这个动作，是企业必须 AI native 的重大讯号`（X Article，2026-05-12）→ https://x.com/0xcybersmile/status/2053961416122700186
