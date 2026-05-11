@@ -4,6 +4,25 @@
 
 ---
 
+## [2026-05-11] X timeline 互动回复 50 条 batch4
+
+**完成了什么：**
+- 按 `docs/reference/x-engagement-reply-workflow.md` 继续执行 50 条 timeline 回复：浏览器/CDP 预检、X 登录账号确认、当前 timeline 队列采集、内容审稿、脚本 gate、5 条 smoke、剩余批量发布、逐条 `with_replies` 回读。
+- 预检确认 CDP `http://127.0.0.1:9222` 可复用，发布账号为 `Smileyface @0xcybersmile`。
+- 重新从 2026-05-11 当前 timeline 生成互动队列，避免混入 HN/Reddit 或旧题来源；筛出 50 条 source URL，回复内容按源帖语言匹配。
+- 内容审稿与脚本审查均通过，脚本 gate 结果为 `approved=50 blocked=0`。
+- 前 5 条 smoke 中 `@yetone` 初次回读遇到 X `with_replies` 临时错误，后续补查确认已经发布并拿到回复 URL；剩余 45 条继续发布并验证。
+
+**验证：**
+- 内容审稿：`05-选题研究/X-互动回复内容审稿-2026-05-11-batch4-50.md`。
+- 脚本审查：`05-选题研究/X-互动回复脚本审查-2026-05-11-batch4-50.md`，结果 `approved=50 blocked=0`。
+- 最终汇总：`05-选题研究/X-互动回复记录-2026-05-11-batch4-50-verified.jsonl` / `.md`。
+- 最终计数：`verified=50`，`unique_sources=50`，`unique_verify_urls=50`。
+- `@yetone` 补查验证 URL：`https://x.com/0xcybersmile/status/2053851637131931946`。
+
+**遗留：**
+- 原始发布记录与补查记录保留为审计轨迹；最终发布事实以 `batch4-50-verified` 文件为准。
+
 ## [2026-05-09] 会话摘要：企业导入 AI 长文与配图内容包
 
 **完成了什么：**
