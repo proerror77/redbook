@@ -4764,6 +4764,23 @@
 **遗留：**
 - Codex CLI 运行时会打印 `clipal/models` 503 的模型列表刷新错误，但实际 `codex exec` 成功完成；后续若要消除噪音，需要单独检查本机 Codex provider 配置。
 
+## [2026-05-11] X timeline 单条回复：Codex Chrome 权限边界
+
+**完成了什么：**
+- 按 `docs/reference/x-engagement-reply-workflow.md` 执行单条 timeline 回复。
+- 预检确认可复用 Chrome/CDP `http://127.0.0.1:9222`，X 标签页可用，发布账号为 `Smileyface @0xcybersmile`。
+- 来源帖为 2026-05-11 当天 timeline：`https://x.com/cryptoresetlife/status/2053780294491316383`。
+- 内容审稿和脚本审查均通过后，发布中文回复。
+
+**验证：**
+- 内容审稿：`05-选题研究/X-互动回复内容审稿-2026-05-11-codex-chrome-permission.md`。
+- 脚本审查：`reply_engagement_queue.mjs --review-only`，结果 `approved=1 blocked=0`，记录在 `05-选题研究/X-互动回复脚本审查-2026-05-11-codex-chrome-permission.md`。
+- 发布回读：`posted_verified=1 failed=0`。
+- 回复 URL：`https://x.com/0xcybersmile/status/2053849660025086152`，status id 解码时间为 2026-05-11 22:48:12 UTC+8。
+
+**遗留：**
+- 本轮只发布 1 条回复，没有扩展批量回复。
+
 ## [2026-05-08] BOSS 固定现有页面工作流
 
 **完成了什么：**

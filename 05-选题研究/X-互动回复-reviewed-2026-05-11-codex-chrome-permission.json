@@ -1,0 +1,22 @@
+[
+  {
+    "handle": "cryptoresetlife",
+    "url": "https://x.com/cryptoresetlife/status/2053780294491316383",
+    "language": "zh",
+    "reply": "我更担心的是权限边界。Codex 接上 Chrome 和本地文件后，能自动化很多事，但每一步能看什么、能改什么、要不要确认，都得先设计好。",
+    "review": {
+      "status": "approved",
+      "reviewed_at": "2026-05-11T14:46:58+08:00",
+      "source_time": "2026-05-11 18:12:34 UTC+8",
+      "source": "X home timeline",
+      "checks": {
+        "source_is_today": true,
+        "language_matches_source": true,
+        "mentions_concrete_source_detail": true,
+        "account_aligned": true,
+        "not_template_like": true,
+        "publish_as_reply": true
+      }
+    }
+  }
+]
