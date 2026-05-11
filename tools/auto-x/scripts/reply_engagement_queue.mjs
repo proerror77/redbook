@@ -7,6 +7,7 @@
  * - no new tab unless --allow-new-tab or --background-worker is passed
  * - no publishing unless every target has review.status=approved
  * - deterministic review blocks template-like, overlong, risky, or language-mismatched replies
+ * - submitted replies that are not immediately visible become pending, not failed
  */
 import { appendFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
@@ -392,35 +393,82 @@ async function navigateAndWaitForTweet(client, url, handle) {
   await delay(1500);
 }
 
-async function findExistingReply(client, reply) {
+function normalizeStatusUrl(url) {
+  const match = String(url || '').match(/^https:\/\/(?:x|twitter)\.com\/([^/?#]+)\/status\/(\d+)/);
+  return match ? `https://x.com/${match[1]}/status/${match[2]}` : '';
+}
+
+async function findReplyOnCurrentPage(client, reply) {
   const needle = reply.slice(0, Math.min(48, reply.length)).replaceAll('\\', '\\\\').replaceAll("'", "\\'");
+  return client.evaluate(`(() => {
+    const needle = '${needle}';
+    const normalize = (href) => {
+      const match = String(href || '').match(/^https:\\/\\/(?:x|twitter)\\.com\\/([^/?#]+)\\/status\\/(\\d+)/);
+      return match ? 'https://x.com/' + match[1] + '/status/' + match[2] : '';
+    };
+    const bodyText = document.body ? document.body.innerText : '';
+    const articles = Array.from(document.querySelectorAll('article[data-testid="tweet"]'));
+    const matched = articles.find((article) => article.innerText && article.innerText.includes(needle));
+    if (!matched && !bodyText.includes(needle)) {
+      return { exists: false, url: '', text: '', confidence: 'none' };
+    }
+    const root = matched || document;
+    const links = Array.from(root.querySelectorAll('a[href*="/status/"]'))
+      .map((a) => normalize(a.href))
+      .filter(Boolean);
+    const own = links.find((href) => href.includes('/0xcybersmile/status/')) || '';
+    return {
+      exists: true,
+      url: own,
+      text: (matched ? matched.innerText : bodyText).replace(/\\s+/g, ' ').trim().slice(0, 360),
+      confidence: own ? 'own_status_url' : (matched ? 'article_text_match' : 'body_text_match')
+    };
+  })()`);
+}
+
+async function findExistingReply(client, reply, { sourceUrl = '' } = {}) {
   await client.navigate('https://x.com/0xcybersmile/with_replies', {
     waitForReadyState: 'interactive',
     timeoutMs: 20000,
   }).catch(() => {});
   await delay(2500);
   for (let attempt = 0; attempt < 6; attempt += 1) {
-    const match = await client.evaluate(`(() => {
-      const needle = '${needle}';
-      const bodyText = document.body ? document.body.innerText : '';
-      const articles = Array.from(document.querySelectorAll('article[data-testid="tweet"]'));
-      const matched = articles.find((article) => article.innerText && article.innerText.includes(needle));
-      if (!matched && !bodyText.includes(needle)) {
-        return { exists: false, url: '', text: '' };
-      }
-      const links = matched ? Array.from(matched.querySelectorAll('a[href*="/status/"]')).map((a) => a.href) : [];
-      const own = links.find((href) => href.includes('/0xcybersmile/status/')) || links[0] || '';
-      return {
-        exists: true,
-        url: own,
-        text: (matched ? matched.innerText : bodyText).replace(/\\s+/g, ' ').trim().slice(0, 280)
-      };
-    })()`);
-    if (match?.exists) return match;
+    const match = await findReplyOnCurrentPage(client, reply).catch(() => null);
+    if (match?.exists && match.url) return { ...match, url: normalizeStatusUrl(match.url), method: 'with_replies' };
     await client.evaluate('window.scrollBy(0, Math.round(window.innerHeight * 0.85))').catch(() => {});
     await delay(900);
   }
-  return { exists: false, url: '', text: '' };
+
+  if (sourceUrl) {
+    await client.navigate(sourceUrl, {
+      waitForReadyState: 'interactive',
+      timeoutMs: 20000,
+    }).catch(() => {});
+    await delay(2500);
+    for (let attempt = 0; attempt < 4; attempt += 1) {
+      const match = await findReplyOnCurrentPage(client, reply).catch(() => null);
+      if (match?.exists && match.url) return { ...match, url: normalizeStatusUrl(match.url), method: 'source_conversation' };
+      if (match?.exists) return { ...match, method: 'source_conversation' };
+      await client.evaluate('window.scrollBy(0, Math.round(window.innerHeight * 0.9))').catch(() => {});
+      await delay(900);
+    }
+  }
+
+  const searchNeedle = reply.slice(0, Math.min(32, reply.length));
+  const searchUrl = `https://x.com/search?q=${encodeURIComponent(`from:0xcybersmile "${searchNeedle}"`)}&src=typed_query&f=live`;
+  await client.navigate(searchUrl, {
+    waitForReadyState: 'interactive',
+    timeoutMs: 20000,
+  }).catch(() => {});
+  await delay(2500);
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    const match = await findReplyOnCurrentPage(client, reply).catch(() => null);
+    if (match?.exists && match.url) return { ...match, url: normalizeStatusUrl(match.url), method: 'live_search' };
+    await client.evaluate('window.scrollBy(0, Math.round(window.innerHeight * 0.9))').catch(() => {});
+    await delay(900);
+  }
+
+  return { exists: false, url: '', text: '', confidence: 'none', method: 'not_found' };
 }
 
 async function clickReply(client) {
@@ -650,7 +698,7 @@ async function run() {
       };
 
       try {
-        const existing = await findExistingReply(client, target.reply);
+        const existing = await findExistingReply(client, target.reply, { sourceUrl: target.url });
         if (existing?.exists) {
           const record = { ...baseRecord, status: 'already_exists', verify_url: existing.url, verify_text: existing.text };
           records.push(record);
@@ -674,8 +722,8 @@ async function run() {
         await insertReplyText(client, target.reply);
         await submitReply(client);
 
-        const verification = await findExistingReply(client, target.reply);
-        const status = verification?.exists ? 'posted_verified' : 'posted_unverified';
+        const verification = await findExistingReply(client, target.reply, { sourceUrl: target.url });
+        const status = verification?.exists && verification.url ? 'posted_verified' : 'posted_pending_verification';
         const record = {
           ...baseRecord,
           status,
@@ -683,13 +731,16 @@ async function run() {
           page_title: source.title,
           verify_url: verification?.url || '',
           verify_text: verification?.text || '',
+          verify_method: verification?.method || '',
+          verify_confidence: verification?.confidence || '',
         };
         records.push(record);
         appendRecord(args.out, record);
         console.log(`[${index + 1}/${targets.length}] ${status} @${target.handle}: ${record.verify_url || 'no verify url'}`);
 
-        if (!verification?.exists) {
-          throw new Error(`Reply submitted but not visible on with_replies for @${target.handle}`);
+        if (!verification?.exists || !verification.url) {
+          await delay(3500 + Math.floor(Math.random() * 3000));
+          continue;
         }
 
         await delay(3500 + Math.floor(Math.random() * 3000));
@@ -719,8 +770,9 @@ async function run() {
   }
 
   const posted = records.filter((record) => record.status === 'posted_verified' || record.status === 'already_exists').length;
+  const pending = records.filter((record) => record.status === 'posted_pending_verification').length;
   const failed = records.filter((record) => record.status === 'failed').length;
-  console.log(`Done. posted_or_existing=${posted} failed=${failed} out=${args.out} summary=${args.summary}`);
+  console.log(`Done. posted_or_existing=${posted} pending_verification=${pending} failed=${failed} out=${args.out} summary=${args.summary}`);
   if (failed) process.exitCode = 1;
 }
 

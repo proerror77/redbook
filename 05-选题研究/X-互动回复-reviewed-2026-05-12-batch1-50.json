@@ -1,0 +1,702 @@
+[
+  {
+    "handle": "0xLogicrw",
+    "url": "https://x.com/0xLogicrw/status/2053758182846337037",
+    "language": "zh",
+    "reply": "低缓存价会改变用法：以前怕烧钱不敢让模型多试，现在可以把探索、改错、验证都放进自动循环里。",
+    "source": "timeline",
+    "source_rank": 1,
+    "source_content": "开发者正在利用 DeepSeek V4 API 极低的缓存命中价格进行大规模全自动编程，其单日处理数百亿 Token 的成本远低于同类模型。 尽管 DeepSeek 并未像同行那样推出包月代码套餐（Coding Plan），但开发者仍评价其真正让普通人实现了 Token 自由，堪称大模型领域的「价格屠夫」。 多位开发者在 X",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "DeRonin_",
+    "url": "https://x.com/DeRonin_/status/2053874586765152727",
+    "language": "en",
+    "reply": "The 22,000 hours part is the signal. A personal AI OS only works if it carries taste, history, and recovery across many tiny sessions.",
+    "source": "timeline",
+    "source_rank": 2,
+    "source_content": "SOMEONE JUST KILLED THE COACHING INDUSTRY a developer spent 22,000 hours building a Personal AI Operating System on top of Claude Code now anyone with a terminal can install it for FREE it knows your goals, remembers every decision you've made, and prepares your morning \"@noisyb0y1\" This developer's repo turns Claude into a personal AI OS. Saves 2-3 hours a day One developer spent 22,000 hours across 6,000 sessions with AI. Built 6 custom MCP servers. Saves 2-3 hours every day. His AI knows his ",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "claudeai",
+    "url": "https://x.com/claudeai/status/2053940934736228454",
+    "language": "en",
+    "reply": "A unified agent view sounds small, but it changes daily use. The pain is usually finding the right session, not starting one more run.",
+    "source": "timeline",
+    "source_rank": 3,
+    "source_content": "\"New in Claude Code: agent view. One list of all your sessions, available today as a research preview.\"",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "AYi_AInotes",
+    "url": "https://x.com/AYi_AInotes/status/2053911048877707443",
+    "language": "zh",
+    "reply": "Karpathy 这个 HTML 用法很实在。它不是炫格式，而是把模型输出变成能直接检查、点击、修改的东西。",
+    "source": "timeline",
+    "source_rank": 6,
+    "source_content": "Damn，Karpathy这条帖子直接把我过去半年的AI工作流全推翻了 大家都在死等更强的模型， 死等更大的上下文窗口， 但Karpathy说，你们全搞错方向了， 现在AI最大的瓶颈，根本不是模型不够聪明， 是我们还在用文本这种最低带宽的方式，跟它沟通。 他推荐了一个所有人今天就能用的trick， Andrej Karpathy \"@karpathy\" This works really well btw, at the end of your query ask your LLM to \"structure your response as HTML\", then view the generated file in your browser. I've also had some success asking the LLM to present its output as slideshows, etc. More generally, imo audio is the x.com/trq212/status/…",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "ashpreetbedi",
+    "url": "https://x.com/ashpreetbedi/status/2053885390717890757",
+    "language": "en",
+    "reply": "Auto-improving code gets interesting when the evals are close to production. Otherwise the agent may just learn to satisfy its own tests.",
+    "source": "timeline",
+    "source_rank": 7,
+    "source_content": "Ashpreet Bedi Auto-Improving Software Coding agents have changed how we build software. Now they're changing how we improve it. Today I'll share an agent platform that coding agents build, run, and improve on their own. The entire agent...",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "ai_xiaomu",
+    "url": "https://x.com/ai_xiaomu/status/2053891384826892395",
+    "language": "zh",
+    "reply": "这些案例说明门槛在变：不会写代码的人，反而更会把真实需求讲清楚。开发会更靠近业务现场。",
+    "source": "timeline",
+    "source_rank": 8,
+    "source_content": "非程序员做App的时代真的来了。 我亲眼看到的案例： 一个英语老师用Claude Code做了一个单词打卡小程序 一个房产中介用Cursor做了一个楼盘对比网页 一个宝妈用Kimi生成了一个辅食推荐网站 他们的共同点：完全不会写代码。 他们只做了一件事：把\"我想要什么\"描述清楚，让AI写。",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "torontobigface",
+    "url": "https://x.com/torontobigface/status/2053667858572316788",
+    "language": "zh",
+    "reply": "一下午搓出语音翻译，最夸张的不是速度，而是过去要组小团队的东西，现在个人能先做出可用版。",
+    "source": "timeline",
+    "source_rank": 9,
+    "source_content": "只能说AI现在太屌了好吧 上次去日本，被那个苹果翻译，谷歌翻译搞的实在头疼 今天看到，OpenAI出了一个GPT实时翻译模型 我就直接手搓了一个，ios上接入GPT模型的翻译软件 同时我还手搓了一个，接入该模型的，mac端的语音翻译软件 不过翻译有些延迟 耗时一下午就搓出来了，之前完全不懂编程",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "tuturetom",
+    "url": "https://x.com/tuturetom/status/2053769766343434328",
+    "language": "zh",
+    "reply": "把数据、表格、文档转成 HTML 很适合让模型交付结果。比纯文本多一层结构，也更容易被人验收。",
+    "source": "timeline",
+    "source_rank": 10,
+    "source_content": "最近 Claude Code 核心成员把 HTML 带火了 从普通的各种文本变成一个可交付的 HTML，以及现在 Agent 写 HTML 到底到了一个什么样的地步，大家可能没有一个很好的感受？ 所以我写了一个编辑器，可以把一些 Markdown 文本、数据、csv、excel 等转成 HTML 有人希望开源吗",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "berryxia",
+    "url": "https://x.com/berryxia/status/2053643773192839516",
+    "language": "zh",
+    "reply": "展示类 3D 先用成熟库很合理。精度要求不高时，能跑、能看、能交互，比从零追求完美更重要。",
+    "source": "timeline",
+    "source_rank": 11,
+    "source_content": "Berryxia.AI 看大家昨天都因为这个项目卧槽了一天！ 朋友们都开始整活儿，其实对于精度要求不高只是展示3D的就是可以直接使用开源的一些3D库就可以拿来使用。 我最早接触和了解这玩意还是Apple的 Reality Composer，官方也提供了对应的3D USDZ/USDC 格式的3D 模型库，并且都是免费的。 Berryxia.AI \"@berryxia\" 0:39 从此告别无聊的课堂教学！ 自己开发趣味互动科学应用创意 ～ 现在使用GPT-image-2 + Gemini 尝试生成3D生物结构，并开发了一款能交互探索这些结构的应用！",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "Lonely__MH",
+    "url": "https://x.com/Lonely__MH/status/2053836603030946190",
+    "language": "zh",
+    "reply": "Obsidian 侧边栏聊天这个方向很顺。笔记库本来就有上下文，只要权限和引用来源管好，就很像个人记忆层。",
+    "source": "timeline",
+    "source_rank": 13,
+    "source_content": "他来了！他来了！ Obsidian 小王子 带着终极方案走来了！ 5分钟零命令行，侧边栏直接聊天+语义搜索，效率原地起飞 ！ 实操视频如下： 阿蔺A-Lin \"@alin_zone\" Obsidian × AI 最简方案：不碰终端，5 分钟让 AI 住进侧边栏当你的记忆外挂 这是「Obsidian + AI」系列第三篇。前两篇走的是 CLI 路线（Claude Code / Codex / opencode），门槛不低。这一篇换条路：纯插件，不碰终端。 前两篇教程发出去之后，评论区好多人问：「CLI...",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "GitHub_Daily",
+    "url": "https://x.com/GitHub_Daily/status/2053777161702781305",
+    "language": "zh",
+    "reply": "终端日志压缩很实用。很多额度不是被代码烧掉，而是被重复报错、长 diff 和无关上下文吃掉。",
+    "source": "timeline",
+    "source_rank": 14,
+    "source_content": "GitHubDaily 最近一个名为 9router 的开源工具火了，给所有 AI 编程工具加了一个智能调度中心。 像平时用 Claude Code 写代码，API 额度消耗极快，遇到大段报错日志更是瞬间把 Token 烧光。 而 9router 则内置了智能压缩算法，自动精简终端日志或代码差异中的冗余信息，每次请求能帮我们省下不少 Token 消耗。",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "niuniu255431",
+    "url": "https://x.com/niuniu255431/status/2053702604526690717",
+    "language": "zh",
+    "reply": "能读微信、群聊和文档后，自动报告才有意义。材料入口打通，比单独多一个聊天窗口有用得多。",
+    "source": "timeline",
+    "source_rank": 15,
+    "source_content": "真tm的牛逼，这样，就可以随时扔抖音，小红书，youtube的视频，甚至做工作流，每天，每周，每个月给我发报告 kabikabi \"@jakevin7\" OpenCLI 现在可以读取微信、Telegram、Discord 的内容了！！！ wx-cli / tg-cli / discord-cli 全部接入。 群消息、聊天记录、朋友圈、收藏夹——全部可以用 CLI 直接拿到。 以前 Agent 只能帮你盯外部资讯网站，现在连你私域的群聊信息也能一起聚合进来。",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "teach_fireworks",
+    "url": "https://x.com/teach_fireworks/status/2053850607338078629",
+    "language": "zh",
+    "reply": "把 harness engineering 放在前面很对。现在缺的不是更多提示词，而是目标、工具、上下文、验收能连起来。",
+    "source": "timeline",
+    "source_rank": 16,
+    "source_content": "根据大佬的推荐我梳理了一份高质量 AI Engineer 的学习资料清单，值得收藏学习！ 太干了太干了！ 一共 11 部分太长了放不下，剩下6部分放评论区。 1. Harness engineering，不只是 prompt engineering 文章｜Martin Fowler：Harness Engineering for Coding Agent Users — 理解“agent = Akshay \"@akshay_pachaar\" \"As an AI Engineer. Please learn: - Harness engineering, not just prompt engineering - Prompt caching vs. semantic caching tradeoffs - KV cache management at scale - Speculative decoding vs quantization - Structured output failures & fallback chains - Evals (LLM-as-judge + hum",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "OpenAI",
+    "url": "https://x.com/OpenAI/status/2053939702110269822",
+    "language": "en",
+    "reply": "For cyber defense, the real value is speed plus traceability. Codex can help, but defenders still need evidence trails for every action.",
+    "source": "timeline",
+    "source_rank": 17,
+    "source_content": "\"Introducing Daybreak: frontier AI for cyber defenders. Daybreak brings together the most capable OpenAI models, Codex, and our security partners to accelerate cyber defense and continuously secure software. A step toward a future where security teams can move at the speed\"",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "op7418",
+    "url": "https://x.com/op7418/status/2053743942097911952",
+    "language": "zh",
+    "reply": "PPT 技能最难的不是生成页面，而是把信息层级和版式习惯固定下来。主题、颜色、版式都可选会省很多返工。",
+    "source": "timeline",
+    "source_rank": 18,
+    "source_content": "歸藏(guizang.ai) 来了！藏师傅的 PPT Skill 更新了第二套主题 新主题更加简洁美观，适合讲一些数据和事实性的内容 而且支持 4 种颜色、20 多个版式。 支持用 Codex 内置的 GPT-2.0 帮你生成配图和美化截图。 还能让它帮你生成各种平台的封面，以及公众号配图。 文章里详细讲了一下怎么用，还有一些小技巧。 歸藏(guizang.ai) \"@op7418\"",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "AdrianPunk115",
+    "url": "https://x.com/AdrianPunk115/status/2053731236607324637",
+    "language": "zh",
+    "reply": "我也越来越觉得 HTML 是交付物，不只是格式。能直接打开、检查、截图、改样式，沟通成本低很多。",
+    "source": "timeline",
+    "source_rank": 19,
+    "source_content": "Adrian Punk HTML：从放弃到精通，长嘴就行 我以前以为 HTML 是程序员的东西。 直到我看到 Claude Code 团队里越来越多人，开始让 AI 输出 HTML，而不是 Markdown。 我才反应过来： 这不是程序员在换格式。 这是 AI 输出形态变了。...",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "vikingmute",
+    "url": "https://x.com/vikingmute/status/2053811104015655182",
+    "language": "zh",
+    "reply": "这种小而稳的特效库挺好。0 依赖、布局稳定、三端可用，比堆一堆动画包更适合长期维护。",
+    "source": "timeline",
+    "source_rank": 20,
+    "source_content": "写好了，开源下自己写的一个文字切换滚动的特效库：Scrambl 自己完成的最小化内核，0 依赖，支持多种字符集（十种），支持自定义，同时支持 Vanilla.js / React / Vue, 支持多行以及 Stable layout，特别适合 geek 风网站的标题滚动效果。 如果使用，建议使用 Monospace Viking \"@vikingmute\" 0:17 今天花时间写了支持 vanilla.js / react / vue 的 scrambleText 库，自己写的最小化内核，没有用 Anime.js ，支持多种字符集，0 依赖，写清楚需求，一个 monorepo ，AI 花了十五分钟所有功能就写好了。 现在发现调设计是最花时间的，然后网站首页花了一个小时我自己还不满意。Codex x.com/vikingmute/sta…",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "AYi_AInotes",
+    "url": "https://x.com/AYi_AInotes/status/2053873403749073021",
+    "language": "zh",
+    "reply": "直营店开进云厂商这个比喻很准。模型公司开始不满足只做批发，想把体验、更新和客户关系也拿回来。",
+    "source": "timeline",
+    "source_rank": 21,
+    "source_content": "Damn，Anthropic这波操作，直接把我看傻了 我看评论区很多人拍马屁说恭喜Claude上架AWS这个大云厂商。 哪跟哪啊，其实根本不是一回事。 我直接说， 本质上就是Anthropic直接把自己的直营店， 开进了AWS的大本营。 以前的Bedrock模式， Anthropic把模型批发给AWS， 功能迭代永远慢半拍， Claude \"@claudeai\" The Claude Platform on AWS is now generally available. AWS customers get the full set of Claude API features, with AWS authentication, billing, and commitment retirement.",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "MoonDevOnYT",
+    "url": "https://x.com/MoonDevOnYT/status/2053897928897593484",
+    "language": "en",
+    "reply": "Using Claude Code to ship a Polymarket HMM API is a good example of AI as a research workbench, not just a code generator.",
+    "source": "timeline",
+    "source_rank": 27,
+    "source_content": "i recreated jim simons’ hidden markov model for polymarket using claude code while you were holding bags. i deployed an api endpoint to track the whales and hit a 35k wallet rotation live on stream. watch me automate my 4-hour rbi system and replace my human ea with an ai",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "bi_9527zx",
+    "url": "https://x.com/bi_9527zx/status/2053828628946018570",
+    "language": "zh",
+    "reply": "筛选器和决策器分开很对。交易里不是每一步都值得上大模型，先过滤噪音才能把成本压下来。",
+    "source": "timeline",
+    "source_rank": 29,
+    "source_content": "DeFi狙击手 | Ai 我做AI自动交易的第一个月，烧的不是本金，是token。 Kimi K2.6每15分钟调度一次，一天30块，一个月900块，折合125U。 策略还没赚钱，大模型先吃了顿饱的。 后来我把架构拆了重搭，现在token成本压到原来的几十分之一。 方法就一句话：筛选器和决策器彻底分离。 / 之前是全链路交给LLM。",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "passluo",
+    "url": "https://x.com/passluo/status/2053666037024071709",
+    "language": "zh",
+    "reply": "几十万美金额度拿去蒸馏，听起来确实不像普通应用量级。云厂商折扣会变成模型套利的一部分。",
+    "source": "timeline",
+    "source_rank": 33,
+    "source_content": "这几天天天都收到 aws bedrock claude 打折原 key 的询价 非常多，一天好几个，一问都是拿去跑蒸馏 用量少的说一个月 几十万 usd，多的 200+ 这么夸张吗？怀疑是什么新型电信诈骗",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "LotusDecoder",
+    "url": "https://x.com/LotusDecoder/status/2053744942649073947",
+    "language": "zh",
+    "reply": "稳健基建这条我很认同。让模型维护系统时，越少奇技淫巧，越容易解释、回滚和接手。",
+    "source": "timeline",
+    "source_rank": 34,
+    "source_content": "LotusDecoder 传统 软件工程 理念，在 AI coding 时代继续发扬光大 AI coding / AI 运维 /AI everything 踩坑经验一条。 抛弃繁复、复杂、过于新颖的东西， 拥抱稳健、古老、简约的基建。 或者说是，不要轻易给系统引入额外的复杂度， 特别是哪些需要额外解释给 AI model 和...",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "bi_9527zx",
+    "url": "https://x.com/bi_9527zx/status/2053664495726411888",
+    "language": "zh",
+    "reply": "粉丝数和单条爆款脱钩，这个观察很有用。做账号分析不能只看总量，应该拆到题材、hook 和发布时间。",
+    "source": "timeline",
+    "source_rank": 38,
+    "source_content": "DeFi狙击手 | Ai 上次帮一个X推特博主做了分析，数据跑出来一部分了。分析了50个账号之后，发现几个反常识的规律。 第一，粉丝数和单条爆款无关。500粉的号写出2万浏览的推文，5万粉的号日常50浏览。爆款是单条内容质量决定的，不是粉丝积累的结果。 DeFi狙击手 | Ai \"@bi_9527zx\" 0:36 怀疑研究AI工具会不会把人猝死? 每天睡觉时间凑不满五根手指。 最近在肝一个自己的项目， 针对X上的博主做账号分析， 再结合自身优势直接输出爆款方向的写作工具。 说实话它可能会改变以后博主写作的方式。 现在还在测试阶段，目前进度大概三分之一， 等我完善了会免费开源出来给大家用。",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "grapeot",
+    "url": "https://x.com/grapeot/status/2053903487730426217",
+    "language": "zh",
+    "reply": "把三家的结论放一起看就清楚了：浏览器控制不是没价值，而是产品形态还没找到足够稳定的入口。",
+    "source": "timeline",
+    "source_rank": 39,
+    "source_content": "Google 悄无声息关掉了去年 I/O 上高调站台的 Project Mariner。主流解读是 Google 在 AI agent 竞赛中掉队。但如果把比较对象放对——Project Mariner 对应 Anthropic Computer Use 和 OpenAI CUA——你会发现三家都得出了一样的结论。 独立 browser agent 有一个结构性死穴：它的部署方式（headless",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "MrLarus",
+    "url": "https://x.com/MrLarus/status/2053798102142693773",
+    "language": "zh",
+    "reply": "看台抓拍这个 demo 说明视频已经很会造氛围了。下一步差距会在连续性、小字和镜头逻辑。",
+    "source": "timeline",
+    "source_rank": 46,
+    "source_content": "Larus Canus 这种直播抓拍感太真了！ 用 GPT-Image2+Seedance 生成的看台抓拍视频，全场沸腾！ 2026世界杯看台上镜头突然扫到她 大屏亮起的那一刻 她愣了一下，然后害羞地笑了… 评论区拆解工作流和提示词 由 AI 生成",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "WEB3_furture",
+    "url": "https://x.com/WEB3_furture/status/2053845849579405368",
+    "language": "zh",
+    "reply": "GitHub 入门能压到 7 分钟很适合新手。最重要是先分清版本库、提交、分支和协作，不然命令越学越乱。",
+    "source": "timeline",
+    "source_rank": 47,
+    "source_content": "这是目前最精简的 GitHub入门教程（7分钟） 这个视频适合想快速入门GitHub的小白，零基础快速理解 Git 和 GitHub 的区别和用法、 常用命令和工作流、 如何存储、分享和协作项目 已整理为中英双语版本",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "LuBtc888",
+    "url": "https://x.com/LuBtc888/status/2053789714713628962",
+    "language": "zh",
+    "reply": "深度复盘最适合用工具辅助：记录事实、时间线和决策理由，人再负责挑出模式和下一次动作。",
+    "source": "timeline",
+    "source_rank": 55,
+    "source_content": "一个人最顶级的能力，就是【深度复盘】 我敢说，如果你真的照着这条视频去做， 2027年1月1日的你会和现在完全不是同一个人， 这条视频并不是给你加油打气的鸡汤， 我之所以这么说，是因为这两件事真真切切地改变了我， 一个是深度复盘，另一个是高效学习。",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "xDinoDeer",
+    "url": "https://x.com/xDinoDeer/status/2053670249367744823",
+    "language": "zh",
+    "reply": "现金流这个问法很扎实。讲技术叙事容易，难的是谁付费、从哪个预算出、能不能持续复购。",
+    "source": "timeline",
+    "source_rank": 57,
+    "source_content": "如果世界经济没有增量，谁为 AI 叙事买单？ 如果大量的人失业，谁为 AI 付费？ 现金流向是？",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "yihui_indie",
+    "url": "https://x.com/yihui_indie/status/2053706882452435232",
+    "language": "zh",
+    "reply": "一个人加工具能走多远，取决于他能不能持续定义任务。会写代码只是开始，会选择做什么更稀缺。",
+    "source": "timeline",
+    "source_rank": 60,
+    "source_content": "太强了，见证一个人 + AI 到底能走多远 引用 mousepotato \"@iluciddreaming\" 全奖 PhD，硅谷十一年，startup 上市了。AI 来了，我失眠了。 有天凌晨，Claude 用 30 秒写完了一段我需要 2 小时的代码。 我盯着屏幕看了很久。代码风格干净，逻辑没毛病，甚至比我写的更好读。 那晚没睡着。 不是兴奋。是突然不确定：我这十几年积累的东西，到底还值多少。...",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "VincentLogic",
+    "url": "https://x.com/VincentLogic/status/2053633717743341989",
+    "language": "zh",
+    "reply": "桌面操作类工具最怕演示惊艳、日常不稳。能不能处理权限、弹窗和失败恢复，决定它能不能常驻。",
+    "source": "timeline",
+    "source_rank": 61,
+    "source_content": "Vincent Logic | 信号＞噪音 发现个字节开源的桌面 AI 神器！ UI-TARS Desktop，31k stars 不是吹的，这玩意儿真能看懂你的屏幕，然后帮你自动操作电脑。 你告诉它\"帮我把 VS Code 的自动保存打开，延迟改成 500 毫秒\"，它就自己： - 打开 VS Code - 进设置界面 - 找到自动保存选项 - 改成 afterDelay - 把延迟时间改成 500ms",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "0xLogicrw",
+    "url": "https://x.com/0xLogicrw/status/2053731440966471784",
+    "language": "zh",
+    "reply": "10 人小队做出 3.7 这个细节很有冲击力。小团队如果目标够清楚，配合强工具，产出密度会非常高。",
+    "source": "timeline",
+    "source_rank": 62,
+    "source_content": "前 Anthropic 研究科学家、现 Google DeepMind 研究科学家姚顺宇，在 播客「语言即世界」中首次披露了 Claude 3.7 的内部研发过程。他在 2024 年 10 月加入 Anthropic 后被分进一个名为 Horizon 的团队，当时整个团队只有 10 到 11 个人，却负责 Anthropic",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "hridoyreh",
+    "url": "https://x.com/hridoyreh/status/2053847847808926117",
+    "language": "en",
+    "reply": "Automating SEO with Claude is most useful when it closes the loop from brief to publish to ranking data. One-off content is the easy part.",
+    "source": "timeline",
+    "source_rank": 63,
+    "source_content": "Hridoy Rehman \"I fired my SEO team last year. And used Claude to automate SEO. Here is the result:\"",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "yanhua1010",
+    "url": "https://x.com/yanhua1010/status/2053807095942951244",
+    "language": "zh",
+    "reply": "把对话总结给另一个模型用，这招很实用。长对话到后面最怕上下文变脏，重建简洁上下文反而更稳。",
+    "source": "timeline",
+    "source_rank": 64,
+    "source_content": "推荐一个小tips： 如果你觉得Claude的回答不满意，或者你的Claude额度到上限了，试试下面提示词 “于我们目前的对话，请创建一个总结，以便 GPT 能够清晰地理解。”",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "fankaishuoai",
+    "url": "https://x.com/fankaishuoai/status/2053823474591027288",
+    "language": "zh",
+    "reply": "出海软件透明度高这点很真实。需求不稀缺，稀缺的是定位、分发、客服和持续迭代。",
+    "source": "timeline",
+    "source_rank": 65,
+    "source_content": "范凯说 AI | Kai on AI 出海卖软件，说实话： 很多人以为出海是去竞争少的地方。不是。 是去跟全世界的开发者抢同一批用户。这个市场信息极度透明，你能想到的需求早有人做了，你以为的空白早被填满了。",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "wsl8297",
+    "url": "https://x.com/wsl8297/status/2053823549513892009",
+    "language": "zh",
+    "reply": "开源抠图对电商很有用。只要边缘稳定、批处理方便，就能直接进入主图和素材生产流程。",
+    "source": "timeline",
+    "source_rank": 79,
+    "source_content": "跟大家安利一款背景移除利器：RMBG-2.0。 各种类型图片都能搞定，一键抠图，速度快、边缘干净，整体效果相当稳，电商主图、广告物料这类场景尤其好用。 在线体验： 目前模型已开源，但不支持商用，日常个人使用完全够用。",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "nopinduoduo",
+    "url": "https://x.com/nopinduoduo/status/2053856783098335296",
+    "language": "zh",
+    "reply": "四层信号监控思路不错。自动交易先别急着下单，能稳定收集、去重和记录信号就已经很有价值。",
+    "source": "timeline",
+    "source_rank": 80,
+    "source_content": "【打造24h Agent 自动交易体系进化体系之信号监控】 通过XCrawl +onchainOS 搭建了四层信号监控体系： 实现完整监控 Layer1 到 layer 4 四层信号监视层： Layey4 到 layer3 依靠XCrawl 数据源 监控CoinGlass 、Polymarket等信息。 Layer1 则是靠 okx 的onchainOS 监控链上信号。 我真的没有拼多多 \"@nopinduoduo\" AI 自动交易系统，3分钟方案：用XCrawl给Agent装上自动化眼睛，打造「自动化情报系统」 上次让贾维斯学完投资大佬的 42 万字后，他自信心爆棚。现在他每天缠着我要读更多东西，说只有这样才能「跟上市场节奏」。 但我看着他列出的阅读清单——每天 50+ 篇行业文章、10+ 个竞品动态、5+...",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "Beitak9",
+    "url": "https://x.com/Beitak9/status/2053497549525483590",
+    "language": "zh",
+    "reply": "功能能被复刻后，CTO 的价值会更偏向选方向和定质量线。0 到 1 的嗅觉会比单点实现更值钱。",
+    "source": "timeline",
+    "source_rank": 81,
+    "source_content": "产品 4 月 2 日发布后迎接的是一堆大厂个体的抄袭，AI Coding 时代每一个功能都可以被 1:1 复刻。所以 AI 时代下应用公司 CTO 的价值是什么？持续定义 0 到 1 ，持续推动团队把 1 优化到 100。我有极强的价值嗅觉，我有极强的推理和问题推进能力，我是新时代的天才，大部分 AI 时代下的 CTO",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "bkingfilm",
+    "url": "https://x.com/bkingfilm/status/2053822436970541271",
+    "language": "zh",
+    "reply": "建模师确实应该更早参与。毛发、材质、骨骼这些约束如果太晚进入，原画再漂亮也会返工。",
+    "source": "timeline",
+    "source_rank": 84,
+    "source_content": "导演BK｜游戏行业幕后 很多人以为 3D 建模就是把原画“做出来”。 但一个雪怪的毛发，团队纠结了两个月。 一绺毛背后可能是几百上千根真实毛发，上百根引导线。 3D建模在行业里常被当成工具人，但它其实是在原画之后，重新做一次角色设计。 你觉得建模师该不该更早参与角色设计？",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "hank_aibtc",
+    "url": "https://x.com/hank_aibtc/status/2053773366923006173",
+    "language": "zh",
+    "reply": "离线 PDF 编辑器很适合企业场景。无登录、无云端、真删除敏感信息，这几个点比花哨功能更重要。",
+    "source": "timeline",
+    "source_rank": 87,
+    "source_content": "有人做了一个真正靠谱的离线 PDF 编辑器了！ RevPDF 太香了 —— 完全免费、纯离线、无登录、无云端，打开就能用！ 核心亮点： - 直接在 PDF 里编辑文字和图片 （改字体、 reposition 元素） - 永久红action（真正删除敏感信息，不是盖黑条） - 手写签名、表单填写&创建、标注、高亮、自由绘制 -",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "1999_eth",
+    "url": "https://x.com/1999_eth/status/2053803652566188323",
+    "language": "zh",
+    "reply": "稳定币支付很符合币圈用户习惯。下一步要看的会是账务、风控和额度管理能不能跟上增长。",
+    "source": "timeline",
+    "source_rank": 92,
+    "source_content": "兄弟们，我的AI中转站 支持稳定币支付了！ 最近用户增长太快了，尤其是币圈用户越来越多。 这段时间经常有人私信问我： “能不能支持 USDT / USDC？” “能不能不要每次都用人民币充值？” 确实，币圈的人用 AI 中转站，怎么能没有稳定币支付呢。 所以这次我们正式接入了",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "xiaoerzhan",
+    "url": "https://x.com/xiaoerzhan/status/2053667345848320017",
+    "language": "zh",
+    "reply": "私人工具库开源很有价值。手动筛过的收藏，比自动抓一堆链接更可信，后面分类可以慢慢补。",
+    "source": "timeline",
+    "source_rank": 94,
+    "source_content": "Jane｜Xiaoer 我的私人工具库web开源了 不是爬虫爬的合集 不是随意收的合集 而是 一个一个手动拷贝 记录在我notion的 很多跟审美相关 也跟AI艺术相关 做个酷网页相关 自己一路的累积 实在太多了 存的时候没时间记录太仔细 分类也不够严谨 慢慢找不到了 所以 我做了一键收藏系统",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "YSI_crypto",
+    "url": "https://x.com/YSI_crypto/status/2053754588743045347",
+    "language": "zh",
+    "reply": "选币网站带来关注，说明用户不是只想看观点，也想要可操作的筛选器。信号解释会比信号数量更重要。",
+    "source": "timeline",
+    "source_rank": 99,
+    "source_content": "大半年了，粉丝一直在 47700 这里上下徘徊，做了个 AI选币网站分享出来。 2天时间就涨了 300 粉，到达 48000 。 也不是非要泛流量嘛，愿意分享些东西，也能有收获！ 像这篇帖子现在就有 13 万的浏览量了。 目前信号多的原因是因为我对接了 560 多个合约对，选币网站能做到的是，将这 560 \"@YSI_crypto\" 默默做了将近 20天 的 AI选币网站终于出炉啦 我取名为呱呱选币，希望它能顶呱呱 网站入口：yss-signal.com 我设置了不搭梯子也能访问。",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "AYi_AInotes",
+    "url": "https://x.com/AYi_AInotes/status/2053877797844582543",
+    "language": "zh",
+    "reply": "造自己的法拉利这句话有劲。个人工具的意义不是复制别人的车，而是把自己的路线和习惯固化下来。",
+    "source": "timeline",
+    "source_rank": 122,
+    "source_content": "我靠我直接原地起飞了！ 晚上群里小北 提醒， Garry Tan转发了我的推文！ 忙完洗漱躺进被窝， 发现Garry用一句话把我想说的所有东西都讲透了！ 他说： \"别再骑别人发明的无马马车了。 该造自己的法拉利了。 个人AI时代已经到来。\" 这句话真的戳中了AI最本质的东西。 Garry Tan \"@garrytan\" Don’t ride someone else’s horseless carriage Time to build your own Ferrari Personal AI is here x.com/ayi_ainotes/st… 由 AI 生成",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "mubeitech",
+    "url": "https://x.com/mubeitech/status/2053740564286161078",
+    "language": "zh",
+    "reply": "欢迎失败这点很像工程实验。把失败成本控制住，才敢多试；把成功路径吃透，才有复利。",
+    "source": "timeline",
+    "source_rank": 123,
+    "source_content": "大神卡马克：欢迎失败。 他写的代码统治了游戏界三十年，却说自己最爱看主意破灭。 既然注定大概率行不通，为什么还要疯狂地去想？ 这涉及 Nassim Taleb 提出的“反脆弱”。 卡马克构建了一套个人的认知系统。 核心在于：要在成功的方案中吃尽红利，在失败的低谷中毫发无伤。",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "you1873118",
+    "url": "https://x.com/you1873118/status/2053793913564226047",
+    "language": "zh",
+    "reply": "这个滑板游戏概念最吸引人的地方是完整感。角色、地图、倒计时、追逐连起来，才像一个可玩的世界。",
+    "source": "timeline",
+    "source_rank": 124,
+    "source_content": "GPT-image2 x seedance2.0 做了一个滑板游戏宣传片的概念 从角色选择、滑板改装、城市地图 到倒计时起跑、空中特技 地铁追逐、屋顶路线 最爽的不是单张图 而是把它串起来之后 真的有点像一款 不存在但很想玩的游戏了 但是还是有一点瑕疵",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "joshesye",
+    "url": "https://x.com/joshesye/status/2053637874281824756",
+    "language": "zh",
+    "reply": "第一视角回忆录能火，靠的不是特效，而是剧本和前后对照。分镜先稳住，模型才有发挥空间。",
+    "source": "timeline",
+    "source_rank": 125,
+    "source_content": "73.9 万赞第一视角回忆录短片教程：从剧本、分镜到 Seedance 图生视频完整流程 大家好，我是行者。 最近这种第一视角回忆录的视频很火。 画面是几个普通人年轻时说过的狠话，配上他们现在的生活状态。 没有什么炫酷特效，也不是什么大制作，就是那种很生活化的镜头。...",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "gaoren7716",
+    "url": "https://x.com/gaoren7716/status/2053655367276757028",
+    "language": "zh",
+    "reply": "声音克隆如果能直接带来副业收入，说明它已经从玩具进到交付层了。最要小心的是授权和使用边界。",
+    "source": "timeline",
+    "source_rank": 126,
+    "source_content": "小海豚笔记 (AI & 副业探索) 我用Voicebox克隆自己声音，第一个月副业多赚了3200元 说实话，我之前一直觉得AI配音听起来假。 直到我录了30秒自己的声音，两分钟后听到它开口——用的是我的声音，念的是我写的文案。 我听了三遍，确认不是原录音。...",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "VincentLogic",
+    "url": "https://x.com/VincentLogic/status/2053731567340859603",
+    "language": "zh",
+    "reply": "进程级网络归属很实用。排查异常连接时，能一眼看到哪个程序在连谁，比只看端口舒服太多。",
+    "source": "timeline",
+    "source_rank": 127,
+    "source_content": "Vincent Logic | 信号＞噪音 你的程序到底在偷偷连谁？以前排查网络请求像开盲盒，现在终于有个终端神器能一眼看穿。 发现个巨顺手的网络监控工具 RustNet，纯 Rust 写的 TUI，界面颜值和实战能力都在线。 进程级归属：每条 TCP/UDP 连接直接标出是哪个 App 发起的，Firefox、ssh、nginx 一目了然",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "PandaTalk8",
+    "url": "https://x.com/PandaTalk8/status/2053779668017549474",
+    "language": "zh",
+    "reply": "停止标 made with ai 这个选择我懂。读者最后在意的是内容有没有帮助，不是每一步用了什么工具。",
+    "source": "timeline",
+    "source_rank": 128,
+    "source_content": "我最近停止了“made with ai ” . 倒不是我良心发现了， 而是很多时候， 我认为AI 和我一起完成的内容对我没有什么营养。 还不如发点短推文， 讲讲我真实的思考的内容。",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  },
+  {
+    "handle": "NFTCPS",
+    "url": "https://x.com/NFTCPS/status/2053693404262060415",
+    "language": "zh",
+    "reply": "窗口管理器这种小工具很容易低估。多窗口工作时，找到目标的摩擦每天都在消耗注意力。",
+    "source": "timeline",
+    "source_rank": 130,
+    "source_content": "兄弟，Mac干活一开十几个窗口，找个目标翻得比搬砖还累，烦不烦？ 刷到Paneru这开源窗口管理器，思路贼直——用横向“滚动条”管窗口，切换立马变有序好找。 像Linux上的Niri，每块显示器各一条窗口带，互不打扰； 触控板滑窗口，顺滑自然不卡顿。",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    }
+  }
+]

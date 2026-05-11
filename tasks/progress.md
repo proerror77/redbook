@@ -4,6 +4,26 @@
 
 ---
 
+## [2026-05-12] X timeline 互动回复 50 条 batch1 + 验证流程修复
+
+**完成了什么：**
+- 按 `docs/reference/x-engagement-reply-workflow.md` 从当前 X timeline 采集 221 条候选，保留 180 条，再复筛 50 条 AI / agent / coding / workflow / 企业工具 / 交易信号质量相关帖子。
+- 预检确认 CDP `http://127.0.0.1:9222` 可复用，发布账号为 `Smileyface @0xcybersmile`。
+- 内容审稿与脚本 gate 均通过：`approved=50 blocked=0`。
+- 发布时发现旧流程会把“已提交但 `with_replies` 暂时抽不到 URL”误判为 `failed`，存在诱发重复回复风险；已修正 `reply_engagement_queue.mjs`，改为 `posted_pending_verification`，不再自动判失败。
+- 新增 `tools/auto-x/scripts/verify_engagement_replies.mjs`：只验证不发布，按 `with_replies -> source conversation -> live search` 三路补查回复 URL。
+- 更新 `docs/reference/x-engagement-reply-workflow.md`：明确 pending 语义、retry 前必须先跑 verifier。
+
+**验证：**
+- `node --check tools/auto-x/scripts/reply_engagement_queue.mjs` 通过。
+- `node --check tools/auto-x/scripts/verify_engagement_replies.mjs` 通过。
+- 被旧流程标成失败/未验证的 8 条，修复后的 verifier 补到 8/8 条 URL；其中 `@wsl8297` 依赖第三路 `live_search` 补到 URL。
+- 最终汇总：`05-选题研究/X-互动回复记录-2026-05-12-batch1-50-verified.jsonl` / `.md`。
+- 最终计数：`verified=50`，`unique_sources=50`，`unique_verify_urls=50`，`missing=0`。
+
+**遗留：**
+- 原始记录中保留旧流程产生的 `posted_unverified` / `failed` 中间审计轨迹；最终发布事实以 `batch1-50-verified` 文件为准。
+
 ## [2026-05-11] X timeline 互动回复 50 条 batch4
 
 **完成了什么：**

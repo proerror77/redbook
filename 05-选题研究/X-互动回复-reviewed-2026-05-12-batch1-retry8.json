@@ -1,0 +1,122 @@
+[
+  {
+    "handle": "passluo",
+    "url": "https://x.com/passluo/status/2053666037024071709",
+    "language": "zh",
+    "reply": "几十万美金额度拿去蒸馏，听起来确实不像普通应用量级。云厂商折扣会变成模型套利的一部分。",
+    "source": "timeline",
+    "source_rank": 33,
+    "source_content": "这几天天天都收到 aws bedrock claude 打折原 key 的询价 非常多，一天好几个，一问都是拿去跑蒸馏 用量少的说一个月 几十万 usd，多的 200+ 这么夸张吗？怀疑是什么新型电信诈骗",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    },
+    "retry_of_batch_index": 21
+  },
+  {
+    "handle": "LotusDecoder",
+    "url": "https://x.com/LotusDecoder/status/2053744942649073947",
+    "language": "zh",
+    "reply": "稳健基建这条我很认同。让模型维护系统时，越少奇技淫巧，越容易解释、回滚和接手。",
+    "source": "timeline",
+    "source_rank": 34,
+    "source_content": "LotusDecoder 传统 软件工程 理念，在 AI coding 时代继续发扬光大 AI coding / AI 运维 /AI everything 踩坑经验一条。 抛弃繁复、复杂、过于新颖的东西， 拥抱稳健、古老、简约的基建。 或者说是，不要轻易给系统引入额外的复杂度， 特别是哪些需要额外解释给 AI model 和...",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    },
+    "retry_of_batch_index": 22
+  },
+  {
+    "handle": "bi_9527zx",
+    "url": "https://x.com/bi_9527zx/status/2053664495726411888",
+    "language": "zh",
+    "reply": "粉丝数和单条爆款脱钩，这个观察很有用。做账号分析不能只看总量，应该拆到题材、hook 和发布时间。",
+    "source": "timeline",
+    "source_rank": 38,
+    "source_content": "DeFi狙击手 | Ai 上次帮一个X推特博主做了分析，数据跑出来一部分了。分析了50个账号之后，发现几个反常识的规律。 第一，粉丝数和单条爆款无关。500粉的号写出2万浏览的推文，5万粉的号日常50浏览。爆款是单条内容质量决定的，不是粉丝积累的结果。 DeFi狙击手 | Ai \"@bi_9527zx\" 0:36 怀疑研究AI工具会不会把人猝死? 每天睡觉时间凑不满五根手指。 最近在肝一个自己的项目， 针对X上的博主做账号分析， 再结合自身优势直接输出爆款方向的写作工具。 说实话它可能会改变以后博主写作的方式。 现在还在测试阶段，目前进度大概三分之一， 等我完善了会免费开源出来给大家用。",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    },
+    "retry_of_batch_index": 23
+  },
+  {
+    "handle": "grapeot",
+    "url": "https://x.com/grapeot/status/2053903487730426217",
+    "language": "zh",
+    "reply": "把三家的结论放一起看就清楚了：浏览器控制不是没价值，而是产品形态还没找到足够稳定的入口。",
+    "source": "timeline",
+    "source_rank": 39,
+    "source_content": "Google 悄无声息关掉了去年 I/O 上高调站台的 Project Mariner。主流解读是 Google 在 AI agent 竞赛中掉队。但如果把比较对象放对——Project Mariner 对应 Anthropic Computer Use 和 OpenAI CUA——你会发现三家都得出了一样的结论。 独立 browser agent 有一个结构性死穴：它的部署方式（headless",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    },
+    "retry_of_batch_index": 24
+  },
+  {
+    "handle": "MrLarus",
+    "url": "https://x.com/MrLarus/status/2053798102142693773",
+    "language": "zh",
+    "reply": "看台抓拍这个 demo 说明视频已经很会造氛围了。下一步差距会在连续性、小字和镜头逻辑。",
+    "source": "timeline",
+    "source_rank": 46,
+    "source_content": "Larus Canus 这种直播抓拍感太真了！ 用 GPT-Image2+Seedance 生成的看台抓拍视频，全场沸腾！ 2026世界杯看台上镜头突然扫到她 大屏亮起的那一刻 她愣了一下，然后害羞地笑了… 评论区拆解工作流和提示词 由 AI 生成",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    },
+    "retry_of_batch_index": 25
+  },
+  {
+    "handle": "wsl8297",
+    "url": "https://x.com/wsl8297/status/2053823549513892009",
+    "language": "zh",
+    "reply": "开源抠图对电商很有用。只要边缘稳定、批处理方便，就能直接进入主图和素材生产流程。",
+    "source": "timeline",
+    "source_rank": 79,
+    "source_content": "跟大家安利一款背景移除利器：RMBG-2.0。 各种类型图片都能搞定，一键抠图，速度快、边缘干净，整体效果相当稳，电商主图、广告物料这类场景尤其好用。 在线体验： 目前模型已开源，但不支持商用，日常个人使用完全够用。",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    },
+    "retry_of_batch_index": 35
+  },
+  {
+    "handle": "Beitak9",
+    "url": "https://x.com/Beitak9/status/2053497549525483590",
+    "language": "zh",
+    "reply": "功能能被复刻后，CTO 的价值会更偏向选方向和定质量线。0 到 1 的嗅觉会比单点实现更值钱。",
+    "source": "timeline",
+    "source_rank": 81,
+    "source_content": "产品 4 月 2 日发布后迎接的是一堆大厂个体的抄袭，AI Coding 时代每一个功能都可以被 1:1 复刻。所以 AI 时代下应用公司 CTO 的价值是什么？持续定义 0 到 1 ，持续推动团队把 1 优化到 100。我有极强的价值嗅觉，我有极强的推理和问题推进能力，我是新时代的天才，大部分 AI 时代下的 CTO",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    },
+    "retry_of_batch_index": 37
+  },
+  {
+    "handle": "YSI_crypto",
+    "url": "https://x.com/YSI_crypto/status/2053754588743045347",
+    "language": "zh",
+    "reply": "选币网站带来关注，说明用户不是只想看观点，也想要可操作的筛选器。信号解释会比信号数量更重要。",
+    "source": "timeline",
+    "source_rank": 99,
+    "source_content": "大半年了，粉丝一直在 47700 这里上下徘徊，做了个 AI选币网站分享出来。 2天时间就涨了 300 粉，到达 48000 。 也不是非要泛流量嘛，愿意分享些东西，也能有收获！ 像这篇帖子现在就有 13 万的浏览量了。 目前信号多的原因是因为我对接了 560 多个合约对，选币网站能做到的是，将这 560 \"@YSI_crypto\" 默默做了将近 20天 的 AI选币网站终于出炉啦 我取名为呱呱选币，希望它能顶呱呱 网站入口：yss-signal.com 我设置了不搭梯子也能访问。",
+    "review": {
+      "status": "approved",
+      "by": "x-mastery-mentor-style",
+      "notes": "timeline source; concrete detail; account aligned; language matched; non-template"
+    },
+    "retry_of_batch_index": 42
+  }
+]

@@ -54,6 +54,9 @@ Use this workflow when the user asks to reply to posts from X timeline, expand e
    - Use `tools/auto-x/scripts/reply_engagement_queue.mjs`.
    - Record reviewed JSON, review markdown, final JSONL, and final markdown under `05-选题研究/`.
    - Verify every reply through `with_replies` and capture the reply status URL.
+   - If a submitted reply is not immediately visible, treat it as `posted_pending_verification`, not `failed`.
+   - Before any retry, run `tools/auto-x/scripts/verify_engagement_replies.mjs` against the targets or records. It must check `with_replies` and the source conversation first.
+   - Only retry a target after the verifier still reports `pending_verification`; never retry solely because the publisher's immediate readback was delayed.
    - Do not report success from script stdout alone.
 
 ## Completion Evidence
@@ -61,7 +64,7 @@ Use this workflow when the user asks to reply to posts from X timeline, expand e
 Completion requires:
 
 - review result: `approved=N blocked=0`
-- publish result: `posted_verified=N failed=0`
+- publish result: `posted_verified + already_exists + verifier verified = N`, `failed=0`, `pending_verification=0`
 - `unique_sources=N`
 - `unique_verify_urls=N`
 - saved reviewed JSON, review markdown, JSONL, and markdown summary
