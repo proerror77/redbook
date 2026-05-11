@@ -4745,6 +4745,25 @@
 **遗留：**
 - 本轮只做选题建议和互动候选，不写稿、不创建完整 content run、不发布。
 
+## [2026-05-11] Wiki ingest 改用 Codex CLI
+
+**完成了什么：**
+- 将 `tools/wiki-auto/run_wiki_ingest.sh` 从 Claude CLI 改为 Codex CLI：`codex --ask-for-approval never exec -C "$ROOT_DIR" -s workspace-write -`。
+- 将 `tools/auto-x/scripts/run_daily.sh` 的实际写回日志从 `运行 Claude CLI wiki ingest...` 改为 `运行 Codex CLI wiki ingest...`。
+- 修复无报告日期 smoke：用 `find ... -name "*${TODAY}*"` 统计报告，避免 `ls` 无匹配时在 `set -euo pipefail` 下提前退出。
+- 用 Codex CLI 跑通 2026-05-11 真实 wiki ingest，写入 `wiki/log.md`，更新 `wiki/index.md` / `wiki/overview.md`，并新增 `wiki/选题/AI工具信任与AI Slop.md`。
+
+**验证：**
+- `codex login status` 返回 `Logged in using ChatGPT`。
+- `codex --ask-for-approval never exec -C /Users/proerror/Documents/redbook -s read-only ...` 返回 `CODEX_OK`。
+- `bash -n tools/wiki-auto/run_wiki_ingest.sh tools/auto-x/scripts/run_daily.sh` 通过。
+- `bash tools/wiki-auto/run_wiki_ingest.sh 2099-01-01` 正确输出无报告跳过。
+- `python3 tools/wiki_workflow.py lint --date 2026-05-11`：`missing_from_index=0`、`dangling_in_index=0`、`orphan_pages=0`、`stale_index_dates=0`、`overview_stale=false`。
+- `git diff --check` 通过。
+
+**遗留：**
+- Codex CLI 运行时会打印 `clipal/models` 503 的模型列表刷新错误，但实际 `codex exec` 成功完成；后续若要消除噪音，需要单独检查本机 Codex provider 配置。
+
 ## [2026-05-08] BOSS 固定现有页面工作流
 
 **完成了什么：**

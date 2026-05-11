@@ -2,6 +2,26 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-05-11 Wiki ingest 改用 Codex CLI
+
+- Owner: Codex
+- Source: User pointed out daily wiki ingest should use Codex CLI instead of Claude CLI.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Locate the daily wiki ingest runner and the daily script callsite.
+- [x] Replace the actual content-write runner with `codex exec` under the repo working directory.
+- [x] Update daily script logs so failures no longer mention Claude CLI.
+- [x] Run shell/static checks, record progress, and commit scoped changes.
+
+### Review
+
+- `tools/wiki-auto/run_wiki_ingest.sh` now calls `codex --ask-for-approval never exec -C "$ROOT_DIR" -s workspace-write -`.
+- `tools/auto-x/scripts/run_daily.sh` now logs `运行 Codex CLI wiki ingest...`.
+- Real 2026-05-11 wiki ingest completed through Codex CLI and appended `wiki/log.md`.
+- Lint passed with no missing index entries, dangling index entries, orphan pages, stale index dates, or stale overview.
+
 ## 2026-05-09 企业导入 AI 长文与配图
 
 - Owner: Codex

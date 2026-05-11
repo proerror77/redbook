@@ -86,10 +86,10 @@ else
     log "WARNING: LLM Wiki 每日维护周期失败（不影响日报本身）"
 fi
 
-# Claude CLI 执行实际 wiki 内容写入（在 harness 记录层之后）
+# Codex CLI 执行实际 wiki 内容写入（在 harness 记录层之后）
 WIKI_INGEST_RUNNER="$ROOT_DIR/tools/wiki-auto/run_wiki_ingest.sh"
 if [ -f "$WIKI_INGEST_RUNNER" ]; then
-    log "运行 Claude CLI wiki ingest..."
+    log "运行 Codex CLI wiki ingest..."
     if bash "$WIKI_INGEST_RUNNER" "$TODAY" 2>&1 | tee -a "$LOG_FILE"; then
         log "Wiki ingest 完成"
     else

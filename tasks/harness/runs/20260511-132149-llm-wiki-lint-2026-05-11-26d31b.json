@@ -9,7 +9,7 @@
   "current_stage": "research",
   "status": "done",
   "created_at": "2026-05-11T13:21:49+00:00",
-  "updated_at": "2026-05-11T13:21:49+00:00",
+  "updated_at": "2026-05-11T13:33:45+00:00",
   "artifacts": [
     {
       "id": "b589908c0b",
@@ -81,7 +81,69 @@
         "note": "Wiki lint is a research-only maintenance run.",
         "closed_at": "2026-05-11T13:21:49+00:00"
       }
+    },
+    {
+      "at": "2026-05-11T13:33:21+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-05-11T13:33:21+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check research_complete set to True",
+      "meta": {
+        "check_name": "research_complete",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-05-11T13:33:21+00:00",
+      "type": "run_closed",
+      "stage": "research",
+      "message": "Run closed with status: done",
+      "meta": {
+        "status": "done",
+        "note": "Wiki lint is a research-only maintenance run.",
+        "closed_at": "2026-05-11T13:33:21+00:00"
+      }
+    },
+    {
+      "at": "2026-05-11T13:33:45+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check materials_queried set to True",
+      "meta": {
+        "check_name": "materials_queried",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-05-11T13:33:45+00:00",
+      "type": "check_updated",
+      "stage": "research",
+      "message": "Check research_complete set to True",
+      "meta": {
+        "check_name": "research_complete",
+        "value": true
+      }
+    },
+    {
+      "at": "2026-05-11T13:33:45+00:00",
+      "type": "run_closed",
+      "stage": "research",
+      "message": "Run closed with status: done",
+      "meta": {
+        "status": "done",
+        "note": "Wiki lint is a research-only maintenance run.",
+        "closed_at": "2026-05-11T13:33:45+00:00"
+      }
     }
   ],
-  "closed_at": "2026-05-11T13:21:49+00:00"
+  "closed_at": "2026-05-11T13:33:45+00:00"
 }
