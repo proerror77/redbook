@@ -4,6 +4,25 @@
 
 ---
 
+## [2026-05-12] OpenAI Deployment Company 企业 AI native 评论内容包
+
+**完成了什么：**
+- 按 Redbook Lane C 工作流处理 OpenAI X thread `2053824997777457651`，创建 harness run：`20260511-215113-openai-deployment-company-企业必须-ai-native-重做一遍-508899`。
+- 使用 `baoyu-danger-x-to-markdown` 保存来源到 `x-to-markdown/OpenAI/2053824997777457651.md`，并通过 t.co 解析确认 official article URL；命令行访问 official article 返回 Cloudflare 403，因此事实引用限定在 OpenAI X thread 保存稿。
+- 生成内容包：`01-内容生产/02-制作中的选题/2026-05-12-OpenAI-Deployment-Company企业必须AI-native重做一遍/`。
+- 产出 `选题决策卡.md`、`素材来源.md`、`平台编排.md`、`X长文稿.md`、`X短评.md`、`x-mastery-mentor-审稿.md`、`QA报告.md`、`发布清单.md`。
+- 主判断：OpenAI Deployment Company 是企业 AI 从模型能力竞争转向 deployment 能力竞争的信号；企业必须把流程、数据、权限、review、审计和 ROI 重做成 AI 能工作的形态。
+
+**验证：**
+- Wiki query 生成 `docs/reports/wiki-query-openai-企业-ai-native-重做-workflow-agent-权限-review-审计-roi-2026-05-12.md`。
+- Harness research gate passed：`素材来源.md`。
+- Harness draft gate passed：`X长文稿.md`。
+- Harness review gate passed：`QA报告.md` + `发布清单.md`。
+
+**遗留：**
+- 未发布。必须等用户明确说“发布 / 直接发”后，再运行 `tools/redbookctl x-login` 并按 `/baoyu-post-to-x` 执行。
+- 如果发布 X Article，当前稿件无正文插图；后续若补图，必须使用 X Article inline image 或 thread-per-image，不能用普通主帖 gallery。
+
 ## [2026-05-12] X timeline 互动回复 50 条 batch1 + 验证流程修复
 
 **完成了什么：**

@@ -2,6 +2,29 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-05-12 OpenAI Deployment Company 评论内容包
+
+- Owner: Codex
+- Source: User provided OpenAI X status `2053824997777457651` and asked to use the workflow to write a related article/comment.
+- Status: review_ready_pending_publish_confirmation
+- Harness run: `20260511-215113-openai-deployment-company-企业必须-ai-native-重做一遍-508899`
+
+### Cleanup Plan
+
+- [x] Verify the X source and preserve the source markdown.
+- [x] Query wiki for enterprise AI / AI native / workflow / agent governance material.
+- [x] Create the Lane C content package with decision card, platform orchestration, X longform, short comment, review, and publish checklist.
+- [x] Run focused file checks and update progress.
+- [x] Commit scoped changes.
+
+### Review
+
+- Created the content package under `01-内容生产/02-制作中的选题/2026-05-12-OpenAI-Deployment-Company企业必须AI-native重做一遍/`.
+- Preserved the OpenAI source thread at `x-to-markdown/OpenAI/2053824997777457651.md`.
+- Main recommendation: publish as X Article / X longform; optional quote version is available for faster hotspot response.
+- Publishing remains blocked until the user explicitly confirms.
+- Commit: `90663e4` (`Add OpenAI deployment company content package`).
+
 ## 2026-05-11 Wiki ingest 改用 Codex CLI
 
 - Owner: Codex
