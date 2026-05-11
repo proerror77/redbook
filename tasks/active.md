@@ -23,7 +23,7 @@
 - Preserved the OpenAI source thread at `x-to-markdown/OpenAI/2053824997777457651.md`.
 - Main recommendation: publish as X Article / X longform; optional quote version is available for faster hotspot response.
 - Publishing remains blocked until the user explicitly confirms.
-- Commit: `90663e4` (`Add OpenAI deployment company content package`).
+- Content package commit: `6111595` (`Add OpenAI deployment company content package`).
 
 ## 2026-05-11 Wiki ingest 改用 Codex CLI
 
