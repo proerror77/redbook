@@ -4,6 +4,27 @@
 
 ---
 
+## [2026-05-12] Agent Teams 工作流 Review 与语义层固化
+
+**完成了什么：**
+- 用 Agent Teams findings 收口 Redbook workflow review，明确这次修的是“语义层”，不是某个人名或一次性内容流程。
+- 新增 `docs/reference/agent-teams-review-protocol.md`：固定 Agent Teams review 的 semantic boot、并行 review lane、findings 格式、synthesis 和 durable writeback 顺序。
+- 新增 `docs/reference/external-method-ingestion-workflow.md`：把用户要求“固定下来 / 下次复用 / 更新到系统”的方法摄入流程标准化，优先变成 tool guard、`docs/reference/` 合同、shared playbook、wiki 或 lesson。
+- 新增 `tools/auto-x/scripts/build_fresh_following_sample.mjs`，用 `opencli twitter timeline --type following --limit 100 -f json` 抓 following chronological timeline，并按 Asia/Shanghai 当天过滤。
+- 更新 daily 主链：`tools/redbookctl daily` / `tools/daily.sh` / `tools/auto-x/scripts/run_daily.sh` 默认先生成 `X-timeline-fresh-following-YYYY-MM-DD`，home/for-you 样本只作补充。
+- 更新语义层、启动指南、选题决策门、skills manifest、auto-x README 和 shared playbook；并同步到 `AGENTS.md` / `CLAUDE.md`。
+
+**验证：**
+- `python3 tools/sync_redbook_playbook.py` 已同步 `AGENTS.md` 和 `CLAUDE.md`。
+- `node --check tools/auto-x/scripts/build_fresh_following_sample.mjs` 通过。
+- `bash -n tools/daily.sh tools/auto-x/scripts/run_daily.sh` 通过。
+- `node --test tools/tests/redbook_workflow_contract.test.mjs tools/tests/redbookctl_contract.test.mjs` 通过：7/7。
+- `git diff --check` 通过。
+
+**遗留：**
+- `bun --check tools/redbookctl.ts` 在当前 Bun 版本会执行脚本并输出 dashboard，而不是纯语法检查；本轮没有把它作为有效 check。
+- Worktree 里仍有 unrelated dirty/untracked 文件，本轮不处理：`singbox_fixed.json`、`singbox_fixed.json.pre-ilovevc-v26-20260512_064235`、旧内容包和 wiki query/harness 临时产物。
+
 ## [2026-05-12] Agents OS 全面 review 与 Wiki OS 补强
 
 **完成了什么：**

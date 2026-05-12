@@ -2,6 +2,27 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-05-12 Agent Teams 工作流 Review 与固化
+
+- Owner: Codex + Agent Teams
+- Source: User asked to use Agent Teams to review the project and fix recurring workflow issues.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Split the review into semantic docs, tooling evidence, and Agent Teams / external-method ingestion lanes.
+- [x] Collect findings from parallel review agents.
+- [x] Add a canonical Agent Teams review protocol and pin fresh X timeline evidence rules.
+- [x] Add a durable semantic-layer method-ingestion path for reusable user-supplied frameworks.
+- [x] Run workflow consistency checks and commit scoped changes.
+
+### Review
+
+- Added `docs/reference/agent-teams-review-protocol.md` so project review has a canonical semantic boot, lane split, findings format, synthesis, and durable writeback order.
+- Added `docs/reference/external-method-ingestion-workflow.md` so future “固定下来 / 下次复用 / 更新到系统” corrections become verifiable semantic-layer rules, tool gates, wiki knowledge, or lessons.
+- Hardened Lane A to use `X-timeline-fresh-following-YYYY-MM-DD` from following chronological timeline as the primary “today” evidence; home/for-you samples and engagement queues are supplemental.
+- Synced shared playbook into `AGENTS.md` and `CLAUDE.md`.
+
 ## 2026-05-12 Lane A timeline 100 条样本修正
 
 - Owner: Codex

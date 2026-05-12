@@ -42,6 +42,9 @@ test("decision workflow keeps the shape, beneficiary, and persona gates", () => 
     "目标受益人：",
     "Persona 匹配：",
     "Before `/x-mastery-mentor`, state the target beneficiary",
+    "X-timeline-fresh-following-YYYY-MM-DD.md",
+    "Do not substitute publish reminders, old drafts, stale reports, historical topic pools, or prior-day timeline posts.",
+    "Before X publish, require `tools/redbookctl x-login`",
     "How To Start Future Workflows",
   ], "editorial decision workflow");
 });
@@ -60,12 +63,38 @@ test("shared playbook keeps the Redbook workflow hard gates", () => {
 test("workflow start guide covers the user-facing starts", () => {
   const guide = read("docs/reference/workflow-start-guide.md");
   assertIncludesAll(guide, [
+    "Before any start, run the Redbook semantic boot sequence:",
     "今天有什么值得写？",
     "这个链接值得写吗？<url>",
     "把这个做成短评。<url or topic>",
     "把这个做成完整内容。",
     "继续做这个",
     "直接发",
+    "X-timeline-fresh-following-YYYY-MM-DD.md",
+    "tools/redbookctl x-login",
+    "tools/redbookctl xhs-health",
+    "docs/reference/agent-teams-review-protocol.md",
     "Publishing always needs explicit user confirmation plus platform-side readback after submit.",
   ], "workflow start guide");
+});
+
+test("Agent Teams and method-ingestion protocols are durable workflow docs", () => {
+  const agentTeams = read("docs/reference/agent-teams-review-protocol.md");
+  assertIncludesAll(agentTeams, [
+    "semantic-policy",
+    "workflow-tooling",
+    "knowledge-writeback",
+    "Findings Format",
+    "Durable Writeback Order",
+  ], "agent teams review protocol");
+
+  const methodIngestion = read("docs/reference/external-method-ingestion-workflow.md");
+  assertIncludesAll(methodIngestion, [
+    "Semantic Intake",
+    "Durability Decision",
+    "Tool/script guard",
+    "docs/reference/",
+    "wiki/",
+    "tasks/lessons.md",
+  ], "external method ingestion workflow");
 });

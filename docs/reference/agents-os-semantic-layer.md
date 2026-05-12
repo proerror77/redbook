@@ -22,7 +22,7 @@ Every non-trivial turn should move through these layers in order. If a layer is 
 At the start of a Redbook task, run this semantic boot sequence:
 
 1. Identify the user's latest intent in one sentence.
-2. Map it to one lane: `A research`, `B short comment`, `C planned content`, or `D system maintenance`.
+2. Map it to one lane: `A research`, `B short comment`, `C planned content`, `D system maintenance`, or a first-class subflow such as `review`, `publishing`, or `knowledge`.
 3. Read `tasks/active.md` for collisions, unfinished publish states, knowledge-ingest backlog, or recovery requirements.
 4. Select the authoritative workflow doc or skill before acting.
 5. Decide whether the task needs Wiki `query`, `ingest`, or `lint`.
@@ -30,6 +30,10 @@ At the start of a Redbook task, run this semantic boot sequence:
 7. If the task can create external side effects, identify the publish/submit gate and verifier before doing it.
 
 This contract is mandatory for publishing, browser automation, batch replies, workflow changes, and any task that touches multiple files.
+
+If the user explicitly asks for `Agent Teams`, use `docs/reference/agent-teams-review-protocol.md` after this startup contract. Split the review into semantic-policy, workflow-tooling, and knowledge-writeback lanes, then merge findings into durable repo updates.
+
+If the user says a method should be fixed, reused next time, or updated into the system, use `docs/reference/external-method-ingestion-workflow.md`. Do not leave durable workflow changes only in chat.
 
 ## Intent Routing
 
@@ -42,6 +46,8 @@ Use user wording as the primary routing signal:
 | "做成文章", "小红书", "多平台", "完整内容" | Lane C | full content package, wiki query, persona gate, platform orchestration, publish checklist |
 | "更新 wiki", "摄入", "沉淀", "知识库", "素材库", "复盘" | Knowledge subflow | query / ingest / lint wiki, update semantic memory, preserve source evidence |
 | "修流程", "更稳定", "改 AGENTS", "workflow", "脚本问题" | Lane D | update docs/tools/tasks, run minimal checks, commit |
+| "Agent Teams", "项目 review", "review 工作流", "语义层 review" | review subflow | run the Agent Teams Review Protocol, synthesize findings, then write durable docs/tools/tasks updates |
+| "固定下来", "下次复用", "更新到系统", "以后都这样做" | method-ingestion subflow | run the external method ingestion workflow and add the narrowest durable rule or guard |
 | "直接发", "发布", "继续发" after a reviewed artifact | publishing subflow | submit only the already reviewed artifact, then verify externally |
 
 When intent is mixed, choose the lane with the highest external-risk burden. For example, "帮我发 50 个 timeline 回复" is publishing, so it must use the X engagement workflow even though it starts with timeline research.
@@ -76,7 +82,7 @@ Completion claims require evidence appropriate to the lane:
 
 | Lane | Minimum Evidence |
 | --- | --- |
-| A research | current source report under `05-选题研究/`, decision cards, and explicit source limitations |
+| A research | fresh following timeline sample under `05-选题研究/`, current source report, decision cards, and explicit source limitations |
 | B short comment | source URL, final draft, review result, publish URL if submitted |
 | C planned content | content package, wiki query, review/QA files, publish checklist, platform records after publish |
 | D system maintenance | changed docs/tools, focused checks, `tasks/progress.md`, commit |
@@ -86,8 +92,11 @@ Completion claims require evidence appropriate to the lane:
 | Wiki query | `docs/reports/wiki-query-*.md`, matched pages, and attached harness run when applicable |
 | Wiki ingest | source file path, touched wiki pages, `wiki/log.md` entry, index/overview updates when needed |
 | Wiki lint | `docs/reports/wiki-lint-*.md` and clean counts or explicit unresolved issues |
+| Agent Teams review | subagent findings with file/line evidence, synthesis report or doc updates, `tasks/progress.md`, and commit |
 
 If no external evidence can be acquired, say exactly which evidence is missing and leave the state as pending or blocked.
+
+For Lane A X topics, the primary evidence is `X-timeline-fresh-following-YYYY-MM-DD.md` / `.json`, generated from a chronological following timeline and filtered to the current date. `X-timeline-sample-YYYY-MM-DD` from home/for-you and `X-互动队列-YYYY-MM-DD` are supplementary; they cannot be the primary basis for “today’s topics”.
 
 ## Publish Gate
 

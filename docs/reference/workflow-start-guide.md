@@ -5,6 +5,14 @@
 
 ## Default Starts
 
+Before any start, run the Redbook semantic boot sequence:
+
+1. Read `tasks/active.md`.
+2. Map the request to the right lane or subflow.
+3. Choose the authoritative workflow doc or skill.
+4. Define the evidence that will prove completion.
+5. If external side effects are possible, identify the preflight and readback verifier before acting.
+
 ### Current Topics
 
 Use:
@@ -16,7 +24,9 @@ Use:
 Expected behavior:
 
 - Run Lane A.
-- Use today's research or current X/timeline evidence.
+- Use today's research plus fresh chronological X evidence.
+- For X timeline, first read or generate `05-选题研究/X-timeline-fresh-following-YYYY-MM-DD.md` / `.json`: target 100 following-timeline posts filtered to today's date.
+- If the fresh following sample is missing or below threshold, state the evidence gap. Do not backfill from publish reminders, old drafts, stale reports, for-you samples, or the 20-item engagement queue.
 - Return 3-5 decision cards.
 - Each card must include recommended shape, target beneficiary, persona fit, and whether Xiaohongshu can translate it into an enterprise/business task.
 - Stop before drafting unless the user selects a topic and shape.
@@ -53,6 +63,8 @@ Expected behavior:
 - Name target beneficiary and repost/reply reason.
 - Run quick review before publish confirmation.
 - Do not publish until the user says "发布" or "直接发".
+- Before X publish, run `tools/redbookctl x-login` or use the X posting script's expected-handle preflight.
+- After X publish, record the status URL and platform-side readback evidence.
 
 ### Planned Content
 
@@ -98,9 +110,18 @@ Read `tasks/active.md`, identify the active content package, and continue from t
 
 Only publish if a final draft, review result, publish structure, and platform/account preflight already exist. Otherwise finish the missing gate first and show the blocker.
 
+For X, required preflight is `tools/redbookctl x-login` or equivalent expected-handle check. Required readback is the status URL plus verified status/article/home evidence. For Xiaohongshu, required preflight is `tools/redbookctl xhs-health`; required readback is note id, success page, creator-center status, or equivalent management evidence.
+
+```text
+使用 Agent Teams review 这个项目。
+```
+
+Run `docs/reference/agent-teams-review-protocol.md`: semantic boot, split review lanes, collect file/line findings, synthesize, write durable repo updates, verify, and commit.
+
 ## Non-Negotiable Gates
 
 - Link or topic intake starts with a decision card unless the user already chose the shape.
 - Planned content needs core proposition and platform orchestration before drafting.
 - Planned content cannot enter publish confirmation without persona, beneficiary, and cold-read evidence.
 - Publishing always needs explicit user confirmation plus platform-side readback after submit.
+- Agent Teams review must produce durable repo evidence, not only chat findings.

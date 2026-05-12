@@ -29,7 +29,7 @@
 - 新增 workflow / publish / browser / image pipeline 代码默认使用 TypeScript / Bun；Python 入口保留为 legacy 或专项例外，见 `docs/reference/runtime-language-policy.md`。
 - Codex App 浏览器调用优先使用 `Chrome` 插件 / Codex Chrome Extension，连接用户真实 Chrome 并复用现有 tab；不要默认改用 Playwright MCP 或 Chrome DevTools MCP。
 - 浏览器类任务先用 `tools/redbookctl browser` 检查当前 Chrome/CDP 登录态；发布和账号操作优先复用已有 tab，避免重复开新页面和新 profile。
-- Lane A 选题研究必须用当日研究区或当前 X timeline 证据；如果用户问 timeline / 今天发生了什么，先看 `X-timeline-sample-YYYY-MM-DD.md` 的目标 100 条原始样本，再看 `X-互动队列-YYYY-MM-DD.md` 的 20 条筛选结果；`tools/redbookctl daily` 里的发布提醒/制作中旧稿只作 backlog，不得当作“今天值得写”的来源。
+- Lane A 选题研究必须用当日研究区或当前 X timeline 证据；如果用户问 timeline / 今天发生了什么，先看 `X-timeline-fresh-following-YYYY-MM-DD.md` / `.json` 的目标 100 条 following chronological 当日样本，再看 `X-timeline-sample-YYYY-MM-DD.md` 的 home/for-you 补充样本和 `X-互动队列-YYYY-MM-DD.md` 的 20 条筛选结果；`tools/redbookctl daily` 里的发布提醒/制作中旧稿只作 backlog，不得当作“今天值得写”的来源。
 
 ## Active Entrypoints
 
@@ -54,7 +54,7 @@
 
 | 入口 | 状态 | 位置 | 用途 | 备注 |
 | --- | --- | --- | --- | --- |
-| `tools/redbookctl daily` | active-script | `tools/redbookctl.ts` -> `tools/daily.sh` | 每日研究报告主入口 | 输出 `05-选题研究/X-每日日程-YYYY-MM-DD.md`、目标 100 条 `X-timeline-sample-YYYY-MM-DD.md` 和 20 条 `X-互动队列-YYYY-MM-DD.md` |
+| `tools/redbookctl daily` | active-script | `tools/redbookctl.ts` -> `tools/daily.sh` | 每日研究报告主入口 | 输出 `05-选题研究/X-每日日程-YYYY-MM-DD.md`、目标 100 条当日 `X-timeline-fresh-following-YYYY-MM-DD.md`、补充 `X-timeline-sample-YYYY-MM-DD.md` 和 20 条 `X-互动队列-YYYY-MM-DD.md` |
 | `tools/redbookctl browser` | active-script | `tools/redbookctl.ts` + `tools/browser-core/interactive/session.mjs` | 只读检查当前 Chrome/CDP tabs 与登录态 | X/XHS/微信/BOSS 动作前 |
 | `python3 tools/wiki_workflow.py daily-cycle --date YYYY-MM-DD` | active-script | `tools/wiki_workflow.py` | Wiki ingest + lint 维护 run | research-only run 会自动关闭 |
 | `python3 tools/wiki_workflow.py query --topic ... --date YYYY-MM-DD` | active-script | `tools/wiki_workflow.py` | 显式 wiki query 并留 harness 证据 | 内容创作前优先使用 |
@@ -67,6 +67,8 @@
 | `tools/redbookctl challenge` / `emerge` / `draft-seed` | active-script | `tools/redbookctl.ts` -> `tools/content_loop.py` | 本地语料 challenge / idea mining / 草稿种子 | content loop 待迁 TS |
 | Editorial decision workflow | active-doc | `docs/reference/editorial-decision-workflow.md` | 每日选题和新闻链接的固定形态判断门 | 先判断短评/长文/thread/小红书/只收藏，再生产 |
 | X engagement reply workflow | active-doc | `docs/reference/x-engagement-reply-workflow.md` | X timeline 批量回复的候选筛选、内容审稿、测试扩量、发布验证和删除纠错流程 | 回复 timeline、扩量互动、修正 AI 味回复 |
+| Agent Teams review protocol | active-doc | `docs/reference/agent-teams-review-protocol.md` | Agent Teams 项目 review、语义层 review、并行 findings 合成和 durable writeback | 用户明确要求 Agent Teams 或项目 review |
+| External method ingestion workflow | active-doc | `docs/reference/external-method-ingestion-workflow.md` | 把用户给的新方法、外部框架、反复纠正转成语义层规则、工具 gate、wiki 知识或 lesson | 用户说把方法固定下来、下次复用、更新到系统 |
 | `tools/auto-zhipin` npm scripts | active-script | `tools/auto-zhipin/README.md` | BOSS 登录、扫描、投递预检、消息监看、台账报告 | 主链是 `boss:login` / `chrome:collect` / `boss:apply` / `report`；current-tab/OpenCLI 仅 fallback |
 | Runtime language policy | active-doc | `docs/reference/runtime-language-policy.md` | TS/Bun canonical runtime 与 Python legacy 边界 | 新增或迁移 workflow 代码前 |
 

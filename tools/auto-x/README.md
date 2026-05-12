@@ -18,8 +18,9 @@ tools/redbookctl daily
 ```
 
 - 输出：`05-选题研究/X-每日日程-{日期}.md`
-- 同步输出：`05-选题研究/X-timeline-sample-{日期}.md` / `.json`，每天从当前 home timeline 读取目标 100 条原始样本，作为 Lane A 判断“今天发生了什么”的第一证据
-- 同步输出：`05-选题研究/X-互动队列-{日期}.md` / `.json`，每天从 timeline 原始样本里挑 20 条高互动人/帖生成回复草稿
+- 同步输出：`05-选题研究/X-timeline-fresh-following-{日期}.md` / `.json`，每天从 following chronological timeline 读取目标 100 条，并按当天日期过滤，作为 Lane A 判断“今天发生了什么”的第一证据
+- 同步输出：`05-选题研究/X-timeline-sample-{日期}.md` / `.json`，每天从当前 home/for-you timeline 读取目标 100 条补充样本；只能补充判断，不能替代 fresh following 样本
+- 同步输出：`05-选题研究/X-互动队列-{日期}.md` / `.json`，每天从 timeline 样本里挑 20 条高互动人/帖生成回复草稿
 - 推荐选题只保存在日报内；用户或 agent 明确选中后再写入 `01-内容生产/选题管理/00-选题记录.md`
 - 兼容入口：`bash tools/daily.sh`
 
@@ -42,8 +43,8 @@ tools/redbookctl daily
 ### 5. 热门趋势抓取
 使用 `trending_topics.py` 抓取 X.com Explore 页面的趋势话题
 
-### 6. 每日研究主流程
-使用 `daily_research.py` 一键执行所有研究任务，生成综合报告
+### 6. 每日研究主流程（legacy）
+`daily_research.py` 只保留为 legacy / debug 入口。日常研究必须使用 `tools/redbookctl daily`，因为主入口会生成 fresh following timeline 证据、home/for-you 补充样本、互动队列和 wiki daily-cycle。
 
 ## 安装
 
@@ -160,11 +161,13 @@ python tools/auto-x/scripts/trending_topics.py
 python tools/auto-x/scripts/trending_topics.py 10
 ```
 
-### 每日研究（一键执行）
+### 每日研究（legacy debug）
 
 ```bash
 python tools/auto-x/scripts/daily_research.py [选项]
 ```
+
+这不是日常入口。只有定位旧 daily 内部问题时才直接运行。
 
 选项：
 - `--skip-trending` - 跳过热门趋势
@@ -195,11 +198,12 @@ python tools/auto-x/scripts/daily_research.py --keywords "AI agent" "web3"
 ### 内容研究流程
 1. 运行每日自动化入口: `tools/redbookctl daily`
 2. 查看生成的报告: `05-选题研究/X-每日日程-{日期}.md`
-3. 查看每日 timeline 原始样本: `05-选题研究/X-timeline-sample-{日期}.md`
-4. 查看每日互动候选: `05-选题研究/X-互动队列-{日期}.md`
-5. 从互动队列里挑 5-8 条最像真人、最能接账号主线的回复，人工确认后再发
-6. 筛选有价值的选题
-7. 使用「记录选题」保存灵感
+3. 查看每日 fresh following timeline 样本: `05-选题研究/X-timeline-fresh-following-{日期}.md`
+4. 查看 home/for-you 补充样本: `05-选题研究/X-timeline-sample-{日期}.md`
+5. 查看每日互动候选: `05-选题研究/X-互动队列-{日期}.md`
+6. 从互动队列里挑 5-8 条最像真人、最能接账号主线的回复，人工确认后再发
+7. 筛选有价值的选题
+8. 使用「记录选题」保存灵感
 
 ## 注意事项
 
@@ -225,7 +229,7 @@ tools/auto-x/
 │   ├── scrape_following.py   # 抓取关注列表
 │   ├── analyze_following.py  # 分析关注者话题
 │   ├── trending_topics.py    # 热门趋势抓取
-│   └── daily_research.py     # 每日研究主流程
+│   └── daily_research.py     # legacy/debug 每日研究入口；日常用 tools/redbookctl daily
 ├── data/
 │   ├── following.json        # 关注列表缓存
 │   └── daily/                # 每日报告存档
