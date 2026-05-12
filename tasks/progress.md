@@ -4898,6 +4898,23 @@
 **遗留：**
 - 本轮只发布 1 条回复，没有扩展批量回复。
 
+## [2026-05-12] Lane A timeline 100 条样本修正
+
+**完成了什么：**
+- 修正每日 X 选题入口：`tools/auto-x/scripts/build_engagement_queue.py` 在筛 20 条互动候选前，先保存目标 100 条当前 X home timeline 原始样本到 `05-选题研究/X-timeline-sample-YYYY-MM-DD.md` / `.json`。
+- `tools/auto-x/scripts/run_daily.sh` 默认将 timeline scroll 从 8 提到 16，并传入 `--timeline-sample-size 100`；`tools/daily.sh` 和 `tools/redbookctl.ts` 的提示同步为“先样本、再队列”。
+- 更新 `docs/shared/redbook-playbook.md`、`docs/reference/editorial-decision-workflow.md`、`docs/reference/skills-manifest.md`、`tools/auto-x/README.md`，并同步到 `AGENTS.md` / `CLAUDE.md`：Lane A 必须先看 100 条原始样本，样本不足要明说，不能把 20 条互动队列当完整 timeline 观察。
+
+**验证：**
+- `python3 -m py_compile tools/auto-x/scripts/build_engagement_queue.py` 通过。
+- `bash -n tools/daily.sh tools/auto-x/scripts/run_daily.sh` 通过。
+- `node --check tools/redbookctl.ts` 通过。
+- `node --test tools/tests/redbook_workflow_contract.test.mjs tools/tests/redbookctl_contract.test.mjs` 通过：6 tests passed。
+- `git diff --check` 通过。
+
+**遗留：**
+- 本次没有真实抓取今日 100 条 timeline，因为当前浏览器/CDP 在本轮检查中不可用；下次恢复 CDP 后跑 `tools/redbookctl daily` 会生成样本文件。
+
 ## [2026-05-08] BOSS 固定现有页面工作流
 
 **完成了什么：**

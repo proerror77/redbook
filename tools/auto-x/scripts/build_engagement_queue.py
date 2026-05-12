@@ -268,18 +268,47 @@ def collect_timeline_tweets(scrolls: int) -> list[dict]:
         tweets.extend(extract_tweets(snapshot))
 
     unique = dedupe_tweets(tweets)
-    unique.sort(
-        key=lambda item: (
-            interaction_total(
-                int(item.get("likes", 0) or 0),
-                int(item.get("retweets", 0) or 0),
-                int(item.get("replies", 0) or 0),
-            )
-        ),
-        reverse=True,
-    )
     print(f"timeline candidates: {len(unique)}")
     return unique
+
+
+def render_timeline_sample(tweets: list[dict], sample_size: int) -> str:
+    sample = tweets[:sample_size]
+    enough = len(sample) >= sample_size
+    lines = [
+        f"# X Timeline 原始样本 - {today_str()}",
+        "",
+        "> Lane A 选题研究证据。先看原始 timeline 样本，再筛选互动候选；不要只用互动队列替代今日信息源。",
+        "",
+        "## 样本状态",
+        "",
+        f"- 目标样本数：{sample_size}",
+        f"- 实际样本数：{len(sample)}",
+        f"- 状态：{'sufficient' if enough else 'insufficient'}",
+        "- 来源：当前已登录 X home timeline",
+        "",
+        "## 原始样本",
+        "",
+    ]
+    for index, tweet in enumerate(sample, 1):
+        handle = tweet.get("handle", "?")
+        content = clean_text(tweet.get("content", ""))
+        likes = int(tweet.get("likes", 0) or 0)
+        retweets = int(tweet.get("retweets", 0) or 0)
+        replies = int(tweet.get("replies", 0) or 0)
+        target_url = tweet.get("status_url") or (f"https://x.com/{handle}" if handle and handle != "?" else "https://x.com/home")
+        lines.extend(
+            [
+                f"### {index}. @{handle}",
+                "",
+                f"- 原帖/主页：{target_url}",
+                f"- 互动：💬 {replies} / 🔁 {retweets} / ❤️ {likes} / 加权 {interaction_total(likes, retweets, replies)}",
+                "",
+                "> " + content[:700],
+                "",
+            ]
+        )
+    return "\n".join(lines)
 
 
 def score_tweet(tweet: dict, query: str, source: str, source_url: str) -> Candidate:
@@ -398,6 +427,12 @@ def main() -> None:
     parser.add_argument("--query", action="append", dest="queries", help="Search query; repeatable")
     parser.add_argument("--limit", type=int, default=20, help="Number of candidates to keep")
     parser.add_argument("--scrolls", type=int, default=4, help="Scroll count per source/query")
+    parser.add_argument(
+        "--timeline-sample-size",
+        type=int,
+        default=100,
+        help="Raw home-timeline sample size to save before filtering. Default: 100",
+    )
     parser.add_argument("--min-score", type=int, default=25, help="Minimum score")
     parser.add_argument(
         "--min-engagement",
@@ -411,9 +446,11 @@ def main() -> None:
         raise SystemExit(1)
 
     candidates: list[Candidate] = []
+    timeline_tweets: list[dict] = []
 
     if args.source in {"timeline", "both"}:
         tweets = collect_timeline_tweets(args.scrolls)
+        timeline_tweets = tweets
         candidates.extend(
             score_tweet(tweet, "home-timeline", "timeline", "https://x.com/home")
             for tweet in tweets
@@ -436,6 +473,19 @@ def main() -> None:
     output_dir = PROJECT_ROOT / "05-选题研究"
     md_path = output_dir / f"X-互动队列-{today_str()}.md"
     json_path = output_dir / f"X-互动队列-{today_str()}.json"
+    sample_md_path = output_dir / f"X-timeline-sample-{today_str()}.md"
+    sample_json_path = output_dir / f"X-timeline-sample-{today_str()}.json"
+
+    if timeline_tweets:
+        sample = timeline_tweets[: args.timeline_sample_size]
+        sample_md_path.write_text(
+            render_timeline_sample(timeline_tweets, args.timeline_sample_size),
+            encoding="utf-8",
+        )
+        sample_json_path.write_text(
+            json.dumps(sample, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
 
     md_path.write_text(render_markdown(ranked), encoding="utf-8")
     json_path.write_text(
@@ -443,6 +493,10 @@ def main() -> None:
         encoding="utf-8",
     )
 
+    if timeline_tweets:
+        print(f"wrote {sample_md_path}")
+        print(f"wrote {sample_json_path}")
+        print(f"timeline sample: {min(len(timeline_tweets), args.timeline_sample_size)}/{args.timeline_sample_size}")
     print(f"wrote {md_path}")
     print(f"wrote {json_path}")
     print(f"candidates: {len(ranked)}")

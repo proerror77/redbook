@@ -29,7 +29,7 @@
 - 新增 workflow / publish / browser / image pipeline 代码默认使用 TypeScript / Bun；Python 入口保留为 legacy 或专项例外，见 `docs/reference/runtime-language-policy.md`。
 - Codex App 浏览器调用优先使用 `Chrome` 插件 / Codex Chrome Extension，连接用户真实 Chrome 并复用现有 tab；不要默认改用 Playwright MCP 或 Chrome DevTools MCP。
 - 浏览器类任务先用 `tools/redbookctl browser` 检查当前 Chrome/CDP 登录态；发布和账号操作优先复用已有 tab，避免重复开新页面和新 profile。
-- Lane A 选题研究必须用当日研究区或当前 X timeline 证据；`tools/redbookctl daily` 里的发布提醒/制作中旧稿只作 backlog，不得当作“今天值得写”的来源。
+- Lane A 选题研究必须用当日研究区或当前 X timeline 证据；如果用户问 timeline / 今天发生了什么，先看 `X-timeline-sample-YYYY-MM-DD.md` 的目标 100 条原始样本，再看 `X-互动队列-YYYY-MM-DD.md` 的 20 条筛选结果；`tools/redbookctl daily` 里的发布提醒/制作中旧稿只作 backlog，不得当作“今天值得写”的来源。
 
 ## Active Entrypoints
 
@@ -54,7 +54,7 @@
 
 | 入口 | 状态 | 位置 | 用途 | 备注 |
 | --- | --- | --- | --- | --- |
-| `tools/redbookctl daily` | active-script | `tools/redbookctl.ts` -> `tools/daily.sh` | 每日研究报告主入口 | 输出 `05-选题研究/X-每日日程-YYYY-MM-DD.md` |
+| `tools/redbookctl daily` | active-script | `tools/redbookctl.ts` -> `tools/daily.sh` | 每日研究报告主入口 | 输出 `05-选题研究/X-每日日程-YYYY-MM-DD.md`、目标 100 条 `X-timeline-sample-YYYY-MM-DD.md` 和 20 条 `X-互动队列-YYYY-MM-DD.md` |
 | `tools/redbookctl browser` | active-script | `tools/redbookctl.ts` + `tools/browser-core/interactive/session.mjs` | 只读检查当前 Chrome/CDP tabs 与登录态 | X/XHS/微信/BOSS 动作前 |
 | `python3 tools/wiki_workflow.py daily-cycle --date YYYY-MM-DD` | active-script | `tools/wiki_workflow.py` | Wiki ingest + lint 维护 run | research-only run 会自动关闭 |
 | `python3 tools/wiki_workflow.py query --topic ... --date YYYY-MM-DD` | active-script | `tools/wiki_workflow.py` | 显式 wiki query 并留 harness 证据 | 内容创作前优先使用 |

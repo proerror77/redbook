@@ -47,10 +47,12 @@ Persona 匹配：
 ## Morning Topic Flow
 
 1. Run or read today's topic report / current X evidence.
-2. Output 3-5 topics as decision cards.
-3. For each topic, include the recommended content shape, target beneficiary, and persona fit.
-4. Do not create content packages yet.
-5. When the user picks one topic and shape, continue into Lane B or Lane C.
+2. If the user asks for X timeline or "what is worth writing today", first read or generate `05-选题研究/X-timeline-sample-YYYY-MM-DD.md` / `.json`: target 100 raw home-timeline posts before filtering. If fewer than 100 posts were captured, state the sample gap in the answer.
+3. Use the 20-item `X-互动队列-YYYY-MM-DD.md` only as a filtered engagement/reply view, not as the whole evidence base for "today's topics".
+4. Output 3-5 topics as decision cards.
+5. For each topic, include the recommended content shape, target beneficiary, and persona fit.
+6. Do not create content packages yet.
+7. When the user picks one topic and shape, continue into Lane B or Lane C.
 
 ## Pasted News Link Flow
 

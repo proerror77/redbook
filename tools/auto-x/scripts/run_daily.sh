@@ -7,7 +7,7 @@
 #   bash run_daily.sh --skip-research  # 只看提醒和回顾
 #   bash run_daily.sh --keywords "AI agent" "web3"
 #   bash run_daily.sh --with-following-audit  # 额外启动关注列表全量巡检
-#   bash run_daily.sh --skip-engagement  # 跳过每日 X 互动候选
+#   bash run_daily.sh --skip-engagement  # 跳过每日 X timeline 样本和互动候选
 
 set -euo pipefail
 
@@ -63,20 +63,21 @@ fi
 
 TODAY="$(date +%Y-%m-%d)"
 if [ "$SHOULD_RUN_ENGAGEMENT" = "true" ]; then
-    log "生成 X timeline 每日互动队列（20 条候选，不自动发布）..."
+    log "生成 X timeline 原始样本（100 条目标）和每日互动队列（20 条候选，不自动发布）..."
     if PYTHONUNBUFFERED=1 python3 -u build_engagement_queue.py \
         --source timeline \
         --limit 20 \
-        --scrolls 8 \
+        --timeline-sample-size 100 \
+        --scrolls 16 \
         --min-score 25 \
         --min-engagement 20 \
         2>&1 | tee -a "$LOG_FILE"; then
-        log "X timeline 每日互动队列已生成"
+        log "X timeline 原始样本和每日互动队列已生成"
     else
-        log "WARNING: X timeline 每日互动队列生成失败（不影响日报本身）"
+        log "WARNING: X timeline 原始样本/每日互动队列生成失败（不影响日报本身）"
     fi
 else
-    log "跳过 X timeline 每日互动队列"
+    log "跳过 X timeline 原始样本和每日互动队列"
 fi
 
 log "运行 LLM Wiki 每日维护周期（ingest + lint）..."

@@ -2,6 +2,26 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-05-12 Lane A timeline 100 条样本修正
+
+- Owner: Codex
+- Source: User pointed out that daily topic selection should first inspect 100 X timeline posts, not infer from the 20-item engagement queue or stale topic artifacts.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Locate the daily timeline / engagement queue path and confirm the current 20-item filtered queue is not enough for Lane A.
+- [x] Update the daily X queue script to save a target-100 raw home-timeline sample before filtering.
+- [x] Update Lane A workflow docs and shared playbook so future topic selection reads the raw sample first.
+- [x] Run focused syntax/contract checks and record progress.
+- [x] Commit scoped changes.
+
+### Review
+
+- `build_engagement_queue.py` now saves `X-timeline-sample-YYYY-MM-DD.md` / `.json` from the current home timeline before ranking the 20-item engagement queue.
+- `tools/redbookctl daily` / `tools/daily.sh` docs now describe the raw timeline sample as the first Lane A evidence.
+- Lane A workflow docs now require the target-100 raw sample and force sample-gap disclosure when fewer than 100 posts are captured.
+
 ## 2026-05-12 Redbook Agents OS 语义层
 
 - Owner: Codex
