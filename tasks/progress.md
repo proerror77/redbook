@@ -4915,6 +4915,12 @@
 **遗留：**
 - 本次没有真实抓取今日 100 条 timeline，因为当前浏览器/CDP 在本轮检查中不可用；下次恢复 CDP 后跑 `tools/redbookctl daily` 会生成样本文件。
 
+**补充验证（同日 10:07）：**
+- 按用户要求执行真实抓取：`opencli twitter timeline --limit 100 -f json` 复用当前 X 登录态返回 100 条 home timeline 样本。
+- 已落盘 `05-选题研究/X-timeline-sample-2026-05-12.md` / `.json`，样本状态 `sufficient`。
+- 已基于真实 100 条样本重建 `05-选题研究/X-互动队列-2026-05-12.md` / `.json`，覆盖了此前 agent-browser-session 失败后留下的空队列。
+- 当前 100 条样本中识别到 Claude 12 条、Codex 5 条、agent/Agent 12 条、OpenAI 2 条、Gemini 1 条。
+
 ## [2026-05-08] BOSS 固定现有页面工作流
 
 **完成了什么：**
