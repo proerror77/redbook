@@ -22,10 +22,21 @@ Tool mapping:
 
 --- project-doc ---
 
-# Redbook 内容生产系统
+# Redbook Agents OS
 
 ## 项目概述
-这是一个系统化的内容生产工作流，用于管理多平台（小红书、抖音、X.com、公众号）的内容创作。
+这是用户的内容、发布、研究与知识库 Agents OS，不是普通资料夹。Agent 进入本 repo 后，必须先读本文件里的启动语义，再按 Lane / workflow / skill 执行。
+
+`AGENTS.md` 是启动宪法：放每次启动都不能遗漏的项目定义、Lane 路由、硬门槛、状态语义和工具入口。更长的细节流程放在 `docs/reference/`，但不能绕过本文件的启动规则。
+
+## 启动必读
+
+1. 先读 `tasks/active.md`，确认未完成发布、验证、恢复或系统维护任务。
+2. 判断用户意图属于 Lane A/B/C/D，或发布、Knowledge、Review、Method Ingestion 子流程。
+3. 选择对应 `docs/reference/` workflow 或 skill，再执行工具。
+4. 写作、选题、复盘、素材沉淀默认先 query `wiki/`。
+5. 发布、删除、关注、提交等外部副作用必须先有用户明确确认，并在事后回读平台证据。
+6. 完成前必须留下可验证证据：文件、URL、JSONL、报告、wiki 页面、测试结果或 commit。
 
 ## 内容领域
 - AI 商业应用与工具分享
@@ -111,6 +122,10 @@ wiki/                 # LLM 维护的知识库（唯一知识底座，见下方 
 ## 🎯 Redbook Lean Playbook（四条 Lane）
 
 > 主流程只保留可执行规则。Agents OS 语义层详见 `docs/reference/agents-os-semantic-layer.md`；选题决策门详见 `docs/reference/editorial-decision-workflow.md`；长篇系统优化方法见 `docs/reference/system-optimization-methods.md`；技能入口见 `docs/reference/skills-manifest.md`。
+
+### AGENTS.md 分层规则
+
+`AGENTS.md` 是启动宪法，不是普通 README：必须直接承载项目身份、启动语义、Lane 路由、发布硬门槛、状态语义、恢复规则和主要入口。`docs/reference/` 承载详细流程，但任何 workflow 不能绕过 `AGENTS.md` 的启动规则；shared playbook 更新后必须运行 `python3 tools/sync_redbook_playbook.py` 同步到 `AGENTS.md / CLAUDE.md`。
 
 ### Agents OS 启动语义
 

@@ -2,6 +2,25 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-05-12 AGENTS.md 启动语义修正
+
+- Owner: Codex
+- Source: User asked whether the rules/workflows should live in `AGENTS.md` and asked to correct it.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Confirm current `AGENTS.md` already embeds the shared playbook but still has an outdated top-level project description.
+- [x] Make `AGENTS.md` itself say Redbook is an Agents OS and contains the mandatory startup contract.
+- [x] Keep detailed workflow docs in `docs/reference/` while making the `AGENTS.md` routing rule explicit.
+- [x] Sync shared playbook, run contract checks, record progress, and commit scoped changes.
+
+### Review
+
+- `AGENTS.md` now starts as `Redbook Agents OS`, with a mandatory `启动必读` checklist before the detailed workflow sections.
+- Shared playbook now includes `AGENTS.md 分层规则`: core startup constitution belongs in `AGENTS.md`; longer workflows belong in `docs/reference/` but cannot bypass `AGENTS.md`.
+- `CLAUDE.md` was synced for parity.
+
 ## 2026-05-12 Agent Teams 工作流 Review 与固化
 
 - Owner: Codex + Agent Teams

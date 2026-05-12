@@ -35,6 +35,19 @@ test("AGENTS and CLAUDE use the canonical shared playbook", () => {
   assert.equal(sharedBlock("CLAUDE.md"), canonical);
 });
 
+test("AGENTS is the startup constitution for the Redbook Agents OS", () => {
+  const agents = read("AGENTS.md");
+  assertIncludesAll(agents, [
+    "# Redbook Agents OS",
+    "`AGENTS.md` 是启动宪法",
+    "## 启动必读",
+    "先读 `tasks/active.md`",
+    "判断用户意图属于 Lane A/B/C/D",
+    "发布、删除、关注、提交等外部副作用必须先有用户明确确认",
+    "### AGENTS.md 分层规则",
+  ], "AGENTS startup constitution");
+});
+
 test("decision workflow keeps the shape, beneficiary, and persona gates", () => {
   const decision = read("docs/reference/editorial-decision-workflow.md");
   assertIncludesAll(decision, [

@@ -4,6 +4,23 @@
 
 ---
 
+## [2026-05-12] AGENTS.md 启动语义修正
+
+**完成了什么：**
+- 将 `AGENTS.md` 顶部项目定义从普通内容生产系统改成 `Redbook Agents OS`。
+- 在 `AGENTS.md` 顶部新增 `启动必读`：读 `tasks/active.md`、判断 Lane/子流程、选择 workflow/skill、写作前 query wiki、外部副作用需确认和回读、完成前留下证据。
+- 在 `docs/shared/redbook-playbook.md` 新增 `AGENTS.md 分层规则`，明确 `AGENTS.md` 是启动宪法，`docs/reference/` 是详细流程层。
+- 同步 shared playbook 到 `AGENTS.md` / `CLAUDE.md`。
+- 新增 workflow contract test，防止 `AGENTS.md` 退回普通 README。
+
+**验证：**
+- `python3 tools/sync_redbook_playbook.py` 已同步。
+- `node --test tools/tests/redbook_workflow_contract.test.mjs tools/tests/redbookctl_contract.test.mjs` 通过：8/8。
+- `git diff --check` 通过。
+
+**遗留：**
+- 本轮只处理 `AGENTS.md` 启动语义，不处理现有 unrelated dirty/untracked 文件。
+
 ## [2026-05-12] Agent Teams 工作流 Review 与语义层固化
 
 **完成了什么：**

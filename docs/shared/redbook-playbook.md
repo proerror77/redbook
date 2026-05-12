@@ -2,6 +2,10 @@
 
 > 主流程只保留可执行规则。Agents OS 语义层详见 `docs/reference/agents-os-semantic-layer.md`；选题决策门详见 `docs/reference/editorial-decision-workflow.md`；长篇系统优化方法见 `docs/reference/system-optimization-methods.md`；技能入口见 `docs/reference/skills-manifest.md`。
 
+### AGENTS.md 分层规则
+
+`AGENTS.md` 是启动宪法，不是普通 README：必须直接承载项目身份、启动语义、Lane 路由、发布硬门槛、状态语义、恢复规则和主要入口。`docs/reference/` 承载详细流程，但任何 workflow 不能绕过 `AGENTS.md` 的启动规则；shared playbook 更新后必须运行 `python3 tools/sync_redbook_playbook.py` 同步到 `AGENTS.md / CLAUDE.md`。
+
 ### Agents OS 启动语义
 
 Redbook 是用户的内容与发布 Agents OS，不只是资料夹。每个非简单任务先按语义层启动：
