@@ -4,6 +4,23 @@
 
 ---
 
+## [2026-05-12] Lane A daily-first 启动检查
+
+**完成了什么：**
+- 固化用户规则：当用户问“今天有什么选题 / 今天有什么值得写 / 看看热点”时，先检查今天 daily 是否已经跑过。
+- 更新 `docs/shared/redbook-playbook.md`：Lane A 第一步改为检查 `tools/redbookctl status`、当天 `X-每日日程`、`X-timeline-fresh-following`、`X-互动队列`。
+- 更新 `docs/reference/workflow-start-guide.md` 和 `docs/reference/agents-os-semantic-layer.md`：如果当天 daily 证据缺失，先跑 `tools/redbookctl daily`，除非用户明确只读现有材料或不抓外部数据。
+- 同步 shared playbook 到 `AGENTS.md` / `CLAUDE.md`。
+- 新增 contract test 覆盖 daily-first 行为。
+
+**验证：**
+- `python3 tools/sync_redbook_playbook.py` 已同步。
+- `node --test tools/tests/redbook_workflow_contract.test.mjs tools/tests/redbookctl_contract.test.mjs` 通过：8/8。
+- `git diff --check` 通过。
+
+**遗留：**
+- 本轮只修 workflow 规则，没有实际运行今日 daily。
+
 ## [2026-05-12] AGENTS.md 启动语义修正
 
 **完成了什么：**

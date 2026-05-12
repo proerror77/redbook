@@ -78,6 +78,9 @@ test("workflow start guide covers the user-facing starts", () => {
   assertIncludesAll(guide, [
     "Before any start, run the Redbook semantic boot sequence:",
     "今天有什么值得写？",
+    "First check whether today's daily task already ran",
+    "tools/redbookctl status",
+    "If today's daily evidence is missing, run `tools/redbookctl daily`",
     "这个链接值得写吗？<url>",
     "把这个做成短评。<url or topic>",
     "把这个做成完整内容。",

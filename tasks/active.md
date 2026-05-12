@@ -2,6 +2,25 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-05-12 Lane A daily-first 启动检查
+
+- Owner: Codex
+- Source: User clarified that when asking “今天有什么选题”, the agent should first check whether today's daily task already ran.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Add daily-run check as the first step for Current Topics / Lane A.
+- [x] Sync shared playbook into `AGENTS.md` / `CLAUDE.md`.
+- [x] Add a contract test for the daily-first behavior.
+- [x] Run checks, record progress, and commit scoped changes.
+
+### Review
+
+- Lane A now starts by checking whether today's daily evidence exists via `tools/redbookctl status` plus today's daily report, fresh following timeline, and engagement queue.
+- If today's evidence is missing, the agent should run `tools/redbookctl daily` before answering, unless the user explicitly asks to only read existing materials or not fetch external data.
+- This rule is now in `AGENTS.md`, `CLAUDE.md`, shared playbook, semantic layer, and workflow start guide.
+
 ## 2026-05-12 AGENTS.md 启动语义修正
 
 - Owner: Codex

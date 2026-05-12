@@ -24,6 +24,8 @@ Use:
 Expected behavior:
 
 - Run Lane A.
+- First check whether today's daily task already ran: use `tools/redbookctl status` and look for today's `X-每日日程-YYYY-MM-DD.md`, `X-timeline-fresh-following-YYYY-MM-DD.md`, and `X-互动队列-YYYY-MM-DD.md`.
+- If today's daily evidence is missing, run `tools/redbookctl daily` before answering, unless the user explicitly says to only read existing materials or not fetch external data.
 - Use today's research plus fresh chronological X evidence.
 - For X timeline, first read or generate `05-选题研究/X-timeline-fresh-following-YYYY-MM-DD.md` / `.json`: target 100 following-timeline posts filtered to today's date.
 - If the fresh following sample is missing or below threshold, state the evidence gap. Do not backfill from publish reminders, old drafts, stale reports, for-you samples, or the 20-item engagement queue.
