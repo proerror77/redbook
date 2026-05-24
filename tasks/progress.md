@@ -4994,6 +4994,23 @@
 - 已基于真实 100 条样本重建 `05-选题研究/X-互动队列-2026-05-12.md` / `.json`，覆盖了此前 agent-browser-session 失败后留下的空队列。
 - 当前 100 条样本中识别到 Claude 12 条、Codex 5 条、agent/Agent 12 条、OpenAI 2 条、Gemini 1 条。
 
+## [2026-05-25] Dirty Worktree 整理
+
+**完成了什么：**
+- 盘点 `git status --short --untracked-files=all` 的所有脏文件，并按内容证据、每日研究、wiki/harness 证据、求职材料、工具实验、本地网络配置分类。
+- 将根目录履历和求职短文归位到 `06-业务运营/求职/`。
+- 将明显临时/生成物移到已忽略的 `tmp/`：字体文件、singbox 备份、一次性 X 回复草稿脚本。
+- 生成整理报告：`docs/reports/dirty-worktree-cleanup-2026-05-25.md`。
+
+**验证：**
+- `git check-ignore -v tmp/fonts/font-Bold.ttf tmp/singbox/singbox_fixed.json.pre-ilovevc-v26-20260512_064235 tmp/x-replies-2026-05-13/_draft_replies_batch2.py` 显示三组文件都被 `/tmp/` 规则忽略。
+- 整理后 `git status --short --untracked-files=all` 不再显示根目录的字体、履历、singbox 备份或一次性回复草稿脚本。
+
+**遗留：**
+- `singbox_fixed.json` 是大幅本地网络配置改动，不建议混入 Redbook 内容提交，需用户决定保留、移出 repo 或单独提交。
+- `tools/auto-x/scripts/post_replies_cdp.mjs` 是 X CDP 回复实验脚本，需用户决定补文档后提交或移入 `tmp/`。
+- 内容包、每日研究、wiki/harness 证据和求职材料已归类但尚未提交。
+
 ## [2026-05-08] BOSS 固定现有页面工作流
 
 **完成了什么：**

@@ -2,6 +2,28 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-05-25 Dirty Worktree 整理
+
+- Owner: Codex
+- Source: User asked to organize all dirty files.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Inventory all modified and untracked paths from `git status --short --untracked-files=all`.
+- [x] Classify files into content evidence, publish ledger, research artifacts, tooling, local config, and root-level generated clutter.
+- [x] Move only obvious root-level generated clutter into existing project locations or ignored `tmp/`, without deleting data.
+- [x] Leave sensitive or uncertain tracked changes untouched and mark them for user confirmation.
+- [x] Write a cleanup report, update progress, and verify final dirty state.
+
+### Review
+
+- Root-level generated clutter was moved out of the repo root without deleting data.
+- Resume / job-application materials now live under `06-业务运营/求职/`.
+- Temporary fonts, singbox backup, and one-off reply draft script now live under ignored `tmp/`.
+- `singbox_fixed.json` and `tools/auto-x/scripts/post_replies_cdp.mjs` remain untouched because they need an explicit commit / archive decision.
+- Cleanup report: `docs/reports/dirty-worktree-cleanup-2026-05-25.md`.
+
 ## 2026-05-12 Lane A daily-first 启动检查
 
 - Owner: Codex
