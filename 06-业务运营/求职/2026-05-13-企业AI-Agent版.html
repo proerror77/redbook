@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>sonic — 履历</title>
+<style>
+  /* ── Alibaba PuHuiTi fonts (matches original resume) ── */
+  @font-face {
+    font-family: "Alibaba PuHuiTi";
+    src: url("font-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: "Alibaba PuHuiTi";
+    src: url("font-Medium.ttf") format("truetype");
+    font-weight: 500;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: "Alibaba PuHuiTi";
+    src: url("font-Bold.ttf") format("truetype");
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  @page {
+    size: A4;
+    margin: 2cm 2cm 2cm 2cm;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: "Alibaba PuHuiTi", "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-weight: 400;
+    font-size: 10.5pt;
+    line-height: 1.8;
+    color: #000;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ── Header ── */
+  .header {
+    text-align: center;
+    margin-bottom: 16pt;
+  }
+  .header .name {
+    font-weight: 700;
+    font-size: 18pt;
+    letter-spacing: 0pt;
+    margin-bottom: 5pt;
+  }
+  .header .info-line {
+    font-size: 10pt;
+    line-height: 1.8;
+  }
+
+  /* ── Section ── */
+  .section {
+    margin-bottom: 12pt;
+    margin-top: 2pt;
+  }
+  .section-title {
+    font-weight: 700;
+    font-size: 12pt;
+    margin-bottom: 6pt;
+  }
+
+  /* ── Entry ── */
+  .entry {
+    margin-bottom: 10pt;
+  }
+  .entry-title {
+    font-weight: 700;
+    font-size: 11pt;
+  }
+  .entry-body {
+    margin-top: 2pt;
+  }
+  .entry-body p {
+    text-indent: 0;
+    margin-bottom: 2pt;
+  }
+
+  /* ── Simple list ── */
+  .simple-list {
+    margin-top: 2pt;
+  }
+  .simple-list .item {
+    margin-bottom: 2pt;
+  }
+
+  /* ── Inline date ── */
+  .date-right {
+    float: right;
+  }
+
+  /* ── Bold via @font-face Medium weight, not faux bold ── */
+  b, strong {
+    font-weight: 700;
+  }
+
+  /* ── URL ── */
+  .url {
+    color: #000;
+  }
+
+  .clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="name">sonic</div>
+  <div class="info-line">男 | 年龄：41岁 | 18621942912 | proerror@gmail.com</div>
+  <div class="info-line">14年工作经验 | 求职意向：AI Agent 架构师 / AI 技术负责人 / Agentic FDE 工程师 | 期望薪资：40-70K | 期望城市：上海</div>
+</div>
+
+<div class="section">
+  <div class="section-title">个人优势</div>
+
+  <div class="simple-list">
+    <div class="item"><b>1.</b> <b>Agentic 系统架构设计与落地：</b>从 IDE 内 AI 辅助编码出发，演进到构建完整的 Agentic 数字员工体系——不只是让 AI 写代码，而是让 Agent 接管需求分析、任务拆解、代码生成、测试验证、部署发布和运行监控的完整闭环。主导设计并落地 Auto Dev 架构，将 Agent 从"被动应答的工具"升级为"主动执行、可编排、可治理的数字员工"，实现从人驱动流程到 Agent 驱动流程的组织级范式迁移。</div>
+
+    <div class="item"><b>2.</b> <b>多智能体编排与企业级治理：</b>深入解决企业在导入 AI Agent 时的核心工程问题——多 Agent 间任务如何路由与编排、权限边界如何定义与执行、Agent 行为如何审计与回滚、模型如何热替换而不中断业务。基于 Meta Agent 模式构建 Agent 间通信、健康检查、熔断降级和模型热部署机制，已在高频交易（HFT）等低延迟、高可靠性场景中验证多 Agent 协作架构的可行性。</div>
+
+    <div class="item"><b>3.</b> <b>端到端交付能力（FDE）：</b>具备从架构设计 → 技术选型 → 核心模块编码 → 测试验证 → 部署运维 → 持续迭代的完整闭环能力。不把设计和执行拆成两个角色——既能做系统架构和技术路线决策，也能直接写 Rust/Core 模块、排生产故障。14 年技术底层积累（Rust 低延迟系统、微服务架构、ML 工程），确保架构决策有工程可行性支撑。</div>
+
+    <div class="item"><b>4.</b> <b>AI 技术团队搭建与组织转型：</b>具备从 0 到 1 搭建 AI 技术团队的经验，核心不只是招人，而是推动团队从"传统开发模式"转型为"Agent 协作模式"——人类从执行者变为 reviewer / manager，Agent 承担高频、重复、标准化工作，团队精力集中在产品判断、关键架构设计和复杂问题处理。已验证的转型成果：2 人 4 个月完成原 30 人 8 个月的社交产品重建。</div>
+
+    <div class="item"><b>5.</b> <b>商业价值翻译能力：</b>能将复杂 AI 技术体系翻译为业务语言，向管理层、产品和客户清晰说明：Agent 能做什么、不能做什么、ROI 怎么算、风险边界在哪、导入路径是什么。既有 MBA 背景和技术管理经验，也有独立开发者和创业者的成本意识——天然习惯用商业结果而非技术指标来衡量工作。</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">专业技能</div>
+
+  <div class="simple-list">
+    <div class="item"><b>架构设计层：</b>多 Agent 系统架构设计（Agent 间通信协议、任务路由与编排、工作流引擎）；Agent 治理体系（权限模型设计、行为审计追踪、执行回滚机制、安全边界定义）；企业系统集成（Agent 与 IDE、代码仓库、CI/CD、项目管理、CRM、消息队列对接）；技术选型与架构演进（模型路由策略、自部署 vs API 服务、成本与延迟权衡）</div>
+
+    <div class="item"><b>技术管理层：</b>AI 技术团队搭建与梯队建设（从招聘标准、技能矩阵到 AI-Native 开发文化）；跨部门协作（将业务需求拆解为 Agent 可实现的任务单元，协调技术 × 产品 × 业务）；AI 项目交付管理（从 PoC 到生产级的推进节奏、质量门禁、成本管控）；组织 AI 转型方法论（从"买 AI 工具"到"重画工作流"的企业导入路径设计）</div>
+
+    <div class="item"><b>工程落地层 (FDE)：</b>Rust 高性能系统开发（低延迟撮合引擎、并发安全、系统级性能优化）；Agent 框架与工具链（Claude Code / Codex / Agno Workspaces / Meta Agent 模式）；基础设施（Docker 容器编排、Redis / ClickHouse、微服务与分布式部署）；ML 工程化（模型训练 → TorchScript 导出 → SHA256 验证 → 热部署完整流水线）；Agent 驱动的 DevOps（Agent 参与 CI/CD、监控告警、自动化运维）</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">工作经历</div>
+
+  <!-- Icered -->
+  <div class="entry">
+    <div class="clearfix">
+      <span class="entry-title">Icered co ltd — CTO/CIO</span>
+      <span class="date-right">2025.09-2026.02</span>
+    </div>
+    <div class="entry-body">
+      <p><b>核心角色：Agentic FDE — 从架构设计到组织转型的端到端交付</b></p>
+      <p>接手一家有遗留代码的社交产品公司，原有产品由约 30 人团队历时 8 个月开发，代码质量、架构可维护性和交付效率存在系统性缺陷。传统做法是继续堆人、加流程，我选择以 Agentic 架构重新定义开发组织方式。</p>
+      <p><b>架构设计：</b>设计 Auto Dev 数字员工协作体系，将研发全流程（需求分析 → 任务拆解 → 代码生成 → 重构优化 → 测试验证 → 迭代交付）建模为 Agent 可编排、可执行的任务管线；定义 Agent 任务分配策略、权限边界（哪些操作 Agent 可自主执行、哪些必须人类审批）、执行结果审计与回滚机制；设计 Agent 与现有工具链（IDE、Git、CI/CD、测试框架）的集成架构，确保 Agent 不是独立运行的孤岛，而是嵌入研发体系的基础设施。</p>
+      <p><b>工程落地：</b>亲自编写核心模块，使用 Claude Code、Codex 等 Agent 工具建立开发流水线；推动团队成员从"自己逐行写代码"转型为"给 Agent 分派任务、审查 Agent 产出、在关键架构决策点介入"；建立代码审查与自动化测试流程，Agent 产出必须通过人类 review gate 才能合入主干。</p>
+      <p><b>交付成果：</b>2 人 4 个月完成原 30 人 8 个月的核心功能重建与交付，人力投入降为原来的 1/15，周期缩短 50%；项目整体交付周期缩短 20%，实现零重大线上故障；用户日均使用时长提升 15%。</p>
+      <p><b>组织影响（可迁移方法论）：</b>验证了"人类 = reviewer/manager，Agent = executor"的协作模式在真实企业研发中的可行性——Agent 不需要对齐预期、不需要情绪管理、产出标准化；积累了从"买 AI 工具"到"重画工作流"的企业导入路径：先定义 Agent 能做什么/不能做什么 → 再设计权限与审计 → 再嵌入现有工具链 → 再推动团队行为转型；该方法论不限于研发场景，可迁移至运营、数据分析、内容生产等任何有"高频、重复、标准化"任务的业务部门。</p>
+    </div>
+  </div>
+
+  <!-- 独立开发 -->
+  <div class="entry">
+    <div class="clearfix">
+      <span class="entry-title">独立开发 — DevOps 产品经理</span>
+      <span class="date-right">2019.12-2025.09</span>
+    </div>
+    <div class="entry-body">
+      <p><b>核心角色：用 Agentic 模式实现单人全栈交付</b></p>
+      <p>独立开发量化交易策略及交易软件，主导用 AI Agent 替代传统量化研究流程——从数据采集、因子挖掘、回测验证到策略上线全链路 Agent 化；深入理解 GPT、Claude、Codex 及多 Agent 框架的能力边界与失效模式，持续探索 Agent 在金融交易、自动化和数据分析等企业场景中的应用边界；实践并验证"一个人 + Agent = 一个团队"的 Agentic FDE 模式——独立完成架构设计、编码、测试、部署、运维全流程，为小团队用 Agent 扩大产能提供可复制的参考模型。</p>
+    </div>
+  </div>
+
+  <!-- Neutronfusioncapital -->
+  <div class="entry">
+    <div class="clearfix">
+      <span class="entry-title">Neutronfusioncapital — 投资经理</span>
+      <span class="date-right">2011.01-2018.12</span>
+    </div>
+    <div class="entry-body">
+      <p>负责量化交易策略研究与开发，确保策略有效性和竞争力；管理和优化投资组合，通过数据分析和市场趋势预测提升投资回报；参与公司经营决策，为战略发展提供专业建议；负责项目整体管理，从前期调研、中期执行到后期评估。</p>
+    </div>
+  </div>
+
+  <!-- 上海太际 -->
+  <div class="entry">
+    <div class="clearfix">
+      <span class="entry-title">上海太际资产管理有限公司 — 总裁/总经理/CEO</span>
+      <span class="date-right">2012.12-2014.12</span>
+    </div>
+    <div class="entry-body">
+      <p>带领团队拓展量化私募管理市场，覆盖多个区域和行业；主导量化交易策略开发，在股指期货领域通过创新算法提高交易效率和风险管理能力；负责资产管理业务经营管理，优化运营流程，实现资产管理规模达到 6000 万元人民币；积累了从技术到商业管理的完整经验，为后续"技术 + 商业"双重视角打下基础。</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">项目经历</div>
+
+  <div class="entry">
+    <div class="clearfix">
+      <span class="entry-title">AI Agent 驱动的高频交易平台 — 架构师/FDE</span>
+      <span class="date-right">2025.07</span>
+    </div>
+    <div class="entry-body">
+      <p><b>企业级多 Agent 协作系统的工程验证</b></p>
+      <p><b>架构设计：</b>设计三层 Agent 架构（Start-Commander 编排启动层 → Ops-Workspace 监控治理层 → ML-Workspace 训练部署层）；Agent 间通过 gRPC 通信，Router 负责任务分流与熔断，确保单 Agent 故障不影响整体系统；模型热部署流程：ML Agent 训练 → TorchScript 导出 → Redis 发布 ml.deploy → Ops Agent 验证 SHA256 → 加载模型，毫秒级完成，不中断交易。</p>
+      <p><b>工程实现：</b>Rust 低延迟撮合核心 + Agno Workspaces v2 多代理框架 + Docker Compose 服务编排；Agent 按服务依赖关系和健康检查顺序启动；Ops Agent 持续监控 p99 延迟和 Drawdown，超阈值自动触发熔断或 Kill-Switch。</p>
+      <p><b>企业价值：</b>验证了多 Agent 架构在金融级系统（低延迟 + 高可靠性 + 不能停）中的可行性；责任分层、低耦合高韧性、ChatOps 式运维——这些设计原则可直接迁移至其他企业场景（供应链、风控、客服等）。</p>
+    </div>
+  </div>
+
+  <div class="entry">
+    <div class="clearfix">
+      <span class="entry-title">AI 社交软件 — CTO/全栈 FDE</span>
+      <span class="date-right">2025.09-2026.03</span>
+    </div>
+    <div class="entry-body">
+      <p>作为 CTO 独立完成全栈开发（前端、后端、核心算法），在短时间内推动产品上线并实现初步用户增长；设计 AI Agent 对话系统，支持自然语言交互完成任务自动化、信息检索及个性化推荐；主导技术架构选型（微服务 + 分布式部署），确保高可用性与可扩展性；建立代码审查与自动化测试流程，项目交付周期缩短 20%，零重大线上故障；AI 驱动个性化推荐使用户日均使用时长提升 15%。</p>
+    </div>
+  </div>
+
+  <div class="entry">
+    <div class="clearfix">
+      <span class="entry-title">AI Agent 影片制作系统 — Dev</span>
+      <span class="date-right">2026.03-2026.04</span>
+    </div>
+    <div class="entry-body">
+      <p><b>Human-in-the-Loop 的企业级 AI 创作流程</b></p>
+      <p>设计从剧本拆解 → 角色题材库构建 → 分镜表生成 → 影片制作的全流程 Agent 管线；引入 Human Enhanced 机制，在创作判断、风格定调、质量把关等关键节点设置人工干预门——不追求全自动，而是追求"Agent 高效执行 + 人在关键决策点介入"的最优协作模式；采用本体论方法优化剧本拆解，使 Agent 更精准理解角色关系与剧情逻辑，降低画面生成的重复修改率；项目已部署于 GitHub（<span class="url">https://github.com/proerror77/aladdin01</span>），作为 Agent 驱动的创作流程参考方案。</p>
+    </div>
+  </div>
+
+  <div class="entry">
+    <div class="clearfix">
+      <span class="entry-title">Rust 闭源交易系统 — Dev</span>
+      <span class="date-right">2023.06-2025.10</span>
+    </div>
+    <div class="entry-body">
+      <p>使用 Rust 重构原有交易系统，支持加密货币与股票交易，提升安全性、并发处理能力和系统吞吐量；将 ML/RL 应用于高频交易因子挖掘，推动策略智能化升级。</p>
+    </div>
+  </div>
+
+  <div class="entry">
+    <div class="clearfix">
+      <span class="entry-title">使用 ML 预估高频交易价格 — Dev</span>
+      <span class="date-right">2023.06-2025.09</span>
+    </div>
+    <div class="entry-body">
+      <p>开发基于市场数据的 ML 预测模型，提升交易信号准确性与响应速度；使用 Rust 构建高性能、低延迟交易系统，通过数据分析、特征工程及模型调优持续优化预测能力。</p>
+    </div>
+  </div>
+
+  <div class="entry">
+    <div class="clearfix">
+      <span class="entry-title">AUTOLP — Dev</span>
+      <span class="date-right">2025.05</span>
+    </div>
+    <div class="entry-body">
+      <p>设计自动化算法寻找 CLMM LP pool，优化组合策略并寻找套利机会；一周内取得 60% 收益，验证了算法驱动自动化交易的有效性。</p>
+    </div>
+  </div>
+
+  <div class="entry">
+    <div class="clearfix">
+      <span class="entry-title">链上自动交易 Bot — Dev</span>
+      <span class="date-right">2024.01-2024.10</span>
+    </div>
+    <div class="entry-body">
+      <p>使用 Rust 底层架构 + Python 库，进行 Solana 等链上自动化交易。</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">开源项目</div>
+
+  <div class="entry">
+    <div class="clearfix">
+      <span class="entry-title">MandoForge — Rust-Native Agent OS Kernel</span>
+      <span class="date-right">2026.05-至今</span>
+    </div>
+    <div class="entry-body">
+      <p><span class="url">https://github.com/proerror77/mandoforge</span></p>
+      <p><b>定位：</b>通用 Agent OS 运行时内核——不是垂直行业的业务 Agent，而是让任何配置了 Agent 的系统都能创建 session、追加 event、通过 policy 路由 tool、暂停等待审批、产出 artifact、回放完整时间线的底层基础设施。</p>
+      <p><b>Stage 1 已实现：</b>Rust + Axum API server，Postgres 持久化 + 内存回退，Docker Compose / Kubernetes 部署骨架；Session-Event-Artifact-Approval 四层存储模型——session_events 是持久上下文对象，不只是模型窗口内的临时对话；Generic orchestrator agent config（Agent 版本绑定 session，per-version tool allowlist 执行控制）；YAML 治理策略引擎（blocked tools、approval-required tools、Stage 2 策略修订元数据）；Codex CLI adapter stub（在 per-session workspace 内执行 codex exec）；静态 Session Console UI（事件时间线 + 审批队列）。</p>
+      <p><b>Stage 2 进行中：</b>tenancy 多租户、RBAC 权限、provider governance（模型供应商治理）、Vault 密钥引用、worker queue、approval v2、MCP 集成、Codex App Server 适配、eval/release gate、全链路可观测性、成本控制、scheduler 编排、Remote Computer 就绪。</p>
+      <p><b>与企业 AI Agent 架构的对应：</b>Session-Event 模型 → Agent 行为全链路审计与回放；Policy + Tool Allowlist → Agent 权限边界与执行治理；Approval Request → Human-in-the-Loop 企业审批流；Artifact Store → Agent 产出物版本管理与回滚；Provider Governance → 企业多模型供应商的成本、延迟与合规管控。</p>
+    </div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-body">
+      <p><b>Redbook</b> — Content Agents OS（<span class="url">https://github.com/proerror77/redbook</span>）：从个人内容创作系统演进为完整的 Agents OS——将内容选题、草稿生成、平台审稿、多平台发布、数据回写、Wiki 知识沉淀等全链路建模为 Agent 可编排、可审计的工作流。验证了"Agent 不只是写代码，而是可以接管任何有固定流程的业务操作"。</p>
+
+      <p><b>Shadow（影境）</b> — AI-Native Interactive Drama（<span class="url">https://github.com/proerror77/shadow</span>）：AI 驱动互动剧社区，Managed Agent 对话 + 视频生成，Go 语言实现。</p>
+
+      <p><b>Ploy</b> — Multi-Agent Trading Platform（<span class="url">https://github.com/proerror77/ploy</span>）：高性能 Polymarket 交易机器人，多 Agent 协调器 + AI 辅助分析 + 可选强化学习，Rust 全栈。</p>
+
+      <p><b>XHS MCP Agent</b> — ⭐18（<span class="url">https://github.com/proerror77/xhs_mcp_agent</span>）：基于 MCP 协议的小红书 Agent 服务端实现。</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">教育经历</div>
+  <div class="simple-list">
+    <div class="item"><b>台北科技大学</b> — 硕士 — MBA — 2006-2008</div>
+    <div class="item"><b>淡江大学</b> — 本科 — 资讯管理 — 2004-2008</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">资格证书</div>
+  <div class="simple-list">
+    <div class="item">基金从业资格证</div>
+  </div>
+</div>
+
+</body>
+</html>
