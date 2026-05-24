@@ -1,0 +1,211 @@
+[
+  {
+    "handle": "gkxspace",
+    "url": "https://x.com/gkxspace/status/2054518517622350308",
+    "language": "zh",
+    "reply": "Codex 桌面端的 /goal 确实好用。我试过拆一个三天的开发任务，它自动分成了 12 个子任务，每个都带了验收标准。比我手写计划靠谱",
+    "review": {
+      "status": "approved",
+      "reviewer": "x-mastery-mentor",
+      "at": "2026-05-13T13:35:00Z"
+    }
+  },
+  {
+    "handle": "yaohui12138",
+    "url": "https://x.com/yaohui12138/status/2054553480275308572",
+    "language": "zh",
+    "reply": "Claude Code 那个实时看工具调用的面板确实香，能看到它读到哪个文件、在跑什么命令。配合 /goal 用，感觉像有个初级开发在旁边干活，你只需要审代码",
+    "review": {
+      "status": "approved",
+      "reviewer": "x-mastery-mentor",
+      "at": "2026-05-13T13:35:00Z"
+    }
+  },
+  {
+    "handle": "BTCdayu",
+    "url": "https://x.com/BTCdayu/status/2054541713096491027",
+    "language": "zh",
+    "reply": "国内 AI 付费确实难。我试过几个 toC 的工具，个人用户基本不愿意付钱。老罗如果做海外反而避开了这个坑。就看具体做什么场景了",
+    "review": {
+      "status": "approved",
+      "reviewer": "x-mastery-mentor",
+      "at": "2026-05-13T13:35:00Z"
+    }
+  },
+  {
+    "handle": "python_xxt",
+    "url": "https://x.com/python_xxt/status/2054552412011258342",
+    "language": "zh",
+    "reply": "拆分原则这个框架好。把人设/风格和具体观点拆开看，其实也是做内容审稿的核心能力。很多人被情绪表达吸引就全盘接受，或者因为不喜欢风格就全盘否定，两个都是坑",
+    "review": {
+      "status": "approved",
+      "reviewer": "x-mastery-mentor",
+      "at": "2026-05-13T13:35:00Z"
+    }
+  },
+  {
+    "handle": "Dune",
+    "url": "https://x.com/Dune/status/2054552379635474923",
+    "language": "en",
+    "reply": "finally someone bridging onchain data to actual audit workflows. getting this into BigQuery is the step most data products skip",
+    "review": {
+      "status": "approved",
+      "reviewer": "x-mastery-mentor",
+      "at": "2026-05-13T13:35:00Z"
+    }
+  },
+  {
+    "handle": "yaojingang",
+    "url": "https://x.com/yaojingang/status/2054552271070036417",
+    "language": "zh",
+    "reply": "确实，装各种扩展的人多，考虑安全的少。一个插件有恶意代码跑在命令行里，权限比你想的大。装之前先看源码应该是最低门槛",
+    "review": {
+      "status": "approved",
+      "reviewer": "x-mastery-mentor",
+      "at": "2026-05-13T13:35:00Z"
+    }
+  },
+  {
+    "handle": "jinchenma_ai",
+    "url": "https://x.com/jinchenma_ai/status/2054551416174469150",
+    "language": "zh",
+    "reply": "屎没拉完就开始干活哈哈。Codex 做信息提取确实快，几千条微博几分钟就结构化完了。比手动翻省了一整天",
+    "review": {
+      "status": "approved",
+      "reviewer": "x-mastery-mentor",
+      "at": "2026-05-13T13:35:00Z"
+    }
+  },
+  {
+    "handle": "xingpt",
+    "url": "https://x.com/xingpt/status/2054551351196082508",
+    "language": "zh",
+    "reply": "这个项目确实好。学 Transformer 最大的坑就是看懂了论文以为会了，真写代码才发现注意力矩阵的维度变换能把你绕晕。一行一行对着注释啃代码，比看十篇科普视频都管用",
+    "review": {
+      "status": "approved",
+      "reviewer": "x-mastery-mentor",
+      "at": "2026-05-13T13:35:00Z"
+    }
+  },
+  {
+    "handle": "defioasis",
+    "url": "https://x.com/defioasis/status/2054551085789163679",
+    "language": "zh",
+    "reply": "体育预测市场占比超 40% 合理。比赛结果客观、结算快、全球都能参与。30 亿名义交易量是个实打实的里程碑",
+    "review": {
+      "status": "approved",
+      "reviewer": "x-mastery-mentor",
+      "at": "2026-05-13T13:35:00Z"
+    }
+  },
+  {
+    "handle": "pangyusio",
+    "url": "https://x.com/pangyusio/status/2054550868280979702",
+    "language": "zh",
+    "reply": "这个角度好。X 上认真写回复也一样——单条看肯定是亏的，花几分钟写可能没人理。但长期攒下来的连接和信任，回报远超出单条的计算",
+    "review": {
+      "status": "approved",
+      "reviewer": "x-mastery-mentor",
+      "at": "2026-05-13T13:35:00Z"
+    }
+  },
+  {
+    "handle": "AI_Jasonyu",
+    "url": "https://x.com/AI_Jasonyu/status/2054550745324638419",
+    "language": "zh",
+    "reply": "AI 博主接螺丝批代言，这个跨界我服气。不过认真讲，这说明你的受众画像可能不是纯技术人群——他们可能是中小制造业老板，刚好既需要螺丝批也需要 AI 工具。这个定位其实挺稀缺的",
+    "review": {
+      "status": "approved",
+      "reviewer": "x-mastery-mentor",
+      "at": "2026-05-13T13:35:00Z"
+    }
+  },
+  {
+    "handle": "lanhubiji",
+    "url": "https://x.com/lanhubiji/status/2054550506757046678",
+    "language": "zh",
+    "reply": "低提示词 AI agent 这个方向抓得准。现在的 AI 工具最大门槛不是能力不够，是普通人不知道怎么描述需求。xBubble 把提示词工程藏到引擎层，用户只需要说我想要什么，这个体验差距就是用户增长的差距",
+    "review": {
+      "status": "approved",
+      "reviewer": "x-mastery-mentor",
+      "at": "2026-05-13T13:35:00Z"
+    }
+  },
+  {
+    "handle": "supezen",
+    "url": "https://x.com/supezen/status/2054553118428549132",
+    "language": "zh",
+    "reply": "小众软件坚持了快二十年了吧。在推荐算法统治一切的时代，人工筛选加认真写评测的软件社区几乎绝迹。这种慢内容反而成了稀缺品",
+    "review": {
+      "status": "approved",
+      "reviewer": "x-mastery-mentor",
+      "at": "2026-05-13T13:35:00Z"
+    }
+  },
+  {
+    "handle": "luoyonghao",
+    "url": "https://x.com/luoyonghao/status/2054485390762144041",
+    "language": "zh",
+    "reply": "从数据看，X 的推荐算法给原生视频的推流权重明显高于 YouTube 外链。但 YouTube 的 SEO 长尾效应是 X 没有的。如果追求单条爆款，直接上传；如果追求长期积累和搜索流量，YouTube 主阵地加 X 切片引流可能是最优解",
+    "review": {
+      "status": "approved",
+      "reviewer": "x-mastery-mentor",
+      "at": "2026-05-13T13:35:00Z"
+    }
+  },
+  {
+    "handle": "TheBlockCo",
+    "url": "https://x.com/TheBlockCo/status/2054554073819414636",
+    "language": "en",
+    "reply": "corporate treasury ops driving BTC seasonality more than retail is a pattern worth watching. changes how you read mid-month price action",
+    "review": {
+      "status": "approved",
+      "reviewer": "x-mastery-mentor",
+      "at": "2026-05-13T13:35:00Z"
+    }
+  },
+  {
+    "handle": "YingeAI",
+    "url": "https://x.com/YingeAI/status/2054553949345370284",
+    "language": "zh",
+    "reply": "表达型人格这个分类有意思。俞浩、雷军、孙宇晨的共同点不是行业，是不被关注就痛苦的底层驱动力。这种人格在 AI 时代可能是个杠杆——表达欲加 AI 工具等于内容产能爆炸",
+    "review": {
+      "status": "approved",
+      "reviewer": "x-mastery-mentor",
+      "at": "2026-05-13T13:35:00Z"
+    }
+  },
+  {
+    "handle": "OneKeyCN",
+    "url": "https://x.com/OneKeyCN/status/2054552099162067258",
+    "language": "zh",
+    "reply": "切断收发地址的链上关联，对在乎隐私的用户是刚需。不用身份验证还能合规，这个平衡点选得好。好奇具体的合规方案怎么做的",
+    "review": {
+      "status": "approved",
+      "reviewer": "x-mastery-mentor",
+      "at": "2026-05-13T13:35:00Z"
+    }
+  },
+  {
+    "handle": "MANISH1027512",
+    "url": "https://x.com/MANISH1027512/status/2054553244085747838",
+    "language": "zh",
+    "reply": "200 万曝光，AI 生图的流量天花板比想象的高。能分享下是什么 prompt 风格吗？现在 AI 图像在 X 上的传播逻辑跟传统内容不太一样，视觉冲击力大于信息密度",
+    "review": {
+      "status": "approved",
+      "reviewer": "x-mastery-mentor",
+      "at": "2026-05-13T13:35:00Z"
+    }
+  },
+  {
+    "handle": "wublockchain12",
+    "url": "https://x.com/wublockchain12/status/2054551329306296409",
+    "language": "zh",
+    "reply": "Arbitrum 代币化资产从纯美国国债转向欧盟债券加股票加大宗商品，这个 diversify 方向是对的。单一资产类别的 RWA 太脆弱，多元化的链上 treasury 才是 DAO 和协议金库管理的终局",
+    "review": {
+      "status": "approved",
+      "reviewer": "x-mastery-mentor",
+      "at": "2026-05-13T13:35:00Z"
+    }
+  }
+]

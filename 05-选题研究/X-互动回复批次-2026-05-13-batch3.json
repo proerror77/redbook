@@ -1,0 +1,146 @@
+[
+  {
+    "handle": "thsottiaux",
+    "url": "https://x.com/thsottiaux/status/2054379522657820860",
+    "language": "en",
+    "reply": "Tue polish, Thu launches, Fri fun. this is the right cadence — shipping big every week beats shipping every day. keeps the team sane and users trained on when to check",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "dotey",
+    "url": "https://x.com/dotey/status/2054383106115678639",
+    "language": "zh",
+    "reply": "Skills 是给 AI 的可执行 SOP，不是说明书。这个区分很重要——说明书是给人读的，SOP 是给 agent 执行的。你们现在团队里是每个人维护自己的还是有个共享库？",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "yaohui12138",
+    "url": "https://x.com/yaohui12138/status/2054383469502103687",
+    "language": "zh",
+    "reply": "230 个 skill 只用 5 个这个数据很真实。囤积 skill 和囤积书是一个心理模式。你最后留下的 5 个是哪几个？好奇什么场景最值得装 skill",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "msjiaozhu",
+    "url": "https://x.com/msjiaozhu/status/2054380729040277914",
+    "language": "zh",
+    "reply": "cua 确实是被低估的那个。不抢焦点 + 跨平台沙箱这两个点做好了，比那些花里胡哨的 computer use 项目实用得多。你用 cua 主要跑什么任务？",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "ShanghaoJin",
+    "url": "https://x.com/ShanghaoJin/status/2054380651500257308",
+    "language": "zh",
+    "reply": "算力焦虑确实在从芯片往云服务商转移。Anthropic 推 Mythos 和 OAI 推 Daybreak 都是同一个信号：模型层竞争之后，下一层是安全基础设施",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "FinanceYF5",
+    "url": "https://x.com/FinanceYF5/status/2054383664335917191",
+    "language": "zh",
+    "reply": "通用模型天然具备攻防能力这个点值得关注。以前安全是专门的赛道，以后安全可能是模型的基础能力。这对安全创业公司是个挑战",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "axichuhai",
+    "url": "https://x.com/axichuhai/status/2054186985036620002",
+    "language": "zh",
+    "reply": "错过消息丢单太真实了。现在 IM 太多了，信息散落在微信/飞书/Telegram/Discord 里，搜索基本靠翻聊天记录。你用啥工具管理跨平台消息？",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "0xqiuqiuu",
+    "url": "https://x.com/0xqiuqiuu/status/2054382841031799075",
+    "language": "zh",
+    "reply": "工具碎片化是 remote work 最大的隐性成本。每次换工具不只是学新界面，是之前的上下文和记忆全丢了。你理想中的形态是什么样的，一个统一前端还是后台自动同步？",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "BadUncleX",
+    "url": "https://x.com/BadUncleX/status/2054381751812932028",
+    "language": "zh",
+    "reply": "Bun 从 Zig 切 Rust 这个决策很务实。不是语言优劣，是维护成本——Zig 生态太小，招人和修 bug 都慢。工程决策最终拼的是人力池",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "EvanLuthra",
+    "url": "https://x.com/EvanLuthra/status/2054378905516351735",
+    "language": "en",
+    "reply": "Meta paying employees to train their own replacement is peak dystopian. the irony is people will deliberately perform badly knowing every keystroke is training data",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "0xmomonifty",
+    "url": "https://x.com/0xmomonifty/status/2054385272905961975",
+    "language": "zh",
+    "reply": "Qwen 3.6 系列性价比确实高，本地卡能跑是核心优势。Hermes 上架免费模型这步走得对——先圈用户再变现，比一上来就收费好得多",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "lennysan",
+    "url": "https://x.com/lennysan/status/2054312863737774262",
+    "language": "en",
+    "reply": "the episodes with fewer views often have the deepest impact. people don't share them publicly because they're thinking, not reacting. which episode was it?",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "tualatrix",
+    "url": "https://x.com/tualatrix/status/2054364900894593511",
+    "language": "zh",
+    "reply": "美国信用卡提额确实玄学。月消费不到 100 能涨到 3000，说明他们看的不只是消费量，可能是账单准时 + 账户活跃度。你信用分大概多少？",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "dov_wo",
+    "url": "https://x.com/dov_wo/status/2054253273448865819",
+    "language": "zh",
+    "reply": "平台抽 70% 确实离谱。但打车平台的价值不在匹配，在保险和信任——乘客敢上陌生人的车是因为平台兜底。这个兜底成本被算进抽成了",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "Ehco1996",
+    "url": "https://x.com/Ehco1996/status/2054373004889719229",
+    "language": "zh",
+    "reply": "agent 记忆从文件切到 DB 这个方向我赞同。文件的问题不是性能，是并发写和搜索——DB 天然解决了这两个。不过训到模型里确实是最优解，靠提示词拼凑太脆了",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "Ehco1996",
+    "url": "https://x.com/Ehco1996/status/2054371555543863750",
+    "language": "zh",
+    "reply": "ChatGPT Pro 支付被拒这个太真实了。Visa 和 PayPal 全封，是银行把 AI 订阅归到了高风险类别。这也是为什么中转生意能火——不是技术需求，是支付需求",
+    "review": {
+      "status": "approved"
+    }
+  }
+]

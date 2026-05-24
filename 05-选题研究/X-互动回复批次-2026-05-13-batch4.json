@@ -1,0 +1,146 @@
+[
+  {
+    "handle": "trq212",
+    "url": "https://x.com/trq212/status/2053979505346425179",
+    "language": "en",
+    "reply": "the tmux analogy is spot on. agent view solves the real pain — not managing sessions but remembering which one was doing what. are you planning labels or pinned agents?",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "k1rallik",
+    "url": "https://x.com/k1rallik/status/2053946261246459950",
+    "language": "en",
+    "reply": "command center is exactly right. Claude Code went from tool to workspace. the next leap is when agents can hand off tasks to each other without human routing",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "berryxia",
+    "url": "https://x.com/berryxia/status/2053965238240989559",
+    "language": "zh",
+    "reply": "Agent View 确实是从终端工具到多智能体工作空间的质变。后台独立跑不占终端这个设计很实用。你试了之后觉得最常用的场景是什么？并行跑测试 + 重构？",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "mattlam_",
+    "url": "https://x.com/mattlam_/status/2053508782584475864",
+    "language": "en",
+    "reply": "remote-control via /goal is clever. QR code auth means you can trigger it from mobile. what's the use case — deploy kickoff or build check?",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "jakevin7",
+    "url": "https://x.com/jakevin7/status/2052756688772411665",
+    "language": "zh",
+    "reply": "Codex 插件和 opencli 确实殊途同归。浏览器操作 + 不抢焦点 + 复用登录态，这三个设计说明大家对 agent 与浏览器的关系已成共识。它先走这一步挺有远见",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "codewithimanshu",
+    "url": "https://x.com/codewithimanshu/status/2052941368738386154",
+    "language": "en",
+    "reply": "most people use Codex like autocomplete. the real power is giving it constraints, docs, and the why behind the task. the 60min masterclass from the team is gold",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "ericosiu",
+    "url": "https://x.com/ericosiu/status/2054012224113627436",
+    "language": "en",
+    "reply": "Single Brain agent for B2B is the right framing. companies need a knowledge layer on scattered data, not another chatbot. what's been the hardest integration so far?",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "beamnxw",
+    "url": "https://x.com/beamnxw/status/2054109151073030328",
+    "language": "zh",
+    "reply": "性价比确实碾压，但只算了 token 费。复杂重构场景下准确率更高，少一次回滚省的时间远超接口费差价",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "alphabatcher",
+    "url": "https://x.com/alphabatcher/status/2054192917112090909",
+    "language": "en",
+    "reply": "overstuffing SKILL.md is a real trap. the agent doesn't need the full style guide — just the 3 rules that change its output. what did you end up keeping?",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "Austen",
+    "url": "https://x.com/Austen/status/2053944920063213745",
+    "language": "en",
+    "reply": "Cursor for browsing + Claude Code for heavy lifting. IDE ergonomics for navigation, terminal power for deep refactors. do you switch between them or keep both open?",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "DarkNavyOrg",
+    "url": "https://x.com/DarkNavyOrg/status/2054094701129843146",
+    "language": "zh",
+    "reply": "Codex CLI 的安全设计确实用心：Rust 写的沙箱 + 默认隔离 + LLM 审计。不过沙箱逃逸一直是猫鼠游戏。你们测下来最意外的发现是什么？",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "WesRoth",
+    "url": "https://x.com/WesRoth/status/2054290518851617101",
+    "language": "en",
+    "reply": "Codex first-party plugins are the natural step after MCP. curated over open marketplace is smart for quality control. curious if they'll open it to third-party devs",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "garrytan",
+    "url": "https://x.com/garrytan/status/2052428134226817106",
+    "language": "en",
+    "reply": "enterprise agent security is the unlock. no company deploys agents at scale without audit trails, permissions, and rollback. betting on this layer is the right call",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "teach_fireworks",
+    "url": "https://x.com/teach_fireworks/status/2053850607338078629",
+    "language": "zh",
+    "reply": "这个概念比提示词工程准确太多了。未来核心不是写提示，是搭一套稳定产出质量的流水线。这个清单收下了",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "Axel_bitblaze69",
+    "url": "https://x.com/Axel_bitblaze69/status/2046727263144779904",
+    "language": "en",
+    "reply": "Cursor's trajectory shows the IDE unit economics trap. GPU costs scale with usage, users expect flat pricing. the OpenAI deal was the logical exit, not a failure",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "gregisenberg",
+    "url": "https://x.com/gregisenberg/status/2038706332119797894",
+    "language": "en",
+    "reply": "200K vibe projects daily, almost zero customers. building is easy now — distribution is the bottleneck. indie hackers who figure out sales and marketing will win",
+    "review": {
+      "status": "approved"
+    }
+  }
+]

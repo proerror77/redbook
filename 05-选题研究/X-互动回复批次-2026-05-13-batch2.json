@@ -1,0 +1,137 @@
+[
+  {
+    "handle": "EvanLuthra",
+    "url": "https://x.com/EvanLuthra/status/2054375128277119283",
+    "language": "en",
+    "reply": "$4.6M vs hundreds of millions and still wins on coding. training efficiency is improving faster than model size. the moat is shrinking fast",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "wlzh",
+    "url": "https://x.com/wlzh/status/2054374675766206788",
+    "language": "zh",
+    "reply": "Slack 三年数据差点清零这个太有感触了。下一代团队协作的核心不是聊天，是记忆不会丢。你们试 Tanka 之后，搜索和上下文继承哪个做得更好？",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "swyx",
+    "url": "https://x.com/swyx/status/2054378390891933804",
+    "language": "en",
+    "reply": "/skill = SOP, /plan = design doc, /goal = OKR for agents. the jump from /plan to /goal is the hardest — evaluating AI output is way harder than refining human input",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "manateelazycat",
+    "url": "https://x.com/manateelazycat/status/2054378414757609584",
+    "language": "zh",
+    "reply": "Android 原生 AI 这个方向是对的，但国内厂商的问题不是技术，是谷歌服务在国内不可用。到时候大概率是各家自己搞一套，兼容性又是噩梦",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "KKaWSB",
+    "url": "https://x.com/KKaWSB/status/2054371296843284836",
+    "language": "zh",
+    "reply": "Altman 这个布局确实有意思：一手控制 AI 模型，一手押注 AI 的能源供给。核聚变要是真成了，他手里同时掐着算力和电力的上游。这不是在做公司，是在做基础设施层",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "blackanger",
+    "url": "https://x.com/blackanger/status/2054202737462558877",
+    "language": "zh",
+    "reply": "800 万行确实离谱。正常程序员一辈子也写不了这么多。不过 AI 生成的代码含注释、重复、废弃路径的比例很高，实际有效行数可能要除以 5",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "sadd_asd77675",
+    "url": "https://x.com/sadd_asd77675/status/2054377933280776457",
+    "language": "zh",
+    "reply": "一天部署 5 家无人公司这个概念很激进。难点不是能不能搭起来，是出问题的时候谁来负责。没有 human in the loop，合规和客服怎么解决？",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "iamai_omni",
+    "url": "https://x.com/iamai_omni/status/2054373585050042823",
+    "language": "zh",
+    "reply": "这个定义有意思：不需要融资 + 产出等于全球 GDP。不过如果真的达到了，应该叫 ASI 而不是 AGI 了吧 😄 你觉得这个形态离我们还有多远？",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "justinsuntron",
+    "url": "https://x.com/justinsuntron/status/2054251433957163360",
+    "language": "zh",
+    "reply": "AI 时代的 FOMO 确实没必要，现在还早。但更重要的是找到自己在这个生态里的位置——是提供算力、做应用层、还是基础设施。定位比 timing 重要",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "colinwu",
+    "url": "https://x.com/colinwu/status/2054376642211115103",
+    "language": "zh",
+    "reply": "币圈朋友转 AI 这个趋势很明显。支付赛道确实是个好桥梁——既有合规经验又有技术底子。不过 AI 项目的估值逻辑和发币逻辑完全不一样，转型不容易",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "dkundel",
+    "url": "https://x.com/dkundel/status/2054374784960799127",
+    "language": "en",
+    "reply": "side-by-side works when you're waiting but not when you're deep in flow. I find the hotkey popup more useful for quick parallel tasks without breaking the main session",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "sanyuanVC",
+    "url": "https://x.com/sanyuanVC/status/2054377732046557531",
+    "language": "zh",
+    "reply": "AI 股回调是好事。之前涨太快反而让人不敢进。这波回调之后，哪些公司的收入真的跟 AI 相关，哪些只是贴了个标签——下一波分化会很剧烈",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "meijiangAI",
+    "url": "https://x.com/meijiangAI/status/2054377852246819188",
+    "language": "zh",
+    "reply": "谷歌相册的 AI 功能确实被低估了。人脸识别、自动分类、回忆生成都很成熟了。但谷歌的营销方式导致很多人从来不知道这些功能存在",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "xincctnnq",
+    "url": "https://x.com/xincctnnq/status/2054124474291933665",
+    "language": "zh",
+    "reply": "用礼品卡付 Codex 月费这个思路不错。不过现在很多平台开始封礼品卡买订阅了。你用了多久了？有没有遇到过被拒的情况？",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "FLS_OTC",
+    "url": "https://x.com/FLS_OTC/status/2054371054152556580",
+    "language": "zh",
+    "reply": "AI 赛道选标的确实难。大部分项目还在概念阶段，离实际收入和用户验证还远。你看这个赛道主要看什么指标？用户增长还是链上数据？",
+    "review": {
+      "status": "approved"
+    }
+  }
+]

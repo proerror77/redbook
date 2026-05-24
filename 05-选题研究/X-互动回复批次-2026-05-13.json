@@ -1,0 +1,92 @@
+[
+  {
+    "handle": "ivanfioravanti",
+    "url": "https://x.com/ivanfioravanti/status/2054314130312483234",
+    "language": "en",
+    "reply": "wild how monitors tank inference speed. same on my M4 — external display drops tok/s by ~15%. have you tested lid closed vs open?",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "jessepollak",
+    "url": "https://x.com/jessepollak/status/2054313757543964857",
+    "language": "en",
+    "reply": "agents need a doc surface they can write to and humans can review. are you treating bdocs as canonical or syncing back to git?",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "goldengrape",
+    "url": "https://x.com/goldengrape/status/2054310785611141283",
+    "language": "zh",
+    "reply": "这个实验太有意思了。物理分隔对 context switching 的帮助被低估了——不只是心理切换，可能还防止了“反正切个 tab 瞟一眼”的低质量多任务。想知道门关着 vs 开着有没有差异 🤔",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "shannholmberg",
+    "url": "https://x.com/shannholmberg/status/2054309307492290988",
+    "language": "en",
+    "reply": "the runbook is what most people skip. everyone spins up agents, nobody writes recovery docs. do you run separate sessions per project or multiplex?",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "dkundel",
+    "url": "https://x.com/dkundel/status/2054307264794866148",
+    "language": "en",
+    "reply": "the /side fork is underrated. I use it as a rubber duck — fork a quick question without polluting the main session. do you find multiple full windows productive?",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "indigox",
+    "url": "https://x.com/indigox/status/2054314640923132336",
+    "language": "zh",
+    "reply": "AI 笔记本拼的不是谁的模型，是本地推理能跑多快。如果在设备端跑而不是云端调用，那确实有意思——不过谷歌做硬件的履历让人不太敢下单 😅 你觉得呢？",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "roomote",
+    "url": "https://x.com/roomote/status/2054310517632630817",
+    "language": "en",
+    "reply": "my agent ships more code than I do, maybe I should be the one getting renamed",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "billtheinvestor",
+    "url": "https://x.com/billtheinvestor/status/2054312011568484543",
+    "language": "zh",
+    "reply": "用量消耗的物理化——不用切窗口、余光就能感知速率。这其实是个环境感知装置，跟老式电表挂在门口一个道理：知道“正在烧钱”会让你自然变省。想搞一个 😆",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "billtheinvestor",
+    "url": "https://x.com/billtheinvestor/status/2054309639861534740",
+    "language": "zh",
+    "reply": "DS V4 Pro 跑编程助手性价比确实高。但免费方案有个隐性成本：模型卡住或幻觉时，排查的时间可能比省下来的接口费还贵。你有遇到过产出不能用需要反复重跑的情况吗？",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "StockMKTNewz",
+    "url": "https://x.com/StockMKTNewz/status/2054310110793523326",
+    "language": "en",
+    "reply": "$900B means AI labs aren't being valued as SaaS. the market is betting they're the next OS layer. can these multiples hold if enterprises switch to open models?",
+    "review": {
+      "status": "approved"
+    }
+  }
+]

@@ -1,0 +1,110 @@
+[
+  {
+    "handle": "bittingthembits",
+    "url": "https://x.com/i/status/2054354487259938822",
+    "language": "en",
+    "reply": "the AI startup graveyard is underrated. $202B raised but how many have real revenue? the gap between funding and product-market fit keeps widening",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "Tunneelly",
+    "url": "https://x.com/i/status/2054156009652814236",
+    "language": "en",
+    "reply": "funding infrastructure still assumes human-cost software development. when a solo dev + agent can build what took a 10-person team, the funding model breaks.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "hungryturbo",
+    "url": "https://x.com/i/status/2054156875349041383",
+    "language": "zh",
+    "reply": "安全能力前置到开发生命周期这个定位很准。不是出了漏洞再修，是写代码的时候就防住。这对安全团队的定位是个根本转变——从救火队变成架构师",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "mirandanazzaro",
+    "url": "https://x.com/i/status/2054352654407471295",
+    "language": "en",
+    "reply": "House Homeland Security getting a closed-door on Mythos is significant. Congress doesn't brief on model releases — they brief on national security implications.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "subnetamplify",
+    "url": "https://x.com/i/status/2054120777365209369",
+    "language": "en",
+    "reply": "$122B raised by OpenAI, $50B in compute spend for 2026 alone. we're watching the buildout of a new utility layer, not a software company",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "RoundtableSpace",
+    "url": "https://x.com/i/status/2054264090600808714",
+    "language": "en",
+    "reply": "Daybreak combining models + Codex + security partners is the right architecture. no single tool solves security — it's the integration across the stack that matters.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "JesusMartinez",
+    "url": "https://x.com/i/status/2051933310390005901",
+    "language": "en",
+    "reply": "$2.2B to AI founders in crypto is interesting but the real question is whether crypto-native AI projects can compete with centralized labs on talent.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "cryptopunk7213",
+    "url": "https://x.com/i/status/2053961089658814892",
+    "language": "en",
+    "reply": "OpenAI shipping Daybreak before Anthropic ships Mythos is a power move. being second to announce but first to market changes the narrative.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "AidenAI_IO",
+    "url": "https://x.com/i/status/2054320720159936690",
+    "language": "en",
+    "reply": "the EU access split is going to create a two-tier security landscape. companies under OpenAI's umbrella get AI cyber defense, Anthropic-only regions wait.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "StockMKTNewz",
+    "url": "https://x.com/i/status/2053796434126811232",
+    "language": "en",
+    "reply": "EU getting Daybreak access while Anthropic holds Mythos back creates an asymmetric market. European cyber teams get frontier AI defense, US teams wait.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "WesRoth",
+    "url": "https://x.com/i/status/2054003628050981039",
+    "language": "en",
+    "reply": "the key word in Daybreak's announcement is \"empower\" — not replace. AI finds the vulns, suggests fixes, but humans still verify.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "0xMt_",
+    "url": "https://x.com/i/status/2054015922529255601",
+    "language": "en",
+    "reply": "Daybreak being positioned as a security-first model rather than a general-purpose model with security features is the right call.",
+    "review": {
+      "status": "approved"
+    }
+  }
+]

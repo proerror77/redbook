@@ -1,0 +1,137 @@
+[
+  {
+    "handle": "kinopee_ai",
+    "url": "https://x.com/i/status/2053911420480434638",
+    "language": "zh",
+    "reply": "Cursor 排第一不意外，工具层做得最成熟。但 Codex 和 Claude 同分说明模型差距在缩小，工具层的差异越来越重要",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "natolambert",
+    "url": "https://x.com/i/status/2054232013658611754",
+    "language": "en",
+    "reply": "open software lowered deployment cost, open AI lowers development cost. the next layer is open agents lowering operations cost. each wave commoditizes the layer above it",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "aakashgupta",
+    "url": "https://x.com/i/status/2054036604625568159",
+    "language": "en",
+    "reply": "the Deployment Company structure is fascinating — it's not SaaS, not consulting, not an API reseller. it's a new category: AI deployment as a managed service.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "eshanbuilds",
+    "url": "https://x.com/i/status/2053869626514391156",
+    "language": "en",
+    "reply": "fixed-income instrument from an AI lab is a first. it means OpenAI is confident enough in deployment revenue to issue what's essentially a bond.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "soulblissX",
+    "url": "https://x.com/i/status/2054189277496615376",
+    "language": "en",
+    "reply": "OpenAI doing FDEs is Palantir's playbook repackaged for the AI era. embed engineers in enterprise, customize the model, lock in the contract.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "tickerplus",
+    "url": "https://x.com/i/status/2053710417734537451",
+    "language": "en",
+    "reply": "Claude Code leads enterprise hiring, Codex catching up fast. the real race is onboarding UX — whoever makes agents easiest to adopt wins the enterprise market",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "exploraX_",
+    "url": "https://x.com/i/status/2053930924266373416",
+    "language": "en",
+    "reply": "running coding agents for free always has a catch — rate limits, no persistence, shared context.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "Star_Knight12",
+    "url": "https://x.com/i/status/2053092719937859887",
+    "language": "en",
+    "reply": "reverse-engineering any repo to the prompt that built it is wild. every open source project just became vibe coding training data.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "thehypedotnews",
+    "url": "https://x.com/i/status/2053881531924459713",
+    "language": "en",
+    "reply": "finally a benchmark testing model + harness together. solo evals were misleading — the harness is half the product.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "Analytica_X",
+    "url": "https://x.com/i/status/2053879304942141516",
+    "language": "en",
+    "reply": "deployment as a standalone business unit signals the end of the model-as-API era.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "MikelEcheve",
+    "url": "https://x.com/i/status/2053828003516314030",
+    "language": "en",
+    "reply": "not a new model, a new distribution machine. model wars are cooling, deployment wars are starting. 19 partners + $4B is about lock-in, not technology",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "JaironDevNull",
+    "url": "https://x.com/i/status/2054390560375578754",
+    "language": "en",
+    "reply": "/goal turns Claude Code from assistant to project manager. it keeps pushing while you're away. how does it handle ambiguity — ask for clarification or charge forward?",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "kimmonismus",
+    "url": "https://x.com/i/status/2053844403488194827",
+    "language": "en",
+    "reply": "OpenAI becoming a systems integrator, not just a model provider. this is the AWS playbook — sell infrastructure, then managed service on top.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "RoundtableSpace",
+    "url": "https://x.com/i/status/2053944567657873798",
+    "language": "en",
+    "reply": "the shift from model provider to deployment company is 2026's real story.",
+    "review": {
+      "status": "approved"
+    }
+  },
+  {
+    "handle": "Fluyeporlaweb",
+    "url": "https://x.com/i/status/2053779545799459085",
+    "language": "en",
+    "reply": "183K stars on a coding agent toolkit says everything. the IDE is becoming the OS. if you're coding without agent assistance in 2026, you're leaving speed on the table",
+    "review": {
+      "status": "approved"
+    }
+  }
+]
