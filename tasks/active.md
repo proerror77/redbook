@@ -2,6 +2,27 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-06-05 browser-act skills 安装
+
+- Owner: Codex
+- Source: User asked to install `https://github.com/browser-act/skills`.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Inspect the GitHub repo and identify installable skill paths.
+- [x] Install the requested skill into the Codex-visible skill root.
+- [x] Verify the installed files and record restart requirements.
+- [x] Update progress with evidence.
+
+### Review
+
+- Installed `browser-act` and `browser-act-skill-forge` from `browser-act/skills`.
+- Install root: `/Users/proerror/.codex/skills`.
+- Verified installed `SKILL.md` files and `browser-act-skill-forge/references/`.
+- `browser-act` CLI is not currently on PATH; first-time CLI install is a separate confirmation-gated step.
+- Restart Codex to load the newly installed skills.
+
 ## 2026-05-25 Dirty Worktree 整理
 
 - Owner: Codex

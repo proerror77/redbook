@@ -4,6 +4,24 @@
 
 ---
 
+## [2026-06-05] browser-act skills 安装
+
+**完成了什么：**
+- 从 `https://github.com/browser-act/skills` 检查到两个可安装 skill：`browser-act`、`browser-act-skill-forge`。
+- 使用 Codex 系统 `skill-installer` 安装到实际 Codex 可见根目录：`/Users/proerror/.codex/skills`。
+- 安装结果：
+  - `/Users/proerror/.codex/skills/browser-act/SKILL.md`
+  - `/Users/proerror/.codex/skills/browser-act-skill-forge/SKILL.md`
+  - `/Users/proerror/.codex/skills/browser-act-skill-forge/references/`
+
+**验证：**
+- `find /Users/proerror/.codex/skills/browser-act /Users/proerror/.codex/skills/browser-act-skill-forge -maxdepth 2 -type f` 已确认文件存在。
+- 已读取两个已安装 `SKILL.md` 的 frontmatter，名称分别为 `browser-act` 和 `browser-act-skill-forge`。
+
+**遗留：**
+- `browser-act` CLI 当前不在 PATH。首次执行 `uv tool install browser-act-cli --python 3.12` 是额外外部下载，需用户明确确认后再做。
+- 需要重启 Codex 才能让新安装的 skills 在新会话中自动加载。
+
 ## [2026-05-12] Lane A daily-first 启动检查
 
 **完成了什么：**
