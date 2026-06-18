@@ -17,17 +17,18 @@
 
 ### Review
 
-- Created 8 auto-discoverable personal workflow skills:
+- Created 8 auto-discoverable personal workflow skills, then kept 3 after user review:
   - `/Users/proerror/.codex/skills/client-proposal-package`
-  - `/Users/proerror/.codex/skills/feishu-calendar-ops`
   - `/Users/proerror/.codex/skills/morning-brief-reconciliation`
+  - `/Users/proerror/.codex/skills/macos-safe-cleanup`
+- User reviewed the set and removed 5 skills as unnecessary:
+  - `/Users/proerror/.codex/skills/feishu-calendar-ops`
   - `/Users/proerror/.codex/skills/partner-positioning`
   - `/Users/proerror/.codex/skills/contribution-pool-framing`
   - `/Users/proerror/.codex/skills/local-cli-source-trace`
-  - `/Users/proerror/.codex/skills/macos-safe-cleanup`
   - `/Users/proerror/.codex/skills/local-runtime-truth`
-- Each skill has `SKILL.md` plus `agents/openai.yaml`.
-- `quick_validate.py` passed for all 8 skills.
+- Remaining 3 skills each have `SKILL.md` plus `agents/openai.yaml`.
+- `quick_validate.py` passed for all remaining 3 skills.
 
 ## 2026-06-05 browser-act skills 安装
 

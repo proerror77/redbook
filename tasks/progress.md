@@ -8,19 +8,20 @@
 
 **完成了什么：**
 - 读取 Chronicle/MEMORY 里的重复 Task Group，筛出稳定、可触发、可验证的高频流程。
-- 创建 8 个 Codex 自动发现技能：
+- 创建后按用户反馈精简，最终保留 3 个 Codex 自动发现技能：
   - `/Users/proerror/.codex/skills/client-proposal-package`
-  - `/Users/proerror/.codex/skills/feishu-calendar-ops`
   - `/Users/proerror/.codex/skills/morning-brief-reconciliation`
+  - `/Users/proerror/.codex/skills/macos-safe-cleanup`
+- 已删除用户明确说不需要的 5 个技能：
+  - `/Users/proerror/.codex/skills/feishu-calendar-ops`
   - `/Users/proerror/.codex/skills/partner-positioning`
   - `/Users/proerror/.codex/skills/contribution-pool-framing`
   - `/Users/proerror/.codex/skills/local-cli-source-trace`
-  - `/Users/proerror/.codex/skills/macos-safe-cleanup`
   - `/Users/proerror/.codex/skills/local-runtime-truth`
-- 每个技能都包含 `SKILL.md` 和 `agents/openai.yaml`，没有额外脚本或模板目录。
+- 保留的每个技能都包含 `SKILL.md` 和 `agents/openai.yaml`，没有额外脚本或模板目录。
 
 **验证：**
-- 8 个技能均通过 `/Users/proerror/.codex/skills/.system/skill-creator/scripts/quick_validate.py`。
+- 剩余 3 个技能均通过 `/Users/proerror/.codex/skills/.system/skill-creator/scripts/quick_validate.py`。
 - `rg -n "TODO|\\[TODO\\]"` 检查未发现模板 TODO。
 - 已记录到 `tasks/active.md`。
 
