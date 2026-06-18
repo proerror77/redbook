@@ -4,6 +4,30 @@
 
 ---
 
+## [2026-06-18] Chronicle 高频流程转技能
+
+**完成了什么：**
+- 读取 Chronicle/MEMORY 里的重复 Task Group，筛出稳定、可触发、可验证的高频流程。
+- 创建 8 个 Codex 自动发现技能：
+  - `/Users/proerror/.codex/skills/client-proposal-package`
+  - `/Users/proerror/.codex/skills/feishu-calendar-ops`
+  - `/Users/proerror/.codex/skills/morning-brief-reconciliation`
+  - `/Users/proerror/.codex/skills/partner-positioning`
+  - `/Users/proerror/.codex/skills/contribution-pool-framing`
+  - `/Users/proerror/.codex/skills/local-cli-source-trace`
+  - `/Users/proerror/.codex/skills/macos-safe-cleanup`
+  - `/Users/proerror/.codex/skills/local-runtime-truth`
+- 每个技能都包含 `SKILL.md` 和 `agents/openai.yaml`，没有额外脚本或模板目录。
+
+**验证：**
+- 8 个技能均通过 `/Users/proerror/.codex/skills/.system/skill-creator/scripts/quick_validate.py`。
+- `rg -n "TODO|\\[TODO\\]"` 检查未发现模板 TODO。
+- 已记录到 `tasks/active.md`。
+
+**遗留：**
+- 新技能位于全局 `/Users/proerror/.codex/skills`，新会话/重启后会进入可发现技能列表。
+- 本轮没有处理既有 unrelated dirty/untracked 文件。
+
 ## [2026-06-05] browser-act skills 安装
 
 **完成了什么：**

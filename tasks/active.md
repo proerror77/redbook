@@ -2,6 +2,33 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-06-18 Chronicle 高频流程转技能
+
+- Owner: Codex
+- Source: User asked to inspect Chronicle memories, find repeated workflows, and turn them into skills.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Inspect Chronicle / MEMORY task groups for repeated, executable workflows.
+- [x] Select workflows that are stable enough to become skills and avoid duplicating existing one-off memories.
+- [x] Create auto-discoverable skill folders under `/Users/proerror/.codex/skills`.
+- [x] Validate skill metadata and record evidence in progress.
+
+### Review
+
+- Created 8 auto-discoverable personal workflow skills:
+  - `/Users/proerror/.codex/skills/client-proposal-package`
+  - `/Users/proerror/.codex/skills/feishu-calendar-ops`
+  - `/Users/proerror/.codex/skills/morning-brief-reconciliation`
+  - `/Users/proerror/.codex/skills/partner-positioning`
+  - `/Users/proerror/.codex/skills/contribution-pool-framing`
+  - `/Users/proerror/.codex/skills/local-cli-source-trace`
+  - `/Users/proerror/.codex/skills/macos-safe-cleanup`
+  - `/Users/proerror/.codex/skills/local-runtime-truth`
+- Each skill has `SKILL.md` plus `agents/openai.yaml`.
+- `quick_validate.py` passed for all 8 skills.
+
 ## 2026-06-05 browser-act skills 安装
 
 - Owner: Codex
