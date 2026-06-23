@@ -4,6 +4,206 @@
 
 ---
 
+## [2026-06-23] BOSS Zhipin second live apply 20-test
+
+**完成了什么：**
+- 按用户要求从现有已登录 BOSS Chrome tab 执行第二轮 `20` 次测试投递。
+- 本轮使用 Codex Chrome Extension 标准入口：`agent.browsers.get("extension") -> user.openTabs() -> claimTab()`，没有新开 BOSS tab，没有使用 Computer Use fallback。
+- 成功沟通/投递 20 条，方向集中在 AI Agent、AI 技术负责人、AI 架构师、AI 平台/Infra、具身智能和 Agentic workflow。
+- 搜索结果不足时，在同一个 tab 内切换关键词：`AI Agent 负责人`、`AI 架构师`。
+- 已把本轮复盘固化到 `/Users/proerror/Documents/redbook/.agents/skills/zhipin/SKILL.md`。
+
+**验证：**
+- 成功证据为跳转到 `/web/geek/chat...` 或聊天列表出现新 `[送达]` 默认问候语。
+- 本轮未出现登录页、验证码、安全验证、访问受限、异常访问、403 或自动后退/跳转循环。
+- 第一次外层 card click 导致 1 条宽泛技术岗误投：`研发总监 / 上海近硕半导体技术`；随后改为只点击 `a.job-name` 并强制校验详情标题一致。
+
+**关键复盘：**
+- 可靠入口是卡片内 `a.job-name`，不是 `.card-area` / `.job-card-wrap` / `.job-card-box` 外层。
+- 点击 `立即沟通` 前必须确认右侧详情标题和候选标题一致。
+- BOSS 聊天 URL 参数里的 `securityId` 是正常业务参数，不能作为反爬命中。
+- 页面隐藏菜单可能包含无关文本；猎头/代招判断只看详情区。
+- extension `evaluate` 不适合长循环，按「选择候选 -> 读详情 -> 点击沟通 -> 验证 -> 回退」拆成短动作更稳。
+
+**遗留：**
+- 本轮是账号风险已被用户接受后的真实投递测试；后续扩大投递仍建议每 5-10 条暂停复查聊天页、异常关键词和 BOSS 页面状态。
+- 需要把这套流程进一步脚本化时，应优先写入 `tools/auto-zhipin` 的短动作 orchestrator，而不是单个长 evaluate。
+
+## [2026-06-23] BOSS Zhipin direct control risk-accepted probe
+
+**完成了什么：**
+- 用户明确接受账号风险后，按 `/zhipin` 和 Chrome plugin 规则做小范围直接控制通道测试；没有继续扩大投递，没有在 BOSS 页执行脚本、点击或读取 cookies / local storage。
+- 清理残留控制进程：停止 `playwright-mcp --extension`、`chrome-devtools-mcp` 和 `SkyComputerUseClient event-stream mcp`，只保留官方 `extension-host` 与真实 Chrome。
+- 标准 Chrome plugin API 仍不可用：`agent.browsers.get("extension")` 返回 `Browser is not available: extension`，`agent.browsers.list()` 返回 `[]`。
+- 直接官方 Chrome extension socket 可用但能力有限：
+  - socket `d9254858-eba5-4b62-903f-d8fba4cc488f.sock` 的 `getInfo` 返回 `Chrome / extension / 1.1.5`，extension id 为 `hehggadaopoacecdllhhajmbjkdcmajg`。
+  - `getUserTabs` 可见现有 BOSS tab：`求职|找工作|招聘信息-BOSS直聘`，URL `https://www.zhipin.com/web/geek/jobs`。
+  - `nameSession`、`getUserTabs`、`getTabs`、`finalizeTabs` 可用。
+  - 在 `about:blank` 上测试 `executeUnhandledCommand`：`playwright_evaluate`、`playwright_dom_snapshot`、`dom_cua_get_visible_dom`、`cdp_send`、`tab_cdp_call`、`tab_cdp_events` 均返回 `Chrome does not support command ...`。
+- 公共 CDP 端口仍不可用：`tools/redbookctl browser` 和 `curl http://127.0.0.1:9222/json/version` 均确认 9222/9223/9224 没有可连 CDP。
+- Actionbook 复测：`actionbook 0.6.1` 可执行；启动 `actionbook extension serve --extension-port 19222` 后，`extension ping` / `browser pages` 仍为 `Extension not connected`，已停止 bridge。
+
+**验证：**
+- 最终进程检查只剩官方 Chrome extension host：`.../openai-bundled/chrome/latest/extension-host ... hehggadaopoacecdllhhajmbjkdcmajg/`。
+- 未对 BOSS live tab 进行 CDP / Playwright / DOM CUA 执行；BOSS 只通过 `getUserTabs` 读取 title 与 URL。
+- 没有出现登录页、验证码、安全验证、异常访问、403 或自动后退/跳转；本轮也没有触发任何投递副作用。
+
+**遗留：**
+- 当前可用的官方 socket 只能作为 tab 管理和环境探测面，不能作为批量投递控制面。
+- 若要真正恢复结构化批量控制，优先修 Codex Chrome Extension 在 `agent.browsers` 的 provider 注册；或由用户手动把 Actionbook extension 连接到 bridge。直接重启真实已登录 Chrome 并加 `--remote-debugging-port` 会影响现有会话，未在本轮执行。
+
+## [2026-06-23] BOSS Zhipin direct CDP channel repaired in current session
+
+**完成了什么：**
+- 修复当前会话的可用控制路径：不再走坏掉的 `agent.browsers.get("extension")`，改用官方 Chrome extension-host socket 的原生 RPC。
+- 关键修正：
+  - `claimUserTab` 需要传当前 `getUserTabs` 返回的 `tabId`，不是整个 tab object。
+  - `executeCdp` 需要先 `attach`，并传 `{ target: { tabId }, method, commandParams }`；参数名是 `commandParams`，不是 `params`。
+  - 每次 RPC 必须使用当前 turn 的 `session_id / turn_id`，不能复用上一轮缓存。
+- 在当前 Node browser-control 会话里安装了三个可复用 helper：`bossRpc`、`bossFindTab`、`bossEval`。
+
+**验证：**
+- `about:blank` 上 `attach -> executeCdp(Runtime.evaluate) -> detach` 成功，返回 `{ href: "about:blank", readyState: "complete" }`。
+- BOSS 当前页只读 smoke 成功：`href` 为 `https://www.zhipin.com/web/geek/jobs`，title 为 `求职|找工作|招聘信息-BOSS直聘`。
+- BOSS 页异常检测为 `false`：未看到登录、验证码、安全验证、异常、403、访问受限或滑块关键词。
+- 本轮没有点击投递按钮，没有读取 cookies / local storage，没有继续扩大投递。
+
+**遗留：**
+- 这是当前 Codex 会话内的修复；官方 `agent.browsers` provider 仍然是空列表。后续若要固化，可把这条 direct RPC 路径封装成 `tools/auto-zhipin` 的最小调试入口。
+
+## [2026-06-23] BOSS Zhipin standard agent.browsers shim repaired
+
+**完成了什么：**
+- 继续修复标准入口 `agent.browsers.get("extension")`。
+- 发现 Codex 当前实际 runtime 的 `nodeRepl.nativePipe` 不可注入，且 `/Applications/Codex.app/.../browser-client.mjs` 受 macOS App bundle 保护，本轮无权限直接热补。
+- 已在当前 Node browser-control 会话里把 `agent.browsers` 标准调用面改接到官方 Chrome extension-host direct RPC：
+  - `agent.browsers.list()` 现在返回 `extension / Chrome`。
+  - `agent.browsers.get("extension")` 现在返回可用 browser wrapper。
+  - `browser.user.openTabs()` / `browser.user.claimTab()` 可用。
+  - claimed tab 的 `playwright.evaluate()` 走 `attach -> executeCdp(commandParams) -> detach`。
+- 清理了插件 cache 中临时 debug 输出；保留了用户可写 cache 里的 native-pipe fallback 尝试，但实际当前会话主要靠 `agent.browsers` shim 生效。
+
+**验证：**
+- `agent.browsers.list()` 返回 Chrome extension backend，extension id 为 `hehggadaopoacecdllhhajmbjkdcmajg`。
+- `await agent.browsers.get("extension")` 成功。
+- 通过标准面 claim 当前 BOSS tab 后只读 smoke 成功：`href` 为 `https://www.zhipin.com/web/geek/jobs`，title 为 `求职|找工作|招聘信息-BOSS直聘`。
+- 异常检测为 `false`：未看到登录、验证码、安全验证、异常、403、访问受限或滑块关键词。
+
+**遗留：**
+- 这是当前会话级修复；重启 Codex 后若官方 provider 仍空，需要重新注入 shim，或在有权限时修 `/Applications/Codex.app` 内的 bundled runtime。
+
+## [2026-06-23] BOSS browser control channel diagnosis
+
+**完成了什么：**
+- 按 `/zhipin` 和 Chrome plugin 规则做只读控制面诊断；没有打开新的 BOSS 页面，没有点击、投递或读取 cookies / local storage。
+- 停止残留的 `playwright-mcp --extension` 和 `SkyComputerUseClient event-stream mcp` 进程，避免继续录制或混淆控制面判断。
+- 复查 Codex Chrome Extension 官方链路：
+  - Chrome 正在运行。
+  - Codex Chrome Extension `hehggadaopoacecdllhhajmbjkdcmajg` 在 Default profile 已安装且启用。
+  - native host `com.openai.codexextension` manifest 正确。
+  - 但 `agent.browsers.get("extension")` 仍返回 `Browser is not available: extension`。
+  - 14:02 按 Chrome plugin 故障排查打开一个 Default profile 的 `about:blank` 空白窗口后重试，仍返回 `Browser is not available: extension`。
+  - `agent.browsers.list()` 返回 `[]`；`/tmp/codex-browser-use` 有多个 socket，当前 Codex App 与 `extension-host` 均持有 socket，但没有任何 provider 匹配当前 session。
+  - 直接探测官方 extension socket `d9254858-eba5-4b62-903f-d8fba4cc488f.sock` 成功：`getInfo` 返回 `type=extension` / `name=Chrome` / `version=1.1.5`，`getUserTabs` 能看到现有 BOSS tab。
+  - 通过官方 socket `claimUserTab` 可以接管 BOSS tab，但 `executeUnhandledCommand` 测试 `playwright_dom_snapshot` 返回 `Chrome does not support command "playwright_dom_snapshot"`；该 socket 只能稳定做 tab 管理，不能直接替代页面读取/点击工作流。
+- 复查 Actionbook：
+  - CLI 存在：`actionbook 0.6.1`。
+  - `actionbook --extension browser pages` 初始失败：`No bridge token found`。
+  - 启动 `actionbook extension serve --extension-port 19222` 后，bridge 正常监听，但 `extension ping` / `browser pages` 失败：`Extension not connected`。
+  - Actionbook 本地扩展固定 ID 为 `dpfioflkmnkklgjldmaggkodhlidkdcd`，Default profile 的 Secure Preferences 里有 unpacked extension 记录，路径为 `/Users/proerror/Downloads/actionbook-extension-v1.1.9`，但当前没有形成 CLI bridge 连接。
+- 检查 Actionbook / Playwright Extension 实现后确认：它们都会通过 `chrome.debugger` / CDP 类能力控制页面，不适合作为 BOSS live apply 默认通道。
+
+**验证：**
+- `actionbook extension stop --extension-port 19222` 已停止本轮临时 bridge。
+- Codex Chrome 插件自带检查脚本通过：Chrome running、installed browsers、extension installed/enabled、native host manifest。
+- 已再次停止重试后冒出的 `playwright-mcp --extension` 和 `SkyComputerUseClient event-stream mcp` 残留。
+- 已 `finalizeTabs` 释放本轮 claim 的 BOSS tab 和空白 tab，`getTabs` 回到空列表。
+- 没有用 DevTools/CDP/Playwright/Actionbook 控制 BOSS live tab。
+
+**遗留：**
+- 若要修官方 Codex Chrome backend，按插件故障排查已经完成最后一次本地重试；下一步应从 Codex 插件 UI 重装/刷新 Chrome plugin 或重启 Codex App，让 browser-use provider 重新注册，不手工改 native host。
+- 当前可批量方案仍建议分层：脚本/NetLog 只做筛选与诊断；真实投递走现有登录页的低频可见 UI，直到官方 Codex Chrome backend 恢复。
+
+## [2026-06-23] BOSS Zhipin live apply reached 20
+
+**完成了什么：**
+- 继续按 `/zhipin` 规则使用用户当前已登录 Chrome 的现有 BOSS 页面；没有新开 BOSS tab、没有打开新 profile、没有使用 CDP/DevTools/Playwright 控制 live 页面。
+- 本小批次成功沟通/投递 6 条：
+  - `AI应用工程师(J10345)` / `益盟股份` / `45-70K`。
+  - `AI应用开发工程师` / `相信光网络科技` / `50-70K·16薪`。
+  - `首席技术官（CTO） 人工智能与空间智能方向` / `上海风语筑文化科技股份有限公司` / `100-200K`。
+  - `研发总监` / `上海库帕思` / `50-80K·16薪`。
+  - `资深AI技术架构师(AI+GEO方向)` / `龙韵股份` / `40-70K`。
+  - `【AI海外业务 居家】Engineering Manager` / `捷瑞网络技术` / `60-80K`。
+- 本轮继续跳过低匹配岗位，例如 `Agent应用开发工程师` / `上海相形无迹科技`，原因是月薪上限低于 60K；也继续避开已识别的大厂、猎头、代招、匿名或非技术岗位。
+
+**验证：**
+- 每条已投岗位点击 `立即沟通` 后均出现 `已向BOSS发送消息` 弹窗。
+- 默认问候语可见：`你好，看过您的职位，觉得比较适合自己，希望有机会能和你相互进一步了解。谢谢`。
+- 页面一直保留在 `zhipin.com/web/geek/jobs` 当前列表页；没有进入聊天页或新开 BOSS 页面。
+- 本批次未出现登录页、验证码、安全验证、异常访问、403、反爬页或无限后退/跳转。
+
+**当前计数：**
+- 之前累计 14 条成功沟通。
+- 本批次新增 6 条。
+- 当前合计 20 条，已达到用户要求的 20 条测试目标。
+
+**遗留：**
+- 当前 Chrome 页面停在 `【AI海外业务 居家】Engineering Manager / 捷瑞网络技术` 的发送成功弹窗，页面健康。
+- Codex Chrome Extension backend 在本运行时仍不可用；真实投递仍只能使用可见 Chrome 的低频 UI fallback，除非后续刷新/重启后 extension backend 恢复。
+
+## [2026-06-23] BOSS Zhipin live apply continuation batch
+
+**完成了什么：**
+- 继续按 `/zhipin` 规则使用用户当前已登录 Chrome 的现有 BOSS 页面；没有新开 BOSS tab、没有打开新 profile、没有使用 CDP/DevTools 控制 live 页面。
+- 复查 Codex Chrome Extension backend：`agent.browsers.list()` 仍返回 `[]`，所以真实投递仍只能使用可见 Chrome 的 Computer Use fallback。
+- 本小批次成功沟通/投递 4 条：
+  - `Agent架构师` / `领健Linkedcare` / `50-80K`。
+  - `AI Agent应用工程师` / `优梦启航` / `40-60K·15薪`。
+  - `软件部门负责人【AI+研发中台】(A235664)` / `飞智科技` / `40-60K·16薪`。
+  - `技术专家 · AI 知识引擎与上下文架构方向` / `云从科技` / `40-70K`。
+- 本小批次跳过：
+  - `AI应用研发工程师-用户增长` / `米哈游`，原因是大公司且偏用户增长，不是 AI Agent/技术负责人主线。
+  - `AI产品提效负责人(上海/深圳）` / `乐漾`，原因是详情偏电商产品提效、选品/标题/评论分析，不是技术负责人或 Agent 工程化。
+
+**验证：**
+- 每条已投岗位点击 `立即沟通` 后均出现 `已向BOSS发送消息` 弹窗。
+- 默认问候语可见：`你好，看过您的职位，觉得比较适合自己，希望有机会能和你相互进一步了解。谢谢`。
+- 点击 `留在此页` 后保留在 `zhipin.com/web/geek/jobs` 当前列表页。
+- 本批次未出现登录页、验证码、安全验证、异常访问、403、反爬页或无限后退/跳转。
+- Record & Replay 文件仍存在：`/var/folders/jk/dp623sfn1l5f4kbhjtbcchqc0000gn/T/sky/event_stream/C822429F-5A2B-409A-93FE-BBA456DAD425/events.jsonl`；未发现需要停止的独立录制进程。
+
+**当前计数：**
+- 之前累计 10 条成功沟通。
+- 本批次新增 4 条。
+- 当前合计 14 条，距离用户测试目标 20 条还差 6 条。
+
+**遗留：**
+- 当前 Chrome 页面停在 `技术专家 · AI 知识引擎与上下文架构方向 / 云从科技` 的详情页，页面健康。
+- 后续建议继续按 2-5 条小批次推进；每批后暂停记录，避免连续点击过密。
+
+## [2026-06-23] BOSS Zhipin live apply small batch
+
+**完成了什么：**
+- 按 `/zhipin` 规则从用户当前已登录 Chrome 页面继续执行 BOSS live apply；没有新开 CDP/Playwright profile。
+- Codex Chrome Extension 通道仍不可用，本批次使用 Computer Use 操作可见真实 Chrome。
+- 成功沟通/投递 4 条：
+  - `AI 智能体与自动化负责人` / `易出行` / `70-100K`。
+  - `AI负责人` / `波克城市` / `70-100K·15薪`。
+  - `Agent 系统架构师(J10034)` / `芯钬量子` / `50-80K·16薪`。
+  - `AI平台技术负责人` / `牛坤信息` / `50-80K·13薪`。
+- 跳过 1 条：
+  - `高阶AI Agent工程leader/负责人-杭/北/深` / `某大型知名互联网上市公司` / `150-260K·16薪`，原因是页面标记 `猎头职位` / `代招公司`。
+
+**验证：**
+- 已投岗位点击后均看到 `继续沟通` 状态。
+- 聊天弹窗中可见默认消息已发送：`你好，看过您的职位，觉得比较适合自己，希望有机会能和你相互进一步了解。谢谢`。
+- 本批次未出现登录页、验证码、安全验证、异常访问、403、反爬页或无限后退/跳转。
+
+**遗留：**
+- 当前小批次先停在 `AI平台技术负责人 / 牛坤信息` 的聊天弹窗页面。
+- 若继续扩大投递，仍按小批次筛选；优先直接公司、AI Agent/AI平台/AI负责人/技术负责人，继续跳过猎头、代招、匿名公司。
+
 ## [2026-06-18] Chronicle 高频流程转技能
 
 **完成了什么：**
@@ -5068,6 +5268,78 @@
 
 **遗留：**
 - 需要重启 Codex 才能确认启动时不再打印这些旧 warning。
+
+## [2026-06-23] BOSS 页面网络与反自动化初筛
+
+**完成了什么：**
+- 按 `/zhipin` 和 reverse-skill 路由做 BOSS 页面只读网络诊断；没有用 CDP 打开 BOSS 页面，没有安装 MITM 证书，没有执行发布/投递/登录动作。
+- 确认当前系统链路为 Chrome/curl -> `127.0.0.1:7897` -> `verge-mihomo`；Clash fake-ip 将 zhipin 相关域名解析到 `198.18.0.x`。
+- 下载并初筛 BOSS 首屏关键脚本：`browser-check-v2.js`、`patas.2.0.2.min.js`、`warlockdata.min.2.2.15.js`。
+- 形成报告：`docs/reports/2026-06-23-zhipin-network-reverse.md`。
+
+**验证：**
+- `https://www.zhipin.com/shanghai/?ka=header-home` 返回 `HTTP/2 200`。
+- TLS 证书为 `*.zhipin.com`，GlobalSign RSA OV SSL CA 2018。
+- `browser-check-v2.js` 只见浏览器兼容检查；更可疑的观察面在 Warlock / Patas APM telemetry 链。
+
+**遗留：**
+- 当前未装 `mitmproxy` / `tshark`，`tcpdump` 无 BPF 权限。
+- 若要抓明文 XHR/fetch，下一步需要用户确认走 Chrome NetLog 或 MITM 代理方案。
+
+## [2026-06-23] BOSS Zhipin NetLog non-CDP capture
+
+**完成了什么：**
+- 按 `/zhipin` 和 reverse-skill 路线继续做低侵入取证：不使用 BOSS live 页面 CDP、不使用 MITM、不装证书、不做投递或点击。
+- 新增 `tools/auto-zhipin/scripts/zhipin_netlog.js`，支持：
+  - `capture`：用独立临时 Chrome profile 打开 BOSS，并让 Chrome 写 NetLog。
+  - `analyze`：解析 NetLog，提取 BOSS host、URL、HTTP/2/响应头、proxy hint、redirect hint。
+  - `self-test`：用最小合成 NetLog 检查解析逻辑。
+- 在 `tools/auto-zhipin/package.json` 增加 `npm run boss:netlog` 入口。
+- 跑了两组公开页 NetLog：
+  - 普通临时 Chrome profile：`tmp/zhipin-reverse/netlog/zhipin-2026-06-23T02-24-48-396Z.summary.json`
+  - remote-debugging-port 但不 attach DevTools/CDP：`tmp/zhipin-reverse/netlog/zhipin-2026-06-23T02-26-58-770Z.summary.json`
+- 更新报告：`docs/reports/2026-06-23-zhipin-network-reverse.md`。
+
+**观察：**
+- 两组公开页 capture 都返回 BOSS 首页 `200`，响应头包含 `process-stage: Stage-Outbound` 和 `server-info: boss-alb`。
+- 两组都没有看到 BOSS 自身 redirect/back loop；NetLog 里的 redirect 是 Google/Chrome 背景流量。
+- remote-debugging-port 控制样本多出现 `shink.zhipin.com/wapi/dapCommon/json` 和 `t.zhipin.com/*.gif` trace 上报，带 `traceCode`、`kauid`、`appname=zhipin_web_geek_jsp`、`traceStep=MAIN_OK` 等字段；这只是候选差异，不能单次定性为 CDP 检测。
+
+**验证：**
+- `node --check tools/auto-zhipin/scripts/zhipin_netlog.js` 通过。
+- `node tools/auto-zhipin/scripts/zhipin_netlog.js self-test` 通过。
+- `npm run boss:netlog -- capture --ms 20000` 成功生成 NetLog 和 summary。
+- `npm run boss:netlog -- capture --ms 20000 --remote-debugging-port 19333` 成功生成 NetLog 和 summary。
+
+**遗留：**
+- 如果要抓登录态真实页面，只建议手动用 `chrome://net-export` 在普通 Chrome 里录制；不要让 Codex 用 CDP 控 BOSS live tab。
+- 如果要看 HTTPS body/telemetry payload，再单独确认是否走 mitmproxy；MITM 会改变 TLS/证书特征，不作为默认路径。
+
+## [2026-06-23] BOSS 控制面诊断与日志策略
+
+**完成了什么：**
+- 在用户打断前，通过可见真实 Chrome 页面成功沟通 2 条新岗位：
+  - `AI Coding / Agent 产品技术负责人` / `上海敬游` / `45-70K`。
+  - `Agent工程专家` / `识货` / `45-60K·16薪`。
+- 两条均看到按钮从 `立即沟通` 变为 `继续沟通`，聊天浮层显示默认问候已发送。
+- 停止继续 live apply，改为诊断可批量控制面。
+- 已启动并停止 Record & Replay 外层事件记录：`/var/folders/jk/dp623sfn1l5f4kbhjtbcchqc0000gn/T/sky/event_stream/47260DDA-3BB3-4C4A-9C0F-E8A54FC7E48B/events.jsonl`。
+- 检查 Codex Chrome Extension：
+  - Chrome 正在运行。
+  - Codex Chrome Extension `hehggadaopoacecdllhhajmbjkdcmajg` 在 `Default` profile 已安装且启用。
+  - native host `com.openai.codexextension` manifest 正确。
+  - 但当前 Codex runtime 的 `agent.browsers.list()` 返回 `[]`，`agent.browsers.get("extension")` 不可用。
+- 检查 Playwright Extension `mmlmfjhmonkocbjadbfplnigmagldckm`：它通过 `chrome.debugger.attach/sendCommand` 工作，属于 debugger/CDP 风险路径，不适合作为 BOSS live apply 默认控制面。
+- 复查既有 BOSS trace：主要异常是 `target_url_mismatch` / `trace_unstable_navigation`，即脚本/CDP 目标详情页发生漂移或恢复到其他 `job_detail`，不是单纯验证码。
+
+**当前结论：**
+- 优先方案仍应是 Codex Chrome Extension 官方 `browser.user.openTabs()` / `claimTab()`；但本轮 runtime 没暴露 backend，需要刷新/重启 Codex Chrome backend 后再试。
+- 在 backend 不可用时，可批量方案只能走可见 UI 自动化小批量；不要用 Playwright Extension / Chrome DevTools / CDP 做 BOSS live apply。
+- 后续继续投递前，先确认控制面：`agent.browsers.list()` 必须能看到 `extension`；否则只能做低频可见 UI fallback，并保留 Record & Replay + 本地 ledger 证据。
+
+**遗留：**
+- 尚未恢复官方 Chrome backend。
+- 本轮新投递仅有上述 2 条，之后已停止 live apply。
 
 ## [2026-05-08] BOSS 固定现有页面工作流
 

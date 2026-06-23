@@ -2,6 +2,135 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-06-23 BOSS Zhipin live apply second 20-test
+
+- Owner: Codex
+- Source: User requested another `投递20次 for testing` from the already logged-in BOSS page.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Reuse the existing logged-in Chrome/BOSS tab and avoid opening extra pages.
+- [x] Run a read-only page health check before live actions.
+- [x] Apply one-by-one to AI Agent / AI负责人 / 技术负责人 / AI平台 / CTO-style roles around 60K+ where visible.
+- [x] Stop immediately on login, CAPTCHA, slider, safety verification, abnormal access, 403, unexpected redirects, or back-loop behavior.
+- [x] Record successful communications, skips, and browser health evidence.
+
+### Review
+
+- Applied / chat initiated:
+  - `【AI海外业务 居家】Engineering Manager` / `捷瑞网络技术` / `60-80K`.
+  - `研发总监` / `上海近硕半导体技术` / `50-70K·13薪` (`broad-tech`; this was an unintended send from an outer-card click before the selector was corrected).
+  - `Agent全栈工程专家` / `上海远见琢实智能科技` / `35-60K·14薪`.
+  - `技术研发负责人(J10809)` / `浩云长盛集团` / `50-70K`.
+  - `Director, Experimentation Platform` / `coupang` / `100-180K·14薪`.
+  - `行业领域专家（网络通信方向）` / `中关村翠湖网络计...` / `50-80K`.
+  - `AI算力板卡硬件系统经理` / `深圳云天励飞` / `60-90K·15薪`.
+  - `ai负责人` / `常州华数锦明智能...` / `40-60K·13薪`.
+  - `产品研发部负责人` / `达卯智能` / `45-55K·15薪`.
+  - `机器人平台软件架构师` / `DYNA` / `70-100K·15薪`.
+  - `AI Agent 产品负责人（微短剧创作平台）` / `七牛云` / `40-60K`.
+  - `AI Agent 技术负责人` / `巨人网络` / `30-60K·14薪`.
+  - `AI Agent技术负责人(Tech Lead)` / `企查查` / `50-80K·18薪`.
+  - `AI Agent 测试负责人（AI 驱动质量方向）` / `上海安特出海咨询管理` / `35-55K·14薪`.
+  - `AI技术负责人` / `问向科技` / `40-60K`.
+  - `具身智能负责人` / `鼎信升` / `110-210K`.
+  - `AI Agent产品解决方案架构师-火山引擎` / `字节跳动` / `30-60K`.
+  - `AI应用架构师` / `直达国际` / `30-60K`.
+  - `AI架构师` / `光正新视界` / `30-60K`.
+  - `AI 自动化架构师 / Agentic 工作流负责人` / `布洛曼斯` / `25-50K·13薪`.
+- Skipped:
+  - `研发经理` / `上海算启人工智能科技` / `20-40K`, below target salary.
+  - `设备研发高级总监` / `歌尔股份` / `50-80K·18薪`, non-AI Goertek-family role.
+  - `AI Agent 测试负责人（AI 驱动质量方向）` / `上海安特出海咨询管理` / `35-45K·14薪`, duplicate lower-salary version.
+  - `AI Agent 产品负责人｜多模态生成方向` / `chatail` / `25-45K·15薪`, below target salary.
+  - `AI业务负责人` / `歌尔` / `90-120K`, skipped consistently with earlier Goertek-family rule.
+- Evidence:
+  - Success was verified by navigation to `https://www.zhipin.com/web/geek/chat...` or chat list showing new `[送达]` default greeting.
+  - No login page, CAPTCHA, safety verification, abnormal access, 403, or automatic back/redirect loop appeared during the run.
+  - Official Codex Chrome Extension backend worked in this turn via `agent.browsers.get("extension")`; no Computer Use fallback was used.
+- Process lessons:
+  - `a.job-name` is the reliable selector; clicking outer card wrappers can leave the old detail selected and cause wrong sends.
+  - Confirm right-side detail title matches the selected candidate before clicking `立即沟通`.
+  - Chat URL `securityId` is normal and must not be treated as a security page.
+  - Long in-page loops can hit extension `executeCdp` timeout; split into short actions.
+  - These lessons were written back to `/Users/proerror/Documents/redbook/.agents/skills/zhipin/SKILL.md`.
+
+## 2026-06-23 BOSS Zhipin live apply small batch
+
+- Owner: Codex
+- Source: User confirmed the goal is live BOSS application from the already logged-in Chrome page for AI Agent / AI负责人 / 技术负责人 roles around 60K+.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Use current logged-in real Chrome page; avoid new CDP/Playwright profiles for live apply.
+- [x] Stop on login, CAPTCHA, safety verification, abnormal access, 403, anti-crawler page, or infinite back/redirect.
+- [x] Apply only to direct-company roles that match AI Agent / AI platform / AI responsible-lead direction.
+- [x] Skip headhunter, proxy hiring, anonymous company roles.
+- [x] Record applied/skipped results and observed browser health.
+
+### Review
+
+- Applied / chat initiated:
+  - `AI 智能体与自动化负责人` / `易出行` / `70-100K`.
+  - `AI负责人` / `波克城市` / `70-100K·15薪`.
+  - `Agent 系统架构师(J10034)` / `芯钬量子` / `50-80K·16薪`.
+  - `AI平台技术负责人` / `牛坤信息` / `50-80K·13薪`.
+  - `AI Coding / Agent 产品技术负责人` / `上海敬游` / `45-70K`.
+  - `Agent工程专家` / `识货` / `45-60K·16薪`.
+  - `AI技术负责人 (MJ000143)` / `喜播集团` / `50-80K·15薪`.
+  - `Agent全栈工程师` / `蓝岸一凝` / `50-80K·14薪`.
+  - `AI Agent 工程化负责人` / `上海屿岸山石科技` / `40-70K·13薪`.
+  - `高级全栈工程师（AI 应用方向）` / `极在` / `50-70K·18薪`.
+  - `Agent架构师` / `领健Linkedcare` / `50-80K`.
+  - `AI Agent应用工程师` / `优梦启航` / `40-60K·15薪`.
+  - `软件部门负责人【AI+研发中台】(A235664)` / `飞智科技` / `40-60K·16薪`.
+  - `技术专家 · AI 知识引擎与上下文架构方向` / `云从科技` / `40-70K`.
+  - `AI应用工程师(J10345)` / `益盟股份` / `45-70K`.
+  - `AI应用开发工程师` / `相信光网络科技` / `50-70K·16薪`.
+  - `首席技术官（CTO） 人工智能与空间智能方向` / `上海风语筑文化科技股份有限公司` / `100-200K`.
+  - `研发总监` / `上海库帕思` / `50-80K·16薪`.
+  - `资深AI技术架构师(AI+GEO方向)` / `龙韵股份` / `40-70K`.
+  - `【AI海外业务 居家】Engineering Manager` / `捷瑞网络技术` / `60-80K`.
+- Skipped:
+  - `高阶AI Agent工程leader/负责人-杭/北/深` / `某大型知名互联网上市公司` / `150-260K·16薪`, because the page was marked `猎头职位` / `代招公司`.
+  - `合伙人, 总经理, 高级顾问...` / `上海领妙人才管理咨询`, because it looked consulting/headhunter-like.
+  - `AI应用推广专家`, because it was promotion/non-technical.
+  - `AI团队负责人` / `青岛歌尔视显科技`, because it is in the Goertek large-group family.
+  - `AI解决方案专家` / `歌尔`, because it is in the Goertek large-group family.
+  - `AI应用研发工程师-用户增长` / `米哈游`, because it is a major company and user-growth oriented.
+  - `AI产品提效负责人(上海/深圳）` / `乐漾`, because details were ecommerce product-efficiency oriented, not AI Agent engineering/technical leadership.
+- Evidence:
+  - Earlier applied jobs showed `继续沟通`; the latest visible batch showed `已向BOSS发送消息` after clicking `立即沟通`.
+  - Chat modal showed the default sent message: `你好，看过您的职位，觉得比较适合自己，希望有机会能和你相互进一步了解。谢谢`.
+  - No login page, CAPTCHA, safety verification, abnormal access, 403, or automatic back/redirect loop appeared during the batch.
+  - Current cumulative visible/manual apply count: 20 successful communications; the requested 20-job test goal has been reached.
+- Tooling note:
+  - Codex Chrome Extension channel remained unavailable in this session, so the batch used Computer Use on the visible logged-in Chrome window as the accepted fallback.
+  - `agent.browsers.list()` still returns `[]`; no safer structured extension backend is currently available in this runtime.
+
+## 2026-06-23 BOSS Zhipin non-CDP NetLog capture
+
+- Owner: Codex
+- Source: User asked to continue investigating BOSS DevTools/CDP-triggered back/redirect behavior with reverse skills and packet/network capture.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Keep live BOSS page off CDP and avoid AppleScript/JavaScript as primary control.
+- [x] Add a reusable Chrome NetLog capture/analyze helper.
+- [x] Capture public BOSS homepage once with a normal temporary Chrome profile.
+- [x] Capture public BOSS homepage once with remote-debugging-port enabled but no DevTools/CDP attach.
+- [x] Record observed hosts, telemetry endpoints, redirect result, and next capture boundary.
+
+### Review
+
+- Added `tools/auto-zhipin/scripts/zhipin_netlog.js` and `npm run boss:netlog`.
+- Evidence is recorded in `docs/reports/2026-06-23-zhipin-network-reverse.md` and `tasks/progress.md`.
+- Both public-page NetLog captures returned BOSS homepage `200`; no BOSS-owned redirect/back loop was observed.
+- Login-state capture should use manual `chrome://net-export` in ordinary Chrome, or explicit MITM approval if HTTPS bodies are required.
+
 ## 2026-06-23 Codex skill/plugin metadata repair
 
 - Owner: Codex

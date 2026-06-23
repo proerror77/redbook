@@ -74,6 +74,29 @@ npm run funnel-report
 4. 每次真实点击 `立即沟通` 后，必须看见成功状态或聊天状态，再写入/核对 ledger。
 5. 每个小批次后检查 `npm run report`；出现登录、验证、异常、403、自动跳回时立即停。
 
+### 2026-06-23 live apply 复盘固化
+
+当用户明确接受账号风险并要求真实投递时，可以使用 Codex Chrome Extension 连接现有已登录 BOSS tab，但仍要慢速、小批次、逐条确认。
+
+可靠路径：
+
+1. 先用 `agent.browsers.get("extension") -> browser.user.openTabs() -> claimTab()` 复用现有 `https://www.zhipin.com/web/geek/jobs` tab；不要新开 BOSS tab。
+2. 只读 health check 先确认没有 `验证码 / 安全验证 / 访问受限 / 请完成验证 / 滑块 / 账号异常 / 异常访问 / 403 / 请登录`。不要把聊天 URL 里的 `securityId` 当成安全页。
+3. 列表卡片有三层重复 DOM：`.card-area`、`.job-card-wrap`、`.job-card-box`。不要点击外层 card；外层 click 可能仍保持旧详情，导致误投。必须点击卡片内的 `a.job-name`。
+4. 点击 `a.job-name` 后，读取右侧详情文本，确认详情标题和候选标题一致，再看 `立即沟通`。如果详情不一致，取消本条并重新选择。
+5. 点击 `立即沟通` 后可能出现确认弹窗：`留在此页 / 继续沟通`。只有目标详情确认一致时才点 `继续沟通`；误点或不确定时点 `留在此页`。
+6. 成功证据可以是跳到 `/web/geek/chat`，或聊天列表出现新 `[送达]` 默认问候语。跳到聊天页后用 `history.back()` 回到 jobs 页，等待 job cards 恢复后再继续。
+7. 单次 browser `evaluate` 不要塞长循环；extension RPC 可能在 5 秒左右超时。拆成短动作：选择候选、读详情、点击沟通、验证、回退。
+8. 搜索结果耗尽时，在同一 tab 搜索新关键词，例如 `AI Agent 负责人`、`AI 架构师`，不要新开页面。
+
+筛选与停止规则：
+
+- 优先：`AI Agent`、`智能体`、`Agentic workflow`、`AI 技术负责人`、`AI 架构师`、`AI 平台 / Infra`、`具身智能`、`技术负责人 / Tech Lead / CTO / Director`。
+- 薪资目标优先 60K+，但当职责高度匹配 Agent/AI 架构时，可以接受上限到 50-60K 的测试投递，并在记录里标注。
+- 跳过：猎头职位、代招公司、明显咨询/推广/销售/客服/纯运营、低薪且非强 Agent、重复同公司同标题低薪版本。
+- 页面里可能有隐藏下拉/历史文案包含“猎头”等词；只用详情区的 `猎头职位 / 代招公司` 判断，不要用整页文本误判。
+- 出现登录页、验证码、安全验证、访问受限、403、异常访问、自动后退/跳转循环时立即停，并导出/复查 NetLog 或聊天页证据。
+
 ## 注意事項
 
 - 不再把 `--dry-run false` / CDP live click 作为默认投递方式；除非用户明确要求并接受 CDP 风险。
