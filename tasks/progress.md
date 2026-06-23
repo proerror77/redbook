@@ -5054,6 +5054,21 @@
 - `tools/auto-x/scripts/post_replies_cdp.mjs` 是 X CDP 回复实验脚本，需用户决定补文档后提交或移入 `tmp/`。
 - 内容包、每日研究、wiki/harness 证据和求职材料已归类但尚未提交。
 
+## [2026-06-23] Codex skill/plugin metadata repair
+
+**完成了什么：**
+- 修复 `/Users/proerror/.codex/skills/reverse-skill` 下 Codex 报警的 `SKILL.md` 元数据：去掉 UTF-8 BOM，并给缺失 frontmatter 的文件补上最小 `name` / `description`。
+- 修复两个 Claude 插件缓存里的 hooks 配置：删除 Codex 不接受的顶层 `description` 字段，只保留 `hooks`。
+- 未改动 redbook 里已有无关脏文件。
+
+**验证：**
+- Ruby YAML 检查通过：`ok: 22 skill files have parseable frontmatter`。
+- Ruby JSON/schema 检查通过：`ralph-loop` 和 `warp` 两个 `hooks.json` 顶层只剩 `hooks`。
+- 抽样字节检查确认用户列出的 10 个 `SKILL.md` 第一行均为 `2d 2d 2d 0a`，没有 BOM。
+
+**遗留：**
+- 需要重启 Codex 才能确认启动时不再打印这些旧 warning。
+
 ## [2026-05-08] BOSS 固定现有页面工作流
 
 **完成了什么：**

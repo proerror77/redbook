@@ -2,6 +2,27 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-06-23 Codex skill/plugin metadata repair
+
+- Owner: Codex
+- Source: User reported Codex warnings for reverse-skill frontmatter and plugin hook JSON parsing.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Add valid YAML frontmatter to malformed reverse-skill `SKILL.md` files.
+- [x] Remove unsupported top-level fields from plugin hook configs.
+- [x] Run a minimal parse check for skill frontmatter and hook JSON.
+- [x] Record evidence in progress.
+
+### Review
+
+- Fixed `/Users/proerror/.codex/skills/reverse-skill` skill metadata warnings by removing BOM prefixes and adding minimal `name` / `description` frontmatter where missing.
+- Fixed plugin hook config warnings by removing unsupported top-level `description` fields from:
+  - `/Users/proerror/.codex/plugins/cache/claude-plugins-official/ralph-loop/1.0.0/hooks/hooks.json`
+  - `/Users/proerror/.codex/plugins/cache/claude-code-warp/warp/2.1.0/hooks/hooks.json`
+- Validation passed: 22 reverse-skill `SKILL.md` files have parseable YAML frontmatter; both hook JSON files have only `hooks` at top level.
+
 ## 2026-06-18 Chronicle 高频流程转技能
 
 - Owner: Codex
