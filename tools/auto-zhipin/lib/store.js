@@ -28,6 +28,10 @@ function appendJsonLine(filePath, value) {
   fs.appendFileSync(filePath, `${JSON.stringify(value)}\n`);
 }
 
+function normalizeApplicationUrl(value = '') {
+  return String(value || '').split('#')[0].split('?')[0].trim();
+}
+
 function formatSaveContext(context = {}) {
   const entries = Object.entries(context)
     .filter(([, value]) => value !== undefined && value !== null && value !== '');
@@ -254,6 +258,24 @@ class ZhipinStore {
     return Object.values(this.ledger.applications).find((application) => {
       const applicationIdentity = application.identityKey || makeApplicationIdentity(application);
       if (applicationIdentity !== identityKey) {
+        return false;
+      }
+      if (!statuses.length) {
+        return true;
+      }
+      return statuses.includes(application.status);
+    }) || null;
+  }
+
+  findApplicationByUrl(url = '', statuses = []) {
+    const normalizedUrl = normalizeApplicationUrl(url);
+    if (!normalizedUrl) {
+      return null;
+    }
+
+    return Object.values(this.ledger.applications).find((application) => {
+      const applicationUrl = normalizeApplicationUrl(application.url || application.jobId || application.id || '');
+      if (applicationUrl !== normalizedUrl) {
         return false;
       }
       if (!statuses.length) {
@@ -505,6 +527,7 @@ class ZhipinStore {
 module.exports = {
   ZhipinStore,
   makeDefaultLedger,
+  normalizeApplicationUrl,
   readJson,
   upgradeLedgerSchema,
   writeJsonAtomic,

@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 
-const { ZhipinStore } = require('../lib/store');
+const { ZhipinStore, normalizeApplicationUrl } = require('../lib/store');
 const { makeApplicationIdentity } = require('../lib/utils');
 
 test('makeApplicationIdentity normalizes company and title consistently', () => {
@@ -42,6 +42,32 @@ test('ZhipinStore can find an applied application by normalized identity', () =>
 
   assert.ok(matched);
   assert.equal(matched.jobId, 'job-1');
+});
+
+test('ZhipinStore can find an applied application by normalized URL', () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'zhipin-store-url-'));
+  const store = new ZhipinStore({
+    dataDir: tempDir,
+    ledgerPath: path.join(tempDir, 'ledger.json'),
+    eventsPath: path.join(tempDir, 'events.jsonl'),
+  });
+
+  store.upsertApplication({
+    jobId: 'stable-id',
+    url: 'https://www.zhipin.com/job_detail/abc.html?ka=old#fragment',
+    company: '原公司',
+    title: 'AI负责人',
+    status: 'applied',
+  });
+
+  const matched = store.findApplicationByUrl('https://www.zhipin.com/job_detail/abc.html?ka=new', ['applied']);
+
+  assert.ok(matched);
+  assert.equal(matched.jobId, 'stable-id');
+  assert.equal(
+    normalizeApplicationUrl('https://www.zhipin.com/job_detail/abc.html?ka=new'),
+    'https://www.zhipin.com/job_detail/abc.html'
+  );
 });
 
 test('getTodaySuccessfulApplies counts only first successful apply per identity', () => {

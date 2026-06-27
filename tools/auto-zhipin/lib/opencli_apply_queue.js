@@ -232,6 +232,13 @@ function findBlockingApplication(store, application = {}) {
     return byId;
   }
 
+  const byUrl = typeof store.findApplicationByUrl === 'function'
+    ? store.findApplicationByUrl(application.url || application.jobId || application.id || '', ['applied', 'skipped', 'deduped'])
+    : null;
+  if (byUrl) {
+    return byUrl;
+  }
+
   return store.findApplicationByIdentity(application, ['applied', 'skipped', 'deduped']);
 }
 
@@ -249,7 +256,9 @@ function checkPreApplyCandidate({ store, config = {}, application = {}, triage =
 
   const existing = findBlockingApplication(store, candidate);
   if (existing) {
-    reasons.push(existing.status === 'applied' ? 'duplicate_applied_identity' : `duplicate_${existing.status}_identity`);
+    const sameUrl = store?.findApplicationByUrl?.(candidate.url || candidate.jobId || candidate.id || '', [existing.status]) === existing;
+    const suffix = sameUrl ? 'url' : 'identity';
+    reasons.push(existing.status === 'applied' ? `duplicate_applied_${suffix}` : `duplicate_${existing.status}_${suffix}`);
   }
 
   const filters = buildApplyFilters(config);

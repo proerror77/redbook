@@ -152,6 +152,23 @@ test('checkPreApplyCandidate blocks duplicates, existing chats, and chat-triage 
       store,
       config,
       application: {
+        jobId: 'new-text-bad-url',
+        url: 'https://www.zhipin.com/job_detail/old-url.html?ka=recommend',
+        title: '已投公司架构师招聘',
+        company: '',
+        salaryText: '50-60K',
+        companySize: '20-99人',
+      },
+      triage: { blockedEntries: [] },
+    }).reasons,
+    ['duplicate_applied_url', 'missing_company_for_apply']
+  );
+
+  assert.deepEqual(
+    checkPreApplyCandidate({
+      store,
+      config,
+      application: {
         jobId: 'continuing-url',
         url: 'https://www.zhipin.com/job_detail/continuing-url.html',
         title: 'AI Agent 工程师',

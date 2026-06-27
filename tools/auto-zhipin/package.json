@@ -20,6 +20,8 @@
     "chrome:monitor": "node scripts/chrome_monitor_queue.js",
     "jobs:collect-cdp": "node scripts/cdp_collect_current_jobs.js",
     "chat:triage-cdp": "node scripts/cdp_chat_triage_export.js",
+    "boss:apply-tracking": "node scripts/apply_tracking_report.js",
+    "boss:native-feed": "node scripts/native_feed_apply.js",
     "monitor": "node scripts/chrome_monitor_queue.js",
     "pinchtab:reply": "node scripts/reply_worker.js --backend pinchtab",
     "scan": "node scripts/chrome_collect_queue.js",

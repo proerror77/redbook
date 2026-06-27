@@ -209,6 +209,52 @@ BOSS_ENABLE_LIVE_APPLY=1 npm run boss:trace-apply-batch -- \
 - 账本验证：只有 `getTodaySuccessfulApplies()` 增加 1 才计为成功。
 - 成功后等待 `--delay-ms`，避免连续详情页/投递节奏触发风控。
 
+### current-page / recommendations apply
+
+当前更推荐的 live 路线是复用用户真实 Chrome 中已经打开的 BOSS 页面，
+从站内推荐、新发布、当前列表或详情页相关推荐继续筛选，而不是启动
+关键词搜索循环。50 个投递可以作为总目标，但执行时仍应按 2-3 个成功
+为一个检查点推进。
+
+投递前先看 ledger 追踪面，避免重复投递、漏掉未验证失败、或忽略长时间
+未推进的已投岗位：
+
+```bash
+cd /Users/proerror/Documents/redbook/tools/auto-zhipin
+npm run boss:apply-tracking -- \
+  --markdown data/apply-tracking-latest.md \
+  --stale-hours 48
+```
+
+只读/诊断：
+
+```bash
+cd /Users/proerror/Documents/redbook/tools/auto-zhipin
+npm run boss:current-chrome-doctor -- --ports=9222,9223,9224,9225
+npm run boss:trace-apply-recommendations -- \
+  --cdp-endpoint http://127.0.0.1:9224 \
+  --target-successes 2 \
+  --max-candidates 10 \
+  --live false
+```
+
+只有 doctor 明确显示 `okToUseCdpScripts=true` 且 `usableBossPorts` 指向
+真实 BOSS 页面时，才允许 CDP fallback。否则应回到 Codex Chrome
+Extension 操作用户真实 Chrome tab。
+
+Native/JXA feed runner 只作为显式 fallback，不是默认后台方案。它默认不再
+`Chrome.activate()`，但仍会改动当前 Chrome 的 BOSS workbench tab；如果用户
+正在用同一个 Chrome 窗口，它会影响该 tab 的内容。真实 live 必须显式打开
+环境门：
+
+```bash
+cd /Users/proerror/Documents/redbook/tools/auto-zhipin
+npm run boss:native-feed -- --target-successes 5 --max-reviewed 40
+BOSS_ENABLE_LIVE_APPLY=1 npm run boss:native-feed -- --live --target-successes 2 --max-reviewed 32
+```
+
+如果需要把 Chrome 拉到前台人工监督，再额外传 `--focus true`。
+
 ## 使用方法
 
 ### 1. 登录并准备浏览器上下文
@@ -254,7 +300,8 @@ npm run scan
 ```
 
 默认行为：
-- 如果未传 `--url`，按 `config.jobs.searchUrls` 顺序打开搜索页
+- 默认应复用当前 BOSS 页面、站内推荐或最新职位列表；旧的
+  `config.jobs.searchUrls` 只作为显式 fallback
 - 抽取职位卡片
 - 按规则打标签：`matched` / `skipped`
 - 把理由写入 ledger
@@ -304,6 +351,7 @@ npm run pinchtab:reply -- --run-actions
 ```bash
 cd tools/auto-zhipin
 node scripts/report.js
+npm run boss:apply-tracking -- --markdown data/apply-tracking-latest.md
 ```
 
 ### 7. 实验性 PinchTab 后端
@@ -369,5 +417,6 @@ npm run pinchtab:reply -- --run-actions
 3. 调整 `filters`
 4. 真正投递前，先用 `npm run boss:apply -- --url ... --dry-run true` 做预检或用页面做保守核对。
 5. 确认无误后，通过 Codex Chrome Extension 在真实页面低速投递，并写入/核对 ledger。
-6. 只有 extension 控制面不可用且用户接受 fallback 时，才考虑 Computer Use、`boss:apply-current`、`boss:apply-opencli` 或 Playwright 脚本。
-7. 需要消息处理时再运行 `npm run chrome:monitor` 或 `npm run reply`
+6. 投递后运行 `npm run boss:apply-tracking`，复查 retryable / stale / duplicate。
+7. 只有 extension 控制面不可用且用户接受 fallback 时，才考虑 `boss:native-feed`、Computer Use、`boss:apply-current`、`boss:apply-opencli` 或 Playwright 脚本。
+8. 需要消息处理时再运行 `npm run chrome:monitor` 或 `npm run reply`

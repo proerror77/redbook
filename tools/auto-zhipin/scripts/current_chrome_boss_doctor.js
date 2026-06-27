@@ -67,6 +67,31 @@ async function checkCdpPorts(ports = DEFAULT_PORTS) {
   return results;
 }
 
+function assessCdpPorts(cdpPorts) {
+  const hasEndpoint = cdpPorts.some((entry) => entry.available);
+  const hasInspectablePage = cdpPorts.some((entry) => entry.pages > 0);
+  const hasBossPage = cdpPorts.some((entry) => entry.bossPages.length > 0);
+  const usableBossPorts = cdpPorts
+    .filter((entry) => entry.bossPages.length > 0)
+    .map((entry) => entry.port);
+  let diagnosis = 'CDP is not available on checked ports. Existing CDP scripts cannot attach to the logged-in Chrome page.';
+  if (hasBossPage) {
+    diagnosis = 'CDP has an existing BOSS page; use existing-page CDP scripts and keep --focus false.';
+  } else if (hasEndpoint && hasInspectablePage) {
+    diagnosis = 'CDP is available, but no BOSS page was found. Do not use existing-page BOSS scripts until the logged-in BOSS tab is visible on a checked CDP port.';
+  } else if (hasEndpoint) {
+    diagnosis = 'CDP is available, but it exposes no inspectable pages. Treat it as a non-BOSS or empty profile, not as a usable logged-in BOSS session.';
+  }
+  return {
+    hasEndpoint,
+    hasInspectablePage,
+    hasBossPage,
+    usableBossPorts,
+    okToUseCdpScripts: hasBossPage,
+    diagnosis,
+  };
+}
+
 async function checkFrontChromeTab() {
   return runOsascript(`
 tell application "Google Chrome"
@@ -96,25 +121,32 @@ end tell
 }
 
 async function main() {
-  const ports = (process.argv.slice(2).find((arg) => arg.startsWith('--ports=')) || '')
+  const argv = process.argv.slice(2);
+  const ports = (argv.find((arg) => arg.startsWith('--ports=')) || '')
     .replace(/^--ports=/, '')
     .split(',')
     .map((value) => Number(value.trim()))
     .filter(Boolean);
+  const checkAppleJs = argv.includes('--check-apple-js') || argv.includes('--check-apple-js=true');
   const cdpPorts = await checkCdpPorts(ports.length ? ports : DEFAULT_PORTS);
   const frontChromeTab = await checkFrontChromeTab();
-  const appleScriptJavascript = await checkAppleScriptJavascript();
-  const cdpAvailable = cdpPorts.some((entry) => entry.available);
+  const appleScriptJavascript = checkAppleJs
+    ? await checkAppleScriptJavascript()
+    : {
+      ok: false,
+      skipped: true,
+      remediation: 'Pass --check-apple-js to explicitly test Chrome Apple Events JavaScript fallback.',
+    };
+  const cdpAssessment = assessCdpPorts(cdpPorts);
 
   console.log(JSON.stringify({
     timestamp: new Date().toISOString(),
-    okToUseCdpScripts: cdpAvailable,
+    okToUseCdpScripts: cdpAssessment.okToUseCdpScripts,
+    cdpAssessment,
     cdpPorts,
     frontChromeTab,
     appleScriptJavascript,
-    diagnosis: cdpAvailable
-      ? 'CDP is available; use the existing-page CDP scripts and keep --focus false.'
-      : 'CDP is not available on checked ports. Existing CDP scripts cannot attach to the logged-in Chrome page.',
+    diagnosis: cdpAssessment.diagnosis,
   }, null, 2));
 }
 
@@ -126,6 +158,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  assessCdpPorts,
   checkAppleScriptJavascript,
   checkCdpPorts,
   checkFrontChromeTab,

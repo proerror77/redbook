@@ -4,6 +4,37 @@
 
 ---
 
+## [2026-06-27] BOSS Zhipin automation hardening
+
+**完成了什么：**
+- 按用户要求把 BOSS 自动投递方案从“直接批量点击”收敛成 ledger-first 的受控流程。
+- 新增 `tools/auto-zhipin/lib/apply_tracking_report.js` 和 `scripts/apply_tracking_report.js`，并接入 `npm run boss:apply-tracking`。
+- 报表会分出：
+  - `retryable`：失败或未验证、可重试的投递。
+  - `staleApplied`：已投但超过阈值仍未标记 follow-up 的岗位。
+  - `matchedCandidates`：候选池里还没执行的岗位。
+  - `duplicateGroups`：按 identity 聚合的重复组。
+- 加固 `tools/auto-zhipin/scripts/native_feed_apply.js`：
+  - live 必须显式 `BOSS_ENABLE_LIVE_APPLY=1 --live`。
+  - 默认不再 `Chrome.activate()`；需要前台监督时才传 `--focus true`。
+  - live run 会拿 supervisor lock，避免多个写入型 runner 并发。
+  - 未验证成功的 live attempt 写成 `failed`，不再写成 terminal `skipped`，后续能被 retry report 找回。
+- 加固 `current_chrome_boss_doctor.js`：默认跳过 Apple Events JavaScript 页面执行，只有传 `--check-apple-js` 才测试该 fallback。
+- 更新 `README.md`，把 `boss:apply-tracking` 放到投递前后检查流程，并把 `boss:native-feed` 标成显式 fallback。
+
+**验证：**
+- `node --check tools/auto-zhipin/scripts/native_feed_apply.js`
+- `node --check tools/auto-zhipin/scripts/apply_tracking_report.js`
+- `node --check tools/auto-zhipin/scripts/current_chrome_boss_doctor.js`
+- `node --test tools/auto-zhipin/tests/apply_tracking_report.test.js tools/auto-zhipin/tests/current_chrome_boss_doctor.test.js` 通过。
+- `npm --prefix tools/auto-zhipin test` 通过：`145/145`。
+- `npm --prefix tools/auto-zhipin run boss:apply-tracking -- --markdown data/apply-tracking-latest.md --limit 10` 通过；当前 ledger 摘要为 `applications=964`、`applied=760`、`matched=12`、`retryable=51`、`staleApplied=757`、`duplicateGroups=6`。
+
+**遗留：**
+- 本轮没有执行任何 live 投递，也没有打开或控制 BOSS 页面。
+- 长期主链仍应优先 Codex Chrome Extension / Actionbook extension 的真实 Chrome tab 控制面；`boss:native-feed` 只是 fallback，默认不会抢 OS 焦点，但仍会改动当前 Chrome BOSS tab 内容。
+- 后续可继续把 retry report 接到一个真正的 `plan -> supervised apply -> review` orchestrator，进一步减少手工步骤。
+
 ## [2026-06-23] BOSS Zhipin second live apply 20-test
 
 **完成了什么：**

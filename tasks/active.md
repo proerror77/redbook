@@ -2,6 +2,28 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-06-27 BOSS Zhipin automation hardening
+
+- Owner: Codex
+- Source: User asked to implement the reviewed improvements for efficient BOSS auto-apply without stealing focus, with tracking, retry, and duplicate control.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Harden native feed apply so live runs require an explicit gate, avoid forced Chrome activation by default, and keep supervisor locking.
+- [x] Record unverified live attempts as retryable failures instead of terminal skips.
+- [x] Add a tracking report for retryable failures, stale applied roles, matched candidates, and duplicate groups.
+- [x] Update README/package entrypoints and targeted tests.
+- [x] Run auto-zhipin tests and script syntax checks.
+
+### Review
+
+- Added `npm run boss:apply-tracking` to read the local ledger and report retryable failures, stale applied jobs, matched candidates, and duplicate groups.
+- Hardened `tools/auto-zhipin/scripts/native_feed_apply.js`: live requires `BOSS_ENABLE_LIVE_APPLY=1`, no default `Chrome.activate()`, supervisor lock is acquired for live runs, and unverified live attempts are saved as `failed` instead of terminal `skipped`.
+- Updated `tools/auto-zhipin/scripts/current_chrome_boss_doctor.js` so Apple Events JavaScript probing is skipped by default and only runs with `--check-apple-js`.
+- Generated local report `tools/auto-zhipin/data/apply-tracking-latest.md`: current ledger summary was `applications=964`, `applied=760`, `matched=12`, `retryable=51`, `staleApplied=757`, `duplicateGroups=6`.
+- Verification passed: `node --check` on changed scripts; `node --test tools/auto-zhipin/tests/apply_tracking_report.test.js tools/auto-zhipin/tests/current_chrome_boss_doctor.test.js`; full `npm --prefix tools/auto-zhipin test` passed `145/145`.
+
 ## 2026-06-23 BOSS Zhipin live apply second 20-test
 
 - Owner: Codex

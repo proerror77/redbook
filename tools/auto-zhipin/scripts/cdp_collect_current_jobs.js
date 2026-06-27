@@ -344,9 +344,11 @@ async function main() {
         reasons.push(...filterDecision.reasons);
       }
 
-      const existingByIdentity = store.findApplicationByIdentity(job, ['applied', 'skipped']);
+      const existingByUrl = store.findApplicationByUrl(job.url || '', ['applied', 'skipped']);
+      const existingByIdentity = existingByUrl || store.findApplicationByIdentity(job, ['applied', 'skipped']);
       if (existingByIdentity) {
-        reasons.push(existingByIdentity.status === 'applied' ? 'duplicate_applied_identity' : 'duplicate_skipped_identity');
+        const suffix = existingByUrl ? 'url' : 'identity';
+        reasons.push(existingByIdentity.status === 'applied' ? `duplicate_applied_${suffix}` : `duplicate_skipped_${suffix}`);
       }
 
       const blockedEntry = matchJobAgainstChatTriage(job, triage);
