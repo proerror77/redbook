@@ -2,6 +2,27 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-06-28 Dirty worktree cleanup
+
+- Owner: Codex
+- Source: User asked to organize dirty files.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Commit valid 2026-05-25 research/wiki/harness artifacts as content evidence.
+- [x] Ignore local BOSS tracking output `tools/auto-zhipin/data/apply-tracking-latest.md`.
+- [x] Move untracked legacy X CDP reply experiment into ignored `tmp/` preservation.
+- [x] Preserve unrelated `singbox_fixed.json` tracked change without committing it.
+- [x] Run status check and push the cleanup commit.
+
+### Review
+
+- Kept 2026-05-25 X timeline, interaction queue, wiki reports, and harness run JSONs as content evidence.
+- Added a narrow ignore rule for `tools/auto-zhipin/data/apply-tracking-latest.md`; existing tracked Markdown reports under `tools/auto-zhipin/data/` remain unaffected.
+- Moved untracked legacy experiment `tools/auto-x/scripts/post_replies_cdp.mjs` to ignored `tmp/dirty-preserve-20260628/post_replies_cdp.mjs`.
+- Preserved unrelated `singbox_fixed.json` modification in `stash@{0}` with message `preserve unrelated singbox_fixed.json dirty cleanup 2026-06-28`.
+
 ## 2026-06-27 BOSS Zhipin automation hardening
 
 - Owner: Codex

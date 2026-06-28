@@ -4,6 +4,23 @@
 
 ---
 
+## [2026-06-28] Dirty worktree cleanup
+
+**完成了什么：**
+- 整理当前 dirty worktree，把文件分为内容证据、本地运行产物、旧实验脚本和无关 tracked 改动。
+- 将 2026-05-25 的 X timeline / fresh following / 互动队列 / wiki ingest-lint 报告 / harness run JSON 作为可提交内容证据保留。
+- 新增窄范围 ignore：`tools/auto-zhipin/data/apply-tracking-latest.md`，避免 BOSS 本地追踪报表继续污染 status；没有忽略 `tools/auto-zhipin/data/*.md`，因为该目录已有长期追踪报告被 git 管理。
+- 将未跟踪旧实验脚本 `tools/auto-x/scripts/post_replies_cdp.mjs` 移到 ignored preservation 路径：`tmp/dirty-preserve-20260628/post_replies_cdp.mjs`。
+- 将无关 tracked 大改动 `singbox_fixed.json` 单独保存到 `stash@{0}`，stash message 为 `preserve unrelated singbox_fixed.json dirty cleanup 2026-06-28`，没有纳入提交。
+
+**验证：**
+- `git check-ignore -v tools/auto-zhipin/data/apply-tracking-latest.md tmp/dirty-preserve-20260628/post_replies_cdp.mjs` 确认两类本地文件被 ignore。
+- `git stash list` 可见 `stash@{0}` 保存 `singbox_fixed.json`。
+
+**遗留：**
+- 如需恢复 `singbox_fixed.json`，使用 `git stash apply stash@{0}`。
+- `tmp/dirty-preserve-20260628/post_replies_cdp.mjs` 仅作本地保留，不属于当前 X 自动化主流程。
+
 ## [2026-06-27] BOSS Zhipin automation hardening
 
 **完成了什么：**
