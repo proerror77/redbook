@@ -74,18 +74,17 @@ if [ "$SHOULD_RUN_ENGAGEMENT" = "true" ]; then
         log "WARNING: X following 新鲜样本不足或生成失败；Lane A 不得把 for-you 样本当作今天选题主证据"
     fi
 
-    log "生成 X home/for-you 补充样本和每日互动队列（20 条候选，不自动发布）..."
+    log "从 fresh following 样本生成每日互动队列（20 条候选，不自动发布；不使用 X Pro/search）..."
     if PYTHONUNBUFFERED=1 python3 -u build_engagement_queue.py \
-        --source timeline \
+        --source fresh-following \
         --limit 20 \
         --timeline-sample-size 100 \
-        --scrolls 16 \
         --min-score 25 \
         --min-engagement 20 \
         2>&1 | tee -a "$LOG_FILE"; then
-        log "X home/for-you 补充样本和每日互动队列已生成"
+        log "X fresh following 补充样本和每日互动队列已生成"
     else
-        log "WARNING: X home/for-you 补充样本/每日互动队列生成失败（不影响日报本身）"
+        log "WARNING: X fresh following 补充样本/每日互动队列生成失败（不影响日报本身）"
     fi
 else
     log "跳过 X timeline 新鲜样本和每日互动队列"

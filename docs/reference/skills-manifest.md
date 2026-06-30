@@ -30,7 +30,7 @@
 - 新增 workflow / publish / browser / image pipeline 代码默认使用 TypeScript / Bun；Python 入口保留为 legacy 或专项例外，见 `docs/reference/runtime-language-policy.md`。
 - Codex App 浏览器调用优先使用 `Chrome` 插件 / Codex Chrome Extension，连接用户真实 Chrome 并复用现有 tab；不要默认改用 Playwright MCP 或 Chrome DevTools MCP。
 - 浏览器类任务先用 `tools/redbookctl browser` 检查当前 Chrome/CDP 登录态；发布和账号操作优先复用已有 tab，避免重复开新页面和新 profile。
-- Lane A 选题研究必须用当日研究区或当前 X timeline 证据；如果用户问 timeline / 今天发生了什么，先看 `X-timeline-fresh-following-YYYY-MM-DD.md` / `.json` 的目标 100 条 following chronological 当日样本，再看 `X-timeline-sample-YYYY-MM-DD.md` 的 home/for-you 补充样本和 `X-互动队列-YYYY-MM-DD.md` 的 20 条筛选结果；`tools/redbookctl daily` 里的发布提醒/制作中旧稿只作 backlog，不得当作“今天值得写”的来源。
+- Lane A 选题研究必须用当日研究区或当前 X timeline 证据；如果用户问 timeline / 今天发生了什么，先看 `X-timeline-fresh-following-YYYY-MM-DD.md` / `.json` 的目标 100 条 following chronological 当日样本，再看 `X-timeline-sample-YYYY-MM-DD.md` 的 fresh-following-derived 补充样本和 `X-互动队列-YYYY-MM-DD.md` 的 20 条筛选结果；`tools/redbookctl daily` 里的发布提醒/制作中旧稿只作 backlog，不得当作“今天值得写”的来源。默认研究不使用 X Pro deck 或 X search。
 
 ## Active Entrypoints
 

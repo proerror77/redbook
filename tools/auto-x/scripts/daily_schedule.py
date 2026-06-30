@@ -293,9 +293,19 @@ def main():
 
     parser = argparse.ArgumentParser(description='X.com 每日日程')
     parser.add_argument('--skip-x', action='store_true', help='跳过所有 X.com 浏览器分析，适合 GitHub Actions/CI')
-    parser.add_argument('--skip-timeline', action='store_true', help='跳过 X Pro 多列分析')
+    parser.add_argument('--skip-timeline', action='store_true', help='跳过 legacy X Pro 多列分析')
+    parser.add_argument(
+        '--with-legacy-xpro',
+        action='store_true',
+        help='显式运行 legacy X Pro deck 分析；默认关闭，因为 pro.x.com/decks 已不稳定',
+    )
     parser.add_argument('--skip-trending', action='store_true')
     parser.add_argument('--skip-search', action='store_true')
+    parser.add_argument(
+        '--with-search',
+        action='store_true',
+        help='显式运行 legacy X search 页面采集；默认关闭，避免搜索页/intercept 静默空结果影响日报',
+    )
     parser.add_argument('--skip-following', action='store_true')
     parser.add_argument('--skip-hn', action='store_true', help='跳过 Hacker News 分析')
     parser.add_argument('--skip-reddit', action='store_true', help='跳过 Reddit 监控')
@@ -352,9 +362,9 @@ def main():
             args.subreddits,
             browser_ok=browser_ok,
             skip_x=args.skip_x,
-            skip_timeline=args.skip_timeline,
+            skip_timeline=args.skip_timeline or not args.with_legacy_xpro,
             skip_trending=args.skip_trending,
-            skip_search=args.skip_search,
+            skip_search=args.skip_search or not args.with_search,
             skip_following=args.skip_following,
             skip_hn=args.skip_hn,
             skip_reddit=args.skip_reddit,

@@ -25,6 +25,28 @@
 - Updated `tools/redbookctl status` / `workflow-health` to show social collection completeness, fresh following count, and engagement candidate count.
 - Wiki ingest appended 2026-07-01 signals to 5 topic pages and updated `wiki/log.md`.
 
+## 2026-07-01 X research script refresh
+
+- Owner: Codex
+- Source: User asked to re-review outdated social scripts, stop using X Pro search, search GitHub for current approaches, and update the scripts.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Inspect current daily / engagement scripts for X Pro, search, and stale browser assumptions.
+- [x] Check current GitHub/open-source approaches for X/Twitter collection.
+- [x] Move default daily collection away from X Pro and X search.
+- [x] Build engagement queue from fresh following timeline JSON first.
+- [x] Update docs/tests and run focused verification.
+
+### Review
+
+- GitHub/current tooling review favored logged-in browser/cookie timeline collection over brittle X Pro deck/search scraping; `jackwener/OpenCLI` is current and matches the existing local `opencli twitter timeline --type following` path.
+- `daily_schedule.py` and `daily_research.py` now keep legacy X Pro and X search behind explicit `--with-legacy-xpro` / `--with-search` flags.
+- `build_engagement_queue.py` now defaults to `--source fresh-following`, reads `X-timeline-fresh-following-YYYY-MM-DD.json`, and only calls browser/search paths when explicitly requested.
+- Rebuilt today's queue from 100 fresh following rows: `X-互动队列-2026-07-01.json` now has 20 candidates.
+- Updated docs/shared playbook, AGENTS/CLAUDE sync, README, skill manifest, and reference workflow language so daily research no longer claims home/for-you or X Pro/search as default evidence.
+
 ## 2026-06-30 Redbook Loop Engineer 收敛
 
 - Owner: Codex

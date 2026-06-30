@@ -4,6 +4,28 @@
 
 ---
 
+## [2026-07-01] X research script refresh
+
+**完成了什么：**
+- 重新 review `tools/auto-x` 的 daily / engagement 脚本，确认过时默认路径是 X Pro deck 和 X search 页面采集；这两条现在只保留为显式 debug。
+- 查了 GitHub/当前工具路线：`jackwener/OpenCLI` 是活跃的登录态浏览器 CLI 路线，本机 `opencli twitter timeline --type following` 已经能稳定产出 100 条；`agent-twitter-client` 类方案可参考，但本轮不新增依赖。
+- `daily_schedule.py` / `daily_research.py` 默认不再跑 X Pro 或 X search；必须显式传 `--with-legacy-xpro` / `--with-search` 才会进入旧路径。
+- `build_engagement_queue.py` 默认改为 `--source fresh-following`，直接读取 `X-timeline-fresh-following-YYYY-MM-DD.json` 生成补充样本和互动队列；只有显式指定 `timeline/search/both` 才调用浏览器。
+- 更新 `tools/daily.sh`、`tools/auto-x/scripts/run_daily.sh`、`tools/auto-x/README.md`、`docs/shared/redbook-playbook.md`、`docs/reference/*`，并同步 `AGENTS.md` / `CLAUDE.md`。
+- 新增 `tools/auto-x/tests/test_build_engagement_queue.py`，锁定默认 JSON 路径不调用浏览器。
+
+**验证：**
+- `PYTHONUNBUFFERED=1 python3 -u tools/auto-x/scripts/build_engagement_queue.py --source fresh-following --limit 20 --timeline-sample-size 100 --min-score 25 --min-engagement 20`：从 100 条 fresh following 生成 20 条候选。
+- `tools/redbookctl status` 显示：`fresh following: 100`、`engagement candidates: 20`。
+- `python3 -m py_compile tools/auto-x/scripts/build_engagement_queue.py tools/auto-x/scripts/daily_schedule.py tools/auto-x/scripts/daily_research.py tools/redbookctl.py` 通过。
+- `python3 -m unittest tools/auto-x/tests/test_build_engagement_queue.py tools/auto-x/tests/test_x_utils.py tools/auto-x/tests/test_external_source_fallbacks.py` 通过，11 tests。
+- `bash -n tools/daily.sh tools/auto-x/scripts/run_daily.sh`、`node --test tools/tests/redbook_workflow_contract.test.mjs`、`git diff --check` 通过。
+
+**遗留：**
+- 没有升级全局 `opencli`（本机 1.6.8，npm 最新 1.8.5），避免把工具升级变量混进本轮脚本修复。
+- 旧 `scrape_xpro_columns.py` / `search_x.py` 仍保留为 legacy debug 文件，但不再是默认日程入口。
+- `workflow-health` 仍提示旧 harness publish run 和旧 T+1/T+3 ledger backlog；这些是既有发布账本问题，不属于本次 social research 脚本修复。
+
 ## [2026-07-01] Social media APP 资料收集与写作 review
 
 **完成了什么：**

@@ -2,9 +2,10 @@
 """
 Build a semi-automated X engagement queue.
 
-This script scans the current X timeline and/or X search results for
-account-relevant, high-interaction posts, then writes human-reviewable comment
-drafts. It never posts comments.
+This script builds account-relevant, human-reviewable comment drafts from local
+X research evidence. By default it reads today's fresh following timeline JSON,
+so daily research does not depend on X Pro, search pages, or home/for-you DOM
+stability. It never posts comments.
 """
 
 from __future__ import annotations
@@ -153,6 +154,53 @@ def engagement_score(likes: int, retweets: int, replies: int = 0) -> int:
 
 def interaction_total(likes: int, retweets: int, replies: int = 0) -> int:
     return likes + retweets * 2 + replies * 3
+
+
+def default_fresh_following_json() -> Path:
+    return PROJECT_ROOT / "05-选题研究" / f"X-timeline-fresh-following-{today_str()}.json"
+
+
+def normalize_author(value: str | None) -> str:
+    text = clean_text(value or "")
+    if text.startswith("@"):
+        text = text[1:]
+    return text or "?"
+
+
+def normalize_json_tweet(row: dict) -> dict:
+    """Normalize opencli/fresh-following rows into the local tweet shape."""
+    return {
+        "id": row.get("id") or "",
+        "author": row.get("author") or row.get("handle") or "?",
+        "handle": normalize_author(row.get("handle") or row.get("author")),
+        "content": row.get("content") or row.get("text") or "",
+        "likes": int(row.get("likes") or 0),
+        "retweets": int(row.get("retweets") or 0),
+        "replies": int(row.get("replies") or 0),
+        "views": int(row.get("views") or 0),
+        "created_at": row.get("created_at") or row.get("time") or "",
+        "status_url": row.get("status_url") or row.get("url") or "",
+    }
+
+
+def load_tweets_from_json(path: Path) -> list[dict]:
+    if not path.exists():
+        raise FileNotFoundError(f"fresh following JSON not found: {path}")
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(data, list):
+        raise ValueError(f"fresh following JSON must be an array: {path}")
+    return [
+        normalize_json_tweet(row)
+        for row in data
+        if isinstance(row, dict) and clean_text(row.get("content") or row.get("text") or "")
+    ]
+
+
+def display_path(path: Path) -> str:
+    try:
+        return str(path.relative_to(PROJECT_ROOT))
+    except ValueError:
+        return str(path)
 
 
 def theme_score(content: str) -> tuple[int, list[str]]:
@@ -304,7 +352,47 @@ def render_timeline_sample(tweets: list[dict], sample_size: int) -> str:
                 f"- 原帖/主页：{target_url}",
                 f"- 互动：💬 {replies} / 🔁 {retweets} / ❤️ {likes} / 加权 {interaction_total(likes, retweets, replies)}",
                 "",
-                "> " + content[:700],
+                "> " + content[:700].rstrip(),
+                "",
+            ]
+        )
+    return "\n".join(lines)
+
+
+def render_following_sample(tweets: list[dict], sample_size: int, input_json: Path) -> str:
+    sample = tweets[:sample_size]
+    enough = len(sample) >= sample_size
+    lines = [
+        f"# X Timeline Following 样本 - {today_str()}",
+        "",
+        "> Lane A 选题研究证据。来源为 fresh following timeline JSON；先看原始 following 样本，再筛选互动候选。",
+        "",
+        "## 样本状态",
+        "",
+        f"- 目标样本数：{sample_size}",
+        f"- 实际样本数：{len(sample)}",
+        f"- 状态：{'sufficient' if enough else 'insufficient'}",
+        f"- 来源：`{display_path(input_json)}`",
+        "",
+        "## 原始样本",
+        "",
+    ]
+    for index, tweet in enumerate(sample, 1):
+        handle = tweet.get("handle", "?")
+        content = clean_text(tweet.get("content", ""))
+        likes = int(tweet.get("likes", 0) or 0)
+        retweets = int(tweet.get("retweets", 0) or 0)
+        replies = int(tweet.get("replies", 0) or 0)
+        target_url = tweet.get("status_url") or (f"https://x.com/{handle}" if handle and handle != "?" else "https://x.com/home")
+        lines.extend(
+            [
+                f"### {index}. @{handle}",
+                "",
+                f"- 原帖/主页：{target_url}",
+                f"- 时间：{tweet.get('created_at', '')}",
+                f"- 互动：💬 {replies} / 🔁 {retweets} / ❤️ {likes} / 加权 {interaction_total(likes, retweets, replies)}",
+                "",
+                "> " + content[:700].rstrip(),
                 "",
             ]
         )
@@ -402,7 +490,7 @@ def render_markdown(candidates: list[Candidate]) -> str:
                 f"- 风险：{risk_text}",
                 f"- 推荐理由：{reason_text}",
                 "",
-                "> " + item.content[:500],
+                "> " + item.content[:500].rstrip(),
                 "",
                 "推荐评论：",
                 "",
@@ -420,9 +508,15 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Build X engagement queue")
     parser.add_argument(
         "--source",
-        choices=["timeline", "search", "both"],
-        default="timeline",
-        help="Candidate source. Default: timeline",
+        choices=["fresh-following", "timeline", "search", "both"],
+        default="fresh-following",
+        help="Candidate source. Default: fresh-following",
+    )
+    parser.add_argument(
+        "--input-json",
+        type=Path,
+        default=default_fresh_following_json(),
+        help="Input JSON for --source fresh-following. Default: today's X-timeline-fresh-following JSON",
     )
     parser.add_argument("--query", action="append", dest="queries", help="Search query; repeatable")
     parser.add_argument("--limit", type=int, default=20, help="Number of candidates to keep")
@@ -442,11 +536,21 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    if not ensure_browser():
+    needs_browser = args.source in {"timeline", "search", "both"}
+    if needs_browser and not ensure_browser():
         raise SystemExit(1)
 
     candidates: list[Candidate] = []
     timeline_tweets: list[dict] = []
+    following_tweets: list[dict] = []
+
+    if args.source == "fresh-following":
+        following_tweets = dedupe_tweets(load_tweets_from_json(args.input_json))
+        print(f"fresh-following candidates: {len(following_tweets)} from {args.input_json}")
+        candidates.extend(
+            score_tweet(tweet, "fresh-following", "fresh-following", display_path(args.input_json))
+            for tweet in following_tweets
+        )
 
     if args.source in {"timeline", "both"}:
         tweets = collect_timeline_tweets(args.scrolls)
@@ -476,6 +580,17 @@ def main() -> None:
     sample_md_path = output_dir / f"X-timeline-sample-{today_str()}.md"
     sample_json_path = output_dir / f"X-timeline-sample-{today_str()}.json"
 
+    if following_tweets:
+        sample = following_tweets[: args.timeline_sample_size]
+        sample_md_path.write_text(
+            render_following_sample(following_tweets, args.timeline_sample_size, args.input_json),
+            encoding="utf-8",
+        )
+        sample_json_path.write_text(
+            json.dumps(sample, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+
     if timeline_tweets:
         sample = timeline_tweets[: args.timeline_sample_size]
         sample_md_path.write_text(
@@ -493,6 +608,10 @@ def main() -> None:
         encoding="utf-8",
     )
 
+    if following_tweets:
+        print(f"wrote {sample_md_path}")
+        print(f"wrote {sample_json_path}")
+        print(f"following sample: {min(len(following_tweets), args.timeline_sample_size)}/{args.timeline_sample_size}")
     if timeline_tweets:
         print(f"wrote {sample_md_path}")
         print(f"wrote {sample_json_path}")

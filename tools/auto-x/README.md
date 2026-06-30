@@ -19,20 +19,20 @@ tools/redbookctl daily
 
 - 输出：`05-选题研究/X-每日日程-{日期}.md`
 - 同步输出：`05-选题研究/X-timeline-fresh-following-{日期}.md` / `.json`，每天从 following chronological timeline 读取目标 100 条，并按当天日期过滤，作为 Lane A 判断“今天发生了什么”的第一证据
-- 同步输出：`05-选题研究/X-timeline-sample-{日期}.md` / `.json`，每天从当前 home/for-you timeline 读取目标 100 条补充样本；只能补充判断，不能替代 fresh following 样本
-- 同步输出：`05-选题研究/X-互动队列-{日期}.md` / `.json`，每天从 timeline 样本里挑 20 条高互动人/帖生成回复草稿
+- 同步输出：`05-选题研究/X-timeline-sample-{日期}.md` / `.json`，从 fresh following timeline 派生补充样本；只能补充判断，不能替代 fresh following 主证据
+- 同步输出：`05-选题研究/X-互动队列-{日期}.md` / `.json`，每天从 fresh following 样本里挑 20 条高互动人/帖生成回复草稿
 - 推荐选题只保存在日报内；用户或 agent 明确选中后再写入 `01-内容生产/选题管理/00-选题记录.md`
 - 兼容入口：`bash tools/daily.sh`
 
-其余脚本主要作为内部模块或调试工具，不建议作为日常入口。
+日常路径不再使用 X Pro deck 或 X search 页面。`search_x.py` / X Pro 相关脚本只保留为显式 debug，不作为默认资料收集来源。
 
 ## 功能
 
 ### 1. 发布推文（已降级）
 `publish_x.sh` 只保留为历史手工辅助脚本，不作为当前发布入口。当前发布入口是：先 `tools/redbookctl x-login`，再使用 `/baoyu-post-to-x`。
 
-### 2. 内容搜索与分析
-使用 `search_x.py` 搜索热门话题，自动提取推文数据，识别用户痛点
+### 2. 内容搜索与分析（legacy debug）
+`search_x.py` 只用于定位搜索页问题，不进入默认日程。默认研究使用 fresh following timeline JSON。
 
 ### 3. 关注列表抓取
 使用 `scrape_following.py` 抓取关注列表，输出 JSON + Markdown 报告
@@ -89,7 +89,7 @@ bash tools/auto-x/scripts/publish_x.sh "分享一些图片" image1.png image2.pn
 
 ### 搜索话题
 
-日常研究不要直接调用单脚本；使用 `tools/redbookctl daily`。以下命令只用于定位 daily 内部问题。
+日常研究不要直接调用单脚本；使用 `tools/redbookctl daily`。以下命令只用于定位 X search 内部问题。
 
 ```bash
 python tools/auto-x/scripts/search_x.py "搜索关键词" [输出文件]
@@ -199,7 +199,7 @@ python tools/auto-x/scripts/daily_research.py --keywords "AI agent" "web3"
 1. 运行每日自动化入口: `tools/redbookctl daily`
 2. 查看生成的报告: `05-选题研究/X-每日日程-{日期}.md`
 3. 查看每日 fresh following timeline 样本: `05-选题研究/X-timeline-fresh-following-{日期}.md`
-4. 查看 home/for-you 补充样本: `05-选题研究/X-timeline-sample-{日期}.md`
+4. 查看 following-derived 补充样本: `05-选题研究/X-timeline-sample-{日期}.md`
 5. 查看每日互动候选: `05-选题研究/X-互动队列-{日期}.md`
 6. 从互动队列里挑 5-8 条最像真人、最能接账号主线的回复，人工确认后再发
 7. 筛选有价值的选题
@@ -209,6 +209,7 @@ python tools/auto-x/scripts/daily_research.py --keywords "AI agent" "web3"
 
 - 首次使用需要在浏览器中登录 X.com
 - Timeline 抓取优先复用已登录 Chrome/CDP；不要默认新开可见浏览器抢焦点
+- 默认日程不使用 X Pro deck，也不使用 X search 页面；这两类入口只保留为显式 debug
 - 推文内容会自动复制到剪贴板（macOS）
 - 图片需要手动上传
 - 所有研究脚本的数据提取依赖 accessibility snapshot 解析，实际效果可能因页面结构变化而需要调整
