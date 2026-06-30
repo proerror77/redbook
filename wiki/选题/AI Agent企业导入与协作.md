@@ -1,6 +1,6 @@
 # AI Agent 企业导入与协作
 
-> 来源：用户定位修正 + 2026-04-29 选题草稿 + 2026-05-09 X Article 发布 | 最后更新：2026-05-11
+> 来源：用户定位修正 + 2026-04-29 选题草稿 + 2026-05-09 X Article 发布 | 最后更新：2026-07-01
 
 ## 核心内容
 
@@ -156,3 +156,12 @@ AI 进入企业以后，最先变化的可能不是岗位消失。
 - 内容判断：这不是普通咨询业务，而是 OpenAI 在补企业 AI 最难的能力：把模型能力放进真实业务流程、权限系统、review 链、审计链和 ROI 评估里。
 - 可复用表达：企业必须 AI native，不是给员工买聊天框，而是把关键流程改造成 AI 可以参与、可以执行、可以被限制、可以被审计、可以持续改进的系统。
 - 已发布：`OpenAI 这个动作，是企业必须 AI native 的重大讯号`（X Article，2026-05-12）→ https://x.com/0xcybersmile/status/2053961416122700186
+
+## 今日信号（2026-07-01）
+
+**Claude Sonnet 5 / Claude Science / Claude Code 争议共同指向：agent 能力越强，企业越要先设计运行边界。**
+
+- HN `Claude Sonnet 5` 评论把重点放在 agentic planning、browser / terminal tools 和 autonomously running；内容角度应避免只写模型发布，而是写“哪些企业流程已经接近可托管给 agent，哪些仍需要人工 gate”。
+- HN `Claude Science` 的本地 server + browser UI 形态值得关注：企业 / 科研场景里的 agent 可能不是单一 SaaS 页面，而是本地运行、连接专业工具、再由浏览器承载交互。
+- HN `Claude Code is steganographically marking requests` 暴露企业采购敏感点：开发者工具如果在本机请求里加入隐性标记，即使目的合理，也会触发透明度、合规和供应商信任问题。
+- Reddit r/SaaS 的 LLM 语义缓存案例说明，企业 AI 成本治理不只是“少用 token”，而是把相似任务、语义上下文和可复用中间结果纳入 workflow 设计。

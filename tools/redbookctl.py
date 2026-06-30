@@ -139,6 +139,7 @@ def latest_file(paths: list[Path]) -> Path | None:
 
 
 def collect_daily_health(today_report: Path) -> dict[str, Any]:
+    today = date.today().isoformat()
     logs = sorted(
         [path for path in DAILY_LOG_DIR.glob("*.log") if path.is_file()],
         key=lambda path: path.stat().st_mtime,
@@ -165,6 +166,44 @@ def collect_daily_health(today_report: Path) -> dict[str, Any]:
         except (OSError, subprocess.TimeoutExpired) as error:
             launchd_error = str(error)
 
+    research_dir = ROOT / "05-选题研究"
+    social_artifacts = {
+        "x_fresh_following_md": research_dir / f"X-timeline-fresh-following-{today}.md",
+        "x_fresh_following_json": research_dir / f"X-timeline-fresh-following-{today}.json",
+        "x_home_sample_md": research_dir / f"X-timeline-sample-{today}.md",
+        "x_home_sample_json": research_dir / f"X-timeline-sample-{today}.json",
+        "x_engagement_queue_md": research_dir / f"X-互动队列-{today}.md",
+        "x_engagement_queue_json": research_dir / f"X-互动队列-{today}.json",
+    }
+
+    def artifact_status(path: Path) -> dict[str, Any]:
+        return {
+            "path": rel(path),
+            "exists": path.exists(),
+            "size": path.stat().st_size if path.exists() else 0,
+        }
+
+    artifact_report = {key: artifact_status(path) for key, path in social_artifacts.items()}
+
+    def json_item_count(path: Path) -> int | None:
+        if not path.exists():
+            return None
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            return None
+        return len(data) if isinstance(data, list) else None
+
+    fresh_following_count = json_item_count(social_artifacts["x_fresh_following_json"])
+    engagement_queue_count = json_item_count(social_artifacts["x_engagement_queue_json"])
+    required_social_keys = [
+        "x_fresh_following_md",
+        "x_fresh_following_json",
+        "x_engagement_queue_md",
+        "x_engagement_queue_json",
+    ]
+    missing_social = [key for key in required_social_keys if not artifact_report[key]["exists"]]
+
     return {
         "today_report_exists": today_report.exists(),
         "today_logs": [rel(path) for path in today_logs[:5]],
@@ -173,6 +212,11 @@ def collect_daily_health(today_report: Path) -> dict[str, Any]:
         "launchd_plist_exists": DAILY_LAUNCHD_PLIST.exists(),
         "launchd_loaded": launchd_loaded,
         "launchd_error": launchd_error,
+        "social_artifacts": artifact_report,
+        "social_collection_complete": not missing_social,
+        "missing_social_artifacts": missing_social,
+        "x_fresh_following_count": fresh_following_count,
+        "x_engagement_queue_count": engagement_queue_count,
     }
 
 
@@ -564,6 +608,16 @@ def print_status(status: dict[str, Any]) -> None:
     daily = status["daily_health"]
     if not report["exists"]:
         print(f"  latest log: {daily['latest_log'] or 'none'} | launchd loaded: {daily['launchd_loaded']}")
+    social_state = "complete" if daily["social_collection_complete"] else "incomplete"
+    print(f"- Social collection: {social_state} | launchd loaded: {daily['launchd_loaded']}")
+    if daily["x_fresh_following_count"] is not None:
+        print(f"  fresh following: {daily['x_fresh_following_count']}")
+    if daily["x_engagement_queue_count"] is not None:
+        print(f"  engagement candidates: {daily['x_engagement_queue_count']}")
+    if daily["missing_social_artifacts"]:
+        for key in daily["missing_social_artifacts"]:
+            artifact = daily["social_artifacts"][key]
+            print(f"  - missing {key}: {artifact['path']}")
 
     tasks = status["active_tasks"]
     print(f"- Active tasks: {tasks['open_count']} open / {tasks['total_count']} total")
@@ -639,6 +693,28 @@ def collect_workflow_actions(status: dict[str, Any]) -> list[dict[str, str]]:
                 "issue": f"launchd 未加载: {DAILY_LAUNCHD_LABEL}",
                 "action": "需要定时日报时运行 bash tools/reload_daily_launch_agent.sh，然后用 launchctl print 验证。",
             })
+    else:
+        daily = status["daily_health"]
+
+    if daily["missing_social_artifacts"]:
+        missing = ", ".join(daily["missing_social_artifacts"])
+        actions.append({
+            "severity": "warn",
+            "area": "daily-social",
+            "issue": f"Social app 资料收集不完整: {missing}",
+            "action": (
+                "运行 tools/redbookctl daily 生成 X following 新鲜样本和互动队列；"
+                "如果选择 browser-free/--skip-x，回答 Lane A 时必须标明 X timeline 证据缺口。"
+            ),
+        })
+
+    if daily["social_collection_complete"] and daily["x_engagement_queue_count"] == 0:
+        actions.append({
+            "severity": "info",
+            "area": "daily-social",
+            "issue": "X 互动队列已生成但候选数为 0",
+            "action": "写作选题仍可用 fresh following 样本；若需要互动候选，先修复或替换 home/for-you DOM 采集，不要硬凑评论草稿。",
+        })
 
     for run in status["harness_runs"]["active"]:
         action = "确认是否仍在等待用户发布；已发布则补 T+0 JSONL，promote 到 retrospect 并补 progress/wiki/lessons gate 后再 close-run，未发布则保留 approved-publish 等待确认。"

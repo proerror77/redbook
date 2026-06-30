@@ -999,3 +999,20 @@
 - `wiki/选题/AI Agent企业导入与协作.md` 追加 OpenAI Deployment Company 信号。
 - 记录 OpenAI 把企业 AI 落地推进到 deployment company / FDE / 咨询与系统集成供应链的判断。
 - 已发布 X Article：https://x.com/0xcybersmile/status/2053961416122700186
+
+## [2026-07-01] ingest | 每日研究报告自动摄入
+
+来源：05-选题研究/ X/HN/Reddit 每日报告
+
+触及页面：6个
+- `wiki/选题/AI工具与效率.md` — 追加今日信号
+- `wiki/选题/AI Agent企业导入与协作.md` — 追加今日信号
+- `wiki/选题/AI工具信任与AI Slop.md` — 追加今日信号
+- `wiki/选题/创业与一人公司.md` — 追加今日信号
+- `wiki/选题/Crypto与AI时事评论.md` — 追加今日信号
+- `wiki/index.md` — 更新索引日期和总页面数
+
+关键洞察：
+- AI 工具讨论正在从模型能力转向每个任务的成本、努力档位、语义缓存和可复用工作流。
+- Agent 能力越接近浏览器、终端、本地 server 和科研/企业工具，透明度、权限、审计和供应商信任越会成为采购前置问题。
+- 创业与 SaaS 社区继续反感抽象建议，真实 ICP、具体场景、可验证案例和系统化成本治理更适合沉淀为内容资产。

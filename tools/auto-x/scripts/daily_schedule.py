@@ -6,6 +6,7 @@ X.com 每日日程 - 增强版
 
 import sys
 import argparse
+import re
 from pathlib import Path
 from datetime import datetime, timedelta
 
@@ -124,10 +125,10 @@ def generate_topic_source_contract(*, browser_ok: bool, skip_x: bool, topics_sou
 
     if skip_x:
         lines.append("- X timeline: skipped by `--skip-x`; 不可用于判断今天 X 上值得写什么。")
-    elif browser_ok and topics_source.strip():
+    elif browser_ok and has_usable_x_research(topics_source):
         lines.append("- X timeline / X research: available; Lane A 可从本报告的 X 研究区提取当日选题。")
     elif browser_ok:
-        lines.append("- X timeline / X research: connected but no usable topic evidence; 不得用发布提醒旧稿顶替。")
+        lines.append("- X timeline / X research: connected but no usable topic evidence in this report; 优先查看同日 `X-timeline-fresh-following-YYYY-MM-DD.md`。")
     else:
         lines.append("- X timeline / X research: unavailable; 不得用发布提醒、制作中内容或旧题库冒充今天热点。")
 
@@ -135,6 +136,20 @@ def generate_topic_source_contract(*, browser_ok: bool, skip_x: bool, topics_sou
     lines.append("- HN/Reddit: 可作为外部热点补充，但若用户明确要 X timeline，必须标明 X 证据缺口。")
     lines.append("")
     return "\n".join(lines)
+
+
+def has_usable_x_research(topics_source: str) -> bool:
+    """Return true only when browser-based X sections contain non-empty evidence."""
+    if not topics_source.strip():
+        return False
+    positive_patterns = [
+        r"提取推文数[:：]\s*[1-9]\d*",
+        r"抓取推文数[*：:\s]+[1-9]\d*",
+        r"高互动推文[*：:\s]+[1-9]\d*",
+        r"识别\s+[1-9]\d*\s+个热门话题",
+        r"分析推文数[:：]\s*[1-9]\d*",
+    ]
+    return any(re.search(pattern, topics_source) for pattern in positive_patterns)
 
 
 # ── 数据回顾 ──────────────────────────────────────────────

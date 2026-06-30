@@ -1,6 +1,6 @@
 # Redbook Skills Manifest
 
-> 最后更新：2026-04-30
+> 最后更新：2026-07-01
 > 目的：把“当前可直接用的入口”和“历史/本地参考入口”分开，避免流程文档引用跑不到的 skill。
 
 ## 使用原则
@@ -8,6 +8,7 @@
 - 主流程只引用 `status=active` 或 `status=active-global` 的入口。
 - `status=legacy-local` 只作为参考资料，不作为默认执行入口。
 - 发布类 skill 仍遵守用户确认规则：生成、预览、审稿可以自动推进；提交发布必须等用户明确说“发布/直接发”。
+- Social media APP research-only 模式：用户说“只收集资料 / review / 写作 / 不发布”时，只允许搜索、详情、数据表、timeline 样本、草稿、分镜、审稿和资产准备；禁止发布、评论、回复、点赞、关注、删除或改账号资料。
 - 每日选题和用户贴来的新闻链接必须先走 `选题决策门`：先判断短评、长文、thread、小红书、只收藏，用户确认形态后才进入对应生产 lane。
 - 新闻链接型内容不要直接生成完整内容包；先输出一张固定决策卡，并给出 agent 推荐形态和理由，减少用户反复重复工作。
 - X 短评固定结构是：新闻锚点 -> 账号判断 -> 为什么重要 -> 原链接/回复结构；发布前必须过 `/x-mastery-mentor` 快速审稿。
@@ -66,6 +67,7 @@
 | `tools/redbookctl xhs-health` | active-script | `tools/redbookctl.ts` -> `RedBookSkills` | 小红书创作者中心登录/管理页回读检查 | 不发布 |
 | `tools/redbookctl publish-record` | active-script | `tools/redbookctl.ts` -> `tools/record_publish.py` | 发布数据 JSONL 主账本追加工具 | record 脚本待契约测试后迁移 |
 | `tools/redbookctl challenge` / `emerge` / `draft-seed` | active-script | `tools/redbookctl.ts` -> `tools/content_loop.py` | 本地语料 challenge / idea mining / 草稿种子 | content loop 待迁 TS |
+| Social media app research/writing workflow | active-doc | `docs/reference/social-media-app-research-writing-workflow.md` | X / 小红书资料收集、写作、分镜、审稿的 research-only 主流程 | 明确禁止发布、评论、回复、关注等外部副作用 |
 | Editorial decision workflow | active-doc | `docs/reference/editorial-decision-workflow.md` | 每日选题和新闻链接的固定形态判断门 | 先判断短评/长文/thread/小红书/只收藏，再生产 |
 | X engagement reply workflow | active-doc | `docs/reference/x-engagement-reply-workflow.md` | X timeline 批量回复的候选筛选、内容审稿、测试扩量、发布验证和删除纠错流程 | 回复 timeline、扩量互动、修正 AI 味回复 |
 | Agent Teams review protocol | active-doc | `docs/reference/agent-teams-review-protocol.md` | Agent Teams 项目 review、语义层 review、并行 findings 合成和 durable writeback | 用户明确要求 Agent Teams 或项目 review |

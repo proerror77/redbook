@@ -7,6 +7,8 @@ description: Generates Xiaohongshu (Little Red Book) infographic series with 10 
 
 Break down complex content into eye-catching infographic series for Xiaohongshu with multiple style options.
 
+Default mode is asset/writing preparation only. If the user says "不要发 / 只做资料收集 / 只做写作 / review", stop at analysis, outline, storyboard, prompts, or generated assets. Publishing remains `approved-publish` and requires a separate explicit "发布 / 直接发" confirmation.
+
 Default image count: use 5-7 cards for normal XHS infographic series, 3-4 cards for short posts, and more than 7 only when the content naturally needs a step-by-step card sequence. Default canvas is `3:4` / `1080x1440` for Xiaohongshu; do not reuse X.com `16:9` feed cards as XHS cards. Default visual taste for this workspace is simple, elegant, and minimal; prefer `minimal` or `notion` for AI/product/agent/business articles unless the user explicitly asks for a louder XHS style. Use Tuzi/兔子 `gpt-image-2.0` as the primary image model; Gemini/Nano Banana wording is only legacy fallback context. For article-derived cards, first create `图文分镜.md`: bind each card to an anchor phrase from the article, plan the reader task, semantic read, visual metaphor, layout spec, text budget, hierarchy, and avoid list. Do not convert paragraphs into decorative summary cards.
 
 ## Usage

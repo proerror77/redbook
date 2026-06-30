@@ -4,6 +4,34 @@
 
 ---
 
+## [2026-07-01] Social media APP 资料收集与写作 review
+
+**完成了什么：**
+- 按用户要求只处理 social media APP 的资料收集和写作链路，没有发布、评论、回复、点赞、关注或修改账号资料。
+- 确认刚才中断的 `com.redbook.daily-x` reload 实际已生效：launchd 已加载，ProgramArguments 只调用 `tools/daily.sh`。
+- 新增 `docs/reference/social-media-app-research-writing-workflow.md`，明确 research-only 模式：允许搜索、详情、数据表、timeline 样本、草稿、分镜、审稿和资产准备；禁止外部互动/发布副作用。
+- 更新 social/writing 相关 skill：
+  - `.agents/skills/x-mastery-mentor/SKILL.md`：账号采集改为 Redbook 当前登录浏览器 / Chrome Extension / OpenCLI 只读优先，Computer Use 只作视觉只读兜底。
+  - `.agents/skills/baoyu-xhs-images/SKILL.md`：默认 asset/writing preparation，不发布。
+  - `~/.codex/skills/xiaohongshu-skills/SKILL.md`：research-only 模式禁止发布和评论；`post-comment-to-feed` 必须有明确评论确认。
+- 更新 `tools/redbookctl status` / `workflow-health`：显示 social collection 是否完整、fresh following 数量、互动候选数量；缺失 X social artifacts 时直接提示。
+- 跑了 `tools/redbookctl daily` 生成 2026-07-01 输入层：
+  - `X-timeline-fresh-following-2026-07-01.md/json`：100 条 fresh following，状态 sufficient。
+  - `X-互动队列-2026-07-01.md/json`：文件已生成，但候选数为 0。
+  - `X-每日日程-2026-07-01.md`、HN、Reddit 报告已生成。
+- Wiki daily ingest 已写回 5 个选题页：`AI工具与效率`、`AI Agent企业导入与协作`、`AI工具信任与AI Slop`、`创业与一人公司`、`Crypto与AI时事评论`。
+
+**验证：**
+- `python3 -m py_compile tools/redbookctl.py tools/auto-x/scripts/daily_schedule.py`
+- `tools/redbookctl status` 显示：`Social collection: complete`、`fresh following: 100`、`engagement candidates: 0`。
+- `tools/redbookctl workflow-health` 不再报 social artifacts 缺失，只保留 `X 互动队列已生成但候选数为 0` 的 info。
+- `git diff --check` 通过。
+
+**遗留：**
+- X Pro / X search / X following 页面采样在 headless browser 路径中提取 0 条；当前有效 X 输入来自 opencli fresh following。
+- 若要恢复互动候选，需要修 `build_engagement_queue.py` 的 home/for-you DOM 采集或改为从 fresh following 样本筛候选；不要硬凑评论草稿。
+- `~/.codex/skills/xiaohongshu-skills/SKILL.md` 是全局 skill 文件，已本地更新，但不属于 redbook repo commit 范围。
+
 ## [2026-06-30] Redbook Loop Engineer 收敛
 
 **完成了什么：**

@@ -2,6 +2,29 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-07-01 Social media APP 资料收集与写作 review
+
+- Owner: Codex
+- Source: User asked to handle only social media app data collection and writing, with no publishing.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Confirm `com.redbook.daily-x` launchd state after the interrupted reload.
+- [x] Review X/XHS data collection and writing-related skills.
+- [x] Add research-only no-publish/no-comment guard to the relevant skill surfaces.
+- [x] Add dashboard/workflow-health checks for missing X social collection artifacts.
+- [x] Run focused checks and record review findings.
+
+### Review
+
+- Restored `com.redbook.daily-x` launchd state; it is loaded and only runs `tools/daily.sh`.
+- Added `docs/reference/social-media-app-research-writing-workflow.md` to separate social research/writing from publish/comment side effects.
+- Hardened X/XHS skills so research-only mode blocks publish, reply, comment, follow, delete, and profile edits.
+- Ran `tools/redbookctl daily` for 2026-07-01 without publishing. Fresh following sample succeeded with 100 posts; home/for-you engagement queue generated 0 candidates.
+- Updated `tools/redbookctl status` / `workflow-health` to show social collection completeness, fresh following count, and engagement candidate count.
+- Wiki ingest appended 2026-07-01 signals to 5 topic pages and updated `wiki/log.md`.
+
 ## 2026-06-30 Redbook Loop Engineer 收敛
 
 - Owner: Codex
