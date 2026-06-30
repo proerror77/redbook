@@ -4,6 +4,31 @@
 
 ---
 
+## [2026-06-30] Redbook Loop Engineer 收敛
+
+**完成了什么：**
+- 把现有 Redbook 语义层、harness、content loop 和 `redbookctl` 入口收敛成一层 Loop Engineer 控制面。
+- 新增 `docs/reference/loop-engineer-workflow.md`，固定循环为：`Observe -> Decide -> Execute -> Verify -> Review -> Writeback -> Next`。
+- 新增 `tools/redbookctl loop status|next|run|review|close`：
+  - `loop status` 复用 dashboard，`--json` 保持纯 JSON。
+  - `loop next` / `loop review` 复用 `workflow-health`。
+  - `loop run --lane A` 复用 `daily`。
+  - `loop run --lane B` 只显示 publish gate，不自动 submit。
+  - `loop run --lane C --topic ...` 复用 `draft` 创建 harness run。
+  - `loop run --lane D` 复用 `workflow-health`。
+  - `loop close` 复用 `close-run`。
+- 更新 `docs/reference/skills-manifest.md` 和 `docs/shared/redbook-playbook.md`，并同步到 `AGENTS.md` / `CLAUDE.md`。
+
+**验证：**
+- `python3 tools/sync_redbook_playbook.py` 已同步 `AGENTS.md` / `CLAUDE.md`。
+- `tools/redbookctl loop --help` 通过。
+- `tools/redbookctl loop status --json` 输出纯 JSON dashboard。
+- `tools/redbookctl loop run --lane D` 正常输出 workflow-health。
+
+**遗留：**
+- 当前 `loop` 是薄协调层，没有新建独立 loop 状态存储；状态仍来自 `tasks/active.md`、harness、publish ledger、daily report 和 workflow-health。
+- 当前 dashboard 仍提示 2026-06-30 日报缺失、`com.redbook.daily-x` launchd 未加载、一个旧 harness publish run 未闭环，以及若干 T+1/T+3 ledger follow-up。
+
 ## [2026-06-28] Dirty worktree cleanup
 
 **完成了什么：**

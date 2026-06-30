@@ -50,6 +50,7 @@ Migrated TS commands:
   browser       Inspect existing Chrome/CDP tabs without opening new pages.
   daily         Run the canonical daily workflow.
   draft         Create a full content harness run.
+  loop          Run the Loop Engineer coordinator.
   publish-record
                 Append structured publish ledger records.
   x-login      Verify or recover the X publishing browser profile.
@@ -61,6 +62,8 @@ Legacy delegated commands:
 
 Examples:
   tools/redbookctl status
+  tools/redbookctl loop next
+  tools/redbookctl loop run --lane A
   tools/redbookctl daily --skip-x
   tools/redbookctl browser --json
   tools/redbookctl x-login
@@ -164,6 +167,40 @@ Options:
   --status STATUS  done | closed_stale | cancelled. Default: done
   --note TEXT      Close note. Default: empty
   -h, --help       Show this help.
+`);
+}
+
+function printLoopHelp(): void {
+  console.log(`Usage: tools/redbookctl loop <status|next|run|review|close> [options]
+
+Loop Engineer coordinates existing Redbook controls into one cycle:
+  Observe -> Decide -> Execute -> Verify -> Review -> Writeback -> Next
+
+Subcommands:
+  status   Show the current workflow dashboard plus the loop phases.
+  next     Show the next actionable workflow gaps.
+  run      Execute the lane's canonical first action.
+  review   Run workflow health review.
+  close    Close a harness run through the standard close-run gate.
+
+Run options:
+  --lane A|B|C|D       Lane to run.
+  --topic TOPIC        Required for lane C draft runs.
+  --source SOURCE      Source for lane C. Default: loop engineer.
+  --summary TEXT       Summary for lane C. Default: empty.
+  --skip-x             Lane A: pass --skip-x to daily.
+
+Close options:
+  --run-id RUN_ID      Harness run id.
+  --status STATUS      done | closed_stale | cancelled. Default: done.
+  --note TEXT          Close note. Default: Loop Engineer close.
+
+Examples:
+  tools/redbookctl loop status
+  tools/redbookctl loop next
+  tools/redbookctl loop run --lane A
+  tools/redbookctl loop run --lane C --topic "AI Agent ROI"
+  tools/redbookctl loop close --run-id 20260630-120000-ai-agent-roi
 `);
 }
 
@@ -504,6 +541,120 @@ function commandCloseRun(args: string[]): number {
   ]);
 }
 
+function commandLoop(args: string[]): number {
+  const subcommand = args[0];
+  const rest = args.slice(1);
+
+  if (!subcommand || subcommand === "-h" || subcommand === "--help") {
+    printLoopHelp();
+    return 0;
+  }
+
+  if (subcommand === "status") {
+    if (!rest.includes("--json")) {
+      console.log("Loop Engineer phases: Observe -> Decide -> Execute -> Verify -> Review -> Writeback -> Next");
+      console.log("");
+    }
+    return runLegacy(["status", ...rest]);
+  }
+
+  if (subcommand === "next" || subcommand === "review") {
+    return runLegacy(["workflow-health", ...rest]);
+  }
+
+  if (subcommand === "run") {
+    const parsed = parseOptions(rest, {
+      "--lane": "string",
+      "--topic": "string",
+      "--source": "string",
+      "--summary": "string",
+      "--skip-x": "boolean",
+    });
+    if (!parsed.ok) {
+      console.error(`redbookctl loop run: ${parsed.message}`);
+      printLoopHelp();
+      return 2;
+    }
+    if (parsed.options.help) {
+      printLoopHelp();
+      return 0;
+    }
+
+    const lane = stringOption(parsed.options, "--lane")?.toUpperCase();
+    if (!lane || !["A", "B", "C", "D"].includes(lane)) {
+      console.error("redbookctl loop run: --lane must be one of A, B, C, D");
+      printLoopHelp();
+      return 2;
+    }
+
+    if (lane === "A") {
+      const dailyArgs = parsed.options["--skip-x"] ? ["--skip-x"] : [];
+      return commandDaily(dailyArgs);
+    }
+
+    if (lane === "B") {
+      console.log("Lane B is a publish-sensitive short-comment flow.");
+      console.log("- Verify the source, draft the short comment, run /x-mastery-mentor review, then wait for approved-publish.");
+      console.log("- Use tools/redbookctl publish to inspect publish gates after the draft exists.");
+      return runLegacy(["publish"]);
+    }
+
+    if (lane === "C") {
+      const topic = requiredStringOption(parsed.options, "--topic");
+      if (!topic) {
+        console.error("redbookctl loop run: lane C requires --topic");
+        printLoopHelp();
+        return 2;
+      }
+      return commandDraft([
+        "--topic",
+        topic,
+        "--source",
+        stringOption(parsed.options, "--source", "loop engineer")!,
+        "--summary",
+        stringOption(parsed.options, "--summary", "")!,
+      ]);
+    }
+
+    return runLegacy(["workflow-health"]);
+  }
+
+  if (subcommand === "close") {
+    const parsed = parseOptions(rest, {
+      "--run-id": "string",
+      "--status": "string",
+      "--note": "string",
+    });
+    if (!parsed.ok) {
+      console.error(`redbookctl loop close: ${parsed.message}`);
+      printLoopHelp();
+      return 2;
+    }
+    if (parsed.options.help) {
+      printLoopHelp();
+      return 0;
+    }
+    const runId = requiredStringOption(parsed.options, "--run-id");
+    if (!runId) {
+      console.error("redbookctl loop close: missing required --run-id");
+      printLoopHelp();
+      return 2;
+    }
+    return commandCloseRun([
+      "--run-id",
+      runId,
+      "--status",
+      stringOption(parsed.options, "--status", "done")!,
+      "--note",
+      stringOption(parsed.options, "--note", "Loop Engineer close")!,
+    ]);
+  }
+
+  console.error(`redbookctl loop: unknown subcommand ${subcommand}`);
+  printLoopHelp();
+  return 2;
+}
+
 function main(rawArgs: string[]): number {
   if (rawArgs[0] === "-h" || rawArgs[0] === "--help") {
     printTopLevelHelp();
@@ -523,6 +674,9 @@ function main(rawArgs: string[]): number {
   }
   if (command === "draft") {
     return commandDraft(rest);
+  }
+  if (command === "loop") {
+    return commandLoop(rest);
   }
   if (command === "browser") {
     return commandBrowser(rest);

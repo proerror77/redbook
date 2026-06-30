@@ -54,6 +54,7 @@
 
 | 入口 | 状态 | 位置 | 用途 | 备注 |
 | --- | --- | --- | --- | --- |
+| `tools/redbookctl loop` | active-script | `tools/redbookctl.ts` + `docs/reference/loop-engineer-workflow.md` | Loop Engineer 控制面：Observe -> Decide -> Execute -> Verify -> Review -> Writeback -> Next | 用 `loop status/next/run/review/close` 收敛日报、harness、发布门、workflow-health 和 close-run |
 | `tools/redbookctl daily` | active-script | `tools/redbookctl.ts` -> `tools/daily.sh` | 每日研究报告主入口 | 输出 `05-选题研究/X-每日日程-YYYY-MM-DD.md`、目标 100 条当日 `X-timeline-fresh-following-YYYY-MM-DD.md`、补充 `X-timeline-sample-YYYY-MM-DD.md` 和 20 条 `X-互动队列-YYYY-MM-DD.md` |
 | `tools/redbookctl browser` | active-script | `tools/redbookctl.ts` + `tools/browser-core/interactive/session.mjs` | 只读检查当前 Chrome/CDP tabs 与登录态 | X/XHS/微信/BOSS 动作前 |
 | `python3 tools/wiki_workflow.py daily-cycle --date YYYY-MM-DD` | active-script | `tools/wiki_workflow.py` | Wiki ingest + lint 维护 run | research-only run 会自动关闭 |

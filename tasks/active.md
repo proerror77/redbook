@@ -2,6 +2,27 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-06-30 Redbook Loop Engineer 收敛
+
+- Owner: Codex
+- Source: User asked to converge existing Redbook workflow pieces into a loop engineer.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Review current semantic layer, harness, content loop, and `redbookctl` entrypoints.
+- [x] Add a Loop Engineer workflow contract with a shared state machine.
+- [x] Add `tools/redbookctl loop` commands that delegate to existing canonical controls.
+- [x] Register the new entrypoint in the skills manifest and shared startup playbook.
+- [x] Sync `AGENTS.md` / `CLAUDE.md` and run smoke checks.
+
+### Review
+
+- Added `docs/reference/loop-engineer-workflow.md` with the canonical loop: `Observe -> Decide -> Execute -> Verify -> Review -> Writeback -> Next`.
+- Added `tools/redbookctl loop status|next|run|review|close` as a thin coordinator over existing `status`, `workflow-health`, `daily`, `draft`, `publish`, and `close-run` commands.
+- Added the Loop Engineer entry to `docs/reference/skills-manifest.md`, `docs/shared/redbook-playbook.md`, `AGENTS.md`, and `CLAUDE.md`.
+- Verified `tools/redbookctl loop --help`, `tools/redbookctl loop status --json`, and `tools/redbookctl loop run --lane D`.
+
 ## 2026-06-28 Dirty worktree cleanup
 
 - Owner: Codex
