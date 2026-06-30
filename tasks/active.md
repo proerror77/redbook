@@ -47,6 +47,27 @@
 - Rebuilt today's queue from 100 fresh following rows: `X-互动队列-2026-07-01.json` now has 20 candidates.
 - Updated docs/shared playbook, AGENTS/CLAUDE sync, README, skill manifest, and reference workflow language so daily research no longer claims home/for-you or X Pro/search as default evidence.
 
+## 2026-07-01 Social media loop closure
+
+- Owner: Codex
+- Source: User pointed out the overall social media flow still has not formed a loop.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Review current social workflow doc and Loop Engineer control surface.
+- [x] Add a social-specific closed-loop state machine and CLI entrypoint.
+- [x] Generate a no-publish social loop review artifact from current evidence.
+- [x] Update manifests/playbook and run focused checks.
+
+### Review
+
+- Added `tools/redbookctl social-loop status|next|run|review`.
+- Fixed the social loop semantics as `Observe -> Collect -> Verify -> Review -> Decide -> Draft/Review -> Writeback -> Next`.
+- Generated `docs/reports/social-loop-2026-07-01.md` from the current daily report, 100 fresh following posts, and 20 engagement candidates.
+- Current social loop state is `decision_ready`; next action is to pick/reject a topic or run wiki query before local drafting.
+- The no-publish gate remains explicit: no publish, reply, comment, like, follow, DM, delete, profile edit, or submit forms without explicit user confirmation.
+
 ## 2026-06-30 Redbook Loop Engineer 收敛
 
 - Owner: Codex

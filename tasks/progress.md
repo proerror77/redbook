@@ -4,6 +4,32 @@
 
 ---
 
+## [2026-07-01] Social media loop closure
+
+**完成了什么：**
+- 把 social media 资料收集/写作从“daily + 文档清单”收敛成可执行闭环：`Observe -> Collect -> Verify -> Review -> Decide -> Draft/Review -> Writeback -> Next`。
+- 新增 `tools/redbookctl social-loop status|next|run|review`：
+  - `status`：读取 legacy dashboard JSON，汇总日报、fresh following、supplemental sample、互动队列和 review report 状态。
+  - `run --step collect`：只跑 `tools/redbookctl daily`，不发布、不评论、不回复。
+  - `review`：生成本地 `docs/reports/social-loop-YYYY-MM-DD.md`。
+  - `next`：给出下一个 no-publish 动作。
+- 生成本日闭环报告：`docs/reports/social-loop-2026-07-01.md`，基于 100 条 fresh following 和 20 条互动候选，列出候选信号和 no-publish gate。
+- 更新 `docs/reference/social-media-app-research-writing-workflow.md`、`docs/shared/redbook-playbook.md`、`AGENTS.md`、`CLAUDE.md`、`docs/reference/skills-manifest.md` 和 `tools/README.md`，让 social-loop 成为默认 social media 资料/写作入口。
+- 新增测试覆盖：
+  - `redbookctl social-loop status --json` 必须暴露 research-only 状态和 no-publish gate。
+  - social workflow 文档必须声明 closed no-publish loop。
+
+**验证：**
+- `tools/redbookctl social-loop status`：当前 `Phase: next | state: decision_ready`。
+- `tools/redbookctl social-loop next`：下一步为读 review report、选/拒题、wiki query 后本地写作；明确不允许 publish/comment/reply。
+- `node --test tools/tests/redbookctl_contract.test.mjs` 通过，3 tests。
+- `node --test tools/tests/redbook_workflow_contract.test.mjs` 通过，7 tests。
+- `python3 -m py_compile tools/redbookctl.py` 和 `git diff --check` 通过。
+
+**遗留：**
+- social-loop 当前只闭合资料收集、候选 review、下一步决策和本地写作入口；真正发布/评论仍必须另走 approved-publish / engagement workflow。
+- 旧 harness publish run 和旧 T+1/T+3 ledger backlog 仍由 `workflow-health` 提示，不属于本轮 social-loop 修复。
+
 ## [2026-07-01] X research script refresh
 
 **完成了什么：**
