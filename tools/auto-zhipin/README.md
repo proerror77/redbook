@@ -19,6 +19,21 @@
 4. 本目录脚本只负责候选筛选、本地台账、dry-run gate、计数和证据记录；不要声称普通 Node 脚本能直接调用 Codex chat 里的 extension 工具句柄。
 5. 只有 extension 控制面不可用且用户接受 fallback 时，才使用 Computer Use。CDP / Playwright / 持久化 profile 只保留为诊断、历史兼容或显式实验路径。
 
+### 0. BOSS live 页硬边界
+
+如果 BOSS 已经出现登录跳转、异常访问、访问受限、403、无故回退到上一页、详情页目标漂移，立即停止。不要继续点下一页、不要重新导航、不要尝试“修复”页面状态。
+
+在真实 BOSS live 页面上禁止使用：
+
+- CDP / Chrome DevTools Protocol
+- Playwright locator / `evaluate` / `domSnapshot`
+- prerender、脚本化导航、直接打开 `job_detail` URL
+- 通过 CDP / Playwright 等外部控制面自动读取 DOM 来判断登录态或岗位详情
+
+原因很简单：这些控制面已经被实测证明会触发目标漂移或风控风险。后续判断页面状态只允许用用户可见页面、Computer Use 可见层、人工确认和本地 ledger/report。
+
+`record-and-replay` 只用于记录人工操作证据和复盘，不用于绕过 BOSS 安全机制，也不作为自动回放投递工具。
+
 这样做的原因是：
 - extension 使用用户真实登录态，不需要新开 `--remote-debugging-port` Chrome 或分离 profile。
 - live click 更接近用户当前页面，不把 Playwright/CDP 作为默认申请路径。
@@ -62,6 +77,23 @@ npm install
 ```
 
 项目内仍保留 `playwright` 依赖和历史脚本，但它们不是默认 live 后端。真实网页操作优先使用 Codex Chrome Extension 连接用户日常 Chrome；本目录脚本默认只承担筛选、台账、dry-run gate、计数和证据记录。
+
+## Tampermonkey Copilot（人工热键）
+
+这是显式启用的页面内辅助路径：userscript 只读取当前页面卡片、展示本地 gate 结果；不会批量自动点击。真正沟通只在鼠标悬停绿色卡片并按 `Alt+A` 时发生。
+
+1. 安装 Tampermonkey，在管理面板导入 `userscript/boss-copilot.user.js`。
+2. 先启动只监听 localhost 的 gate server：
+
+```bash
+cd /Users/proerror/Documents/redbook/tools/auto-zhipin
+npm run boss:userscript-gate
+```
+
+3. 在已登录的 BOSS 页面刷新。绿色是 gate 允许，灰色是 block，橙色表示 server 未启动。
+4. 只对当前悬停且标为绿色的卡片按 `Alt+A`。按钮若位于右侧详情区，脚本会同时校验标题和公司；点击后还要看到“继续沟通”或进入 `/web/geek/chat`，才向 ledger 记录成功。
+
+停止 gate server 不影响正常浏览，但会禁用热键投递。遇到登录、验证码、异常访问、403 或详情错位时停止操作，不连续重试。
 
 ## 配置
 

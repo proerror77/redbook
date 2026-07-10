@@ -2,6 +2,26 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-07-10 BOSS userscript copilot
+
+- Owner: Codex
+- Source: User approved implementing the reviewed Tampermonkey userscript plan.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Add a single-file userscript that scans job cards and delegates every decision to the local gate server.
+- [x] Render allow/block/offline state and require a hovered, allowed, detail-matched card for Alt+A.
+- [x] Add the local server npm entrypoint and Tampermonkey setup notes.
+- [x] Run focused and full tests, review the diff, and record completion evidence.
+
+### Review
+
+- Added a zero-dependency Tampermonkey userscript with 5-second/SPA rescans, gate-only decisions, card badges, hover state, Alt+A, a status panel, and ledger writeback.
+- Added click-time re-gating, title/company detail matching, auth/restriction stops, and incremental success evidence to prevent stale or wrong-target applies.
+- Fixed the gate server to bind only `127.0.0.1`; added `npm run boss:userscript-gate` and setup documentation.
+- Verification passed: syntax checks, localhost `/health` smoke, `git diff --check`, and full auto-zhipin tests (`158/158`).
+
 ## 2026-07-01 Social media APP 资料收集与写作 review
 
 - Owner: Codex

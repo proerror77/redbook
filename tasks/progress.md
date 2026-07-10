@@ -4,6 +4,24 @@
 
 ---
 
+## [2026-07-10] BOSS Tampermonkey Copilot
+
+**完成了什么：**
+- 新增 `tools/auto-zhipin/userscript/boss-copilot.user.js`：每 5 秒及 SPA URL 变化时扫描职位卡片，只通过本地 `/gate` 决策并渲染 allow/block/offline 角标。
+- `Alt+A` 只对当前悬停且 allow 的卡片生效；点击前重新 gate，并检查登录、验证码、异常访问、403、详情标题/公司错位。
+- 成功只认 `/web/geek/chat`，或点击后页面新增“继续沟通”；失败写入 `button_click_not_verified`，成功/失败都回写 `/applied`。
+- gate server 固定绑定 `127.0.0.1`；新增 `npm run boss:userscript-gate` 和 Tampermonkey 安装说明。
+
+**验证：**
+- `node --check userscript/boss-copilot.user.js` 与 `node --check scripts/userscript_gate_server.js` 通过。
+- 实际启动 `npm run boss:userscript-gate -- --port 18899`，`GET /health` 返回 `{"ok":true,"todaySuccessfulApplies":0}`。
+- `npm test`：158 passed，0 failed。
+- `git diff --check` 通过；Standards / Spec 两轴 review 的阻断项已修复。
+
+**遗留：**
+- 未添加 `userscript/dist/` 和构建步骤；当前脚本可直接导入 Tampermonkey。
+- 本轮没有打开 BOSS 页面或执行真实沟通；首次 live 使用应先人工确认卡片 DOM 与右侧详情选择器仍匹配当前站点。
+
 ## [2026-07-01] Social media APP 资料收集与写作 review
 
 **完成了什么：**
