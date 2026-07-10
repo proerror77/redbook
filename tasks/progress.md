@@ -4,6 +4,23 @@
 
 ---
 
+## [2026-07-10] BOSS Copilot 首次真实测试投递
+
+**完成了什么：**
+- 在真实 Chrome 已登录 BOSS 页面启用 Tampermonkey「允许运行用户脚本」权限并确认 `BOSS Copilot` 已运行。
+- 扫描结果：server 在线，8 个 allow；选中 `平台研发经理` / `上海茂阳数智人工...` / `30-60K` 做单次测试。
+- 通过 `Alt+A` 发起一次真实沟通；没有执行批量投递。
+
+**验证：**
+- BOSS 页面回读：`已向BOSS发送消息`、默认招呼语、`继续沟通`。
+- Copilot 面板：`今日已投：1`、`上次操作：已沟通：平台研发经理`。
+- gate server：`GET /health` 返回 `todaySuccessfulApplies: 1`。
+- ledger：`title=平台研发经理`、`company=上海茂阳数智人工...`、`status=applied`、`source=userscript_hotkey_apply`。
+- 页面无登录、验证码、异常访问、403 或 restricted 信号。
+
+**遗留：**
+- 暂停继续投递；后续每次扩量仍需单次确认并保持可见风险检查。
+
 ## [2026-07-10] BOSS Tampermonkey Copilot
 
 **完成了什么：**
