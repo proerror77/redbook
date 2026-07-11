@@ -55,7 +55,8 @@
     const cardText = normalizeText(root.innerText);
     return {
       url: anchor.href || anchor.getAttribute?.('href') || '',
-      title: firstText(root, ['.job-name', '.job-title', '[class*="job-name"]']) || normalizeText(anchor.innerText),
+      title: firstText(root, ['.job-name', '.job-title', '[class*="job-name"]'])
+        || normalizeText(anchor.innerText || anchor.textContent || anchor.getAttribute?.('aria-label')),
       company: firstText(root, ['.company-name', '.boss-name', '[class*="company-name"]']),
       salaryText: firstText(root, ['.salary', '.job-salary', '[class*="salary"]']),
       location: firstText(root, ['.job-area', '.job-location', '[class*="area"]']),
