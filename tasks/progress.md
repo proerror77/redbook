@@ -5557,3 +5557,10 @@
 
 **遗留：**
 - `batch3-50-final.jsonl` / `retry.jsonl` 保留中间漏检和重试审计记录；最终发布事实以 `batch3-50-verified` 为准。
+## 2026-07-11 BOSS 70K+ AI / Agent 投递续跑
+
+- gate server 已恢复并通过 `/health`；Tampermonkey Copilot 在线。
+- 本轮目标：仅投企业 AI / AI Agent 负责人相关且薪资下限不低于 70K；未绕过 gate。
+- 实际结果：新增 1 条已核验投递：`技术负责人` / `深至科技` / `100-300K·19薪`，`source=userscript_hotkey_apply`，`appliedAt=2026-07-11T01:56:40.711Z`。
+- 另一次 `AI产品负责人`（70-86K，含 agent/AI Build）点击时被二次 gate 判为 `missing_include_keyword`，未投递。
+- 当前台账 `/health`：`todaySuccessfulApplies=1`。因 allow 标记与点击时复核出现不一致，停止继续批量投递，待修正 gate/扫描字段映射后再续跑。
