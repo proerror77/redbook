@@ -2,6 +2,19 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-07-10 BOSS 70K+ 企业 AI / AI Agent 负责人投递 50
+
+- Owner: Codex
+- Source: User requested 50 new BOSS applications for enterprise AI adoption or AI Agent leadership roles with a salary floor of 70K.
+- Status: in_progress
+
+### Cleanup Plan
+
+- [ ] Recheck the current logged-in BOSS page, Tampermonkey Copilot, gate server, and today's ledger count.
+- [ ] Apply only to visible candidates that match the role scope, 70K+ lower bound, and gate allow state.
+- [ ] Pause every 2–3 verified successes for risk/page/ledger checks; hard-stop on auth, CAPTCHA, restricted, 403, or target drift.
+- [ ] Stop at 50 new verified successes or earlier if eligible candidates are exhausted; write evidence to `tasks/progress.md`.
+
 ## 2026-07-10 BOSS userscript copilot
 
 - Owner: Codex
