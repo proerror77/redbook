@@ -4,6 +4,11 @@
 
 ---
 
+## [2026-07-11] 修复 userscript gate 不一致
+
+- 将 `AI产品` 纳入共享 includeKeywords，并让职位卡片摘要变化触发重新 gate，避免 SPA 重渲染后旧 allow 角标与点击时 gate 冲突。
+- 验证：userscript gate 8/8；auto-zhipin 全量测试 156/156。
+
 ## [2026-07-10] BOSS Copilot 首次真实测试投递
 
 **完成了什么：**

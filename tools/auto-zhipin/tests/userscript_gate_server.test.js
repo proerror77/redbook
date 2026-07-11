@@ -111,6 +111,31 @@ test('POST /gate allows a matching candidate and blocks a blacklisted company', 
   }
 });
 
+test('POST /gate allows an AI product lead from the title alone', async () => {
+  const store = makeStore();
+  const server = buildServer({
+    store,
+    config: require('../lib/config').loadConfig(path.join(__dirname, '..', 'config.local.json')).config,
+    getTriage: () => null,
+  });
+  const port = await withServer(server);
+  try {
+    const { body } = await request(port, 'POST', '/gate', {
+      job: {
+        url: 'https://www.zhipin.com/job_detail/ai-product-lead.html',
+        title: 'AI产品负责人',
+        company: '蓝色光标数字营销机构',
+        salaryText: '70-86K',
+        summary: 'AI产品负责人',
+      },
+    });
+    assert.equal(body.allow, true);
+    assert.deepEqual(body.reasons, []);
+  } finally {
+    server.close();
+  }
+});
+
 test('POST /gate rejects missing url with 400', async () => {
   const store = makeStore();
   const server = buildServer({ store, config: DEFAULT_CONFIG, getTriage: () => null });

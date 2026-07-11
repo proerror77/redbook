@@ -221,7 +221,9 @@
           if (!job.url || seen.has(job.url)) continue;
           seen.add(job.url);
           const root = anchor.closest(CARD_SELECTOR) || anchor;
-          const fingerprint = JSON.stringify({ ...job, summary: undefined });
+          // Include the visible card summary so a SPA re-render cannot leave a
+          // stale allow badge that disagrees with the click-time gate.
+          const fingerprint = JSON.stringify(job);
           let state = states.get(job.url);
           if (!state || state.root !== root) {
             state = { anchor, fingerprint, job, root, status: 'pending', reasons: [] };
