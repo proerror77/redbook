@@ -161,7 +161,8 @@
       "冷水机组",
       "UPS"
     ],
-    "minMonthlySalaryK": 20,
+    "minMonthlySalaryK": 70,
+    "allowSalaryRangeTopAtLeastK": 70,
     "maxExperienceYears": 10,
     "allowedDegrees": [
       "不限",
@@ -206,7 +207,7 @@
   "apply": {
     "enabled": false,
     "dryRun": true,
-    "minMonthlySalaryK": 20,
+    "minMonthlySalaryK": 70,
     "requireCompany": true,
     "excludeCompanyKeywords": [
       "字节",

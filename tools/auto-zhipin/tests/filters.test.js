@@ -8,6 +8,7 @@ const {
   normalizeBossDigits,
   parseExperience,
   parseSalaryRange,
+  parseSalaryMonths,
 } = require('../lib/filters');
 
 test('parseSalaryRange parses monthly salary text', () => {
@@ -27,6 +28,11 @@ test('parseSalaryRange parses monthly salary text rendered with BOSS private-use
     minMonthlyK: 51,
     maxMonthlyK: 71,
   });
+});
+
+test('parseSalaryMonths parses annual salary periods', () => {
+  assert.equal(parseSalaryMonths('50-80K·20薪'), 20);
+  assert.equal(parseSalaryMonths('50-80K'), 12);
 });
 
 test('parseExperience handles unrestricted experience', () => {
@@ -89,6 +95,33 @@ test('evaluateJob rejects salary ranges whose lower bound is below minimum', () 
 
   assert.equal(result.allow, false);
   assert.ok(result.reasons.includes('salary_below_minimum'));
+});
+
+test('evaluateJob allows a strong AI fit when the salary range reaches the target', () => {
+  const result = evaluateJob(
+    {
+      title: '企业AI落地（FDE）大客KA合伙人',
+      company: '致拓科技',
+      salaryText: '50-80K',
+      experienceText: '1-3年',
+      summary: '企业 AI 落地 FDE 大客户解决方案',
+    },
+    {
+      includeKeywords: ['企业AI', '解决方案'],
+      excludeKeywords: [],
+      minMonthlySalaryK: 70,
+      allowSalaryRangeTopAtLeastK: 70,
+      maxExperienceYears: 8,
+      allowedDegrees: [],
+      excludeCompanySizes: [],
+      excludeFundingStages: [],
+      excludeLocations: [],
+      excludeRecruiterTitles: [],
+    }
+  );
+
+  assert.equal(result.allow, true);
+  assert.deepEqual(result.reasons, []);
 });
 
 test('evaluateJob allows a matching engineering role', () => {

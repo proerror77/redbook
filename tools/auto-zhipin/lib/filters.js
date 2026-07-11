@@ -24,6 +24,12 @@ function parseSalaryRange(text) {
   };
 }
 
+function parseSalaryMonths(text) {
+  const normalized = normalizeWhitespace(normalizeBossDigits(text));
+  const match = normalized.match(/[·。\s]*(\d+)\s*薪/);
+  return match ? Number(match[1]) : 12;
+}
+
 function isNonMonthlySalaryRate(text) {
   const normalized = normalizeWhitespace(normalizeBossDigits(text));
   return /元\s*\/\s*(天|周|时|月)/.test(normalized);
@@ -128,7 +134,14 @@ function evaluateJob(job, filters) {
   }
 
   const salary = parseSalaryRange(salaryText);
-  if (salary && salary.minMonthlyK < Number(filters.minMonthlySalaryK || 0)) {
+  const salaryMonths = parseSalaryMonths(salaryText);
+  const annualizedMinMonthlyK = salary ? salary.minMonthlyK * salaryMonths / 12 : null;
+  const annualizedMaxMonthlyK = salary ? salary.maxMonthlyK * salaryMonths / 12 : null;
+  const salaryRangeTopOverride = Number(filters.allowSalaryRangeTopAtLeastK || 0);
+  const salaryFloorSatisfied = salary
+    && annualizedMinMonthlyK < Number(filters.minMonthlySalaryK || 0)
+    && !(salaryRangeTopOverride > 0 && annualizedMaxMonthlyK >= salaryRangeTopOverride);
+  if (salaryFloorSatisfied) {
     reasons.push('salary_below_minimum');
   }
 
@@ -164,12 +177,16 @@ function evaluateJob(job, filters) {
     allow: reasons.length === 0,
     reasons,
     salary,
+    salaryMonths,
+    annualizedMinMonthlyK,
+    annualizedMaxMonthlyK,
     experience,
   };
 }
 
 module.exports = {
   parseSalaryRange,
+  parseSalaryMonths,
   isNonMonthlySalaryRate,
   isNonTechnicalApplyRole,
   parseExperience,
