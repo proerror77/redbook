@@ -162,7 +162,6 @@
       "UPS"
     ],
     "minMonthlySalaryK": 70,
-    "allowSalaryRangeTopAtLeastK": 70,
     "maxExperienceYears": 10,
     "allowedDegrees": [
       "不限",

@@ -102,7 +102,7 @@ test('evaluateJob allows a strong AI fit when the salary range reaches the targe
     {
       title: '企业AI落地（FDE）大客KA合伙人',
       company: '致拓科技',
-      salaryText: '50-80K',
+      salaryText: '50-80K·20薪',
       experienceText: '1-3年',
       summary: '企业 AI 落地 FDE 大客户解决方案',
     },
@@ -110,7 +110,6 @@ test('evaluateJob allows a strong AI fit when the salary range reaches the targe
       includeKeywords: ['企业AI', '解决方案'],
       excludeKeywords: [],
       minMonthlySalaryK: 70,
-      allowSalaryRangeTopAtLeastK: 70,
       maxExperienceYears: 8,
       allowedDegrees: [],
       excludeCompanySizes: [],

@@ -137,10 +137,8 @@ function evaluateJob(job, filters) {
   const salaryMonths = parseSalaryMonths(salaryText);
   const annualizedMinMonthlyK = salary ? salary.minMonthlyK * salaryMonths / 12 : null;
   const annualizedMaxMonthlyK = salary ? salary.maxMonthlyK * salaryMonths / 12 : null;
-  const salaryRangeTopOverride = Number(filters.allowSalaryRangeTopAtLeastK || 0);
   const salaryFloorSatisfied = salary
-    && annualizedMinMonthlyK < Number(filters.minMonthlySalaryK || 0)
-    && !(salaryRangeTopOverride > 0 && annualizedMaxMonthlyK >= salaryRangeTopOverride);
+    && annualizedMinMonthlyK < Number(filters.minMonthlySalaryK || 0);
   if (salaryFloorSatisfied) {
     reasons.push('salary_below_minimum');
   }
