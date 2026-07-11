@@ -218,6 +218,7 @@
         const anchors = Array.from(document.querySelectorAll('a[href*="/job_detail/"]'));
         const seen = new Set();
         for (const anchor of anchors) {
+          if (/查看更多信息/.test(normalizeText(anchor.innerText || anchor.textContent))) continue;
           const job = extractJob(anchor);
           if (!job.url || seen.has(job.url)) continue;
           seen.add(job.url);
