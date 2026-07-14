@@ -2,6 +2,23 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-07-14 Bilibili 下载与解析 Skills 安装
+
+- Owner: Codex
+- Source: User requested installation of the recommended Bilibili download and analysis skills.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Install the upstream `yutto` download skill globally.
+- [x] Install `bilibili-obsidian-notes` globally for subtitle, keyframe, and note extraction.
+- [x] Verify both installed skill directories and commands; record completion in `tasks/progress.md`.
+
+### Review
+
+- Installed `bilibili-video-download` and `bilibili-obsidian-notes` into `~/.agents/skills/` for Codex.
+- `npx skills list -g` verifies both entries. The installer reported only a non-Codex PromptScript global-install limitation.
+
 ## 2026-07-10 BOSS 70K+ 企业 AI / AI Agent 负责人投递 50
 
 - Owner: Codex

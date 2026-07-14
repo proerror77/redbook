@@ -4,6 +4,12 @@
 
 ---
 
+## [2026-07-14] Bilibili 下载与解析 Skills 安装
+
+- 已全局安装 `bilibili-video-download`（yutto）和 `bilibili-obsidian-notes`，供 Codex 使用。
+- 验证：两个目录均含 `SKILL.md`，且 `npx skills list -g` 显示二者。
+- 安装器同时尝试 PromptScript 目标时报告其不支持 global skill；Codex 安装已成功，不影响使用。
+
 ## [2026-07-11] 批量投递执行记录
 
 - 批次已按职位清单、年化薪资和 gate 执行；成功新增 2 份（`AI产品负责人`、`AI产品负责人/产品总监`），今日成功数为 3。
