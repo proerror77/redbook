@@ -413,13 +413,15 @@ function packageChecks(packagePath: string, platform: string) {
   const xhsTextPath = join(packagePath, "小红书发布版.md");
   const xhsImagePath = join(packagePath, "assets", "XHS-01.png");
   const xText = read(xTextPath);
-  const sourceUrls = [...xText.matchAll(/https?:\/\/[^\s)]+/g)].map((match) => match[0]);
+  const xhsText = read(xhsTextPath);
+  const sourceUrls = [...`${xText}\n${xhsText}`.matchAll(/https?:\/\/[^\s)]+/g)].map((match) => match[0]);
   const draftReady = exists(join(packagePath, "核心命题.md"))
-    && exists(xTextPath)
     && exists(storyboardPath)
     && sourceUrls.length > 0
-    && (platform === "x" || platform === "both" || exists(xhsTextPath));
-  const visualReady = exists(imagePath) && (platform === "x" || platform === "both" || exists(xhsImagePath));
+    && (platform === "xhs" || exists(xTextPath))
+    && (platform === "x" || exists(xhsTextPath));
+  const visualReady = (platform === "xhs" || exists(imagePath))
+    && (platform === "x" || exists(xhsImagePath));
   const reviews = ["事实审稿.md", "AI味审稿.md", "平台审稿.md", "视觉审稿.md"];
   const reviewPass = reviews.every((name) => reviewPassed(join(packagePath, "审核", name)));
   return { xTextPath, imagePath, xText, sourceUrls, draftReady, visualReady, reviewPass };
@@ -445,11 +447,11 @@ Wiki 查询报告：请读取 docs/reports/wiki-query-*-${date}.md 中与主题�
 
 在内容包中写入：
 1. 核心命题.md：一句核心命题、目标受益人、账号主线、为什么值得写。
-2. X发布版.md：只放可以直接发出的中文正文，必须包含至少一个真实来源 URL；不要放 Markdown 标题、审稿说明或“作为 AI”式套话。
-3. 图文分镜.md：按 article-visual-storyboard 的字段写 X 16:9 视觉隐喻、锚定短句、读者任务、文字预算、安全边距和排版 QA；如目标含小红书，另写 3:4 卡片结构，不复用 X 裁切。
-4. assets/X-01.png：使用 Tuzi/gpt-image-2.0 或仓库已有图像 skill 生成一张服务观点的 X 16:9 主图。不能生成时明确记录缺口，不要用占位图冒充完成。
-5. 发布清单.md：记录来源 URL、平台版本、图片路径、图片模型、插入位置、风险和发布前门。
-6. ${platform === "x" ? "不要生成小红书发布稿；只保留未来可扩展的分镜。" : "小红书发布版.md：把同一命题翻译成企业/管理者读者任务，不得照搬 X 长文；需要 assets/XHS-01.png。"}
+2. 目标含 X 时写 X发布版.md：只放可以直接发出的中文正文，必须包含至少一个真实来源 URL；不要放 Markdown 标题、审稿说明或“作为 AI”式套话。
+3. 目标含小红书时写小红书发布版.md：把同一命题翻译成企业/管理者读者任务，不得照搬 X 长文；必须包含来源 URL。
+4. 图文分镜.md：按 article-visual-storyboard 的字段分别写 X 16:9 和/或小红书 3:4 视觉隐喻、锚定短句、读者任务、文字预算、安全边距和排版 QA；不能复用最终裁切图。
+5. 目标含 X 时生成 assets/X-01.png：使用 Tuzi/gpt-image-2.0 或仓库已有图像 skill 生成服务观点的 X 16:9 主图；目标含小红书时另生成 assets/XHS-01.png。不能生成时明确记录缺口，不要用占位图冒充完成。
+6. 发布清单.md：记录来源 URL、平台版本、图片路径、图片模型、插入位置、风险和发布前门。
 
 写作硬要求：
 - 深度来自具体场景、取舍、失败、数字、来源和可验证判断；至少加入 3 个不能从标题直接猜出的具体细节。
@@ -471,8 +473,8 @@ function reviewPrompt(run: SocialRun): string {
 读取 AGENTS.md、内容包全部文件、当日研究报告、对应 Wiki 页面，并按以下四门分别写入内容包/审核/：
 
 1. 事实审稿.md：逐条核对来源、时间、数字、因果和链接；不能核实就 BLOCKED。全部通过时最后一行写“结论：PASS”。
-2. AI味审稿.md：检查是否有具体场景、真实取舍、作者判断、可验证细节；删除泛化套话、空洞转折、伪第一人称、模板化结论。必要时直接改写 X发布版.md，再在报告最后写“结论：PASS”。
-3. 平台审稿.md：按 x-mastery-mentor 检查 hook、观点密度、读者受益人、链接位置、平台长度和账号主线；缺来源或像新闻搬运就 BLOCKED。通过时写“结论：PASS”。
+2. AI味审稿.md：检查各平台稿件是否有具体场景、真实取舍、作者判断、可验证细节；删除泛化套话、空洞转折、伪第一人称、模板化结论。必要时直接改写对应平台稿，再在报告最后写“结论：PASS”。
+3. 平台审稿.md：按目标平台对应 skill 检查 hook、观点密度、读者受益人、链接位置、长度、图片规格和账号主线；缺来源或像新闻搬运就 BLOCKED。通过时写“结论：PASS”。
 4. 视觉审稿.md：读取图文分镜.md 和 assets/ 下图片，确认图片真实存在、服务核心观点、规格正确、文字不糊不重叠、不是装饰图；缺图或尺寸不对就 BLOCKED。通过时写“结论：PASS”。
 
 不要把“模型生成成功”当作审稿通过。所有报告都要有问题清单、修正动作和最终结论；没有证据不要 PASS。完成后只回报本地文件结果。`;
@@ -510,7 +512,12 @@ function createContent(args: string[]): SocialRun {
     platform,
     status: "drafting",
     source_report: collection.artifacts.daily_report,
-    required: ["核心命题.md", "X发布版.md", "图文分镜.md", "assets/X-01.png"],
+    required: [
+      "核心命题.md",
+      "图文分镜.md",
+      ...(platform === "x" || platform === "both" ? ["X发布版.md", "assets/X-01.png"] : []),
+      ...(platform === "xhs" || platform === "both" ? ["小红书发布版.md", "assets/XHS-01.png"] : []),
+    ],
   }, null, 2) + "\n", "utf8");
 
   let code = 127;
