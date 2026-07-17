@@ -14,6 +14,14 @@ TODAY="${1:-$(date +%Y-%m-%d)}"
 PROMPT_FILE="$ROOT_DIR/tools/wiki-auto/ingest-prompt.md"
 LOG_DIR="$ROOT_DIR/tools/auto-x/data/logs"
 LOG_FILE="$LOG_DIR/${TODAY}-wiki-ingest.log"
+BUNDLED_CODEX="/Applications/ChatGPT.app/Contents/Resources/codex"
+if [ -n "${CODEX_BIN:-}" ]; then
+    CODEX_COMMAND="$CODEX_BIN"
+elif [ -x "$BUNDLED_CODEX" ]; then
+    CODEX_COMMAND="$BUNDLED_CODEX"
+else
+    CODEX_COMMAND="$(command -v codex || true)"
+fi
 
 mkdir -p "$LOG_DIR"
 
@@ -27,8 +35,18 @@ if [ ! -f "$PROMPT_FILE" ]; then
     exit 1
 fi
 
+if [ -z "$CODEX_COMMAND" ]; then
+    log "ERROR: Codex executable not found; set CODEX_BIN or install Codex"
+    exit 1
+fi
+log "Using Codex executable: $CODEX_COMMAND"
+
 # 检查今天是否有研究报告
 REPORT_COUNT=$(find "$ROOT_DIR/05-选题研究" -maxdepth 1 -type f -name "*${TODAY}*" | wc -l | tr -d ' ')
+GROK_REPORT="$ROOT_DIR/docs/reports/grok-research-${TODAY}.md"
+if [ -f "$GROK_REPORT" ] && grep -q -- "- status: READY" "$GROK_REPORT"; then
+    REPORT_COUNT=$((REPORT_COUNT + 1))
+fi
 if [ "$REPORT_COUNT" -eq 0 ]; then
     log "No research reports for $TODAY, skipping wiki ingest"
     exit 0
@@ -44,7 +62,7 @@ PROMPT="$(sed "s/{DATE}/$TODAY/g" "$PROMPT_FILE")"
 # - workspace-write + never: 允许在本 repo 内写 wiki，不弹交互确认
 # - -C: 固定工作目录，避免从调用者 cwd 漂移
 set +e
-printf '%s\n' "$PROMPT" | codex --ask-for-approval never exec \
+printf '%s\n' "$PROMPT" | "$CODEX_COMMAND" --ask-for-approval never exec \
     -C "$ROOT_DIR" \
     -s workspace-write \
     - \

@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const SCRIPT_DIR = join(ROOT, "tools");
 const LEGACY_PY = join(SCRIPT_DIR, "redbookctl.py");
+const SOCIAL_LOOP_SCRIPT = join(SCRIPT_DIR, "social_loop.ts");
 const BROWSER_SESSION = join(SCRIPT_DIR, "browser-core", "interactive", "session.mjs");
 const X_BROWSER_SCRIPT = join(ROOT, ".agents", "skills", "baoyu-post-to-x", "scripts", "x-browser.ts");
 const XHS_CDP_PUBLISH_SCRIPT = join(homedir(), ".codex", "skills", "xiaohongshu-skills", "scripts", "cdp_publish.py");
@@ -49,6 +50,7 @@ Canonical runtime: TypeScript / Bun.
 Migrated TS commands:
   browser       Inspect existing Chrome/CDP tabs without opening new pages.
   daily         Run the canonical daily workflow.
+  social-loop   Run the scheduled social-media Loop Engineer state machine.
   draft         Create a full content harness run.
   loop          Run the Loop Engineer coordinator.
   publish-record
@@ -64,6 +66,7 @@ Examples:
   tools/redbookctl status
   tools/redbookctl loop next
   tools/redbookctl loop run --lane A
+  tools/redbookctl social-loop status
   tools/redbookctl daily --skip-x
   tools/redbookctl browser --json
   tools/redbookctl x-login
@@ -259,6 +262,10 @@ function commandDaily(args: string[]): number {
     return 0;
   }
   return runPassthrough("/bin/bash", [join(SCRIPT_DIR, "daily.sh"), ...args]);
+}
+
+function commandSocialLoop(args: string[]): number {
+  return runPassthrough("bun", [SOCIAL_LOOP_SCRIPT, ...args]);
 }
 
 function commandPublishRecord(args: string[]): number {
@@ -668,6 +675,9 @@ function main(rawArgs: string[]): number {
   const rest = rawArgs.slice(1);
   if (command === "daily") {
     return commandDaily(rest);
+  }
+  if (command === "social-loop") {
+    return commandSocialLoop(rest);
   }
   if (command === "publish-record") {
     return commandPublishRecord(rest);

@@ -8,6 +8,8 @@
 - 主流程只引用 `status=active` 或 `status=active-global` 的入口。
 - `status=legacy-local` 只作为参考资料，不作为默认执行入口。
 - 发布类 skill 仍遵守用户确认规则：生成、预览、审稿可以自动推进；提交发布必须等用户明确说“发布/直接发”。
+- Social Loop Engineer 负责把 daily 多源采集、Wiki/LLM 记忆、带来源链接和图片的内容包、四门审稿与用户确认发布串起来；状态和证据见 `docs/reference/social-loop-engineer-workflow.md`。
+- Grok Builder 只作为研究增强器：必须输出可回读的原始 URL、事实/不确定性和 Wiki 落点；不能直接写 Wiki、改账号或发布。
 - Social media APP research-only 模式：用户说“只收集资料 / review / 写作 / 不发布”时，只允许搜索、详情、数据表、timeline 样本、草稿、分镜、审稿和资产准备；禁止发布、评论、回复、点赞、关注、删除或改账号资料。
 - 每日选题和用户贴来的新闻链接必须先走 `选题决策门`：先判断短评、长文、thread、小红书、只收藏，用户确认形态后才进入对应生产 lane。
 - 新闻链接型内容不要直接生成完整内容包；先输出一张固定决策卡，并给出 agent 推荐形态和理由，减少用户反复重复工作。
@@ -56,6 +58,8 @@
 | 入口 | 状态 | 位置 | 用途 | 备注 |
 | --- | --- | --- | --- | --- |
 | `tools/redbookctl loop` | active-script | `tools/redbookctl.ts` + `docs/reference/loop-engineer-workflow.md` | Loop Engineer 控制面：Observe -> Decide -> Execute -> Verify -> Review -> Writeback -> Next | 用 `loop status/next/run/review/close` 收敛日报、harness、发布门、workflow-health 和 close-run |
+| `tools/redbookctl social-loop` | active-script | `tools/redbookctl.ts` + `tools/social_loop.ts` + `docs/reference/social-loop-engineer-workflow.md` | Social Media Loop Engineer：定时多源采集、Wiki/LLM 记忆、带图带链接内容包、四门审稿、用户确认和平台回读 | `status/next/record-collection/prepare/review/publish`；publish 必须显式 `--confirm 发布` |
+| `tools/redbookctl social-loop grok-research` | active-script | `tools/social_loop.ts` + local `grok` Builder CLI | 在 X/HN/Reddit 基础研究后，补充公开网页来源与研究判断 | 只读、结构化报告、没有 READY/URL 就是 blocked；报告供 Wiki ingest 读取 |
 | `tools/redbookctl daily` | active-script | `tools/redbookctl.ts` -> `tools/daily.sh` | 每日研究报告主入口 | 输出 `05-选题研究/X-每日日程-YYYY-MM-DD.md`、目标 100 条当日 `X-timeline-fresh-following-YYYY-MM-DD.md`、补充 `X-timeline-sample-YYYY-MM-DD.md` 和 20 条 `X-互动队列-YYYY-MM-DD.md` |
 | `tools/redbookctl browser` | active-script | `tools/redbookctl.ts` + `tools/browser-core/interactive/session.mjs` | 只读检查当前 Chrome/CDP tabs 与登录态 | X/XHS/微信/BOSS 动作前 |
 | `python3 tools/wiki_workflow.py daily-cycle --date YYYY-MM-DD` | active-script | `tools/wiki_workflow.py` | Wiki ingest + lint 维护 run | research-only run 会自动关闭 |

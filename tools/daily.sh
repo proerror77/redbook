@@ -12,6 +12,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 AUTO_X_RUNNER="$ROOT_DIR/tools/auto-x/scripts/run_daily.sh"
+TODAY="$(TZ=Asia/Shanghai date +%Y-%m-%d)"
 
 if [ ! -f "$AUTO_X_RUNNER" ]; then
   echo "error: missing runner: $AUTO_X_RUNNER" >&2
@@ -20,7 +21,13 @@ fi
 
 /bin/bash "$AUTO_X_RUNNER" "$@"
 
-TODAY="$(date +%Y-%m-%d)"
+if command -v bun >/dev/null 2>&1 && [ -f "$ROOT_DIR/tools/social_loop.ts" ]; then
+  if bun "$ROOT_DIR/tools/social_loop.ts" record-collection --date "$TODAY"; then
+    echo "🔁 Social Loop Engineer 状态已记录：docs/reports/social-loop-${TODAY}.md"
+  else
+    echo "⚠️ Social Loop Engineer 状态记录失败；请检查 daily evidence 和 tools/redbookctl social-loop status" >&2
+  fi
+fi
 
 echo ""
 echo "✅ 每日日程已生成：05-选题研究/X-每日日程-${TODAY}.md"

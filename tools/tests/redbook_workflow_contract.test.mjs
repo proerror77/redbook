@@ -69,6 +69,8 @@ test("shared playbook keeps the Redbook workflow hard gates", () => {
     "目标受益人、Persona 匹配",
     "计划内容发稿前必须过 `受益人 + 冷读审稿门`",
     "快速说明目标受益人和转发/回复理由",
+    "Social Media Loop Engineer",
+    "tools/redbookctl social-loop status|next|record-collection|prepare|review|publish",
     "工作流启动指南：`docs/reference/workflow-start-guide.md`",
   ], "shared playbook");
 });

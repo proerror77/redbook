@@ -1,6 +1,6 @@
 # AI 工具与效率
 
-> 从 X 每日研究报告提炼 | 最后更新：2026-07-01
+> 从 X 每日研究报告提炼 | 最后更新：2026-07-17
 
 ## 核心痛点
 
@@ -226,3 +226,13 @@
 - HN `Claude Science` 把本地 server、web UI 和科研工具连接起来，强化了一个趋势：AI 工具正在被包装成垂直工作台，而不是通用聊天框。
 - Reddit r/SaaS `cut LLM costs by 80% by caching meaning, not words` 重复进入 AI/ML 趋势，说明“语义缓存 / 成本治理 / 可复用上下文”正在成为企业和 SaaS 用户的实用痛点。
 - HN `Nano Banana 2 Lite` 讨论里，图像生成效率提升同时引发真实场景滥用反感，工具测评要把“便宜好用”与“审核、标注、业务误导风险”放在同一张表里。
+
+## 今日信号（2026-07-17）
+
+**AI 工具的比较单位正在从“模型能力”变成“可交付且可治理的任务”。**
+
+- Gartner 对 task-specific agent 的判断提醒：要先区分 assistant 与真正能完成任务的 agent，不能把所有 AI 功能都算作 agent。[来源](https://www.gartner.com/en/newsroom/press-releases/2025-08-26-gartner-predicts-40-percent-of-enterprise-apps-will-feature-task-specific-ai-agents-by-2026-up-from-less-than-5-percent-in-2025)
+- Google 和 OpenAI 的平台叙事都把身份、权限、审批、执行轨迹、合规查看和记忆纳入产品能力，说明企业工具选择已经不只是“哪个回答更好”，还要问“谁能让结果进入 workflow 并留下证据”。
+- McKinsey 与 PwC 的调研显示，agent 采用与预算增长并不自动带来企业级 EBIT 或运营模型重构；工具评估应加入 `cost per task`、人工复核、失败恢复、流程改造和高风险场景信任。[McKinsey](https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai) · [PwC](https://www.pwc.com/us/en/tech-effect/ai-analytics/ai-agent-survey.html)
+
+**高频关键词：** `task agent`、`agent identity`、`gateway`、`approval`、`compliance API`、`memory lifecycle`、`workflow redesign`、`agentwashing`、`cost per task`。

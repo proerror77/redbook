@@ -5585,3 +5585,18 @@
 - 实际结果：新增 1 条已核验投递：`技术负责人` / `深至科技` / `100-300K·19薪`，`source=userscript_hotkey_apply`，`appliedAt=2026-07-11T01:56:40.711Z`。
 - 另一次 `AI产品负责人`（70-86K，含 agent/AI Build）点击时被二次 gate 判为 `missing_include_keyword`，未投递。
 - 当前台账 `/health`：`todaySuccessfulApplies=1`。因 allow 标记与点击时复核出现不一致，停止继续批量投递，待修正 gate/扫描字段映射后再续跑。
+
+## 2026-07-17 Wiki 每日研究 ingest
+
+- 读取到 READY 的独立 Grok 研究报告；X/HN/Reddit 基础日报缺失，未将其冒充为当日基础样本。
+- 追加 6 个既有 Wiki 页面、创建 4 个概念页，并更新 `wiki/index.md` 与 `wiki/log.md`。
+- 最小验证通过：Wiki 内容页/索引行均为 32，4 个新概念页已列入索引，10 个今日信号小节存在，`git diff --check` 和尾随空格检查通过。
+- 未做 git commit：环境禁止创建 `.git/index.lock`，`.git` 当前为只读；本次修改未与其他 dirty 文件混合。
+
+## 2026-07-17 Social Media Loop Engineer
+
+- 新增统一控制面：`tools/redbookctl social-loop status|next|grok-research|record-collection|prepare|review|publish`。
+- 定时顺序固定为多源采集 → Grok Builder 只读增强 → Wiki ingest/lint → Loop 状态证据；Grok 报告必须含 READY、原始 URL、已核实事实、不确定性和 Wiki 落点。
+- 内容包强制包含来源链接、平台独立图片、图文分镜、深度/去 AI 味写作，以及事实、AI 味、平台、视觉四门审稿；publish 必须带用户明确确认，并回读平台 URL / note id。
+- 实际验证：本地 Grok READY；Wiki ingest 触及 11 页、新建 4 个概念页；Wiki lint `missing=0`、`dangling=0`、`orphan=0`、`overview_stale=false`；Bun build、9/9 contract tests、Python compile、shell syntax、`git diff --check` 全通过。
+- 当前运行状态：`social-2026-07-17=blocked`，不是系统错误；当天 X/HN/Reddit 基础采集文件尚未生成，下一步为 `tools/redbookctl daily`。未执行任何外部发布。

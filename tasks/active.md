@@ -2,6 +2,30 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-07-17 Social Media Loop Engineer 收敛
+
+- Owner: Codex
+- Source: User requested a scheduled multi-source social-media loop with LLM/Wiki memory, image-backed drafts, AI-style review, multi-gate approval, explicit user publish confirmation, and platform readback.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Add a canonical `social-loop` state/next/status control surface around the existing daily, Wiki, Grok Builder, content, and X/XHS publish paths.
+- [x] Make scheduled collection and Wiki writeback leave explicit evidence and a resumable next action.
+- [x] Add Grok Builder as a read-only research enhancer with URL/fact/uncertainty evidence and a fail-closed readiness gate.
+- [x] Add a content-package contract for source links, X/XHS visuals, human-sounding depth, facts/editorial/visual reviews, and user approval.
+- [x] Keep publishing fail-closed: only an explicit user confirmation may submit, followed by platform-side evidence.
+- [x] Run focused contract tests, record progress, and preserve unrelated dirty files.
+
+### Review
+
+- Added `tools/redbookctl social-loop` as the resumable control surface: `status`, `next`, scheduled `record-collection`, Grok research, prepare, review and publish.
+- Wired the existing 07:00 daily path to collect X/HN/Reddit, run Grok read-only research, ingest/lint Wiki, then record a durable Loop Engineer report.
+- Verified local Grok Builder headless auth/research with a `READY` report containing source URLs, fact checks, uncertainty and Wiki targets; no account or repository write was delegated to Grok.
+- Added content-package requirements for source links, platform-specific images, visual storyboard, deep human-sounding writing, four review gates, explicit user confirmation and platform-side readback.
+- Current 2026-07-17 runtime state is intentionally `blocked`: Grok and Wiki memory are ready, but today’s X/HN/Reddit base collection artifacts are absent. The recorded next action is `tools/redbookctl daily`.
+- Verification passed: Bun build, focused workflow contract tests (`9/9`), Python compile, shell syntax, Wiki lint (`missing=0`, `dangling=0`, `orphan=0`, `overview_stale=false`) and `git diff --check`.
+
 ## 2026-07-14 Bilibili 下载与解析 Skills 安装
 
 - Owner: Codex

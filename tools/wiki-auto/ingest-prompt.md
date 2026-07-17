@@ -16,8 +16,9 @@
 - `05-选题研究/X-每日日程-{DATE}.md`
 - `05-选题研究/HN-每日热点-{DATE}.md`
 - `05-选题研究/Reddit-每日监控-{DATE}.md`
+- `docs/reports/grok-research-{DATE}.md`（如果存在且 `status: READY`）
 
-如果三个文件都不存在，输出：
+如果上述基础报告和 Grok READY 报告都不存在，输出：
 ```
 {DATE} 无研究报告，跳过 ingest。
 ```
@@ -72,6 +73,7 @@
 - 更新已修改页面的「最后更新」列
 - 如果新建了页面，在对应分类表格中追加一行
 - 更新底部的 `*最后 lint：... | 总页面数：...*`
+- 同步更新 `wiki/overview.md` 的知识库现状日期与当前核心论点/待补充状态；它是 lint 的健康快照，不能停留在旧日期
 
 ## 第六步：追加 wiki/log.md
 
@@ -80,7 +82,7 @@
 ```markdown
 ## [{DATE}] ingest | 每日研究报告自动摄入
 
-来源：05-选题研究/ X/HN/Reddit 每日报告
+来源：05-选题研究/ X/HN/Reddit 每日报告；以及 `docs/reports/grok-research-{DATE}.md`（如果 READY）
 
 触及页面：N个
 - `wiki/选题/xxx.md` — 追加今日信号

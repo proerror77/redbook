@@ -1,6 +1,6 @@
 # AI Agent 企业导入与协作
 
-> 来源：用户定位修正 + 2026-04-29 选题草稿 + 2026-05-09 X Article 发布 | 最后更新：2026-07-01
+> 来源：用户定位修正 + 2026-04-29 选题草稿 + 2026-05-09 X Article 发布 | 最后更新：2026-07-17
 
 ## 核心内容
 
@@ -165,3 +165,15 @@ AI 进入企业以后，最先变化的可能不是岗位消失。
 - HN `Claude Science` 的本地 server + browser UI 形态值得关注：企业 / 科研场景里的 agent 可能不是单一 SaaS 页面，而是本地运行、连接专业工具、再由浏览器承载交互。
 - HN `Claude Code is steganographically marking requests` 暴露企业采购敏感点：开发者工具如果在本机请求里加入隐性标记，即使目的合理，也会触发透明度、合规和供应商信任问题。
 - Reddit r/SaaS 的 LLM 语义缓存案例说明，企业 AI 成本治理不只是“少用 token”，而是把相似任务、语义上下文和可复用中间结果纳入 workflow 设计。
+
+## 今日信号（2026-07-17）
+
+**企业 agent 的竞争中心从“会不会聊天”迁移到“能否作为可治理的工作单元运行”。**
+
+- Google 的 Gemini Enterprise Agent Platform 把 Agent Identity、Registry、Gateway、Memory Bank、运行时、评估和完整执行轨迹放进同一平台；Agent Identity 负责细粒度权限，Gateway 与 Model Armor 负责运行时策略和威胁防护。[官方公告](https://cloud.google.com/blog/products/ai-machine-learning/introducing-gemini-enterprise-agent-platform)
+- OpenAI Workspace Agents 支持团队共享、长时任务、跨工具上下文和敏感动作审批；管理员可控制构建/分享权限，Compliance API 可查看配置、更新和运行记录并挂起 agent。[官方公告](https://openai.com/index/introducing-workspace-agents-in-chatgpt/)
+- Gartner 一边预测到 2026 年底约 40% 的企业应用会集成任务型 agent，一边预测超过 40% 的 agentic AI 项目可能在 2027 年底前被取消；“采用更多”与“能否证明价值”必须分开判断。[任务型 agent 预测](https://www.gartner.com/en/newsroom/press-releases/2025-08-26-gartner-predicts-40-percent-of-enterprise-apps-will-feature-task-specific-ai-agents-by-2026-up-from-less-than-5-percent-in-2025) · [项目取消预测](https://www.gartner.com/en/newsroom/press-releases/2025-06-25-gartner-predicts-over-40-percent-of-agentic-ai-projects-will-be-canceled-by-end-of-2027)
+- McKinsey 与 PwC 的公开调研共同指向：agent 实验和预算增长很快，但企业范围规模化、流程重设计和高风险场景信任仍然落后。[McKinsey](https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai) · [PwC](https://www.pwc.com/us/en/tech-effect/ai-analytics/ai-agent-survey.html)
+- 治理不应“一刀切”：Observe、Advise、Act with Approval、Act Autonomously 四级自治对应不同的审批、监控、审计、回滚和熔断要求；agent 记忆还需要保留、删除、访问、隐私及影响后续行动的生命周期规则。[Gartner 自治等级](https://www.gartner.com/en/newsroom/press-releases/2026-05-26-gartner-says-applying-uniform-governance-across-ai-agents-will-lead-to-enterprise-ai-agent-failure) · [Snowflake 治理指南](https://www.snowflake.com/en/artificial-intelligence/ai-governance/)
+
+**可复用判断：**企业导入 agent 前，先定义任务结果、身份与权限、自治等级、审批人、审计证据、回滚动作和停损标准；模型能力只是其中一项。

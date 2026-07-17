@@ -65,6 +65,8 @@ Redbook 是用户的内容与发布 Agents OS，不只是资料夹。每个非�
 - 用户确认发布形态后，才进入对应 Lane：短评走 Lane B，长文/多平台走 Lane C，只收藏走 wiki / 素材沉淀。
 - 如果用户已经明确说“写短评 / 写长文 / 做小红书 / 发出”，可以跳过形态讨论，但仍要执行来源核验、结构、审稿和发布确认门。
 - 外部发布统一是 `approved-publish`：草稿、预览、审稿可自动；submit/publish 必须等用户明确说“发布 / 直接发”。
+- Social Media Loop Engineer 统一使用 `tools/redbookctl social-loop`：定时多源采集、Wiki/LLM ingest、带来源链接和图片的内容包、事实/AI味/平台/视觉四门审稿，最后停在用户确认门。
+- 本地 Grok Builder 只能作为只读研究增强器：先输出原始 URL、已核实事实、不确定性和 Wiki 落点，再交给 Wiki ingest；Grok 未形成 READY 证据时不能算收集完成。
 - 图片生成统一优先走 Tuzi/兔子 `gpt-image-2.0`；不要再把 Nano Banana / Gemini 写成默认图像模型。
 - 长文配图使用 balanced visual arc：封面可选，正文默认 3-5 张，约每 600-900 中文字或每 2-3 个主要小节 1 张，除小红书卡片系列外最多 6 张。
 - 文内插图先做 visual metaphor map：每张图必须绑定一个文章短句 / 关键词，先判断语义、情绪、张力和读者感受，再决定视觉隐喻、承载面、主体关系、文字是否进入构图；不要只把段落摘要翻译成泛插画。
@@ -193,6 +195,8 @@ Redbook 是用户的内容与发布 Agents OS，不只是资料夹。每个非�
 
 - 工作流看板：`tools/redbookctl status`
 - Loop Engineer 控制面：`tools/redbookctl loop status` / `tools/redbookctl loop next` / `tools/redbookctl loop run --lane A|B|C|D` / `tools/redbookctl loop review` / `tools/redbookctl loop close --run-id ...`
+- Social Loop Engineer：`tools/redbookctl social-loop status|next|record-collection|prepare|review|publish`；`publish` 必须带用户明确确认，并在平台侧回读 URL / note id 后才算完成。
+- Grok 研究增强：`tools/redbookctl social-loop grok-research --date YYYY-MM-DD`；只读 headless，失败或无 URL 就留下 BLOCKED 报告，不写账号、不发帖。
 - 浏览器会话检查：`tools/redbookctl browser`（只读现有 Chrome/CDP，不开新页）
 - X 发布 profile 检查：`tools/redbookctl x-login`（强制检查发布 profile 的 composer 和账号，不输入、不发布；`--headed` 用于人工登录恢复）
 - 小红书发布健康检查：`tools/redbookctl xhs-health`；需要创作者管理页回读时用 `tools/redbookctl xhs-health --with-content-data`

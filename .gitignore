@@ -68,6 +68,7 @@ session.tw_session
 x-to-markdown/
 tools/auto-x/data/twikit_cookies.json
 tools/auto-x/data/following_audit_latest.json
+tools/auto-x/data/social-loop/
 tools/auto-x/scripts/test_twikit.py
 tools/post_thread.py
 tmp-tuzi-image-response.json

@@ -61,7 +61,7 @@ else
     PYTHONUNBUFFERED=1 python3 -u daily_schedule.py 2>&1 | tee -a "$LOG_FILE"
 fi
 
-TODAY="$(date +%Y-%m-%d)"
+TODAY="$(TZ=Asia/Shanghai date +%Y-%m-%d)"
 if [ "$SHOULD_RUN_ENGAGEMENT" = "true" ]; then
     log "生成 X following chronological 新鲜样本（100 条目标，按今天过滤）..."
     if node build_fresh_following_sample.mjs \
@@ -89,6 +89,16 @@ if [ "$SHOULD_RUN_ENGAGEMENT" = "true" ]; then
     fi
 else
     log "跳过 X timeline 新鲜样本和每日互动队列"
+fi
+
+GROK_RESEARCH_SCRIPT="$ROOT_DIR/tools/social_loop.ts"
+if command -v bun >/dev/null 2>&1 && [ -f "$GROK_RESEARCH_SCRIPT" ]; then
+    log "运行 Grok Builder 只读研究增强（不发布、不写账号、不直接写 Wiki）..."
+    if bun "$GROK_RESEARCH_SCRIPT" grok-research --date "$TODAY" 2>&1 | tee -a "$LOG_FILE"; then
+        log "Grok Builder 研究报告已生成"
+    else
+        log "WARNING: Grok Builder 研究增强失败；Social Loop 将保持 blocked，不把失败当作来源完成"
+    fi
 fi
 
 log "运行 LLM Wiki 每日维护周期（ingest + lint）..."

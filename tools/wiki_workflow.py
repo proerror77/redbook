@@ -23,11 +23,15 @@ IGNORED_WIKI_FILES = {"index.md", "log.md", "overview.md"}
 
 def daily_source_paths(date_str: str) -> list[Path]:
     base = ROOT / "05-选题研究"
-    return [
+    paths = [
         base / f"X-每日日程-{date_str}.md",
         base / f"HN-每日热点-{date_str}.md",
         base / f"Reddit-每日监控-{date_str}.md",
     ]
+    grok_report = ROOT / "docs" / "reports" / f"grok-research-{date_str}.md"
+    if grok_report.exists() and "- status: READY" in grok_report.read_text(encoding="utf-8"):
+        paths.append(grok_report)
+    return paths
 
 
 def relative(path: Path) -> str:
