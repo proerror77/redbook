@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 import { spawnSync } from "node:child_process";
-import { existsSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -11,6 +11,8 @@ const LEGACY_PY = join(SCRIPT_DIR, "redbookctl.py");
 const BROWSER_SESSION = join(SCRIPT_DIR, "browser-core", "interactive", "session.mjs");
 const X_BROWSER_SCRIPT = join(ROOT, ".agents", "skills", "baoyu-post-to-x", "scripts", "x-browser.ts");
 const XHS_CDP_PUBLISH_SCRIPT = join(homedir(), ".codex", "skills", "xiaohongshu-skills", "scripts", "cdp_publish.py");
+const RESEARCH_DIR = join(ROOT, "05-选题研究");
+const REPORTS_DIR = join(ROOT, "docs", "reports");
 
 type ParseResult = {
   ok: true;
@@ -37,6 +39,22 @@ function runPassthrough(command: string, args: string[]): number {
   return result.status ?? 1;
 }
 
+function runCapture(command: string, args: string[]): { code: number; stdout: string; stderr: string } {
+  const result = spawnSync(command, args, {
+    cwd: ROOT,
+    encoding: "utf8",
+    env: process.env,
+  });
+  if (result.error) {
+    return { code: 127, stdout: "", stderr: result.error.message };
+  }
+  return {
+    code: result.status ?? 1,
+    stdout: result.stdout ?? "",
+    stderr: result.stderr ?? "",
+  };
+}
+
 function runLegacy(args: string[]): number {
   return runPassthrough("python3", [LEGACY_PY, ...args]);
 }
@@ -51,6 +69,7 @@ Migrated TS commands:
   daily         Run the canonical daily workflow.
   draft         Create a full content harness run.
   loop          Run the Loop Engineer coordinator.
+  social-loop   Run the no-publish social research/writing loop.
   publish-record
                 Append structured publish ledger records.
   x-login      Verify or recover the X publishing browser profile.
@@ -63,6 +82,7 @@ Legacy delegated commands:
 Examples:
   tools/redbookctl status
   tools/redbookctl loop next
+  tools/redbookctl social-loop next
   tools/redbookctl loop run --lane A
   tools/redbookctl daily --skip-x
   tools/redbookctl browser --json
@@ -201,6 +221,31 @@ Examples:
   tools/redbookctl loop run --lane A
   tools/redbookctl loop run --lane C --topic "AI Agent ROI"
   tools/redbookctl loop close --run-id 20260630-120000-ai-agent-roi
+`);
+}
+
+function printSocialLoopHelp(): void {
+  console.log(`Usage: tools/redbookctl social-loop <status|next|run|review> [options]
+
+Social Loop closes the research/writing cycle without external platform side effects:
+  Observe -> Collect -> Decide -> Draft/Review -> Writeback -> Next
+
+Subcommands:
+  status   Show social loop state and evidence gates.
+  next     Print the next no-publish action.
+  run      Execute one loop step.
+  review   Write a local social-loop review report from current evidence.
+
+Run options:
+  --step collect|review   collect runs tools/redbookctl daily; review writes docs/reports/social-loop-YYYY-MM-DD.md.
+  --skip-x                Step collect: pass --skip-x to daily.
+  --json                  status/next: print machine-readable JSON.
+
+Examples:
+  tools/redbookctl social-loop status
+  tools/redbookctl social-loop next
+  tools/redbookctl social-loop run --step collect
+  tools/redbookctl social-loop review
 `);
 }
 
@@ -541,6 +586,267 @@ function commandCloseRun(args: string[]): number {
   ]);
 }
 
+function todayInShanghai(): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Shanghai",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+}
+
+function readJson(path: string): unknown {
+  return JSON.parse(readFileSync(path, "utf8"));
+}
+
+function relative(path: string): string {
+  return path.startsWith(`${ROOT}/`) ? path.slice(ROOT.length + 1) : path;
+}
+
+function legacyStatusJson(): Record<string, any> {
+  const result = runCapture("python3", [LEGACY_PY, "status", "--json"]);
+  if (result.code !== 0) {
+    throw new Error(result.stderr || result.stdout || "legacy status failed");
+  }
+  return JSON.parse(result.stdout);
+}
+
+function socialLoopPaths(date: string): Record<string, string> {
+  return {
+    dailyReport: join(RESEARCH_DIR, `X-每日日程-${date}.md`),
+    freshFollowingJson: join(RESEARCH_DIR, `X-timeline-fresh-following-${date}.json`),
+    freshFollowingMd: join(RESEARCH_DIR, `X-timeline-fresh-following-${date}.md`),
+    sampleJson: join(RESEARCH_DIR, `X-timeline-sample-${date}.json`),
+    sampleMd: join(RESEARCH_DIR, `X-timeline-sample-${date}.md`),
+    engagementJson: join(RESEARCH_DIR, `X-互动队列-${date}.json`),
+    engagementMd: join(RESEARCH_DIR, `X-互动队列-${date}.md`),
+    reviewReport: join(REPORTS_DIR, `social-loop-${date}.md`),
+  };
+}
+
+function jsonArrayCount(path: string): number | null {
+  if (!existsSync(path)) return null;
+  const value = readJson(path);
+  return Array.isArray(value) ? value.length : null;
+}
+
+function buildSocialLoopState(): Record<string, any> {
+  const status = legacyStatusJson();
+  const date = status.date || todayInShanghai();
+  const paths = socialLoopPaths(date);
+  const daily = status.daily_health || {};
+  const freshCount = jsonArrayCount(paths.freshFollowingJson);
+  const engagementCount = jsonArrayCount(paths.engagementJson);
+  const sampleCount = jsonArrayCount(paths.sampleJson);
+  const missingArtifacts = Array.isArray(daily.missing_social_artifacts)
+    ? daily.missing_social_artifacts
+    : [];
+  const collectReady = Boolean(status.today_report?.exists)
+    && missingArtifacts.length === 0
+    && (freshCount ?? 0) >= 80
+    && (engagementCount ?? 0) > 0;
+  const reviewExists = existsSync(paths.reviewReport);
+
+  let phase = "review";
+  let state = "ready_for_review";
+  let nextAction = "tools/redbookctl social-loop review";
+  if (!collectReady) {
+    phase = "collect";
+    state = "needs_collection";
+    nextAction = "tools/redbookctl social-loop run --step collect";
+  } else if (reviewExists) {
+    phase = "next";
+    state = "decision_ready";
+    nextAction = "Read the social-loop report, pick or reject a topic, then use wiki query before drafting. No publish/comment action is allowed without explicit confirmation.";
+  }
+
+  return {
+    date,
+    workflow: "social-loop",
+    mode: "research-only",
+    phase,
+    state,
+    noPublishGate: {
+      publish: "blocked_without_explicit_user_confirmation",
+      reply: "blocked_without_explicit_user_confirmation",
+      comment: "blocked_without_explicit_user_confirmation",
+      likeFollowDm: "blocked",
+    },
+    evidence: {
+      dailyReport: { path: relative(paths.dailyReport), exists: existsSync(paths.dailyReport) },
+      freshFollowing: {
+        path: relative(paths.freshFollowingJson),
+        exists: existsSync(paths.freshFollowingJson),
+        count: freshCount,
+        sufficient: (freshCount ?? 0) >= 80,
+      },
+      supplementalSample: {
+        path: relative(paths.sampleJson),
+        exists: existsSync(paths.sampleJson),
+        count: sampleCount,
+      },
+      engagementQueue: {
+        path: relative(paths.engagementJson),
+        exists: existsSync(paths.engagementJson),
+        count: engagementCount,
+        sufficient: (engagementCount ?? 0) > 0,
+      },
+      reviewReport: { path: relative(paths.reviewReport), exists: reviewExists },
+    },
+    nextAction,
+  };
+}
+
+function printSocialLoopState(state: Record<string, any>): void {
+  console.log(`Redbook Social Loop - ${state.date}`);
+  console.log("- Mode: research-only | publish/comment/reply/follow blocked");
+  console.log(`- Phase: ${state.phase} | state: ${state.state}`);
+  console.log(`- Daily report: ${state.evidence.dailyReport.exists ? "exists" : "missing"} | ${state.evidence.dailyReport.path}`);
+  console.log(`- Fresh following: ${state.evidence.freshFollowing.count ?? "missing"} | sufficient=${state.evidence.freshFollowing.sufficient}`);
+  console.log(`- Supplemental sample: ${state.evidence.supplementalSample.count ?? "missing"}`);
+  console.log(`- Engagement queue: ${state.evidence.engagementQueue.count ?? "missing"} | sufficient=${state.evidence.engagementQueue.sufficient}`);
+  console.log(`- Review report: ${state.evidence.reviewReport.exists ? "exists" : "missing"} | ${state.evidence.reviewReport.path}`);
+  console.log(`- Next: ${state.nextAction}`);
+}
+
+function renderSocialLoopReport(state: Record<string, any>): string {
+  const paths = socialLoopPaths(state.date);
+  const queue = existsSync(paths.engagementJson) ? readJson(paths.engagementJson) : [];
+  const candidates = Array.isArray(queue) ? queue.slice(0, 8) : [];
+  const lines = [
+    `# Social Loop Review - ${state.date}`,
+    "",
+    "> Research-only social media loop report. This artifact does not approve publishing, replying, commenting, liking, following, DM, or profile edits.",
+    "",
+    "## Loop State",
+    "",
+    `- Phase: ${state.phase}`,
+    `- State: ${state.state}`,
+    `- Daily report: ${state.evidence.dailyReport.path}`,
+    `- Fresh following: ${state.evidence.freshFollowing.count ?? 0}`,
+    `- Engagement candidates: ${state.evidence.engagementQueue.count ?? 0}`,
+    "",
+    "## No-Publish Gate",
+    "",
+    "- Publishing, replying, commenting, liking, following, unfollowing, DM, delete, profile edit, and submit forms are blocked.",
+    "- Next writing actions may create local drafts, review notes, storyboards, prompts, or wiki queries only.",
+    "",
+    "## Candidate Signals",
+    "",
+  ];
+
+  if (candidates.length === 0) {
+    lines.push("- No usable engagement candidates. Run `tools/redbookctl social-loop run --step collect` or inspect the fresh following sample.");
+  } else {
+    for (const [index, item] of candidates.entries()) {
+      const handle = item?.handle || "unknown";
+      const score = item?.score ?? "?";
+      const total = item?.interaction_total ?? 0;
+      const url = item?.target_url || "";
+      const content = String(item?.content || "").replace(/\s+/g, " ").trim().slice(0, 280);
+      lines.push(`### ${index + 1}. @${handle} | score ${score} | interaction ${total}`);
+      lines.push("");
+      lines.push(`- URL: ${url}`);
+      lines.push(`- Source: ${item?.source || "unknown"}`);
+      lines.push("");
+      lines.push(`> ${content}`);
+      lines.push("");
+    }
+  }
+
+  lines.push("## Next");
+  lines.push("");
+  lines.push("- Decide whether any candidate deserves a topic decision card.");
+  lines.push("- If selected, run wiki query before drafting.");
+  lines.push("- Keep all output local until the user explicitly approves publish/comment/reply.");
+  lines.push("");
+  return `${lines.join("\n")}\n`;
+}
+
+function commandSocialLoop(args: string[]): number {
+  const subcommand = args[0];
+  const rest = args.slice(1);
+
+  if (!subcommand || subcommand === "-h" || subcommand === "--help") {
+    printSocialLoopHelp();
+    return 0;
+  }
+
+  if (subcommand === "status" || subcommand === "next") {
+    const parsed = parseOptions(rest, { "--json": "boolean" });
+    if (!parsed.ok) {
+      console.error(`redbookctl social-loop ${subcommand}: ${parsed.message}`);
+      printSocialLoopHelp();
+      return 2;
+    }
+    if (parsed.options.help) {
+      printSocialLoopHelp();
+      return 0;
+    }
+    const state = buildSocialLoopState();
+    if (parsed.options["--json"]) {
+      console.log(JSON.stringify(state, null, 2));
+    } else if (subcommand === "next") {
+      console.log(`Redbook Social Loop Next - ${state.date}`);
+      console.log(`- Phase: ${state.phase}`);
+      console.log(`- Next: ${state.nextAction}`);
+    } else {
+      printSocialLoopState(state);
+    }
+    return 0;
+  }
+
+  if (subcommand === "run") {
+    const parsed = parseOptions(rest, {
+      "--step": "string",
+      "--skip-x": "boolean",
+    });
+    if (!parsed.ok) {
+      console.error(`redbookctl social-loop run: ${parsed.message}`);
+      printSocialLoopHelp();
+      return 2;
+    }
+    if (parsed.options.help) {
+      printSocialLoopHelp();
+      return 0;
+    }
+    const step = stringOption(parsed.options, "--step", "review");
+    if (step === "collect") {
+      return commandDaily(parsed.options["--skip-x"] ? ["--skip-x"] : []);
+    }
+    if (step === "review") {
+      return commandSocialLoop(["review"]);
+    }
+    console.error("redbookctl social-loop run: --step must be collect or review");
+    return 2;
+  }
+
+  if (subcommand === "review") {
+    const state = buildSocialLoopState();
+    const paths = socialLoopPaths(state.date);
+    const reportState = state.phase === "review"
+      ? {
+          ...state,
+          phase: "next",
+          state: "decision_ready",
+          nextAction: "Read the social-loop report, pick or reject a topic, then use wiki query before drafting. No publish/comment action is allowed without explicit confirmation.",
+          evidence: {
+            ...state.evidence,
+            reviewReport: { path: relative(paths.reviewReport), exists: true },
+          },
+        }
+      : state;
+    mkdirSync(REPORTS_DIR, { recursive: true });
+    writeFileSync(paths.reviewReport, renderSocialLoopReport(reportState), "utf8");
+    console.log(`wrote ${relative(paths.reviewReport)}`);
+    return 0;
+  }
+
+  console.error(`redbookctl social-loop: unknown subcommand ${subcommand}`);
+  printSocialLoopHelp();
+  return 2;
+}
+
 function commandLoop(args: string[]): number {
   const subcommand = args[0];
   const rest = args.slice(1);
@@ -677,6 +983,9 @@ function main(rawArgs: string[]): number {
   }
   if (command === "loop") {
     return commandLoop(rest);
+  }
+  if (command === "social-loop") {
+    return commandSocialLoop(rest);
   }
   if (command === "browser") {
     return commandBrowser(rest);

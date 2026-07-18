@@ -48,7 +48,7 @@ Persona 匹配：
 
 1. Run or read today's topic report / current X evidence.
 2. If the user asks for X timeline or "what is worth writing today", first read or generate `05-选题研究/X-timeline-fresh-following-YYYY-MM-DD.md` / `.json`: target 100 chronological following-timeline posts filtered to today's date. If fewer than the required fresh sample were captured, state the sample gap in the answer.
-3. Use `X-timeline-sample-YYYY-MM-DD.md` from home/for-you and the 20-item `X-互动队列-YYYY-MM-DD.md` only as supplementary filtered views, not as the whole evidence base for "today's topics".
+3. Use `X-timeline-sample-YYYY-MM-DD.md` as a fresh-following-derived supplementary view and the 20-item `X-互动队列-YYYY-MM-DD.md` only as filtered views, not as the whole evidence base for "today's topics". Daily research no longer defaults to X Pro or X search.
 4. If current X evidence is unavailable, say the X evidence gap explicitly. Do not substitute publish reminders, old drafts, stale reports, historical topic pools, or prior-day timeline posts.
 5. Output 3-5 topics as decision cards.
 6. For each topic, include the recommended content shape, target beneficiary, and persona fit.
