@@ -4,6 +4,13 @@
 
 ---
 
+## [2026-07-24] X @0xCybersmile 账号冻结申诉
+
+- 已在 X 官方表单提交针对 `@0xcybersmile` 的加急人工复核投诉，联系邮箱为用户填写的 `proerror@gmail.com`。
+- 申诉明确写明：已支付全年订阅及相关费用、多次申诉没有实质回复、账号未恢复且未获未使用服务退款；要求恢复账号或提供具体规则、内容/行为及日期的书面理由，并处理退款。
+- 验证：完成浏览器人机验证后，官方确认页为 `https://help.x.com/en/forms/account-access/appeals/thank-you`，显示 “We’ve received your request. We’ll review, and take further action if appropriate.”
+- 遗留：这只证明表单已受理，不证明账号已解封或退款已批准；后续留意收件箱和垃圾邮件。
+
 ## [2026-07-14] Bilibili 下载与解析 Skills 安装
 
 - 已全局安装 `bilibili-video-download`（yutto）和 `bilibili-obsidian-notes`，供 Codex 使用。

@@ -2,6 +2,18 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-07-24 X @0xCybersmile suspension follow-up appeal
+
+- Owner: Codex
+- Source: User requested a firm follow-up appeal, citing a paid annual subscription and no response to the suspension or prior appeals.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Verify the exact suspended handle and official X appeal surface.
+- [x] Submit a factual, firm follow-up appeal; pause only for X's human-verification challenge.
+- [x] Record the official confirmation or exact blocking state in `tasks/progress.md`.
+
 ## 2026-07-17 Social Media Loop Engineer 收敛
 
 - Owner: Codex
