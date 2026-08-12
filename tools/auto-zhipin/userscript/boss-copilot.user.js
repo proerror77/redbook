@@ -148,6 +148,28 @@
       || /异常访问|访问受限|账号异常|验证码|安全验证|请先登录|403 Forbidden/i.test(normalizeText(text));
   }
 
+  // 风控弹窗检测（内联副本，无 @require）——关键词移植自
+  // mrcxsy/boss-auto-apply (Apache-2.0) src/modules/automation.js 的 __popupKeywords。
+  function detectRiskPopupInternal(text) {
+    const RISK_KW = [
+      '验证码', '安全验证', '安全检测', '人机验证', '操作太快', '频繁', '稍后再试',
+      '休息一下', '封禁', '限制', '请完成', '请先完成', '账号异常', '异常访问',
+      '访问受限', '403', '登录', '请先登录',
+    ];
+    const normalized = String(text || '');
+    for (const keyword of RISK_KW) {
+      if (normalized.includes(keyword)) return { risk: true, reason: keyword };
+    }
+    return { risk: false, reason: '' };
+  }
+
+  function shouldThrottleInternal({ appliedToday, maxPerDay, lastAppliedAt: last, intervalSeconds }) {
+    if (appliedToday >= maxPerDay) return true;
+    const elapsed = Date.now() - (last || 0);
+    if (elapsed < intervalSeconds * 1000) return true;
+    return false;
+  }
+
   function start(window) {
     if (window.__bossCopilotStarted) return;
     window.__bossCopilotStarted = true;
@@ -160,6 +182,7 @@
     let serverOnline = false;
     let todayApplied = 0;
     let lastResult = '等待扫描';
+    let lastAppliedAt = 0;
 
     const style = document.createElement('style');
     style.textContent = `
@@ -384,6 +407,26 @@
           renderBadge(state, '页面异常，已停止', 'block');
           return;
         }
+
+        // 风控弹窗检测
+        const riskPopup = detectRiskPopupInternal(document.body.innerText);
+        if (riskPopup.risk) {
+          state.status = 'block';
+          state.reasons = [`risk_popup_${riskPopup.reason}`];
+          lastResult = `风控弹窗：${riskPopup.reason}，已暂停投递`;
+          renderBadge(state, lastResult, 'block');
+          // 上报暂停，等待冷却（可调用 gate server 通知 supervisor）
+          await request('POST', '/paused', { reason: riskPopup.reason }).catch(() => {});
+          return;
+        }
+
+        // 节流检查
+        if (shouldThrottleInternal({ appliedToday: todayApplied, maxPerDay: 120, lastAppliedAt, intervalSeconds: 45 })) {
+          lastResult = '节流中，等待下一投递窗口';
+          renderBadge(state, lastResult, 'block');
+          return;
+        }
+
         try {
           const latestGate = await request('POST', '/gate', { job: state.job });
           if (!latestGate.allow) {
@@ -442,6 +485,7 @@
         state.status = success ? 'applied' : 'failed';
         lastResult = success ? `已沟通：${state.job.title}` : 'button_click_not_verified';
         await recordResult(state, success, success ? undefined : 'button_click_not_verified');
+        if (success) lastAppliedAt = Date.now();
         renderBadge(state, success ? '✓ 已沟通' : '点击未验证', success ? 'allow' : 'block');
       } finally {
         applying = false;
@@ -476,12 +520,14 @@
     APPLY_BUTTON_SELECTORS,
     AUTO_APPLY_ENABLED,
     buildClickEventsInternal,
+    detectRiskPopupInternal,
     detailMatchesJob,
     extractJob,
     hasPageRisk,
     humanizedDispatch,
     isApplyVerified,
     normalizeText,
+    shouldThrottleInternal,
     start,
   };
 });

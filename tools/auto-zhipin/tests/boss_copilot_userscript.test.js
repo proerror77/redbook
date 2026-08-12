@@ -5,11 +5,13 @@ const {
   APPLY_BUTTON_SELECTORS,
   AUTO_APPLY_ENABLED,
   buildClickEventsInternal,
+  detectRiskPopupInternal,
   detailMatchesJob,
   extractJob,
   hasPageRisk,
   humanizedDispatch,
   isApplyVerified,
+  shouldThrottleInternal,
 } = require('../userscript/boss-copilot.user.js');
 
 function textNode(text) {
@@ -155,4 +157,17 @@ test('applyHovered handles humanizedDispatch failure path correctly', () => {
   assert.match(applyFlow, /state\.status = 'failed'/);
   assert.match(applyFlow, /recordResult\(state, false, 'click_dispatch_failed'\)/);
   assert.match(applyFlow, /renderBadge\(state, '点击派发失败', 'block'\)/);
+});
+
+test('detectRiskPopupInternal (inlined) flags captcha text', () => {
+  assert.equal(detectRiskPopupInternal('请完成安全验证').risk, true);
+  assert.equal(detectRiskPopupInternal('验证码').risk, true);
+  assert.equal(detectRiskPopupInternal('AI 产品负责人，月薪 70K').risk, false);
+  assert.equal(detectRiskPopupInternal('').risk, false);
+});
+
+test('shouldThrottleInternal (inlined) enforces cap and interval', () => {
+  assert.equal(shouldThrottleInternal({ appliedToday: 120, maxPerDay: 120, lastAppliedAt: Date.now() - 50000, intervalSeconds: 45 }), true);
+  assert.equal(shouldThrottleInternal({ appliedToday: 5, maxPerDay: 120, lastAppliedAt: Date.now() - 1000, intervalSeconds: 45 }), true);
+  assert.equal(shouldThrottleInternal({ appliedToday: 5, maxPerDay: 120, lastAppliedAt: Date.now() - 50000, intervalSeconds: 45 }), false);
 });
