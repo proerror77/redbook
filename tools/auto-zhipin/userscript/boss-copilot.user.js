@@ -382,6 +382,14 @@
       }
     }
 
+    // 风控/页面异常停止时上报，由 gate server 推送飞书通知用户（静默失败不阻塞投递逻辑）
+    function notifyRiskStopped(state, reason) {
+      request('POST', '/paused', {
+        reason,
+        job: state ? { url: state.job.url, title: state.job.title, company: state.job.company } : {},
+      }).catch(() => {});
+    }
+
     async function waitForApplyEvidence(beforeText) {
       const deadline = Date.now() + 3000;
       while (Date.now() < deadline) {
@@ -406,6 +414,7 @@
           state.status = 'block';
           lastResult = 'page_risk_detected';
           renderBadge(state, '页面异常，已停止', 'block');
+          notifyRiskStopped(state, 'page_risk_detected');
           return;
         }
 
@@ -416,8 +425,8 @@
           state.reasons = [`risk_popup_${riskPopup.reason}`];
           lastResult = `风控弹窗：${riskPopup.reason}，已暂停投递`;
           renderBadge(state, lastResult, 'block');
-          // 上报暂停，等待冷却（可调用 gate server 通知 supervisor）
-          await request('POST', '/paused', { reason: riskPopup.reason }).catch(() => {});
+          // 上报暂停并通知用户（gate server 推送飞书），等待冷却
+          notifyRiskStopped(state, `risk_popup_${riskPopup.reason}`);
           return;
         }
 

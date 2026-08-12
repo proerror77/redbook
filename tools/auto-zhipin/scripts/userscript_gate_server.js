@@ -22,6 +22,7 @@ const { readChatTriage } = require('../lib/chat_triage');
 const { checkPreApplyCandidate } = require('../lib/opencli_apply_queue');
 const { ZhipinStore } = require('../lib/store');
 const { makeApplicationIdentity, nowIso, parseArgs } = require('../lib/utils');
+const { pushFeishuMessage } = require('../lib/feishu_notify');
 
 const DEFAULT_PORT = 8899;
 const DEFAULT_HOST = '127.0.0.1';
@@ -39,6 +40,7 @@ function printHelp() {
     'Endpoints:',
     '  POST /gate    body: { job }         -> { allow, reasons, candidate }',
     '  POST /applied body: { job, result } -> records an applied/failed row in ledger.json',
+    '  POST /paused  body: { reason, job } -> risk stop: notifies Feishu + records a pause event',
     '  GET  /health  ->                       { ok, todaySuccessfulApplies }',
   ].join('\n'));
 }
@@ -99,7 +101,7 @@ function normalizeJobInput(job = {}) {
   };
 }
 
-function buildServer({ store, config, getTriage }) {
+function buildServer({ store, config, getTriage, pushNotify = pushFeishuMessage }) {
   return http.createServer(async (request, response) => {
     try {
       if (request.method === 'GET' && request.url === '/health') {
@@ -172,6 +174,37 @@ function buildServer({ store, config, getTriage }) {
           ok: true,
           todaySuccessfulApplies: store.getTodaySuccessfulApplies(),
         });
+        return;
+      }
+
+      if (request.method === 'POST' && request.url === '/paused') {
+        const body = await readJsonBody(request);
+        const reason = String(body.reason || '');
+        const job = normalizeJobInput(body.job || {});
+        if (!reason) {
+          sendJson(response, 400, { error: 'reason is required' });
+          return;
+        }
+        store.event('pause_notify', {
+          reason,
+          jobId: job.url,
+          url: job.url,
+          company: job.company,
+          title: job.title,
+        });
+        const ok = await pushNotify({
+          title: `🚨 BOSS 停止投递：${reason}`,
+          body: [
+            `风控检测触发，已暂停自动投递`,
+            job.company ? `公司：${job.company}` : '',
+            job.title ? `岗位：${job.title}` : '',
+            `原因：${reason}`,
+          ].filter(Boolean).join('\n'),
+        }).then(() => true).catch((error) => {
+          console.error('paused: feishu push failed:', error && error.message ? error.message : String(error));
+          return false;
+        });
+        sendJson(response, 200, { ok });
         return;
       }
 

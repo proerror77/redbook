@@ -166,6 +166,30 @@ test('detectRiskPopupInternal (inlined) flags captcha text', () => {
   assert.equal(detectRiskPopupInternal('').risk, false);
 });
 
+test('notifyRiskStopped helper posts to gate server /paused with job context', () => {
+  const source = require('node:fs').readFileSync(require.resolve('../userscript/boss-copilot.user.js'), 'utf8');
+  assert.match(source, /function notifyRiskStopped\(state, reason\)/);
+  assert.match(source, /request\('POST', '\/paused', \{/);
+  assert.match(source, /reason,\n\s+job: state \? \{ url: state\.job\.url, title: state\.job\.title, company: state\.job\.company \} : \{\}/);
+});
+
+test('risk popup stop calls notifyRiskStopped with the popup reason', () => {
+  const source = require('node:fs').readFileSync(require.resolve('../userscript/boss-copilot.user.js'), 'utf8');
+  const riskFlow = source.slice(source.indexOf('async function applyHovered('));
+  // The risk-popup path must stop (status=block, render badge) AND notify the user
+  assert.match(riskFlow, /detectRiskPopupInternal\(document\.body\.innerText\)/);
+  assert.match(riskFlow, /state\.status = 'block'/);
+  assert.match(riskFlow, /notifyRiskStopped\(state, `risk_popup_\$\{riskPopup\.reason\}\`\)/);
+});
+
+test('page risk (login/verify/403) stop also notifies the user', () => {
+  const source = require('node:fs').readFileSync(require.resolve('../userscript/boss-copilot.user.js'), 'utf8');
+  const riskFlow = source.slice(source.indexOf('async function applyHovered('));
+  assert.match(riskFlow, /hasPageRisk\(window\.location\.href, document\.body\.innerText\)/);
+  assert.match(riskFlow, /lastResult = 'page_risk_detected'/);
+  assert.match(riskFlow, /notifyRiskStopped\(state, 'page_risk_detected'\)/);
+});
+
 test('shouldThrottleInternal (inlined) enforces cap and interval', () => {
   assert.equal(shouldThrottleInternal({ appliedToday: 120, maxPerDay: 120, lastAppliedAt: Date.now() - 50000, intervalSeconds: 45 }), true);
   assert.equal(shouldThrottleInternal({ appliedToday: 5, maxPerDay: 120, lastAppliedAt: Date.now() - 1000, intervalSeconds: 45 }), true);

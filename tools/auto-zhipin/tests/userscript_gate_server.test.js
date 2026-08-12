@@ -229,6 +229,82 @@ test('POST /applied records a failed click without incrementing today count', as
   }
 });
 
+test('POST /paused notifies Feishu and records a pause event', async () => {
+  const store = makeStore();
+  const notifications = [];
+  const pushNotify = async ({ title, body }) => {
+    notifications.push({ title, body });
+  };
+  const server = buildServer({ store, config: DEFAULT_CONFIG, getTriage: () => null, pushNotify });
+  const port = await withServer(server);
+  try {
+    const { statusCode, body } = await request(port, 'POST', '/paused', {
+      reason: '访问受限',
+      job: {
+        url: 'https://www.zhipin.com/job_detail/paused-one.html',
+        title: 'AI Agent 架构师',
+        company: '示例科技',
+      },
+    });
+    assert.equal(statusCode, 200);
+    assert.equal(body.ok, true);
+
+    assert.equal(notifications.length, 1);
+    assert.match(notifications[0].title, /停止投递/);
+    assert.match(notifications[0].title, /访问受限/);
+    assert.match(notifications[0].body, /示例科技/);
+    assert.match(notifications[0].body, /AI Agent 架构师/);
+
+    const events = store.eventsPath && fs.existsSync(store.eventsPath)
+      ? fs.readFileSync(store.eventsPath, 'utf8').split('\n').filter(Boolean).map(JSON.parse)
+      : [];
+    assert.equal(events.length, 1);
+    assert.equal(events[0].type, 'pause_notify');
+    assert.equal(events[0].payload.reason, '访问受限');
+    assert.equal(events[0].payload.company, '示例科技');
+  } finally {
+    server.close();
+  }
+});
+
+test('POST /paused is non-fatal when Feishu push fails', async () => {
+  const store = makeStore();
+  const server = buildServer({
+    store,
+    config: DEFAULT_CONFIG,
+    getTriage: () => null,
+    pushNotify: async () => { throw new Error('lark-cli unavailable'); },
+  });
+  const port = await withServer(server);
+  try {
+    const { statusCode, body } = await request(port, 'POST', '/paused', { reason: '操作太快' });
+    assert.equal(statusCode, 200);
+    assert.equal(body.ok, false); // notify attempted but failed — event still recorded
+  } finally {
+    server.close();
+  }
+});
+
+test('POST /paused rejects missing reason with 400', async () => {
+  const store = makeStore();
+  let notified = false;
+  const server = buildServer({
+    store,
+    config: DEFAULT_CONFIG,
+    getTriage: () => null,
+    pushNotify: async () => { notified = true; },
+  });
+  const port = await withServer(server);
+  try {
+    const { statusCode, body } = await request(port, 'POST', '/paused', { job: { url: 'x' } });
+    assert.equal(statusCode, 400);
+    assert.match(body.error, /reason is required/);
+    assert.equal(notified, false);
+  } finally {
+    server.close();
+  }
+});
+
 test('unknown route returns 404', async () => {
   const store = makeStore();
   const server = buildServer({ store, config: DEFAULT_CONFIG, getTriage: () => null });
