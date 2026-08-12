@@ -317,3 +317,22 @@ test('repeated failures exclude the job from auto-apply candidates', () => {
   assert.match(scanFlow, /if \(outcome === 'throttled'\) await exploreFeed\(\)/);
   assert.match(scanFlow, /async function exploreFeed\(\)/);
 });
+
+test('post-apply stay/continue confirm dialog is treated as apply success', () => {
+  const source = require('node:fs').readFileSync(require.resolve('../userscript/boss-copilot.user.js'), 'utf8');
+  const applyFlow = source.slice(source.indexOf('async function applyHovered('));
+  // 点击"立即沟通"后弹"留在本页/继续沟通"确认框 = 投递成功：记 success，点"留在本页"关闭
+  assert.match(applyFlow, /const stayBtn = findStayButton\(document\)/);
+  assert.match(applyFlow, /success = true/);
+  assert.match(applyFlow, /humanizedClick\(stayBtn\)/);
+  assert.match(applyFlow, /else if \(stayBtn\)/);
+});
+
+test('findStayButton defined and scoped to dialog containers', () => {
+  const source = require('node:fs').readFileSync(require.resolve('../userscript/boss-copilot.user.js'), 'utf8');
+  const fn = source.slice(source.indexOf('function findStayButton('), source.indexOf('function isVisible('));
+  assert.match(fn, /\[class\*="dialog"\]/);
+  assert.match(fn, /留在本页/);
+  // "继续沟通"只在确认框容器内认，避免误点推荐流卡片的"继续沟通"状态按钮
+  assert.match(fn, /if \(containers\.length\)/);
+});

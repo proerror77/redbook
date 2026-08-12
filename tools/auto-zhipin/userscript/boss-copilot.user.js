@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BOSS Copilot Gate
 // @namespace    https://github.com/redbook/auto-zhipin
-// @version      0.9.0
+// @version      0.9.1
 // @description  标注 BOSS 职位卡片，自动沟通 gate 允许的岗位（可配置），Alt+A 为手动触发
 // @match        https://www.zhipin.com/*
 // @grant        GM_xmlhttpRequest
@@ -481,6 +481,26 @@
       return null;
     }
 
+    // BOSS 投递成功后的确认框："留在本页 / 继续沟通"两个按钮。
+    // 点击"立即沟通"后若弹此框（而非直接跳转聊天页），说明沟通已建立 = 投递成功。
+    // 优先点"留在本页"关闭，回到推荐流继续探索。只在对话框容器里找，
+    // 避免误点推荐流卡片上已是"继续沟通"状态的其他岗位按钮。
+    function findStayButton(scope) {
+      const containers = Array.from(scope.querySelectorAll('[class*="dialog"],[class*="modal"],[class*="popup"],[class*="confirm"],[class*="toast"]'));
+      const pools = containers.length ? containers : [scope];
+      for (const container of pools) {
+        const nodes = Array.from(container.querySelectorAll('button, a, [role="button"], [class*="btn"]')).filter(isVisible);
+        const stay = nodes.find((n) => normalizeText(n.innerText || n.textContent) === '留在本页');
+        if (stay) return stay;
+        // "继续沟通"只在确认框容器内认；不在容器内不认（卡片上也有"继续沟通"字样）
+        if (containers.length) {
+          const cont = nodes.find((n) => normalizeText(n.innerText || n.textContent) === '继续沟通');
+          if (cont) return cont;
+        }
+      }
+      return null;
+    }
+
     // 点击"立即沟通"后若弹出业务对话框（非风控词），拟人关闭恢复页面，避免卡在弹窗上不再探索
     async function closeOpenDialog() {
       const btn = findCloseButton(document);
@@ -716,21 +736,33 @@
           renderBadge(state, '点击派发失败', 'block');
           return 'click_failed';
         }
-        const success = await waitForApplyEvidence(beforeText);
+        let success = await waitForApplyEvidence(beforeText);
+        // BOSS 投递成功后可能弹"留在本页/继续沟通"确认框（而非直接跳转聊天页）。
+        // 这是投递成功的标志：点"留在本页"关闭，回到推荐流继续探索，不中断。
+        const stayBtn = findStayButton(document);
         if (!success) {
-          // 点击"立即沟通"后无导航：通常是弹了业务对话框（完善简历/岗位已下架等）。
-          // 先按风控词重查全文——若真是风控弹窗必须停，不能假装没看见继续点。
-          const postRisk = detectRiskPopupInternal(document.body.innerText);
-          if (postRisk.risk) {
-            state.status = 'block';
-            state.reasons = [`risk_popup_${postRisk.reason}`];
-            lastResult = `风控弹窗：${postRisk.reason}，已暂停投递`;
-            renderBadge(state, lastResult, 'block');
-            notifyRiskStopped(state, `risk_popup_${postRisk.reason}`);
-            return 'risk_popup';
+          if (stayBtn) {
+            await humanizedClick(stayBtn);
+            await sleep(150 + Math.random() * 200);
+            success = true;
+          } else {
+            // 点击后无证据且无确认框：先按风控词重查全文——若真是风控弹窗必须停，不能假装没看见继续点。
+            const postRisk = detectRiskPopupInternal(document.body.innerText);
+            if (postRisk.risk) {
+              state.status = 'block';
+              state.reasons = [`risk_popup_${postRisk.reason}`];
+              lastResult = `风控弹窗：${postRisk.reason}，已暂停投递`;
+              renderBadge(state, lastResult, 'block');
+              notifyRiskStopped(state, `risk_popup_${postRisk.reason}`);
+              return 'risk_popup';
+            }
+            // 普通业务弹窗：拟人关闭，恢复页面，下个节流周期再继续探索
+            await closeOpenDialog();
           }
-          // 普通业务弹窗：拟人关闭，恢复页面，下个节流周期再继续探索
-          await closeOpenDialog();
+        } else if (stayBtn) {
+          // 已确认成功但确认框还开着：关掉它，避免页面卡在弹窗上
+          await humanizedClick(stayBtn);
+          await sleep(150 + Math.random() * 200);
         }
         state.failCount = (state.failCount || 0) + (success ? 0 : 1);
         const exhausted = state.failCount >= 2; // 连续 2 次投递失败：跳过该岗位，不再打同一张卡
