@@ -285,3 +285,35 @@ test('throttle interval jittered in apply flow', () => {
   assert.match(applyFlow, /interval = 45 \+ Math\.floor\(Math\.random\(\) \* 45\)/);
   assert.match(applyFlow, /intervalSeconds: interval/);
 });
+
+test('apply failures also reset the throttle clock (no 5s re-attempt storm)', () => {
+  const source = require('node:fs').readFileSync(require.resolve('../userscript/boss-copilot.user.js'), 'utf8');
+  const applyFlow = source.slice(source.indexOf('async function applyHovered('));
+  // lastAppliedAt 必须在成功和失败路径都重置；不得再出现"仅成功才重置"的旧写法
+  assert.doesNotMatch(applyFlow, /if \(success\) lastAppliedAt/);
+  assert.match(applyFlow, /lastAppliedAt = Date\.now\(\)/);
+});
+
+test('detail_mismatch failures also cool down (no repeated card clicks)', () => {
+  const source = require('node:fs').readFileSync(require.resolve('../userscript/boss-copilot.user.js'), 'utf8');
+  const applyFlow = source.slice(source.indexOf('async function applyHovered('));
+  assert.match(applyFlow, /state\.failCount = \(state\.failCount \|\| 0\) \+ 1/);
+  assert.match(applyFlow, /lastAppliedAt = Date\.now\(\); \/\/ 面板未切换也冷却/);
+});
+
+test('failed apply re-checks risk post-click and closes business dialog', () => {
+  const source = require('node:fs').readFileSync(require.resolve('../userscript/boss-copilot.user.js'), 'utf8');
+  const applyFlow = source.slice(source.indexOf('async function applyHovered('));
+  // 点击后无导航：先重查风控词，真风控必须停+通知；否则拟人关闭业务对话框
+  assert.match(applyFlow, /const postRisk = detectRiskPopupInternal\(document\.body\.innerText\)/);
+  assert.match(applyFlow, /notifyRiskStopped\(state, `risk_popup_\$\{postRisk\.reason\}`\)/);
+  assert.match(applyFlow, /await closeOpenDialog\(\)/);
+});
+
+test('repeated failures exclude the job from auto-apply candidates', () => {
+  const source = require('node:fs').readFileSync(require.resolve('../userscript/boss-copilot.user.js'), 'utf8');
+  const scanFlow = source.slice(source.indexOf('async function scan()'));
+  assert.match(scanFlow, /\(s\.failCount \|\| 0\) < 2/);
+  assert.match(scanFlow, /if \(outcome === 'throttled'\) await exploreFeed\(\)/);
+  assert.match(scanFlow, /async function exploreFeed\(\)/);
+});

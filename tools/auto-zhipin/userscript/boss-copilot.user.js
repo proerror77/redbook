@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BOSS Copilot Gate
 // @namespace    https://github.com/redbook/auto-zhipin
-// @version      0.8.0
+// @version      0.9.0
 // @description  标注 BOSS 职位卡片，自动沟通 gate 允许的岗位（可配置），Alt+A 为手动触发
 // @match        https://www.zhipin.com/*
 // @grant        GM_xmlhttpRequest
@@ -207,6 +207,13 @@
     '访问受限', '403', '登录', '请先登录',
   ];
 
+  // BOSS 业务对话框（完善简历/岗位下架等）的右上角关闭按钮。仅用于非风控弹窗的拟人关闭。
+  const CLOSE_SELECTORS = [
+    '.dialog-close', '.btn-close', '.icon-close', '.close-icon',
+    '[class*="dialog-close"]', '[class*="icon-close"]', '[class*="btn-close"]',
+    '[aria-label*="关闭"]', '[aria-label*="close"]',
+  ];
+
   function detectRiskPopupInternal(text) {
     const normalized = String(text || '');
     for (const keyword of RISK_KW_INTERNAL) {
@@ -370,7 +377,7 @@
           const fingerprint = JSON.stringify(job);
           let state = states.get(job.url);
           if (!state || state.root !== root) {
-            state = { anchor, fingerprint, job, root, status: 'pending', reasons: [] };
+            state = { anchor, fingerprint, job, root, status: 'pending', reasons: [], failCount: 0 };
             states.set(job.url, state);
             bindHover(state);
           } else if (state.fingerprint !== fingerprint) {
@@ -406,7 +413,8 @@
         // Auto-apply: pick first allow state in the viewport, then click; if none,
         // do a humanized scroll to lazy-load more recommendations.
         if (AUTO_APPLY_ENABLED && !applying) {
-          const allowStates = Array.from(states.values()).filter((s) => s.status === 'allow');
+          // failCount>=2 的岗位（连续投递失败）排除出自动投递候选，避免反复打同一张卡
+          const allowStates = Array.from(states.values()).filter((s) => s.status === 'allow' && (s.failCount || 0) < 2);
           if (allowStates.length > 0) {
             // 优先投视口内第一张 allow 卡；不在视口先滚到屏幕中央再投
             const target = allowStates.find((s) => {
@@ -414,21 +422,12 @@
               return rect && rect.top < window.innerHeight && rect.bottom > 0;
             }) || allowStates[0];
             if (target.root) humanScrollIntoView(target.root, { block: 'center' });
-            applyHovered(target);
+            const outcome = await applyHovered(target);
+            // 节流中不空等：继续下拉探索新岗位（用户要求投完往下去探索更多机会）
+            if (outcome === 'throttled') await exploreFeed();
           } else {
-            // 视口内没有 allow 卡：拟人化下拉触发懒加载（仅滚动，无导航）
-            if (noAllowScrollCooldownUntil > Date.now()) return;
-            const moved = await scrollFeedForMore();
-            if (moved) {
-              noAllowScrollCooldownUntil = Date.now() + 45000; // 每次下拉后冷却 45s，避免疯狂滚动
-            } else {
-              // 到底部了：连续 3 次无新卡则长时间冷却，避免反复空滚
-              noAllowStrikeCount += 1;
-              if (noAllowStrikeCount >= 3) {
-                noAllowScrollCooldownUntil = Date.now() + 15 * 60 * 1000; // 15 分钟
-                noAllowStrikeCount = 0;
-              }
-            }
+            // 视口内没有可投的 allow 卡：拟人化下拉触发懒加载（仅滚动，无导航）
+            await exploreFeed();
           }
         }
       } finally {
@@ -455,6 +454,46 @@
       const moved = Math.abs(window.scrollY - lastY);
       if (moved < 100) return false; // 已到底部/滚动不动
       return true;
+    }
+
+    // 拟人化下拉探索：节流等待期或视口无 allow 卡时，触发懒加载更多岗位（仅滚动，无导航）
+    async function exploreFeed() {
+      if (noAllowScrollCooldownUntil > Date.now()) return;
+      const moved = await scrollFeedForMore();
+      if (moved) {
+        noAllowScrollCooldownUntil = Date.now() + 45000; // 每次下拉后冷却 45s，避免疯狂滚动
+      } else {
+        // 到底部了：连续 3 次无新卡则长时间冷却，避免反复空滚
+        noAllowStrikeCount += 1;
+        if (noAllowStrikeCount >= 3) {
+          noAllowScrollCooldownUntil = Date.now() + 15 * 60 * 1000; // 15 分钟
+          noAllowStrikeCount = 0;
+        }
+      }
+    }
+
+    // BOSS 业务对话框（完善简历/岗位下架等）右上角关闭按钮
+    function findCloseButton(scope) {
+      for (const selector of CLOSE_SELECTORS) {
+        const node = Array.from(scope.querySelectorAll(selector)).find(isVisible);
+        if (node) return node;
+      }
+      return null;
+    }
+
+    // 点击"立即沟通"后若弹出业务对话框（非风控词），拟人关闭恢复页面，避免卡在弹窗上不再探索
+    async function closeOpenDialog() {
+      const btn = findCloseButton(document);
+      if (btn) {
+        await humanizedClick(btn);
+        await sleep(250 + Math.random() * 250);
+        return;
+      }
+      // 兜底：派发 ESC（多数对话框支持）；即使无效也只是多一个无害事件
+      try {
+        document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true, cancelable: true }));
+      } catch {}
+      await sleep(250);
     }
 
     function isVisible(node) {
@@ -571,23 +610,24 @@
       return false;
     }
 
+    // 返回 outcome 供 scan 决策：'throttled' 时 scan 继续下拉探索新岗位
     async function applyHovered(targetState = null) {
       const state = targetState || hovered;
-      if (!state || state.status !== 'allow' || applying) return;
+      if (!state || state.status !== 'allow' || applying) return 'invalid';
       applying = true;
       try {
         if (!(await refreshHealth())) {
           state.status = 'offline';
           lastResult = 'Server 未启动，未点击';
           renderBadge(state, 'Server 未启动', 'offline');
-          return;
+          return 'offline';
         }
         if (hasPageRisk(window.location.href, document.body.innerText)) {
           state.status = 'block';
           lastResult = 'page_risk_detected';
           renderBadge(state, '页面异常，已停止', 'block');
           notifyRiskStopped(state, 'page_risk_detected');
-          return;
+          return 'page_risk';
         }
 
         // 风控弹窗检测
@@ -599,7 +639,7 @@
           renderBadge(state, lastResult, 'block');
           // 上报暂停并通知用户（gate server 推送飞书），等待冷却
           notifyRiskStopped(state, `risk_popup_${riskPopup.reason}`);
-          return;
+          return 'risk_popup';
         }
 
         // 节流检查（45-90s 抖动区间，打破固定节律避免机械指纹）
@@ -607,7 +647,7 @@
         if (shouldThrottleInternal({ appliedToday: todayApplied, maxPerDay: 120, lastAppliedAt, intervalSeconds: interval })) {
           lastResult = '节流中，等待下一投递窗口';
           renderBadge(state, lastResult, 'block');
-          return;
+          return 'throttled';
         }
 
         try {
@@ -617,14 +657,14 @@
             state.reasons = latestGate.reasons || [];
             lastResult = state.reasons[0] || 'gate_blocked_before_click';
             renderBadge(state, lastResult, 'block');
-            return;
+            return 'gate_blocked';
           }
         } catch {
           serverOnline = false;
           state.status = 'offline';
           lastResult = 'Server 未启动，未点击';
           renderBadge(state, 'Server 未启动', 'offline');
-          return;
+          return 'offline';
         }
 
         let detail = state.root;
@@ -642,8 +682,10 @@
             lastResult = 'detail_mismatch';
             state.status = 'failed';
             await recordResult(state, false, 'detail_mismatch');
+            state.failCount = (state.failCount || 0) + 1;
+            lastAppliedAt = Date.now(); // 面板未切换也冷却：避免每 5s 点同一张卡（机械指纹）
             renderBadge(state, '详情与悬停岗位不一致', 'block');
-            return;
+            return 'detail_mismatch';
           }
           // 面板刚切换到目标岗位，"看一眼"再点按钮（拟人停顿）
           await sleep(400 + Math.random() * 500);
@@ -654,13 +696,13 @@
           state.status = 'failed';
           await recordResult(state, false, 'button_not_found');
           renderBadge(state, '未找到沟通按钮', 'block');
-          return;
+          return 'button_not_found';
         }
         if (/继续沟通|已沟通/.test(normalizeText(button.innerText))) {
           state.status = 'block';
           lastResult = 'already_continuing';
           renderBadge(state, '已经沟通过', 'block');
-          return;
+          return 'already_continuing';
         }
 
         const beforeText = document.body.innerText;
@@ -672,14 +714,33 @@
           state.status = 'failed';
           await recordResult(state, false, 'click_dispatch_failed');
           renderBadge(state, '点击派发失败', 'block');
-          return;
+          return 'click_failed';
         }
         const success = await waitForApplyEvidence(beforeText);
-        state.status = success ? 'applied' : 'failed';
-        lastResult = success ? `已沟通：${state.job.title}` : 'button_click_not_verified';
+        if (!success) {
+          // 点击"立即沟通"后无导航：通常是弹了业务对话框（完善简历/岗位已下架等）。
+          // 先按风控词重查全文——若真是风控弹窗必须停，不能假装没看见继续点。
+          const postRisk = detectRiskPopupInternal(document.body.innerText);
+          if (postRisk.risk) {
+            state.status = 'block';
+            state.reasons = [`risk_popup_${postRisk.reason}`];
+            lastResult = `风控弹窗：${postRisk.reason}，已暂停投递`;
+            renderBadge(state, lastResult, 'block');
+            notifyRiskStopped(state, `risk_popup_${postRisk.reason}`);
+            return 'risk_popup';
+          }
+          // 普通业务弹窗：拟人关闭，恢复页面，下个节流周期再继续探索
+          await closeOpenDialog();
+        }
+        state.failCount = (state.failCount || 0) + (success ? 0 : 1);
+        const exhausted = state.failCount >= 2; // 连续 2 次投递失败：跳过该岗位，不再打同一张卡
+        state.status = success ? 'applied' : (exhausted ? 'block' : 'failed');
+        lastResult = success ? `已沟通：${state.job.title}` : (exhausted ? '连续失败，已跳过' : 'button_click_not_verified');
         await recordResult(state, success, success ? undefined : 'button_click_not_verified');
-        if (success) lastAppliedAt = Date.now();
+        // 无论成败都重置节流时钟：失败也绝不允许 5s 连发（快速连点是风控指纹，会触发 BOSS 警示）
+        lastAppliedAt = Date.now();
         renderBadge(state, success ? '✓ 已沟通' : '点击未验证', success ? 'allow' : 'block');
+        return success ? 'applied' : 'failed';
       } finally {
         applying = false;
         renderPanel();
