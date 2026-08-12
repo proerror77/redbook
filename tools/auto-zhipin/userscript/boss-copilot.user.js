@@ -17,7 +17,7 @@
   'use strict';
 
   // 拟人化点击模块。移植自 mrcxsy/boss-auto-apply (Apache-2.0)
-  // 内联精简版：贝塞尔轨迹 + 完整事件链 + 严格单调时间戳
+  // 内联精简版：完整事件链 + 严格单调时间戳（原版贝塞尔轨迹已省略）
 
   /**
    * Build the full pointer→mouse→click event chain for a target element.

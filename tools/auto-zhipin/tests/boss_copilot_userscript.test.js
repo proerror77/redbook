@@ -144,3 +144,15 @@ test('auto-apply wiring present in scan function', () => {
   assert.match(scanFlow, /AUTO_APPLY_ENABLED/);
   assert.match(scanFlow, /applyHovered\(/);
 });
+
+test('applyHovered handles humanizedDispatch failure path correctly', () => {
+  const source = require('node:fs').readFileSync(require.resolve('../userscript/boss-copilot.user.js'), 'utf8');
+  const applyFlow = source.slice(source.indexOf('async function applyHovered('));
+  // Verify the failure path: check humanizedDispatch result, set status=failed, record result, render badge
+  assert.match(applyFlow, /const clickOk = humanizedDispatch\(button\)/);
+  assert.match(applyFlow, /if \(!clickOk\)/);
+  assert.match(applyFlow, /lastResult = 'click_dispatch_failed'/);
+  assert.match(applyFlow, /state\.status = 'failed'/);
+  assert.match(applyFlow, /recordResult\(state, false, 'click_dispatch_failed'\)/);
+  assert.match(applyFlow, /renderBadge\(state, '点击派发失败', 'block'\)/);
+});
