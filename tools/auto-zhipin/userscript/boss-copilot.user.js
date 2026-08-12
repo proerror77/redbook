@@ -7,6 +7,8 @@
 // @grant        GM_xmlhttpRequest
 // @connect      127.0.0.1
 // @run-at       document-idle
+// @updateURL    http://127.0.0.1:8898/boss-copilot.user.js
+// @downloadURL  http://127.0.0.1:8898/boss-copilot.user.js
 // ==/UserScript==
 
 (function bootstrap(root, factory) {
