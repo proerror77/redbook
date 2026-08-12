@@ -3,9 +3,12 @@ const assert = require('node:assert/strict');
 
 const {
   APPLY_BUTTON_SELECTORS,
+  AUTO_APPLY_ENABLED,
+  buildClickEventsInternal,
   detailMatchesJob,
   extractJob,
   hasPageRisk,
+  humanizedDispatch,
   isApplyVerified,
 } = require('../userscript/boss-copilot.user.js');
 
@@ -71,7 +74,7 @@ test('apply verification accepts continue text or chat navigation only', () => {
 
 test('apply hotkey rechecks the gate before clicking', () => {
   const source = require('node:fs').readFileSync(require.resolve('../userscript/boss-copilot.user.js'), 'utf8');
-  const applyFlow = source.slice(source.indexOf('async function applyHovered()'));
+  const applyFlow = source.slice(source.indexOf('async function applyHovered('));
   assert.match(applyFlow, /request\('POST', '\/gate', \{ job: state\.job \}\)/);
 });
 
@@ -79,4 +82,65 @@ test('page risk detection stops auth, verification, and restricted pages', () =>
   assert.equal(hasPageRisk('https://www.zhipin.com/web/user/', ''), true);
   assert.equal(hasPageRisk('https://www.zhipin.com/web/geek/job', '当前访问受限，请稍后重试'), true);
   assert.equal(hasPageRisk('https://www.zhipin.com/web/geek/job', 'AI Agent 架构师 立即沟通'), false);
+});
+
+test('AUTO_APPLY_ENABLED is exported and defaults to true', () => {
+  assert.equal(AUTO_APPLY_ENABLED, true);
+});
+
+test('buildClickEventsInternal returns correct event chain with pointer fields', () => {
+  const target = { addEventListener: () => {}, dispatchEvent: () => {} };
+  const events = buildClickEventsInternal(target);
+  assert.equal(events.length, 5);
+  assert.deepEqual(events.map((e) => e.type), ['pointerdown', 'mousedown', 'pointerup', 'mouseup', 'click']);
+
+  // Verify pointer fields
+  for (const ev of events) {
+    assert.equal(ev.init.pointerId, 1);
+    assert.equal(ev.init.isPrimary, true);
+    assert.equal(ev.init.pointerType, 'mouse');
+    assert.equal(ev.init.bubbles, true);
+    assert.equal(ev.init.cancelable, true);
+  }
+
+  // Verify pressure values
+  assert.equal(events[0].init.pressure, 0.5); // pointerdown
+  assert.equal(events[2].init.pressure, 0);   // pointerup
+});
+
+test('humanizedDispatch generates monotonic timestamps', () => {
+  const dispatched = [];
+  const target = {
+    dispatchEvent: (event) => {
+      dispatched.push({ type: event.type, timeStamp: event.timeStamp });
+      return true;
+    },
+  };
+
+  const result = humanizedDispatch(target);
+  assert.equal(result, true);
+  assert.equal(dispatched.length, 5);
+
+  // Verify strict monotonicity
+  for (let i = 1; i < dispatched.length; i++) {
+    assert.ok(dispatched[i].timeStamp > dispatched[i - 1].timeStamp,
+      `timestamp[${i}] (${dispatched[i].timeStamp}) should be > timestamp[${i-1}] (${dispatched[i - 1].timeStamp})`);
+  }
+});
+
+test('humanizedDispatch returns false on dispatch error', () => {
+  const target = {
+    dispatchEvent: () => {
+      throw new Error('dispatch failed');
+    },
+  };
+  const result = humanizedDispatch(target);
+  assert.equal(result, false);
+});
+
+test('auto-apply wiring present in scan function', () => {
+  const source = require('node:fs').readFileSync(require.resolve('../userscript/boss-copilot.user.js'), 'utf8');
+  const scanFlow = source.slice(source.indexOf('async function scan()'));
+  assert.match(scanFlow, /AUTO_APPLY_ENABLED/);
+  assert.match(scanFlow, /applyHovered\(/);
 });

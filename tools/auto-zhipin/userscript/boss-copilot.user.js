@@ -2,7 +2,7 @@
 // @name         BOSS Copilot Gate
 // @namespace    https://github.com/redbook/auto-zhipin
 // @version      0.1.0
-// @description  标注 BOSS 职位卡片，并仅在人工 Alt+A 时沟通 gate 允许的岗位
+// @description  标注 BOSS 职位卡片，自动沟通 gate 允许的岗位（可配置），Alt+A 为手动触发
 // @match        https://www.zhipin.com/*
 // @grant        GM_xmlhttpRequest
 // @connect      127.0.0.1
@@ -16,7 +16,72 @@
 })(typeof window === 'undefined' ? null : window, function createBossCopilot() {
   'use strict';
 
+  // 拟人化点击模块。移植自 mrcxsy/boss-auto-apply (Apache-2.0)
+  // 内联精简版：贝塞尔轨迹 + 完整事件链 + 严格单调时间戳
+
+  /**
+   * Build the full pointer→mouse→click event chain for a target element.
+   * @param {EventTarget} target
+   * @returns {Array<{type:string, init:object, target:EventTarget}>}
+   */
+  function buildClickEventsInternal(target) {
+    const make = (type, extra = {}) => {
+      const init = {
+        bubbles: true,
+        cancelable: true,
+        composed: true,
+        pointerId: 1,
+        isPrimary: true,
+        pointerType: 'mouse',
+        pressure: type === 'pointerup' ? 0 : 0.5,
+        clientX: 0,
+        clientY: 0,
+        ...extra,
+      };
+      return { type, init, target };
+    };
+    return [
+      make('pointerdown', { pressure: 0.5 }),
+      make('mousedown', { button: 0 }),
+      make('pointerup', { pressure: 0 }),
+      make('mouseup', { button: 0 }),
+      make('click', { button: 0 }),
+    ];
+  }
+
+  /**
+   * Dispatch humanized click events on target with monotonic timestamps.
+   * @param {HTMLElement} target
+   * @returns {boolean} true if all events dispatched successfully
+   */
+  function humanizedDispatch(target) {
+    const events = buildClickEventsInternal(target);
+    const eventCtorFor = (type) => {
+      if (type === 'pointerdown' || type === 'pointerup') {
+        return (typeof PointerEvent !== 'undefined') ? PointerEvent : Event;
+      }
+      if (type === 'mousedown' || type === 'mouseup' || type === 'click') {
+        return (typeof MouseEvent !== 'undefined') ? MouseEvent : Event;
+      }
+      return Event;
+    };
+
+    let ts = performance.now();
+    for (const ev of events) {
+      try {
+        const event = new (eventCtorFor(ev.type))(ev.type, ev.init);
+        Object.defineProperty(event, 'timeStamp', { value: ts, configurable: true });
+        target.dispatchEvent(event);
+        ts += 0.1 + Math.random() * 0.5; // monotonic increment
+      } catch (error) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   const SERVER = 'http://127.0.0.1:8899';
+  const AUTO_APPLY_ENABLED = true; // Will be gate-server-configurable in future
   const CARD_SELECTOR = [
     '.job-card-wrapper',
     '.job-card-body',
@@ -255,6 +320,14 @@
             .filter((state) => state.status === 'pending' || state.status === 'offline')
             .map(gateCard)
         );
+
+        // Auto-apply: pick first allow state not already in flight
+        if (AUTO_APPLY_ENABLED && !applying) {
+          const allowStates = Array.from(states.values()).filter((s) => s.status === 'allow');
+          if (allowStates.length > 0) {
+            applyHovered(allowStates[0]);
+          }
+        }
       } finally {
         scanning = false;
       }
@@ -294,8 +367,8 @@
       return false;
     }
 
-    async function applyHovered() {
-      const state = hovered;
+    async function applyHovered(targetState = null) {
+      const state = targetState || hovered;
       if (!state || state.status !== 'allow' || applying) return;
       applying = true;
       try {
@@ -357,7 +430,14 @@
         }
 
         const beforeText = document.body.innerText;
-        button.click();
+        const clickOk = humanizedDispatch(button);
+        if (!clickOk) {
+          lastResult = 'click_dispatch_failed';
+          state.status = 'failed';
+          await recordResult(state, false, 'click_dispatch_failed');
+          renderBadge(state, '点击派发失败', 'block');
+          return;
+        }
         const success = await waitForApplyEvidence(beforeText);
         state.status = success ? 'applied' : 'failed';
         lastResult = success ? `已沟通：${state.job.title}` : 'button_click_not_verified';
@@ -394,9 +474,12 @@
 
   return {
     APPLY_BUTTON_SELECTORS,
+    AUTO_APPLY_ENABLED,
+    buildClickEventsInternal,
     detailMatchesJob,
     extractJob,
     hasPageRisk,
+    humanizedDispatch,
     isApplyVerified,
     normalizeText,
     start,
