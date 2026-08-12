@@ -69,8 +69,21 @@ test("shared playbook keeps the Redbook workflow hard gates", () => {
     "目标受益人、Persona 匹配",
     "计划内容发稿前必须过 `受益人 + 冷读审稿门`",
     "快速说明目标受益人和转发/回复理由",
+    "tools/redbookctl social-loop status",
     "工作流启动指南：`docs/reference/workflow-start-guide.md`",
   ], "shared playbook");
+});
+
+test("social media workflow is a closed no-publish loop", () => {
+  const social = read("docs/reference/social-media-app-research-writing-workflow.md");
+  assertIncludesAll(social, [
+    "The social media flow is a no-publish loop",
+    "tools/redbookctl social-loop status",
+    "tools/redbookctl social-loop run --step collect",
+    "tools/redbookctl social-loop review",
+    "docs/reports/social-loop-YYYY-MM-DD.md",
+    "The loop is still open when the system only collected data but did not produce a review/decision artifact.",
+  ], "social media app workflow");
 });
 
 test("workflow start guide covers the user-facing starts", () => {

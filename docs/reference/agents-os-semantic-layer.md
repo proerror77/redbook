@@ -96,7 +96,7 @@ Completion claims require evidence appropriate to the lane:
 
 If no external evidence can be acquired, say exactly which evidence is missing and leave the state as pending or blocked.
 
-For Lane A X topics, first check whether today's daily task has already run by using `tools/redbookctl status` and today's `X-每日日程-YYYY-MM-DD.md`, `X-timeline-fresh-following-YYYY-MM-DD.md`, and `X-互动队列-YYYY-MM-DD.md`. If today's evidence is missing, run `tools/redbookctl daily` before answering unless the user explicitly asks to only read existing materials or not fetch external data. The primary evidence is `X-timeline-fresh-following-YYYY-MM-DD.md` / `.json`, generated from a chronological following timeline and filtered to the current date. `X-timeline-sample-YYYY-MM-DD` from home/for-you and `X-互动队列-YYYY-MM-DD` are supplementary; they cannot be the primary basis for “today’s topics”.
+For Lane A X topics, first check whether today's daily task has already run by using `tools/redbookctl status` and today's `X-每日日程-YYYY-MM-DD.md`, `X-timeline-fresh-following-YYYY-MM-DD.md`, and `X-互动队列-YYYY-MM-DD.md`. If today's evidence is missing, run `tools/redbookctl daily` before answering unless the user explicitly asks to only read existing materials or not fetch external data. The primary evidence is `X-timeline-fresh-following-YYYY-MM-DD.md` / `.json`, generated from a chronological following timeline and filtered to the current date. `X-timeline-sample-YYYY-MM-DD` is a fresh-following-derived supplementary view, and `X-互动队列-YYYY-MM-DD` is a filtered candidate queue; neither can be the primary basis for “today’s topics”. Daily research must not depend on X Pro or X search by default.
 
 ## Publish Gate
 

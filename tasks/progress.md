@@ -4,6 +4,54 @@
 
 ---
 
+## [2026-07-01] Social media loop closure
+
+**完成了什么：**
+- 把 social media 资料收集/写作从“daily + 文档清单”收敛成可执行闭环：`Observe -> Collect -> Verify -> Review -> Decide -> Draft/Review -> Writeback -> Next`。
+- 新增 `tools/redbookctl social-loop status|next|run|review`：
+  - `status`：读取 legacy dashboard JSON，汇总日报、fresh following、supplemental sample、互动队列和 review report 状态。
+  - `run --step collect`：只跑 `tools/redbookctl daily`，不发布、不评论、不回复。
+  - `review`：生成本地 `docs/reports/social-loop-YYYY-MM-DD.md`。
+  - `next`：给出下一个 no-publish 动作。
+- 生成本日闭环报告：`docs/reports/social-loop-2026-07-01.md`，基于 100 条 fresh following 和 20 条互动候选，列出候选信号和 no-publish gate。
+- 更新 `docs/reference/social-media-app-research-writing-workflow.md`、`docs/shared/redbook-playbook.md`、`AGENTS.md`、`CLAUDE.md`、`docs/reference/skills-manifest.md` 和 `tools/README.md`，让 social-loop 成为默认 social media 资料/写作入口。
+- 新增测试覆盖：
+  - `redbookctl social-loop status --json` 必须暴露 research-only 状态和 no-publish gate。
+  - social workflow 文档必须声明 closed no-publish loop。
+
+**验证：**
+- `tools/redbookctl social-loop status`：当前 `Phase: next | state: decision_ready`。
+- `tools/redbookctl social-loop next`：下一步为读 review report、选/拒题、wiki query 后本地写作；明确不允许 publish/comment/reply。
+- `node --test tools/tests/redbookctl_contract.test.mjs` 通过，3 tests。
+- `node --test tools/tests/redbook_workflow_contract.test.mjs` 通过，7 tests。
+- `python3 -m py_compile tools/redbookctl.py` 和 `git diff --check` 通过。
+
+**遗留：**
+- social-loop 当前只闭合资料收集、候选 review、下一步决策和本地写作入口；真正发布/评论仍必须另走 approved-publish / engagement workflow。
+- 旧 harness publish run 和旧 T+1/T+3 ledger backlog 仍由 `workflow-health` 提示，不属于本轮 social-loop 修复。
+
+## [2026-07-01] X research script refresh
+
+**完成了什么：**
+- 重新 review `tools/auto-x` 的 daily / engagement 脚本，确认过时默认路径是 X Pro deck 和 X search 页面采集；这两条现在只保留为显式 debug。
+- 查了 GitHub/当前工具路线：`jackwener/OpenCLI` 是活跃的登录态浏览器 CLI 路线，本机 `opencli twitter timeline --type following` 已经能稳定产出 100 条；`agent-twitter-client` 类方案可参考，但本轮不新增依赖。
+- `daily_schedule.py` / `daily_research.py` 默认不再跑 X Pro 或 X search；必须显式传 `--with-legacy-xpro` / `--with-search` 才会进入旧路径。
+- `build_engagement_queue.py` 默认改为 `--source fresh-following`，直接读取 `X-timeline-fresh-following-YYYY-MM-DD.json` 生成补充样本和互动队列；只有显式指定 `timeline/search/both` 才调用浏览器。
+- 更新 `tools/daily.sh`、`tools/auto-x/scripts/run_daily.sh`、`tools/auto-x/README.md`、`docs/shared/redbook-playbook.md`、`docs/reference/*`，并同步 `AGENTS.md` / `CLAUDE.md`。
+- 新增 `tools/auto-x/tests/test_build_engagement_queue.py`，锁定默认 JSON 路径不调用浏览器。
+
+**验证：**
+- `PYTHONUNBUFFERED=1 python3 -u tools/auto-x/scripts/build_engagement_queue.py --source fresh-following --limit 20 --timeline-sample-size 100 --min-score 25 --min-engagement 20`：从 100 条 fresh following 生成 20 条候选。
+- `tools/redbookctl status` 显示：`fresh following: 100`、`engagement candidates: 20`。
+- `python3 -m py_compile tools/auto-x/scripts/build_engagement_queue.py tools/auto-x/scripts/daily_schedule.py tools/auto-x/scripts/daily_research.py tools/redbookctl.py` 通过。
+- `python3 -m unittest tools/auto-x/tests/test_build_engagement_queue.py tools/auto-x/tests/test_x_utils.py tools/auto-x/tests/test_external_source_fallbacks.py` 通过，11 tests。
+- `bash -n tools/daily.sh tools/auto-x/scripts/run_daily.sh`、`node --test tools/tests/redbook_workflow_contract.test.mjs`、`git diff --check` 通过。
+
+**遗留：**
+- 没有升级全局 `opencli`（本机 1.6.8，npm 最新 1.8.5），避免把工具升级变量混进本轮脚本修复。
+- 旧 `scrape_xpro_columns.py` / `search_x.py` 仍保留为 legacy debug 文件，但不再是默认日程入口。
+- `workflow-health` 仍提示旧 harness publish run 和旧 T+1/T+3 ledger backlog；这些是既有发布账本问题，不属于本次 social research 脚本修复。
+
 ## [2026-07-01] Social media APP 资料收集与写作 review
 
 **完成了什么：**

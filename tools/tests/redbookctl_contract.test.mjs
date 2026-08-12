@@ -82,3 +82,32 @@ test("redbookctl workflow-health JSON wraps status plus actionable items", () =>
     assert.equal(["info", "warn"].includes(action.severity), true, `unexpected severity: ${action.severity}`);
   }
 });
+
+test("redbookctl social-loop JSON exposes the no-publish social loop state", () => {
+  const current = runJson(["social-loop", "status", "--json"]);
+
+  assert.equal(current.workflow, "social-loop");
+  assert.equal(current.mode, "research-only");
+  assert.equal(typeof current.date, "string");
+  assert.equal(typeof current.phase, "string");
+  assert.equal(typeof current.state, "string");
+  assert.equal(typeof current.nextAction, "string");
+  assert.equal(current.noPublishGate.publish, "blocked_without_explicit_user_confirmation");
+  assert.equal(current.noPublishGate.reply, "blocked_without_explicit_user_confirmation");
+  assert.equal(current.noPublishGate.comment, "blocked_without_explicit_user_confirmation");
+  assert.equal(current.noPublishGate.likeFollowDm, "blocked");
+  assertPaths(current, [
+    "evidence.dailyReport.path",
+    "evidence.dailyReport.exists",
+    "evidence.freshFollowing.path",
+    "evidence.freshFollowing.exists",
+    "evidence.freshFollowing.count",
+    "evidence.freshFollowing.sufficient",
+    "evidence.engagementQueue.path",
+    "evidence.engagementQueue.exists",
+    "evidence.engagementQueue.count",
+    "evidence.engagementQueue.sufficient",
+    "evidence.reviewReport.path",
+    "evidence.reviewReport.exists",
+  ], "social-loop");
+});

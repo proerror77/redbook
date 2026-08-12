@@ -30,7 +30,7 @@
 - 新增 workflow / publish / browser / image pipeline 代码默认使用 TypeScript / Bun；Python 入口保留为 legacy 或专项例外，见 `docs/reference/runtime-language-policy.md`。
 - Codex App 浏览器调用优先使用 `Chrome` 插件 / Codex Chrome Extension，连接用户真实 Chrome 并复用现有 tab；不要默认改用 Playwright MCP 或 Chrome DevTools MCP。
 - 浏览器类任务先用 `tools/redbookctl browser` 检查当前 Chrome/CDP 登录态；发布和账号操作优先复用已有 tab，避免重复开新页面和新 profile。
-- Lane A 选题研究必须用当日研究区或当前 X timeline 证据；如果用户问 timeline / 今天发生了什么，先看 `X-timeline-fresh-following-YYYY-MM-DD.md` / `.json` 的目标 100 条 following chronological 当日样本，再看 `X-timeline-sample-YYYY-MM-DD.md` 的 home/for-you 补充样本和 `X-互动队列-YYYY-MM-DD.md` 的 20 条筛选结果；`tools/redbookctl daily` 里的发布提醒/制作中旧稿只作 backlog，不得当作“今天值得写”的来源。
+- Lane A 选题研究必须用当日研究区或当前 X timeline 证据；如果用户问 timeline / 今天发生了什么，先看 `X-timeline-fresh-following-YYYY-MM-DD.md` / `.json` 的目标 100 条 following chronological 当日样本，再看 `X-timeline-sample-YYYY-MM-DD.md` 的 fresh-following-derived 补充样本和 `X-互动队列-YYYY-MM-DD.md` 的 20 条筛选结果；`tools/redbookctl daily` 里的发布提醒/制作中旧稿只作 backlog，不得当作“今天值得写”的来源。默认研究不使用 X Pro deck 或 X search。
 
 ## Active Entrypoints
 
@@ -56,6 +56,7 @@
 | 入口 | 状态 | 位置 | 用途 | 备注 |
 | --- | --- | --- | --- | --- |
 | `tools/redbookctl loop` | active-script | `tools/redbookctl.ts` + `docs/reference/loop-engineer-workflow.md` | Loop Engineer 控制面：Observe -> Decide -> Execute -> Verify -> Review -> Writeback -> Next | 用 `loop status/next/run/review/close` 收敛日报、harness、发布门、workflow-health 和 close-run |
+| `tools/redbookctl social-loop` | active-script | `tools/redbookctl.ts` + `docs/reference/social-media-app-research-writing-workflow.md` | Social media 资料收集与写作闭环：Observe -> Collect -> Verify -> Review -> Decide -> Draft/Review -> Writeback -> Next | research-only；生成 `docs/reports/social-loop-YYYY-MM-DD.md`，不发布、不评论、不回复、不关注 |
 | `tools/redbookctl daily` | active-script | `tools/redbookctl.ts` -> `tools/daily.sh` | 每日研究报告主入口 | 输出 `05-选题研究/X-每日日程-YYYY-MM-DD.md`、目标 100 条当日 `X-timeline-fresh-following-YYYY-MM-DD.md`、补充 `X-timeline-sample-YYYY-MM-DD.md` 和 20 条 `X-互动队列-YYYY-MM-DD.md` |
 | `tools/redbookctl browser` | active-script | `tools/redbookctl.ts` + `tools/browser-core/interactive/session.mjs` | 只读检查当前 Chrome/CDP tabs 与登录态 | X/XHS/微信/BOSS 动作前 |
 | `python3 tools/wiki_workflow.py daily-cycle --date YYYY-MM-DD` | active-script | `tools/wiki_workflow.py` | Wiki ingest + lint 维护 run | research-only run 会自动关闭 |

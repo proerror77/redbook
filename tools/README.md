@@ -7,6 +7,7 @@
 | 功能 | 推荐方式 | 备选方式 | 状态 |
 |------|---------|---------|------|
 | **工作流看板 / 控制面** | `tools/redbookctl status` | 直接读 `tasks/active.md` / harness JSON | ✅ 主推 |
+| **Social media 资料/写作闭环** | `tools/redbookctl social-loop status` / `review` / `next` | `tools/redbookctl daily` 只做收集，不闭环 | ✅ 主推 |
 | **浏览器登录态检查** | `tools/redbookctl browser` | 只读当前 Chrome/CDP tabs，不开新页 | ✅ 主推 |
 | **X 发布 profile 登录检查** | `tools/redbookctl x-login` | 固定 automation profile + expected handle 的 composer 检查；`--headed` 用于人工恢复 | ✅ 主推 |
 | **小红书发布健康检查** | `tools/redbookctl xhs-health` | 检查创作者中心登录；`--with-content-data` 回读管理页 | ✅ 主推 |
@@ -83,6 +84,7 @@ tools/
 **`tools/redbookctl`** - 日常 workflow 统一入口
 - canonical runtime 是 `tools/redbookctl.ts` / Bun；目前只有 `status`、`pick`、`publish`、`workflow-health` / `publish-health` 仍 delegate 到 legacy `tools/redbookctl.py`
 - 默认看板：`tools/redbookctl status`
+- Social media 资料/写作闭环：`tools/redbookctl social-loop status` -> `tools/redbookctl social-loop run --step collect` -> `tools/redbookctl social-loop review` -> `tools/redbookctl social-loop next`；research-only，不发布、不评论、不回复、不关注
 - 浏览器会话：`tools/redbookctl browser`，先检查 X / 小红书 / 微信 / BOSS 是否已有可复用登录 tab
 - X 发布 profile：`tools/redbookctl x-login`，强制检查 `/baoyu-post-to-x` 的默认 profile 是否能打开 X composer 且账号匹配 `expected_handle`；登录失效时用 `tools/redbookctl x-login --headed --login-wait-ms 600000` 做人工恢复
 - 小红书发布健康：`tools/redbookctl xhs-health`，只检查创作者中心登录；需要发布后管理页证据时跑 `tools/redbookctl xhs-health --with-content-data`

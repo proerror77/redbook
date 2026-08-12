@@ -1,1 +1,600 @@
-[]
+[
+  {
+    "handle": "claudeai",
+    "content": "Introducing Claude Sonnet 5, our most agentic Sonnet yet. It makes plans, uses tools like browsers and terminals, and runs autonomously at a level that just a few months ago required larger and more expensive models. https://t.co/UKK8G7ww5h",
+    "likes": 26711,
+    "retweets": 2483,
+    "replies": 1469,
+    "interaction_total": 36084,
+    "source": "fresh-following",
+    "query": "fresh-following",
+    "search_url": "05-选题研究/X-timeline-fresh-following-2026-07-01.json",
+    "target_url": "https://x.com/claudeai/status/2072017450611142835",
+    "language": "en",
+    "score": 73,
+    "reasons": [
+      "主题匹配:agent",
+      "主题匹配:claude",
+      "主题匹配:tool",
+      "主题匹配:tools",
+      "互动分:20",
+      "回复:1469",
+      "转帖:2483",
+      "喜欢:26711",
+      "评论空间:12",
+      "信息密度足够"
+    ],
+    "risks": [],
+    "comments": [
+      "This is really the shift from personal tool to workflow role.\n\nThe question is no longer just whether the model is smart, but whether it has permissions, memory, context, and delivery boundaries.",
+      "What still feels underrated here is runtime.\n\nAgents don't enter production just by answering well. They need recovery, observability, handoff, and auditability.",
+      "This feels like the transition from chatbot to coworker.\n\nThe difference isn't UI. It's whether the agent can stay inside a goal long enough to actually move it forward."
+    ]
+  },
+  {
+    "handle": "OpenRouter",
+    "content": "Claude Sonnet 5 is rolling out on OpenRouter with a promo price: $2/M in and $10/M out! It boosts agentic coding and pro workflows w/ flagship intelligence at Sonnet pricing. In early tests, agents were more reliable, faster, and easier to trust with larger tasks than 4.6. https://t.co/m0fjCHFDXM",
+    "likes": 202,
+    "retweets": 18,
+    "replies": 17,
+    "interaction_total": 289,
+    "source": "fresh-following",
+    "query": "fresh-following",
+    "search_url": "05-选题研究/X-timeline-fresh-following-2026-07-01.json",
+    "target_url": "https://x.com/OpenRouter/status/2072020173872325088",
+    "language": "en",
+    "score": 72,
+    "reasons": [
+      "主题匹配:agent",
+      "主题匹配:agents",
+      "主题匹配:coding",
+      "主题匹配:workflow",
+      "主题匹配:workflows",
+      "主题匹配:claude",
+      "互动分:10",
+      "回复:17",
+      "转帖:18",
+      "喜欢:202",
+      "评论空间:12",
+      "信息密度足够"
+    ],
+    "risks": [],
+    "comments": [
+      "This matters more than IDE UX.\n\nAI coding won't be won by faster autocomplete alone. It will be won by whoever owns the feedback loop inside real engineering workflows.",
+      "The real line is whether coding agents can enter real repos, CI, and review flows.\n\nIf they stay in demo land, model gains will get commoditized fast.",
+      "This is bigger than model benchmarks.\n\nThe winner is whoever controls the daily entry point for developers and turns that into workflow data."
+    ]
+  },
+  {
+    "handle": "OpenAI",
+    "content": "We’re introducing GeneBench-Pro, a research-level benchmark for a harder kind of AI progress: how well agents can navigate messy biological data, choose the right analysis path, and make judgment calls that real computational research depends on. https://t.co/AsilnnSxnE",
+    "likes": 2720,
+    "retweets": 210,
+    "replies": 185,
+    "interaction_total": 3695,
+    "source": "fresh-following",
+    "query": "fresh-following",
+    "search_url": "05-选题研究/X-timeline-fresh-following-2026-07-01.json",
+    "target_url": "https://x.com/OpenAI/status/2072004836674167294",
+    "language": "en",
+    "score": 69,
+    "reasons": [
+      "主题匹配:agent",
+      "主题匹配:agents",
+      "互动分:17",
+      "回复:185",
+      "转帖:210",
+      "喜欢:2720",
+      "评论空间:17",
+      "有问题/讨论入口",
+      "信息密度足够"
+    ],
+    "risks": [],
+    "comments": [
+      "This is really the shift from personal tool to workflow role.\n\nThe question is no longer just whether the model is smart, but whether it has permissions, memory, context, and delivery boundaries.",
+      "What still feels underrated here is runtime.\n\nAgents don't enter production just by answering well. They need recovery, observability, handoff, and auditability.",
+      "This feels like the transition from chatbot to coworker.\n\nThe difference isn't UI. It's whether the agent can stay inside a goal long enough to actually move it forward."
+    ]
+  },
+  {
+    "handle": "dotey",
+    "content": "Anthropic 今天发布 Claude Sonnet 5，替代 Sonnet 4.6 成为免费版和 Pro 版的默认模型。Anthropic 的定位很明确：Agent 能力接近自家最贵的 Opus 4.8，API 价格只有后者的 40%。 Sonnet 系列是开发者用量最大的一档。但过去几个月，AI Agent 能力（让模型自主规划、调用工具完成多步骤任务）的主要进步集中在更贵的 Opus 系列，两者差距越来越明显。Sonnet 5 把差距缩了回来。在 Agent 编程基准上，Sonnet 5 得分 63.2%，Sonnet 4.6 是 58.1%，Opus 4.8 是 69.2%。在知识工作基准上，Sonnet 5 甚至略微超过了 Opus 4.8。 早期测试者的反馈比较一致：以前 Sonnet 做到一半会停的复杂任务，现在能跑完，还会主动检查自己的输出。Zapier 的工程师说，让 Sonnet 5 连续执行“更新 Salesforce 账户等级，再给企业客户发公告邮件”，模型一口气做完了，“以前会卡在半路”。 API 定价分两阶段：8 月 31 日前的推广价是输入 2 美元/百万 Token、输出 10 美元/百万 Token，之后涨到 3 美元和 15 美元。据 TechCrunch 报道，这个价格低于 OpenAI 的 GPT-5.5 和 Google 的 Gemini 3.1 Pro，但仍高于 Gemini 3.5 Flash。 有个容易忽略的细节：Sonnet 5 换了新的分词器，同样的文本可能消耗 1.0 到 1.35 倍的 Token。Anthropic 说推广期的定价已经把这个涨幅对冲掉了，过渡期总成本大致不变。但推广价结束后，实际花费会比官方标价的涨幅更大。 安全方面，Sonnet 5 的幻觉率和迎合倾向低于前代，Agent 场景下抵御提示注入和恶意请求的能力更强。因为网络安全能力有所提升，模型默认开启了实时安全防护（和 Opus 4.7、4.8 相同的机制）。 Sonnet 5 今天起在 Claude 所有套餐、Claude Code 和 API 上可用，模型代号 claude-sonnet-5。",
+    "likes": 29,
+    "retweets": 2,
+    "replies": 9,
+    "interaction_total": 60,
+    "source": "fresh-following",
+    "query": "fresh-following",
+    "search_url": "05-选题研究/X-timeline-fresh-following-2026-07-01.json",
+    "target_url": "https://x.com/dotey/status/2072025716913262957",
+    "language": "zh",
+    "score": 68,
+    "reasons": [
+      "主题匹配:agent",
+      "主题匹配:code",
+      "主题匹配:claude",
+      "主题匹配:openai",
+      "主题匹配:gemini",
+      "主题匹配:模型",
+      "互动分:6",
+      "回复:9",
+      "转帖:2",
+      "喜欢:29",
+      "评论空间:12",
+      "信息密度足够"
+    ],
+    "risks": [],
+    "comments": [
+      "这点其实比 IDE 体验更关键。\n\nAI coding 最后拼的不是谁补全更快，而是谁能拿到真实工程流里的反馈数据。\n\n入口只是第一层，workflow data 才是护城河。",
+      "我觉得这里真正的分水岭是：coding agent 能不能进真实 repo、真实 CI、真实 review 流程。\n\n只停在 demo 里，模型再强也很快会被追平。",
+      "这事不能只看模型 benchmark。\n\n谁掌握工程师每天工作的入口，谁才更接近下一代 coding platform。"
+    ]
+  },
+  {
+    "handle": "DrJimFan",
+    "content": "Today, we give robots a /skills library that self-evolves and compounds indefinitely! Introducing ASPIRE: a robot solving its 100th task is no longer as clueless as solving its first. Coding agents observe multimodal sensory traces from simulation and real robots, launch an evolutionary search over control programs, and distill the best know-how into an ever-expanding library. ASPIRE is a new type of continual learning: \"training\" is skill refinement instead of gradient descent. \"Trained model\" is a repo of sensorimotor skills instead of floating weights. “Distributed training” is a panel of agents each practicing a different skill instead of sharded minibatches. Here's the beauty: ASPIRE gives the tired terms \"sim2real transfer\" and \"cross-embodiment transfer\" a whole new meaning. Bridging the sim-to-real gap is notoriously brutal. An end-to-end policy has to swallow both the visual shift (sim looks toyish next to a real camera) and the subtle contact physics it never quite gets right. ASPIRE sidesteps the mess, because it doesn't ship pixels or weights across the gap, but ships the know-how. The robot still has to practice in the real world, not zero-shot, but it gets there way faster because it isn't rediscovering the strategy from scratch. Same for going single-arm to bimanual hardware, which usually requires new data and retraining from zero. ASPIRE achieves up to ~10x cut in \"transfer learning” tokens (yes, tokens are the new unit of *training* compute ;) Check out our gallery of 150+ tasks and 90+ skills the robots taught themselves, all on the website! Kind of wild that we can ship the \"learned weights\" as an HTML page rather than a GGUF. We'll open-source the full stack so your own robot library starts compounding from ours! Deep dive in thread:",
+    "likes": 450,
+    "retweets": 59,
+    "replies": 31,
+    "interaction_total": 661,
+    "source": "fresh-following",
+    "query": "fresh-following",
+    "search_url": "05-选题研究/X-timeline-fresh-following-2026-07-01.json",
+    "target_url": "https://x.com/DrJimFan/status/2072004190856212902",
+    "language": "en",
+    "score": 68,
+    "reasons": [
+      "主题匹配:agent",
+      "主题匹配:agents",
+      "主题匹配:coding",
+      "互动分:14",
+      "回复:31",
+      "转帖:59",
+      "喜欢:450",
+      "评论空间:20",
+      "有问题/讨论入口",
+      "有反差判断可接",
+      "信息密度足够"
+    ],
+    "risks": [
+      "war"
+    ],
+    "comments": [
+      "This matters more than IDE UX.\n\nAI coding won't be won by faster autocomplete alone. It will be won by whoever owns the feedback loop inside real engineering workflows.",
+      "The real line is whether coding agents can enter real repos, CI, and review flows.\n\nIf they stay in demo land, model gains will get commoditized fast.",
+      "This is bigger than model benchmarks.\n\nThe winner is whoever controls the daily entry point for developers and turns that into workflow data."
+    ]
+  },
+  {
+    "handle": "MaxForAI",
+    "content": "刚刚，Anthropic 发布了 Claude Sonnet 5 模型🔥 Claude Sonnet 5 是对 Sonnet 4.6 的升级，但它使用了更新的分词器，该分词器改变了模型处理文本的方式以提升性能（这类似于在 Claude Opus 4.7 中引入的分词器更改）代价是相同的输入可能会映射到更多的 token。 新模型具备 1M的上下文窗口，默认输出长度为 64K ，最高支持输出 128K，并全面支持自适应思考功能。 在 BrowseComp 和OSWorld-Verified 上，Sonnet 5相较于 Sonnet 4.6获得了极大的改进。 虽然Opus 4.8在这些任务上仍是追求更高准确率的首选模型，但 Sonnet 5 为开发者提供了价格更低且质量远高于以往的选项。 Anthropic已提高 Chat、Cowork、Claude Code 和 Claude 平台 3 的速率限制，以适应更高努力级别带来的更高令牌使用；用户可根据其具体项目选择合适的级别。 价格方面，在首发促销期间，Claude Sonnet 5 的价格为输入每百万token 2 美元，输出每百万token 10 美元；促销期结束后，价格恢复到输入每百万词元 3 美元，输出每百万词元 15 美元。 同时Anthropic还提高了 Chat、Cowork、Claude Code 和 Claude 平台的速率限制，以适应更高努力级别带来的更多的使用，用户可根据其具体项目选择合适的级别。 该模型目前已在 Anthropic 官方 API 以及 Bedrock、Vertex 等第三方服务平台上可用。 付费订阅用户在更新到 Claude Code v2.1.197 版本后也立即可用。",
+    "likes": 9,
+    "retweets": 0,
+    "replies": 4,
+    "interaction_total": 21,
+    "source": "fresh-following",
+    "query": "fresh-following",
+    "search_url": "05-选题研究/X-timeline-fresh-following-2026-07-01.json",
+    "target_url": "https://x.com/MaxForAI/status/2072019894699540488",
+    "language": "zh",
+    "score": 68,
+    "reasons": [
+      "主题匹配:code",
+      "主题匹配:claude",
+      "主题匹配:模型",
+      "主题匹配:开发者",
+      "主题匹配:上下文",
+      "互动分:6",
+      "回复:4",
+      "转帖:0",
+      "喜欢:9",
+      "评论空间:12",
+      "信息密度足够"
+    ],
+    "risks": [],
+    "comments": [
+      "这点其实比 IDE 体验更关键。\n\nAI coding 最后拼的不是谁补全更快，而是谁能拿到真实工程流里的反馈数据。\n\n入口只是第一层，workflow data 才是护城河。",
+      "我觉得这里真正的分水岭是：coding agent 能不能进真实 repo、真实 CI、真实 review 流程。\n\n只停在 demo 里，模型再强也很快会被追平。",
+      "这事不能只看模型 benchmark。\n\n谁掌握工程师每天工作的入口，谁才更接近下一代 coding platform。"
+    ]
+  },
+  {
+    "handle": "claudeai",
+    "content": "Introducing Claude Science, a new app designed with every stage of research in mind. Artifacts traced to their code, environments managed on demand, and 60+ optional scientific databases that you can connect. Available now in beta. https://t.co/HKhLknxLJO",
+    "likes": 18968,
+    "retweets": 1618,
+    "replies": 799,
+    "interaction_total": 24601,
+    "source": "fresh-following",
+    "query": "fresh-following",
+    "search_url": "05-选题研究/X-timeline-fresh-following-2026-07-01.json",
+    "target_url": "https://x.com/claudeai/status/2072002740830842899",
+    "language": "en",
+    "score": 63,
+    "reasons": [
+      "主题匹配:code",
+      "主题匹配:claude",
+      "互动分:20",
+      "回复:799",
+      "转帖:1618",
+      "喜欢:18968",
+      "评论空间:12",
+      "信息密度足够"
+    ],
+    "risks": [],
+    "comments": [
+      "This matters more than IDE UX.\n\nAI coding won't be won by faster autocomplete alone. It will be won by whoever owns the feedback loop inside real engineering workflows.",
+      "The real line is whether coding agents can enter real repos, CI, and review flows.\n\nIf they stay in demo land, model gains will get commoditized fast.",
+      "This is bigger than model benchmarks.\n\nThe winner is whoever controls the daily entry point for developers and turns that into workflow data."
+    ]
+  },
+  {
+    "handle": "jerryjliu0",
+    "content": "Fully solving document parsing includes covering every point on the Pareto curve of accuracy, cost, and latency: 1️⃣ High-accuracy parsing - requires 99%+ accuracy, price insensitive. Especially relevant in regulated industries like financial service and insurance. 2️⃣ Low cost, high volume parsing - requires inhaling a massive volume of documents as context for agents. Can run offline in a batch setting. 3️⃣Low latency and low cost parsing - these are use cases where the user is uploading a massive volume of files ad-hoc and in the agent loop (e.g. uploading 1k pdfs to claude cowork). Requires an extremely fast pass to make sense of the docs before a deeper dive LlamaParse covers the cost-accuracy modes for document OCR with our document agent harness. LiteParse, our OSS project, is designed to be in the agent loop, and can route to deeper VLM-enabled modes. I talked about this and other topics during the @aiDotEngineer talk today. Stay tuned for the slides! In the meantime, check out our full set of parsing results on ParseBench: https://t.co/PWczfhp0OX LlamaParse: https://t.co/XYZmx5TFz8 LiteParse: https://t.co/JNER0mVcB8",
+    "likes": 17,
+    "retweets": 0,
+    "replies": 3,
+    "interaction_total": 26,
+    "source": "fresh-following",
+    "query": "fresh-following",
+    "search_url": "05-选题研究/X-timeline-fresh-following-2026-07-01.json",
+    "target_url": "https://x.com/jerryjliu0/status/2072035931050426782",
+    "language": "en",
+    "score": 61,
+    "reasons": [
+      "主题匹配:agent",
+      "主题匹配:agents",
+      "主题匹配:claude",
+      "互动分:6",
+      "回复:3",
+      "转帖:0",
+      "喜欢:17",
+      "评论空间:12",
+      "信息密度足够"
+    ],
+    "risks": [],
+    "comments": [
+      "The valuable part is not \"saving tokens\".\n\nOnce agents enter real work, memory becomes the layer that preserves decisions, context, and responsibility.",
+      "I think memory is slowly moving from feature to infrastructure.\n\nWithout searchable, auditable, recoverable context, agents won't really make it into production."
+    ]
+  },
+  {
+    "handle": "LangChain",
+    "content": "Building voice agents can come with tradeoffs. 💬 Better convos w/ speech to speech models Vs 🥪 More reliable harnesses w/ sandwich architecture How to build a voice research agent with both: ✅ Gemini Live: low-latency, natural-sounding convos ✅ Deep Agents: long-running research tasks ✅ LangSmith: full tracing & observability",
+    "likes": 35,
+    "retweets": 10,
+    "replies": 6,
+    "interaction_total": 73,
+    "source": "fresh-following",
+    "query": "fresh-following",
+    "search_url": "05-选题研究/X-timeline-fresh-following-2026-07-01.json",
+    "target_url": "https://x.com/LangChain/status/2072001573408968736",
+    "language": "en",
+    "score": 59,
+    "reasons": [
+      "主题匹配:agent",
+      "主题匹配:agents",
+      "主题匹配:gemini",
+      "互动分:6",
+      "回复:6",
+      "转帖:10",
+      "喜欢:35",
+      "评论空间:12",
+      "信息密度足够"
+    ],
+    "risks": [],
+    "comments": [
+      "This is really the shift from personal tool to workflow role.\n\nThe question is no longer just whether the model is smart, but whether it has permissions, memory, context, and delivery boundaries.",
+      "What still feels underrated here is runtime.\n\nAgents don't enter production just by answering well. They need recovery, observability, handoff, and auditability.",
+      "This feels like the transition from chatbot to coworker.\n\nThe difference isn't UI. It's whether the agent can stay inside a goal long enough to actually move it forward."
+    ]
+  },
+  {
+    "handle": "LangChain",
+    "content": "LangSmith for Startups Spotlight: @Antimetal Antimetal is an autonomous system to manage your software in production. It builds a world model of your environment -- then its agents continuously monitor to prevent issues, triage alerts, and ship fixes. They are currently in private beta and used by engineering, infrastructure, and SRE teams at startups and the Fortune 500. They build with Deep Agents and leverage LangSmith for tracing, evaluations, and sandboxes. Speak to their engineering team for a demo at https://t.co/p1h1E0O8Yr.",
+    "likes": 24,
+    "retweets": 6,
+    "replies": 7,
+    "interaction_total": 57,
+    "source": "fresh-following",
+    "query": "fresh-following",
+    "search_url": "05-选题研究/X-timeline-fresh-following-2026-07-01.json",
+    "target_url": "https://x.com/LangChain/status/2072031919370355112",
+    "language": "en",
+    "score": 50,
+    "reasons": [
+      "主题匹配:agent",
+      "主题匹配:agents",
+      "主题匹配:sandbox",
+      "互动分:6",
+      "回复:7",
+      "转帖:6",
+      "喜欢:24",
+      "评论空间:12",
+      "信息密度足够"
+    ],
+    "risks": [
+      "war"
+    ],
+    "comments": [
+      "This is really the shift from personal tool to workflow role.\n\nThe question is no longer just whether the model is smart, but whether it has permissions, memory, context, and delivery boundaries.",
+      "What still feels underrated here is runtime.\n\nAgents don't enter production just by answering well. They need recovery, observability, handoff, and auditability.",
+      "This feels like the transition from chatbot to coworker.\n\nThe difference isn't UI. It's whether the agent can stay inside a goal long enough to actually move it forward."
+    ]
+  },
+  {
+    "handle": "claudeai",
+    "content": "Sonnet 5 is now the default on Free and Pro, and available to Max, Team, and Enterprise users. It's live across all Claude apps and the Claude Platform today, with introductory pricing through August 31: https://t.co/4nNWO80Er7",
+    "likes": 1511,
+    "retweets": 52,
+    "replies": 63,
+    "interaction_total": 1804,
+    "source": "fresh-following",
+    "query": "fresh-following",
+    "search_url": "05-选题研究/X-timeline-fresh-following-2026-07-01.json",
+    "target_url": "https://x.com/claudeai/status/2072017457057853480",
+    "language": "en",
+    "score": 49,
+    "reasons": [
+      "主题匹配:claude",
+      "互动分:14",
+      "回复:63",
+      "转帖:52",
+      "喜欢:1511",
+      "评论空间:12",
+      "信息密度足够"
+    ],
+    "risks": [],
+    "comments": [
+      "This feels more important than the headline itself.\n\nThe real change is that the capability is starting to become part of a reusable workflow, not just a one-off feature.",
+      "I think the interesting part here is structural.\n\nEntry point, context, and workflow are starting to matter more than isolated capability."
+    ]
+  },
+  {
+    "handle": "claudeai",
+    "content": "Early access partners found Sonnet 5 finishes complex tasks where previous Sonnets stopped short, checks its own output without being asked, and does all its agentic work at an attractive price point.",
+    "likes": 1749,
+    "retweets": 37,
+    "replies": 30,
+    "interaction_total": 1913,
+    "source": "fresh-following",
+    "query": "fresh-following",
+    "search_url": "05-选题研究/X-timeline-fresh-following-2026-07-01.json",
+    "target_url": "https://x.com/claudeai/status/2072017455833100494",
+    "language": "en",
+    "score": 47,
+    "reasons": [
+      "主题匹配:agent",
+      "互动分:14",
+      "回复:30",
+      "转帖:37",
+      "喜欢:1749",
+      "评论空间:8"
+    ],
+    "risks": [],
+    "comments": [
+      "This is really the shift from personal tool to workflow role.\n\nThe question is no longer just whether the model is smart, but whether it has permissions, memory, context, and delivery boundaries.",
+      "What still feels underrated here is runtime.\n\nAgents don't enter production just by answering well. They need recovery, observability, handoff, and auditability.",
+      "This feels like the transition from chatbot to coworker.\n\nThe difference isn't UI. It's whether the agent can stay inside a goal long enough to actually move it forward."
+    ]
+  },
+  {
+    "handle": "spolu",
+    "content": "Great chat with @collinmathilde at YC Startup School Paris yesterday. Loved the energy in the room as well as the weird basement backstage consisting of a very small window-less room packed with founders😁 I guess that’s what they meant by “founder mode” on the caps they offered us! Said a bunch of things I regret so you should definitely go listen to the recording 🤪 Generally the sign of a great fireside chat! We chatted about company building, why leave OpenAI in 2019 to build Dust, what I got right and wrong 3 years ago! We also talked about model agnosticity, company sovereignty in the light of recent events when it comes to buying intelligence! Did you know? Mathilde and I go a long way. At least 50% thanks to her that we got the luck to be acquired by Stripe in 2015 🙏",
+    "likes": 18,
+    "retweets": 0,
+    "replies": 1,
+    "interaction_total": 21,
+    "source": "fresh-following",
+    "query": "fresh-following",
+    "search_url": "05-选题研究/X-timeline-fresh-following-2026-07-01.json",
+    "target_url": "https://x.com/spolu/status/2072035676640677914",
+    "language": "en",
+    "score": 46,
+    "reasons": [
+      "主题匹配:openai",
+      "互动分:6",
+      "回复:1",
+      "转帖:0",
+      "喜欢:18",
+      "评论空间:17",
+      "有问题/讨论入口",
+      "信息密度足够"
+    ],
+    "risks": [],
+    "comments": [
+      "This feels more important than the headline itself.\n\nThe real change is that the capability is starting to become part of a reusable workflow, not just a one-off feature.",
+      "I think the interesting part here is structural.\n\nEntry point, context, and workflow are starting to matter more than isolated capability."
+    ]
+  },
+  {
+    "handle": "steipete",
+    "content": "RT @ajambrosino: what’s a little funny about the “GPT weak on frontend” discourse is that everything we ship in the codex app gets adopted…",
+    "likes": 0,
+    "retweets": 16,
+    "replies": 0,
+    "interaction_total": 32,
+    "source": "fresh-following",
+    "query": "fresh-following",
+    "search_url": "05-选题研究/X-timeline-fresh-following-2026-07-01.json",
+    "target_url": "https://x.com/steipete/status/2072016219797098822",
+    "language": "en",
+    "score": 46,
+    "reasons": [
+      "主题匹配:code",
+      "主题匹配:codex",
+      "互动分:6",
+      "回复:0",
+      "转帖:16",
+      "喜欢:0",
+      "评论空间:8"
+    ],
+    "risks": [],
+    "comments": [
+      "This matters more than IDE UX.\n\nAI coding won't be won by faster autocomplete alone. It will be won by whoever owns the feedback loop inside real engineering workflows.",
+      "The real line is whether coding agents can enter real repos, CI, and review flows.\n\nIf they stay in demo land, model gains will get commoditized fast.",
+      "This is bigger than model benchmarks.\n\nThe winner is whoever controls the daily entry point for developers and turns that into workflow data."
+    ]
+  },
+  {
+    "handle": "_akhaliq",
+    "content": "open-fusion in claude code with hf-claude https://t.co/YWxUMu9eWc",
+    "likes": 13,
+    "retweets": 1,
+    "replies": 5,
+    "interaction_total": 30,
+    "source": "fresh-following",
+    "query": "fresh-following",
+    "search_url": "05-选题研究/X-timeline-fresh-following-2026-07-01.json",
+    "target_url": "https://x.com/_akhaliq/status/2072023950062751746",
+    "language": "en",
+    "score": 45,
+    "reasons": [
+      "主题匹配:code",
+      "主题匹配:claude",
+      "互动分:6",
+      "回复:5",
+      "转帖:1",
+      "喜欢:13",
+      "评论空间:8"
+    ],
+    "risks": [],
+    "comments": [
+      "This matters more than IDE UX.\n\nAI coding won't be won by faster autocomplete alone. It will be won by whoever owns the feedback loop inside real engineering workflows.",
+      "The real line is whether coding agents can enter real repos, CI, and review flows.\n\nIf they stay in demo land, model gains will get commoditized fast.",
+      "This is bigger than model benchmarks.\n\nThe winner is whoever controls the daily entry point for developers and turns that into workflow data."
+    ]
+  },
+  {
+    "handle": "elonmusk",
+    "content": "Neuralink has solved through-dura electrode implantation! This is a very big deal, as it greatly improves the safety and ease of interfacing with the brain.",
+    "likes": 7670,
+    "retweets": 1262,
+    "replies": 1081,
+    "interaction_total": 13437,
+    "source": "fresh-following",
+    "query": "fresh-following",
+    "search_url": "05-选题研究/X-timeline-fresh-following-2026-07-01.json",
+    "target_url": "https://x.com/elonmusk/status/2072034905299563005",
+    "language": "en",
+    "score": 43,
+    "reasons": [
+      "互动分:20",
+      "回复:1081",
+      "转帖:1262",
+      "喜欢:7670",
+      "评论空间:8"
+    ],
+    "risks": [],
+    "comments": [
+      "This feels more important than the headline itself.\n\nThe real change is that the capability is starting to become part of a reusable workflow, not just a one-off feature.",
+      "I think the interesting part here is structural.\n\nEntry point, context, and workflow are starting to matter more than isolated capability."
+    ]
+  },
+  {
+    "handle": "elonmusk",
+    "content": "Half price Starlink for people in the Memphis region",
+    "likes": 5248,
+    "retweets": 892,
+    "replies": 995,
+    "interaction_total": 10017,
+    "source": "fresh-following",
+    "query": "fresh-following",
+    "search_url": "05-选题研究/X-timeline-fresh-following-2026-07-01.json",
+    "target_url": "https://x.com/elonmusk/status/2072015711635914948",
+    "language": "en",
+    "score": 43,
+    "reasons": [
+      "互动分:20",
+      "回复:995",
+      "转帖:892",
+      "喜欢:5248",
+      "评论空间:8"
+    ],
+    "risks": [],
+    "comments": [
+      "This feels more important than the headline itself.\n\nThe real change is that the capability is starting to become part of a reusable workflow, not just a one-off feature.",
+      "I think the interesting part here is structural.\n\nEntry point, context, and workflow are starting to matter more than isolated capability."
+    ]
+  },
+  {
+    "handle": "claudeai",
+    "content": "More on Claude Science: https://t.co/65weJA2wRv",
+    "likes": 374,
+    "retweets": 21,
+    "replies": 15,
+    "interaction_total": 461,
+    "source": "fresh-following",
+    "query": "fresh-following",
+    "search_url": "05-选题研究/X-timeline-fresh-following-2026-07-01.json",
+    "target_url": "https://x.com/claudeai/status/2072011953309167788",
+    "language": "en",
+    "score": 41,
+    "reasons": [
+      "主题匹配:claude",
+      "互动分:10",
+      "回复:15",
+      "转帖:21",
+      "喜欢:374",
+      "评论空间:8"
+    ],
+    "risks": [],
+    "comments": [
+      "This feels more important than the headline itself.\n\nThe real change is that the capability is starting to become part of a reusable workflow, not just a one-off feature.",
+      "I think the interesting part here is structural.\n\nEntry point, context, and workflow are starting to matter more than isolated capability."
+    ]
+  },
+  {
+    "handle": "aleabitoreddit",
+    "content": "$SIVE is raising ~$61M (600M SEK) to expand manufacturing capacity for InP lasers and optical amplifiers. Sivers operates as a fab-lite model so this is likely hinting at foundry allocation/scaling for CW DFB laser ramp across Jabil, and their other partners. It could also point to broader foundry allocation/scaling beyond the already announced WIN partnership. My feedback is that it's very bullish if it's comprised of long-only institutions and there's no heavy discount (30 day VWAP). Otherwise, would need to reaccess if there's arb or short term investors. This is the perfect time to get ideal strategic investors like $GFS on the cap table. As well as focusing on having more US institutional support. Especially considering $56M is a small check to a single US institution that want photonics exposure (eg. look at Poet's $400M registered direct offering for sentiment). A lot of it is \"it depends when more info comes out\", but this looks like a very positive signal for mass production given Siver's fab-lite models.",
+    "likes": 1040,
+    "retweets": 56,
+    "replies": 165,
+    "interaction_total": 1647,
+    "source": "fresh-following",
+    "query": "fresh-following",
+    "search_url": "05-选题研究/X-timeline-fresh-following-2026-07-01.json",
+    "target_url": "https://x.com/aleabitoreddit/status/2072007692684837039",
+    "language": "en",
+    "score": 41,
+    "reasons": [
+      "互动分:14",
+      "回复:165",
+      "转帖:56",
+      "喜欢:1040",
+      "评论空间:12",
+      "信息密度足够"
+    ],
+    "risks": [],
+    "comments": [
+      "This feels more important than the headline itself.\n\nThe real change is that the capability is starting to become part of a reusable workflow, not just a one-off feature.",
+      "I think the interesting part here is structural.\n\nEntry point, context, and workflow are starting to matter more than isolated capability."
+    ]
+  },
+  {
+    "handle": "elonmusk",
+    "content": "RT @AndrewKerrNC: NEW: @FreeBeacon has the receipts on Ro Khanna’s obscene, oligarchic wealth: —his 2 kids (under 10yrs old) own 3 private…",
+    "likes": 0,
+    "retweets": 3033,
+    "replies": 0,
+    "interaction_total": 6066,
+    "source": "fresh-following",
+    "query": "fresh-following",
+    "search_url": "05-选题研究/X-timeline-fresh-following-2026-07-01.json",
+    "target_url": "https://x.com/elonmusk/status/2072036774604308879",
+    "language": "en",
+    "score": 40,
+    "reasons": [
+      "互动分:17",
+      "回复:0",
+      "转帖:3033",
+      "喜欢:0",
+      "评论空间:8"
+    ],
+    "risks": [],
+    "comments": [
+      "This feels more important than the headline itself.\n\nThe real change is that the capability is starting to become part of a reusable workflow, not just a one-off feature.",
+      "I think the interesting part here is structural.\n\nEntry point, context, and workflow are starting to matter more than isolated capability."
+    ]
+  }
+]
