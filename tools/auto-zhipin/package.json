@@ -23,6 +23,7 @@
     "boss:apply-tracking": "node scripts/apply_tracking_report.js",
     "boss:native-feed": "node scripts/native_feed_apply.js",
     "boss:userscript-gate": "node scripts/userscript_gate_server.js",
+    "boss:supervisor": "bash scripts/supervisor.sh",
     "monitor": "node scripts/chrome_monitor_queue.js",
     "pinchtab:reply": "node scripts/reply_worker.js --backend pinchtab",
     "scan": "node scripts/chrome_collect_queue.js",
