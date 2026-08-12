@@ -35,6 +35,7 @@ function bezierPath(from, to, steps) {
   // Place control points at 1/3 and 2/3 of the segment, with a small jitter
   // that is clamped within a safe inner band so monotonicity is guaranteed.
   // Jitter range: ±8% of the segment length, capped to stay within the band.
+  // jitterFrac must stay < 1/6 to prevent c1/c2 ordering inversion.
   const jitterFrac = 0.08;
   const jx = dx * jitterFrac * (Math.random() - 0.5) * 2;
   const jy = dy * jitterFrac * (Math.random() - 0.5) * 2;
@@ -158,14 +159,27 @@ async function humanizedClick(target, opts = {}) {
   }
 
   const events = buildClickEvents(target);
+  // Pick the most specific event constructor available (browser has PointerEvent/MouseEvent;
+  // Node test environment has only Event — fall back gracefully).
+  const eventCtorFor = (type) => {
+    if (type === 'pointerdown' || type === 'pointerup') {
+      return (typeof PointerEvent !== 'undefined') ? PointerEvent : Event;
+    }
+    if (type === 'mousedown' || type === 'mouseup' || type === 'click') {
+      return (typeof MouseEvent !== 'undefined') ? MouseEvent : Event;
+    }
+    return Event;
+  };
+
+  // Thread the timestamp explicitly through the loop so monotonicity is
+  // independent of module-level _lastTs state.
+  let ts = monotonicTimestamp(0);
   for (const ev of events) {
-    const event = new Event(ev.type, ev.init);
-    Object.defineProperty(event, 'timeStamp', {
-      value: monotonicTimestamp(0),
-      configurable: true,
-    });
+    const event = new (eventCtorFor(ev.type))(ev.type, ev.init);
+    Object.defineProperty(event, 'timeStamp', { value: ts, configurable: true });
     target.dispatchEvent(event);
     await new Promise((r) => setTimeout(r, 30 + random() * 50));
+    ts = monotonicTimestamp(ts);
   }
 }
 

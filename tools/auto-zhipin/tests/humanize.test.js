@@ -40,3 +40,40 @@ test('monotonicTimestamp never returns same or lower value', () => {
   assert.ok(ts > 100);
   assert.ok(monotonicTimestamp(ts) > ts);
 });
+
+test('humanizedClick dispatches 5 events in order with strictly increasing timeStamps', async () => {
+  const { humanizedClick } = require('../lib/humanize.js');
+
+  const dispatched = [];
+  const target = {
+    getBoundingClientRect: () => ({ left: 200, top: 200, width: 80, height: 40 }),
+    dispatchEvent: (evt) => dispatched.push(evt),
+  };
+
+  // Inject deterministic random so test is stable.
+  await humanizedClick(target, { random: () => 0.5 });
+
+  // (a) 5 events dispatched in exact order
+  const types = dispatched.map((e) => e.type);
+  assert.deepEqual(types, ['pointerdown', 'mousedown', 'pointerup', 'mouseup', 'click']);
+
+  // (b) timeStamp strictly increases across the sequence
+  const timestamps = dispatched.map((e) => e.timeStamp);
+  for (let i = 1; i < timestamps.length; i++) {
+    assert.ok(
+      timestamps[i] > timestamps[i - 1],
+      `timeStamp[${i}]=${timestamps[i]} must be > timeStamp[${i - 1}]=${timestamps[i - 1]}`
+    );
+  }
+
+  // (c) Event objects are constructed without crash in Node (fallback to base Event).
+  //     Verify they are Event instances and that the buildClickEvents init fields
+  //     survive on the descriptor objects returned by buildClickEvents.
+  for (const evt of dispatched) {
+    assert.ok(evt instanceof Event, 'dispatched item must be an Event instance');
+  }
+  const { buildClickEvents } = require('../lib/humanize.js');
+  const chain = buildClickEvents(target);
+  assert.ok(chain[0].init.pointerId === 1, 'init fields survive on descriptor objects');
+  assert.ok(chain[2].init.pressure === 0, 'pointerup pressure is 0 in descriptor');
+});
