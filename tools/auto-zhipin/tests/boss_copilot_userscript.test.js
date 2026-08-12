@@ -273,6 +273,18 @@ test('scrollFeedForMore defined with humanized small-step scrolling', () => {
   assert.match(fn, /moved < 100/); // 到底部判定
 });
 
+test('exploreFeed scrolls continuously (no 45s cooldown) for lazy-load paging', () => {
+  const source = require('node:fs').readFileSync(require.resolve('../userscript/boss-copilot.user.js'), 'utf8');
+  const fn = source.slice(source.indexOf('async function exploreFeed('), source.indexOf('function findCloseButton('));
+  // 用户要求"往下翻页加载新职位"：滚动有位移就不再冷却，下个扫描周期继续滚
+  assert.match(fn, /async function exploreFeed/);
+  assert.match(fn, /noAllowScrollCooldownUntil > Date\.now\(\)/);
+  assert.match(fn, /noAllowStrikeCount/);
+  assert.match(fn, /15 \* 60 \* 1000/); // 到底部才 15 分钟休息
+  // 不再有 45s 的滚动冷却
+  assert.doesNotMatch(fn, /45000/);
+});
+
 test('isVisible excludes is-disabled buttons', () => {
   const source = require('node:fs').readFileSync(require.resolve('../userscript/boss-copilot.user.js'), 'utf8');
   const fn = source.slice(source.indexOf('function isVisible('), source.indexOf('function findButton('));

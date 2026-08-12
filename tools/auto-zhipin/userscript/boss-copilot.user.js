@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BOSS Copilot Gate
 // @namespace    https://github.com/redbook/auto-zhipin
-// @version      0.9.1
+// @version      0.10.0
 // @description  标注 BOSS 职位卡片，自动沟通 gate 允许的岗位（可配置），Alt+A 为手动触发
 // @match        https://www.zhipin.com/*
 // @grant        GM_xmlhttpRequest
@@ -456,20 +456,21 @@
       return true;
     }
 
-    // 拟人化下拉探索：节流等待期或视口无 allow 卡时，触发懒加载更多岗位（仅滚动，无导航）
+    // 拟人化下拉探索：节流等待期或视口无 allow 卡时，持续滚动触发懒加载更多岗位。
+    // 用户要求"往下翻页加载新职位"——每次扫描滚一小段，只要没到底部就不断滚，
+    // 推荐流会一直加载新岗位供扫描投递。仍只滚动、不点翻页按钮、不搜索/不导航。
     async function exploreFeed() {
       if (noAllowScrollCooldownUntil > Date.now()) return;
       const moved = await scrollFeedForMore();
-      if (moved) {
-        noAllowScrollCooldownUntil = Date.now() + 45000; // 每次下拉后冷却 45s，避免疯狂滚动
-      } else {
-        // 到底部了：连续 3 次无新卡则长时间冷却，避免反复空滚
+      if (!moved) {
+        // 到底部了（滚动不动）：连续 3 次则长时间休息，避免反复空滚
         noAllowStrikeCount += 1;
         if (noAllowStrikeCount >= 3) {
           noAllowScrollCooldownUntil = Date.now() + 15 * 60 * 1000; // 15 分钟
           noAllowStrikeCount = 0;
         }
       }
+      // 滚动有位移：不做 45s 冷却——下个扫描周期（5s 后）继续滚，持续加载新职位
     }
 
     // BOSS 业务对话框（完善简历/岗位下架等）右上角关闭按钮
