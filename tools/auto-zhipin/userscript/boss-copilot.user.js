@@ -150,14 +150,15 @@
 
   // 风控弹窗检测（内联副本，无 @require）——关键词移植自
   // mrcxsy/boss-auto-apply (Apache-2.0) src/modules/automation.js 的 __popupKeywords。
+  const RISK_KW_INTERNAL = [
+    '验证码', '安全验证', '安全检测', '人机验证', '操作太快', '频繁', '稍后再试',
+    '休息一下', '封禁', '请完成', '请先完成', '账号异常', '异常访问',
+    '访问受限', '403', '登录', '请先登录',
+  ];
+
   function detectRiskPopupInternal(text) {
-    const RISK_KW = [
-      '验证码', '安全验证', '安全检测', '人机验证', '操作太快', '频繁', '稍后再试',
-      '休息一下', '封禁', '限制', '请完成', '请先完成', '账号异常', '异常访问',
-      '访问受限', '403', '登录', '请先登录',
-    ];
     const normalized = String(text || '');
-    for (const keyword of RISK_KW) {
+    for (const keyword of RISK_KW_INTERNAL) {
       if (normalized.includes(keyword)) return { risk: true, reason: keyword };
     }
     return { risk: false, reason: '' };
