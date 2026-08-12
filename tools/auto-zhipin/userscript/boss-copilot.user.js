@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BOSS Copilot Gate
 // @namespace    https://github.com/redbook/auto-zhipin
-// @version      0.1.0
+// @version      0.7.0
 // @description  标注 BOSS 职位卡片，自动沟通 gate 允许的岗位（可配置），Alt+A 为手动触发
 // @match        https://www.zhipin.com/*
 // @grant        GM_xmlhttpRequest
@@ -93,6 +93,11 @@
   ].join(',');
   const DETAIL_SELECTOR = '.job-detail-box,.job-detail-container,.job-detail,.job-detail-section';
   const APPLY_BUTTON_SELECTORS = [
+    // BOSS 新版按钮结构（2026-08 实测）：class 为 op-btn-chat / op-btn，页面级（inCard=false）
+    'a.op-btn-chat',
+    '.op-btn-chat',
+    '.op-btn.btn-chat',
+    // 旧版详情页按钮（保留兼容）
     '.job-op .btn-startchat',
     '.btn-startchat-wrap .btn-startchat',
     'a.btn.btn-startchat',
@@ -345,6 +350,11 @@
             .map(gateCard)
         );
 
+        // 只读诊断探针：每次扫描对前 3 张 allow 卡上报按钮 DOM 结构（便于定位 detail_mismatch）
+        if (AUTO_APPLY_ENABLED) {
+          Array.from(states.values()).filter((s) => s.status === 'allow').slice(0, 3).forEach(probeButtonDom);
+        }
+
         // Auto-apply: pick first allow state not already in flight
         if (AUTO_APPLY_ENABLED && !applying) {
           const allowStates = Array.from(states.values()).filter((s) => s.status === 'allow');
@@ -372,6 +382,61 @@
       return null;
     }
 
+    // 只读探针：上报卡片内按钮查找结果，用于诊断 detail_mismatch 根因
+    function probeButtonDom(state) {
+      const result = { job: state.job.title, company: state.job.company, url: state.job.url };
+      // 当前页面详情面板显示的岗位（从 job-detail-op 的整个详情容器向上找标题）
+      const detailPanel = document.querySelector('.job-detail-op,.job-detail-container,.job-detail-box,[class*="job-detail"]');
+      if (detailPanel) {
+        const panelBox = detailPanel.closest('.job-detail-box,.job-detail-container,[class*="job-detail-box"],[class*="job-detail-container"]') || detailPanel.parentElement;
+        result.detailPanelText = panelBox ? normalizeText(panelBox.innerText).slice(0, 200) : '';
+        result.detailPanelCls = panelBox ? (panelBox.className || '') : '';
+      } else {
+        result.detailPanelText = '';
+        result.detailPanelCls = '';
+      }
+      const root = state.root;
+      // 卡片内每个选择器命中的元素数量与 class
+      const cardHits = {};
+      for (const selector of APPLY_BUTTON_SELECTORS) {
+        const nodes = root.querySelectorAll(selector);
+        cardHits[selector] = Array.from(nodes).map((n) => ({
+          cls: n.className || n.getAttribute?.('class') || '',
+          vis: isVisible(n),
+          tag: n.tagName,
+        }));
+      }
+      result.cardHits = cardHits;
+      result.cardInnerText = (root.innerText || '').slice(0, 200);
+      // 全局按钮 + 父容器上下文（确认它是悬浮球还是选中操作条）
+      const globalBtn = findButton(document);
+      if (globalBtn) {
+        let ctx = { cls: globalBtn.className || '', tag: globalBtn.tagName, inCard: Boolean(globalBtn.closest && globalBtn.closest(CARD_SELECTOR)) };
+        ctx.text = normalizeText(globalBtn.innerText || globalBtn.textContent).slice(0, 40);
+        ctx.visible = isVisible(globalBtn);
+        const parent = globalBtn.parentElement;
+        ctx.parentCls = parent ? (parent.className || '') : '';
+        ctx.parentText = parent ? normalizeText(parent.innerText).slice(0, 80) : '';
+        const card = globalBtn.closest ? globalBtn.closest(CARD_SELECTOR) : null;
+        ctx.nearestCardText = card ? normalizeText(card.innerText).slice(0, 100) : '';
+        // 详情弹窗：按钮是否在一个详情容器里，以及该容器显示的岗位标题
+        const detailBox = globalBtn.closest ? globalBtn.closest(DETAIL_SELECTOR) : null;
+        if (detailBox) {
+          ctx.detailText = normalizeText(detailBox.innerText).slice(0, 200);
+          // 详情里的岗位标题
+          const dt = detailBox.querySelector('.job-detail-header,.job-name,.job-title,.name');
+          ctx.detailTitle = dt ? normalizeText(dt.innerText).slice(0, 60) : '';
+        } else {
+          ctx.detailText = '';
+          ctx.detailTitle = '';
+        }
+        result.globalButton = ctx;
+      } else {
+        result.globalButton = null;
+      }
+      request('POST', '/debug-dom', { probe: result }).catch(() => {});
+    }
+
     async function recordResult(state, success, reason) {
       try {
         const result = await request('POST', '/applied', { job: state.job, result: { success, reason } });
@@ -395,6 +460,21 @@
       while (Date.now() < deadline) {
         if (isApplyVerified(window.location.href, beforeText, document.body.innerText)) return true;
         await new Promise((resolve) => window.setTimeout(resolve, 100));
+      }
+      return false;
+    }
+
+    // 点击目标卡片，把该岗位载入右侧详情面板（BOSS 推荐流点卡片即内联展开详情，属正常用户操作），
+    // 并等待详情面板切换到目标岗位（标题+公司匹配）。超时未切换返回 false，保留防误点保护。
+    async function openDetailForJob(state, timeoutMs = 4000) {
+      const clickTarget = (isVisible(state.anchor) && state.anchor) || (isVisible(state.root) && state.root);
+      if (!clickTarget) return false;
+      humanizedDispatch(clickTarget);
+      const deadline = Date.now() + timeoutMs;
+      while (Date.now() < deadline) {
+        const panel = document.querySelector(DETAIL_SELECTOR);
+        if (panel && detailMatchesJob(panel.innerText, state.job)) return true;
+        await new Promise((resolve) => window.setTimeout(resolve, 200));
       }
       return false;
     }
@@ -457,9 +537,15 @@
         let detail = state.root;
         let button = findButton(state.root);
         if (!button) {
-          button = findButton(document);
-          detail = button?.closest(DETAIL_SELECTOR);
-          if (button && (!detail || !detailMatchesJob(detail.innerText, state.job))) {
+          // 新版 BOSS 推荐流：卡片内没有沟通按钮，详情在右侧面板。
+          // 探针实测详情面板默认固定在某个岗位（如"基础平台负责人"），不跟随目标卡片；
+          // 直接点全局"立即沟通"会投错岗，被 detailMatchesJob 防误点保护拦下（detail_mismatch）。
+          // 正确做法：先点目标卡片把该岗位载入面板，等面板切换匹配后再点"立即沟通"。
+          const opened = await openDetailForJob(state);
+          detail = document.querySelector(DETAIL_SELECTOR);
+          button = findButton(detail || document);
+          if (!opened || !detail || !detailMatchesJob(detail.innerText, state.job)) {
+            probeButtonDom(state); // 只读诊断：面板未切换到目标岗位时上报
             lastResult = 'detail_mismatch';
             state.status = 'failed';
             await recordResult(state, false, 'detail_mismatch');

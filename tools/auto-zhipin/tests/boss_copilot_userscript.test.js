@@ -20,6 +20,11 @@ function textNode(text) {
 
 test('uses the reviewed apply button selector priority', () => {
   assert.deepEqual(APPLY_BUTTON_SELECTORS, [
+    // BOSS 新版按钮结构（2026-08 实测）：class 为 op-btn-chat / op-btn，页面级
+    'a.op-btn-chat',
+    '.op-btn-chat',
+    '.op-btn.btn-chat',
+    // 旧版详情页按钮（保留兼容）
     '.job-op .btn-startchat',
     '.btn-startchat-wrap .btn-startchat',
     'a.btn.btn-startchat',
@@ -78,6 +83,27 @@ test('apply hotkey rechecks the gate before clicking', () => {
   const source = require('node:fs').readFileSync(require.resolve('../userscript/boss-copilot.user.js'), 'utf8');
   const applyFlow = source.slice(source.indexOf('async function applyHovered('));
   assert.match(applyFlow, /request\('POST', '\/gate', \{ job: state\.job \}\)/);
+});
+
+test('card-local button miss opens target card detail before global apply', () => {
+  const source = require('node:fs').readFileSync(require.resolve('../userscript/boss-copilot.user.js'), 'utf8');
+  const applyFlow = source.slice(source.indexOf('async function applyHovered('));
+  // New BOSS layout: cards have no button, so the script must click the target card
+  // (openDetailForJob) and re-check the detail panel before clicking the global button.
+  assert.match(applyFlow, /await openDetailForJob\(state\)/);
+  assert.match(applyFlow, /detail = document\.querySelector\(DETAIL_SELECTOR\)/);
+  assert.match(applyFlow, /button = findButton\(detail \|\| document\)/);
+  assert.match(applyFlow, /detailMatchesJob\(detail\.innerText, state\.job\)/);
+  // The anti-mistake protection is preserved: refuse if the panel didn't switch to the target job
+  assert.match(applyFlow, /lastResult = 'detail_mismatch'/);
+});
+
+test('openDetailForJob clicks the card and waits for panel to match target job', () => {
+  const source = require('node:fs').readFileSync(require.resolve('../userscript/boss-copilot.user.js'), 'utf8');
+  const fn = source.slice(source.indexOf('async function openDetailForJob('), source.indexOf('async function applyHovered('));
+  assert.match(fn, /humanizedDispatch\(clickTarget\)/);
+  assert.match(fn, /detailMatchesJob\(panel\.innerText, state\.job\)/);
+  assert.match(fn, /timeoutMs = 4000/);
 });
 
 test('page risk detection stops auth, verification, and restricted pages', () => {

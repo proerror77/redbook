@@ -103,6 +103,11 @@ function normalizeJobInput(job = {}) {
 
 function buildServer({ store, config, getTriage, pushNotify = pushFeishuMessage }) {
   return http.createServer(async (request, response) => {
+    // 访问日志：确认浏览器 userscript 是否在调用本服务（诊断用，也便于运维）
+    const startedAt = Date.now();
+    response.on('finish', () => {
+      console.log(`[${new Date().toISOString()}] ${request.method} ${request.url} -> ${response.statusCode} (${Date.now() - startedAt}ms)`);
+    });
     try {
       if (request.method === 'GET' && request.url === '/health') {
         sendJson(response, 200, {
@@ -121,6 +126,7 @@ function buildServer({ store, config, getTriage, pushNotify = pushFeishuMessage 
         }
         const triage = getTriage();
         const gate = checkPreApplyCandidate({ store, config, application: job, triage });
+        console.log(`[gate] allow=${gate.allow} reasons=${JSON.stringify(gate.reasons || [])} job=${job.title} @ ${job.company}`);
         sendJson(response, 200, {
           allow: gate.allow,
           reasons: gate.reasons,
@@ -174,6 +180,14 @@ function buildServer({ store, config, getTriage, pushNotify = pushFeishuMessage 
           ok: true,
           todaySuccessfulApplies: store.getTodaySuccessfulApplies(),
         });
+        return;
+      }
+
+      if (request.method === 'POST' && request.url === '/debug-dom') {
+        // 只读诊断：接收 userscript 上报的卡片 DOM 探针结果，仅打日志不落库
+        const body = await readJsonBody(request);
+        console.log('[debug-dom]', JSON.stringify(body));
+        sendJson(response, 200, { ok: true });
         return;
       }
 

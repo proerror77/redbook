@@ -7,10 +7,15 @@ cd "$(dirname "$0")/.."
 LOG_FILE="logs/supervisor_$(date +%Y-%m-%d).log"
 mkdir -p logs
 
-# 1. 启动 gate 服务器（若未运行）
+# 1. 启动 gate 服务器 + userscript 静态服务（若未运行）
 if ! pgrep -f "userscript_gate_server.js" >/dev/null; then
   nohup node scripts/userscript_gate_server.js >> "$LOG_FILE" 2>&1 &
   echo "[$(date)] gate server started (pid $!)" >> "$LOG_FILE"
+fi
+#    Tampermonkey 的 BOSS Copilot 更新源指向 8898，必须常驻供其拉取新版
+if ! pgrep -f "serve_userscript.js" >/dev/null; then
+  nohup node scripts/serve_userscript.js >> "$LOG_FILE" 2>&1 &
+  echo "[$(date)] userscript server started (pid $!)" >> "$LOG_FILE"
 fi
 
 # 2. 消息分拣轮询（每 15 分钟一次，由 launchd StartInterval 控制）
