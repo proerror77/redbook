@@ -1,7 +1,7 @@
 // tests/chat_classifier.test.js
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { classifyMessage, INTERVIEW_KEYWORDS } = require('../lib/chat_classifier.js');
+const { classifyMessage, INTERVIEW_KEYWORDS, SPAM_KEYWORDS } = require('../lib/chat_classifier.js');
 
 test('classifyMessage flags interview invitations', () => {
   assert.equal(classifyMessage('你好，看了你的简历很匹配，方便约个时间面试吗？').category, 'interview');
@@ -20,4 +20,8 @@ test('classifyMessage falls back to unknown for plain chat', () => {
 
 test('INTERVIEW_KEYWORDS is non-empty and exported', () => {
   assert.ok(INTERVIEW_KEYWORDS.length > 0);
+});
+
+test('SPAM_KEYWORDS is non-empty and exported', () => {
+  assert.ok(SPAM_KEYWORDS.length > 0);
 });
