@@ -9,6 +9,7 @@ const {
   detailMatchesJob,
   extractJob,
   hasPageRisk,
+  humanizedClick,
   humanizedDispatch,
   isApplyVerified,
   shouldThrottleInternal,
@@ -173,11 +174,11 @@ test('auto-apply wiring present in scan function', () => {
   assert.match(scanFlow, /applyHovered\(/);
 });
 
-test('applyHovered handles humanizedDispatch failure path correctly', () => {
+test('applyHovered handles humanizedClick failure path correctly', () => {
   const source = require('node:fs').readFileSync(require.resolve('../userscript/boss-copilot.user.js'), 'utf8');
   const applyFlow = source.slice(source.indexOf('async function applyHovered('));
-  // Verify the failure path: check humanizedDispatch result, set status=failed, record result, render badge
-  assert.match(applyFlow, /const clickOk = humanizedDispatch\(button\)/);
+  // 投递点击现在用拟人化 humanizedClick（异步、按住节奏），失败路径仍记 click_dispatch_failed
+  assert.match(applyFlow, /await humanizedClick\(button\)/);
   assert.match(applyFlow, /if \(!clickOk\)/);
   assert.match(applyFlow, /lastResult = 'click_dispatch_failed'/);
   assert.match(applyFlow, /state\.status = 'failed'/);
@@ -220,4 +221,67 @@ test('shouldThrottleInternal (inlined) enforces cap and interval', () => {
   assert.equal(shouldThrottleInternal({ appliedToday: 120, maxPerDay: 120, lastAppliedAt: Date.now() - 50000, intervalSeconds: 45 }), true);
   assert.equal(shouldThrottleInternal({ appliedToday: 5, maxPerDay: 120, lastAppliedAt: Date.now() - 1000, intervalSeconds: 45 }), true);
   assert.equal(shouldThrottleInternal({ appliedToday: 5, maxPerDay: 120, lastAppliedAt: Date.now() - 50000, intervalSeconds: 45 }), false);
+});
+
+test('humanizedClick uses realistic press-and-hold pacing with monotonic timestamps', async () => {
+  const dispatched = [];
+  const target = {
+    dispatchEvent: (event) => {
+      dispatched.push({ type: event.type, timeStamp: event.timeStamp });
+      return true;
+    },
+  };
+  // setTimeoutFn 传 0 立即回调，避免真等 70-160ms
+  const result = await humanizedClick(target, { setTimeoutFn: (cb) => cb() });
+  assert.equal(result, true);
+  assert.deepEqual(dispatched.map((d) => d.type), ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'click']);
+  for (let i = 1; i < dispatched.length; i++) {
+    assert.ok(dispatched[i].timeStamp >= dispatched[i - 1].timeStamp,
+      `timestamp[${i}] should be >= previous`);
+  }
+});
+
+test('humanizedClick returns false on dispatch error', async () => {
+  const target = {
+    dispatchEvent: () => { throw new Error('dispatch failed'); },
+  };
+  const result = await humanizedClick(target, { setTimeoutFn: (cb) => cb() });
+  assert.equal(result, false);
+});
+
+test('auto-apply viewport-first selection and scroll-feed exploration present in scan', () => {
+  const source = require('node:fs').readFileSync(require.resolve('../userscript/boss-copilot.user.js'), 'utf8');
+  const scanFlow = source.slice(source.indexOf('async function scan()'));
+  // 视口内第一张 allow 卡优先；无则拟人化下拉探索
+  assert.match(scanFlow, /allowStates\.find\(/);
+  assert.match(scanFlow, /getBoundingClientRect/);
+  assert.match(scanFlow, /scrollFeedForMore\(\)/);
+  assert.match(scanFlow, /noAllowScrollCooldownUntil/);
+  assert.match(scanFlow, /noAllowStrikeCount/);
+  // 无搜索/翻页/导航
+  assert.doesNotMatch(scanFlow, /window\.location\s*=/);
+  assert.doesNotMatch(scanFlow, /location\.href\s*=/);
+  assert.doesNotMatch(scanFlow, /\.click\(\)/);
+});
+
+test('scrollFeedForMore defined with humanized small-step scrolling', () => {
+  const source = require('node:fs').readFileSync(require.resolve('../userscript/boss-copilot.user.js'), 'utf8');
+  const fn = source.slice(source.indexOf('async function scrollFeedForMore('), source.indexOf('function isVisible('));
+  assert.match(fn, /scrollBy\(\{ top:/);
+  assert.match(fn, /behavior: 'smooth'/);
+  assert.match(fn, /2 \+ Math\.floor\(Math\.random\(\) \* 3\)/); // 2-4 小步
+  assert.match(fn, /moved < 100/); // 到底部判定
+});
+
+test('isVisible excludes is-disabled buttons', () => {
+  const source = require('node:fs').readFileSync(require.resolve('../userscript/boss-copilot.user.js'), 'utf8');
+  const fn = source.slice(source.indexOf('function isVisible('), source.indexOf('function findButton('));
+  assert.match(fn, /classList\.contains\('is-disabled'\)/);
+});
+
+test('throttle interval jittered in apply flow', () => {
+  const source = require('node:fs').readFileSync(require.resolve('../userscript/boss-copilot.user.js'), 'utf8');
+  const applyFlow = source.slice(source.indexOf('async function applyHovered('));
+  assert.match(applyFlow, /interval = 45 \+ Math\.floor\(Math\.random\(\) \* 45\)/);
+  assert.match(applyFlow, /intervalSeconds: interval/);
 });

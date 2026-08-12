@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BOSS Copilot Gate
 // @namespace    https://github.com/redbook/auto-zhipin
-// @version      0.7.0
+// @version      0.8.0
 // @description  标注 BOSS 职位卡片，自动沟通 gate 允许的岗位（可配置），Alt+A 为手动触发
 // @match        https://www.zhipin.com/*
 // @grant        GM_xmlhttpRequest
@@ -53,6 +53,10 @@
 
   /**
    * Dispatch humanized click events on target with monotonic timestamps.
+   * The events are dispatched back-to-back (total ~1-3ms) — fine for card
+   * selection / opening the detail panel, where a snappy click reads as human.
+   * For the actual apply button use humanizedClick() (async, with realistic
+   * press-and-hold pacing) to avoid an instant synthetic-click fingerprint.
    * @param {HTMLElement} target
    * @returns {boolean} true if all events dispatched successfully
    */
@@ -80,6 +84,46 @@
       }
     }
     return true;
+  }
+
+  // 拟人化点击节奏：按下后"按住"70-160ms 再抬起，每次事件用真实 performance.now() 时间戳，
+  // 消除瞬时派发的机械指纹。用于投递按钮这类需要更像真人的点击。
+  function sleep(ms) {
+    const st = (typeof window !== 'undefined' && window.setTimeout) || globalThis.setTimeout;
+    return new Promise((resolve) => st(resolve, ms));
+  }
+
+  function dispatchSingle(target, eventCtorFor, type, extra = {}) {
+    const event = new (eventCtorFor(type))(type, { ...buildClickEventsInternal(target)[0].init, ...extra });
+    const now = (typeof performance !== 'undefined') ? performance.now() : Date.now();
+    Object.defineProperty(event, 'timeStamp', { value: now, configurable: true });
+    return target.dispatchEvent(event);
+  }
+
+  async function humanizedClick(target, { setTimeoutFn } = {}) {
+    const eventCtorFor = (type) => {
+      if (type === 'pointerdown' || type === 'pointerup') {
+        return (typeof PointerEvent !== 'undefined') ? PointerEvent : Event;
+      }
+      if (type === 'mousedown' || type === 'mouseup' || type === 'click') {
+        return (typeof MouseEvent !== 'undefined') ? MouseEvent : Event;
+      }
+      return Event;
+    };
+    const wait = (ms) => new Promise((resolve) => (setTimeoutFn || (typeof window !== 'undefined' && window.setTimeout) || globalThis.setTimeout)(resolve, ms));
+    try {
+      // pointerdown -> (按住) -> pointerup -> mouseup -> click
+      dispatchSingle(target, eventCtorFor, 'pointerdown', { pressure: 0.5, pointerId: 1, isPrimary: true });
+      await wait(70 + Math.random() * 90); // 按住 70-160ms
+      dispatchSingle(target, eventCtorFor, 'pointerup', { pressure: 0, pointerId: 1, isPrimary: true });
+      dispatchSingle(target, eventCtorFor, 'mousedown', { button: 0 });
+      await wait(30 + Math.random() * 60); // 抬起与 click 之间的自然间隙
+      dispatchSingle(target, eventCtorFor, 'mouseup', { button: 0 });
+      dispatchSingle(target, eventCtorFor, 'click', { button: 0 });
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   const SERVER = 'http://127.0.0.1:8899';
@@ -191,6 +235,8 @@
     let todayApplied = 0;
     let lastResult = '等待扫描';
     let lastAppliedAt = 0;
+    let noAllowScrollCooldownUntil = 0; // 无 allow 卡时的下拉冷却（避免疯狂滚动）
+    let noAllowStrikeCount = 0; // 连续到底部次数，累计 3 次触发长时间冷却
 
     const style = document.createElement('style');
     style.textContent = `
@@ -357,11 +403,32 @@
           Array.from(states.values()).filter((s) => s.status === 'allow').slice(0, 3).forEach(probeButtonDom);
         }
 
-        // Auto-apply: pick first allow state not already in flight
+        // Auto-apply: pick first allow state in the viewport, then click; if none,
+        // do a humanized scroll to lazy-load more recommendations.
         if (AUTO_APPLY_ENABLED && !applying) {
           const allowStates = Array.from(states.values()).filter((s) => s.status === 'allow');
           if (allowStates.length > 0) {
-            applyHovered(allowStates[0]);
+            // 优先投视口内第一张 allow 卡；不在视口先滚到屏幕中央再投
+            const target = allowStates.find((s) => {
+              const rect = s.root?.getBoundingClientRect?.();
+              return rect && rect.top < window.innerHeight && rect.bottom > 0;
+            }) || allowStates[0];
+            if (target.root) humanScrollIntoView(target.root, { block: 'center' });
+            applyHovered(target);
+          } else {
+            // 视口内没有 allow 卡：拟人化下拉触发懒加载（仅滚动，无导航）
+            if (noAllowScrollCooldownUntil > Date.now()) return;
+            const moved = await scrollFeedForMore();
+            if (moved) {
+              noAllowScrollCooldownUntil = Date.now() + 45000; // 每次下拉后冷却 45s，避免疯狂滚动
+            } else {
+              // 到底部了：连续 3 次无新卡则长时间冷却，避免反复空滚
+              noAllowStrikeCount += 1;
+              if (noAllowStrikeCount >= 3) {
+                noAllowScrollCooldownUntil = Date.now() + 15 * 60 * 1000; // 15 分钟
+                noAllowStrikeCount = 0;
+              }
+            }
           }
         }
       } finally {
@@ -369,8 +436,31 @@
       }
     }
 
+    // 拟人化平滑滚动到目标卡片在视口内的位置（默认屏幕中央上方一点，BOSS 详情面板在右侧）
+    function humanScrollIntoView(node, { block = 'center', behavior = 'smooth' } = {}) {
+      if (!node) return;
+      try { node.scrollIntoView({ behavior, block }); } catch {
+        node.scrollIntoView(); // 旧浏览器不支持 options
+      }
+    }
+
+    // 拟人化下拉：2-4 小步 + 停顿，触发推荐流懒加载更多岗位（仅滚动，无搜索/翻页/导航）
+    async function scrollFeedForMore() {
+      const lastY = window.scrollY;
+      const steps = 2 + Math.floor(Math.random() * 3); // 2-4 小步
+      for (let i = 0; i < steps; i++) {
+        window.scrollBy({ top: 500 + Math.random() * 500, behavior: 'smooth' });
+        await sleep(400 + Math.random() * 500);
+      }
+      const moved = Math.abs(window.scrollY - lastY);
+      if (moved < 100) return false; // 已到底部/滚动不动
+      return true;
+    }
+
     function isVisible(node) {
       if (!node || node.disabled || node.getAttribute('aria-disabled') === 'true') return false;
+      // BOSS 的禁用态按钮带 is-disabled class（探针实测 op-btn-chat is-disabled），应视为不可点
+      if (node.classList && node.classList.contains('is-disabled')) return false;
       const rect = node.getBoundingClientRect();
       const style = window.getComputedStyle(node);
       return rect.width > 0 && rect.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
@@ -512,8 +602,9 @@
           return;
         }
 
-        // 节流检查
-        if (shouldThrottleInternal({ appliedToday: todayApplied, maxPerDay: 120, lastAppliedAt, intervalSeconds: 45 })) {
+        // 节流检查（45-90s 抖动区间，打破固定节律避免机械指纹）
+        const interval = 45 + Math.floor(Math.random() * 45);
+        if (shouldThrottleInternal({ appliedToday: todayApplied, maxPerDay: 120, lastAppliedAt, intervalSeconds: interval })) {
           lastResult = '节流中，等待下一投递窗口';
           renderBadge(state, lastResult, 'block');
           return;
@@ -554,6 +645,8 @@
             renderBadge(state, '详情与悬停岗位不一致', 'block');
             return;
           }
+          // 面板刚切换到目标岗位，"看一眼"再点按钮（拟人停顿）
+          await sleep(400 + Math.random() * 500);
         }
 
         if (!button) {
@@ -571,7 +664,9 @@
         }
 
         const beforeText = document.body.innerText;
-        const clickOk = humanizedDispatch(button);
+        // 投递点击用拟人化节奏（按住+停顿），避免瞬时合成的机械指纹
+        await sleep(150 + Math.random() * 300); // 找到按钮后的"思考"停顿
+        const clickOk = await humanizedClick(button);
         if (!clickOk) {
           lastResult = 'click_dispatch_failed';
           state.status = 'failed';
@@ -622,6 +717,7 @@
     detailMatchesJob,
     extractJob,
     hasPageRisk,
+    humanizedClick,
     humanizedDispatch,
     isApplyVerified,
     normalizeText,

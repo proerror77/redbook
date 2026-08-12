@@ -34,7 +34,11 @@ function main() {
       // picked up without restarting this server.
       const body = fs.readFileSync(USESCRIPT_PATH, 'utf8');
       response.writeHead(200, {
-        'Content-Type': 'text/plain; charset=utf-8',
+        // application/javascript + inline: Chrome renders the script in the tab instead of
+        // downloading it, which lets Tampermonkey's install/update bar appear. text/plain makes
+        // Chrome treat .user.js as a download and no update prompt ever shows.
+        'Content-Type': 'application/javascript; charset=utf-8',
+        'Content-Disposition': 'inline',
         'Content-Length': Buffer.byteLength(body),
         'Cache-Control': 'no-store', // Tampermonkey checks for updates; never serve a stale copy
       });
