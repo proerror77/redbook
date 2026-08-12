@@ -1,6 +1,7 @@
 'use strict';
 const fs = require('node:fs');
 const path = require('node:path');
+const { spawnSync } = require('node:child_process');
 const { summarizeDaily, buildFeishuBaseRecord } = require('../lib/daily_summary.js');
 const { pushFeishuMessage } = require('../lib/feishu_notify.js');
 
@@ -28,8 +29,10 @@ async function main() {
   const tableId = process.env.BOSS_FEISHU_TABLE_ID;
   if (baseToken && tableId) {
     const recordsJson = JSON.stringify({ create_records: [record] });
-    const { spawnSync } = require('node:child_process');
-    spawnSync('lark-cli', ['base', '+record-upsert', '--as', 'bot', '--base-token', baseToken, '--table-id', tableId, '--json', recordsJson], { stdio: 'inherit' });
+    const result = spawnSync('lark-cli', ['base', '+record-upsert', '--as', 'bot', '--base-token', baseToken, '--table-id', tableId, '--json', recordsJson], { stdio: 'inherit' });
+    if (result.status !== 0) {
+      console.error(`lark-cli base write failed (status ${result.status})`);
+    }
   } else {
     console.log('未配置 BOSS_FEISHU_BASE_TOKEN/TABLE_ID，跳过多维表格写入');
   }

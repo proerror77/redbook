@@ -32,11 +32,15 @@ async function main({ triagePath = path.join(DATA_DIR, 'chat-triage-latest.json'
       payload: { category, jobId: msg.jobId || '', company: msg.company || '' },
     });
     if (category === 'interview') {
-      await pushFeishuMessage({
-        title: `🎯 面试邀约：${msg.company || '未知公司'}`,
-        body: `${msg.jobTitle || ''}\n${text}\n${msg.jobId || ''}`,
-      });
-      pushed += 1;
+      try {
+        await pushFeishuMessage({
+          title: `🎯 面试邀约：${msg.company || '未知公司'}`,
+          body: `${msg.jobTitle || ''}\n${text}\n${msg.jobId || ''}`,
+        });
+        pushed += 1;
+      } catch (err) {
+        console.error('feishu push failed:', err.message);
+      }
     }
   }
   console.log(`chat_monitor: classified ${messages.length} messages, pushed ${pushed} interview invites`);
