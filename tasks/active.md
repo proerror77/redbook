@@ -2,6 +2,28 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-08-24 BOSS 50K+ 扩展范围受监督投递
+
+- Owner: Codex
+- Source: User explicitly requested lowering the salary gate to 50K, expanding FDE/architecture/solutions/AI-lead scope, and starting applications from the already-open BOSS page via Computer Use.
+- Status: completed
+
+### Execution Plan
+
+- [x] Confirm the browser-visible BOSS page is logged in, stable, and running Copilot 0.17.0.
+- [x] Restore both salary gates to 50K and expand the profile toward FDE, AI solutions, architecture, and AI-transformation leadership.
+- [x] Restart the repaired Gate and verify live policy, risk state, quota, and ledger.
+- [x] Review full JD/company context and complete a supervised checkpoint of 2 verified applications.
+- [x] Record platform and ledger evidence; stop on any security or target-drift signal.
+
+### Review
+
+- Both salary gates now use 50K monthly-equivalent lower bound; the expanded scope covers FDE, enterprise AI delivery, AI solutions/architecture, and AI transformation/application leadership.
+- Fixed the shared BOSS private-use salary digit decoder after visual readback proved the old offset misread `20-40K·16薪` as `31-51K·27薪`; the full runtime suite passes 348/348.
+- Live checkpoint added `AI产品总监` (`40-60K·15薪`, annualized lower bound 50K) and `AI应用负责人` (`60-90K`); the BOSS cards show `✓ 已沟通` and the ledger records both as `applied`.
+- Today's ledger is 4/4. Three roles satisfy the corrected 50K gate; one earlier `20-40K·16薪` application was sent before the decoder fix and remains preserved as an honest audit record.
+- Gate is persistently paused at `checkpoint_complete_4_of_4`; no login, CAPTCHA, 403, security warning, or target drift was observed.
+
 ## 2026-08-24 BOSS Copilot 操作状态机修复
 
 - Owner: Codex

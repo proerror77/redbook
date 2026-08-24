@@ -5615,3 +5615,13 @@
 - Preserved the prior product rule that LLM confidence is recorded but does not override an explicit allow, preventing FDE/adjacent roles from being rejected solely by confidence.
 - Evidence: full `npm test` passed 347/347; userscript/server syntax checks and `git diff --check` passed.
 - Boundary: no browser-side live application, service deployment, or runtime commit; the runtime worktree contained pre-existing overlapping changes.
+
+## 2026-08-24 BOSS 50K+ expanded supervised apply checkpoint
+
+- Lowered both live salary gates from 70K to 50K monthly-equivalent lower bound and expanded the profile to FDE, enterprise AI delivery, AI solutions/architecture, and AI transformation/application leadership.
+- Found and fixed the shared BOSS salary-font decoder from live page evidence: `-K` renders as `80-110K`, and `-K·薪` renders as `20-40K·16薪`. Added regressions for decoding, annualized salary parsing, and 50K rejection.
+- Verification passed: focused salary tests 17/17, full runtime `npm test` 348/348, userscript/server syntax checks, and runtime `git diff --check`.
+- Computer Use searched and scrolled the live logged-in BOSS page, opened full JDs, and confirmed Gate rejection of salary-under-floor, duplicate, excluded-company, AI Infra, chip, and industrial-robotics candidates.
+- Verified live additions: `AI产品总监` / 上海美定思贸易 / `40-60K·15薪`; `AI应用负责人（最好你是有小团队的）` / 罗莱智家生态 / `60-90K`. Both cards show `✓ 已沟通`, and both ledger rows are `applied`.
+- Readback: `/health` reports `todaySuccessfulApplies=4`, `dailyApplyCap=4`; the Gate is paused with `checkpoint_complete_4_of_4`. Three of today's four entries meet the corrected 50K floor; the earlier `20-40K·16薪` entry was sent under the broken decoder and was not altered or hidden.
+- Follow-up boundary: the 罗莱 role explicitly asks for project/case details after greeting. No factual project claims were invented; a tailored follow-up still needs user-approved case facts.
