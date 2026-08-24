@@ -5647,3 +5647,9 @@
 - `config.local.json` 的 filters/apply 两处活动阈值均由 50K 改为 30K；其他完整 JD、LLM、岗位、公司、重复和风险门不变。
 - `20-40K` Gate 探针返回 allow/needsJd；聚焦测试 40/40、全量运行时测试 348/348。
 - Gate 重启、页面重扫后，今日成功投递由 9 增至 17/150；新增包含微钉科技、深演智能、德勤等 `20-40K` 区间岗位，均有完整 JD 和 LLM allow 证据。
+## [2026-08-24] BOSS LLM 连续错误投递止损
+
+- 用户指出 LLM Error 后没有暂停；日志确认多条连续 `llm_error:jd_eval_error` 时 Gate 仍 allowed，今日计数已到 49/150。
+- 根因是现有逻辑只拒绝出错候选，没有连续错误计数和全局熔断，也不会冻结已收集的 allow 队列。
+- 已持久暂停 Gate 为 `llm_error_streak`；`/health` 回读 live apply disabled、restriction 生效。
+- 飞书通知失败不影响暂停状态；恢复前需要增加 server-authoritative LLM error circuit breaker。

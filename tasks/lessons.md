@@ -14,6 +14,17 @@
 
 ## Lessons 列表
 
+### Lesson 126
+- 日期：2026-08-24
+- 场景：BOSS LLM 连续返回 `jd_eval_error`，但 Userscript 仍继续终审后续岗位。
+- 问题：单条候选会 fail-closed，但连续 LLM 故障不会触发全局暂停，导致系统在分类服务异常时持续扫描并可能继续消费已缓存 allow 队列。
+- 根因：Gate 只把 LLM error 编码为候选 rejection；没有连续错误计数、阈值和 server-authoritative restriction。
+- 修正动作：已立即持久暂停 Gate 为 `llm_error_streak`；代码熔断修复前不得恢复。
+- 预防规则（Rule）：连续 LLM 错误必须升级为全局熔断，并清空/冻结待投队列；不能只 block 当前候选。
+- 下次触发信号：连续 `llm_error:*`、`jd_eval_error`、模型超时或错误期间 Gate 仍 allowed。
+- 验证结果：`/health` 显示 49/150、`liveApplyAllowed=false`、restriction=`llm_error_streak`。
+
+
 ### Lesson 125
 - 日期：2026-08-24
 - 场景：用户指出 `20-40K` 岗位不应因为下限 20K 被薪资门挡住，并要求优先取得沟通机会。

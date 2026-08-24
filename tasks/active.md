@@ -2,6 +2,19 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-08-24 BOSS LLM 连续错误未熔断诊断
+
+- Owner: Codex
+- Source: User reported that repeated LLM errors did not pause live applications.
+- Status: completed
+
+### Review
+
+- Root cause: LLM evaluator errors are fail-closed per candidate, but neither the Gate server nor Userscript promotes repeated `llm_error` results into a global circuit breaker.
+- Evidence: multiple consecutive `llm_error:jd_eval_error` results occurred while `/health` remained allowed; today's ledger had reached 49/150.
+- Containment: Gate is persistently paused with `site_restricted:llm_error_streak`; `/health` confirms live apply is disabled.
+- Remaining fix: add a server-authoritative consecutive-error circuit breaker before resuming.
+
 ## 2026-08-24 BOSS 薪资门槛放宽为上限 30K
 
 - Owner: Codex
