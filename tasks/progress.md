@@ -5607,3 +5607,10 @@
 - 内容包强制包含来源链接、平台独立图片、图文分镜、深度/去 AI 味写作，以及事实、AI 味、平台、视觉四门审稿；publish 必须带用户明确确认，并回读平台 URL / note id。
 - 实际验证：本地 Grok READY；Wiki ingest 触及 11 页、新建 4 个概念页；Wiki lint `missing=0`、`dangling=0`、`orphan=0`、`overview_stale=false`；Bun build、9/9 contract tests、Python compile、shell syntax、`git diff --check` 全通过。
 - 当前运行状态：`social-2026-07-17=blocked`，不是系统错误；当天 X/HN/Reddit 基础采集文件尚未生成，下一步为 `tools/redbookctl daily`。未执行任何外部发布。
+
+## 2026-08-24 BOSS Copilot operation-state repair
+
+- Repaired the standalone runtime at `/Users/proerror/Library/Application Support/boss-auto-zhipin`: server-authoritative live switch/dry-run/daily cap, persistent pause/resume, acknowledgement-safe pending applies, detail identity revalidation, self-UI risk exclusion, correct click sequence, and fail-closed missing salary.
+- Preserved the prior product rule that LLM confidence is recorded but does not override an explicit allow, preventing FDE/adjacent roles from being rejected solely by confidence.
+- Evidence: full `npm test` passed 347/347; userscript/server syntax checks and `git diff --check` passed.
+- Boundary: no browser-side live application, service deployment, or runtime commit; the runtime worktree contained pre-existing overlapping changes.

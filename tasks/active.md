@@ -2,6 +2,29 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-08-24 BOSS Copilot 操作状态机修复
+
+- Owner: Codex
+- Source: User asked to fix the reviewed BOSS userscript operation-logic defects.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Enforce the explicit live-apply switch, persisted risk pause, and server-side daily cap.
+- [x] Make cross-page pending apply recovery acknowledgement-safe and retryable.
+- [x] Revalidate detail identity immediately before clicking and keep the global-button fallback safe.
+- [x] Fail closed on missing salary and fix the click event sequence.
+- [x] Add focused regressions, run the full suite, and record evidence without touching unrelated changes.
+
+### Review
+
+- Gate full mode now fails closed on disabled/dry-run/restricted/daily-cap states; `/paused` persists and `/resume` is explicit.
+- The userscript excludes its own UI from risk text, revalidates the selected detail before click, and retains pending results until ledger acknowledgement.
+- Missing or unparseable monthly salary is blocked; annual salary with `N薪` remains normalized by annual total divided by 12.
+- LLM `confidence` remains telemetry-only by prior user correction; explicit `allow` is preserved for FDE and adjacent roles, with a regression test.
+- Verification passed: `npm test` 347/347, both changed runtime files parse, and runtime `git diff --check` is clean.
+- No live BOSS click or deployment was performed; the standalone runtime repo already had overlapping user changes, so no unsafe mixed commit was created there.
+
 ## 2026-07-24 X @0xCybersmile suspension follow-up appeal
 
 - Owner: Codex
