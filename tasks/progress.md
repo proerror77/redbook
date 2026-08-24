@@ -5611,6 +5611,7 @@
 ## 2026-08-24 BOSS Copilot operation-state repair
 
 - Repaired the standalone runtime at `/Users/proerror/Library/Application Support/boss-auto-zhipin`: server-authoritative live switch/dry-run/daily cap, persistent pause/resume, acknowledgement-safe pending applies, detail identity revalidation, self-UI risk exclusion, correct click sequence, and fail-closed missing salary.
+- Set both local minimum-monthly-salary gates to 70K while retaining `apply.enabled=false` and `apply.dryRun=true`.
 - Preserved the prior product rule that LLM confidence is recorded but does not override an explicit allow, preventing FDE/adjacent roles from being rejected solely by confidence.
 - Evidence: full `npm test` passed 347/347; userscript/server syntax checks and `git diff --check` passed.
 - Boundary: no browser-side live application, service deployment, or runtime commit; the runtime worktree contained pre-existing overlapping changes.

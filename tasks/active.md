@@ -21,6 +21,7 @@
 - Gate full mode now fails closed on disabled/dry-run/restricted/daily-cap states; `/paused` persists and `/resume` is explicit.
 - The userscript excludes its own UI from risk text, revalidates the selected detail before click, and retains pending results until ledger acknowledgement.
 - Missing or unparseable monthly salary is blocked; annual salary with `N薪` remains normalized by annual total divided by 12.
+- Both local salary gates are set to 70K; live apply remains disabled and dry-run stays enabled.
 - LLM `confidence` remains telemetry-only by prior user correction; explicit `allow` is preserved for FDE and adjacent roles, with a regression test.
 - Verification passed: `npm test` 347/347, both changed runtime files parse, and runtime `git diff --check` is clean.
 - No live BOSS click or deployment was performed; the standalone runtime repo already had overlapping user changes, so no unsafe mixed commit was created there.
