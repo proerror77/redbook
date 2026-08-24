@@ -5625,3 +5625,12 @@
 - Verified live additions: `AI产品总监` / 上海美定思贸易 / `40-60K·15薪`; `AI应用负责人（最好你是有小团队的）` / 罗莱智家生态 / `60-90K`. Both cards show `✓ 已沟通`, and both ledger rows are `applied`.
 - Readback: `/health` reports `todaySuccessfulApplies=4`, `dailyApplyCap=4`; the Gate is paused with `checkpoint_complete_4_of_4`. Three of today's four entries meet the corrected 50K floor; the earlier `20-40K·16薪` entry was sent under the broken decoder and was not altered or hidden.
 - Follow-up boundary: the 罗莱 role explicitly asks for project/case details after greeting. No factual project claims were invented; a tailored follow-up still needs user-approved case facts.
+
+## 2026-08-24 BOSS userscript batch-pipeline correction and 7/7 closeout
+
+- Corrected the standalone Tampermonkey Copilot from immediate first-match apply to `collect -> full-JD/LLM review -> approved queue -> apply`.
+- A batch starts applying after 8 approved candidates or 3 scroll rounds; every actual click still reopens the target detail, verifies title/company, and reruns full `/gate` even when the JD is cached.
+- Updated the visible panel and README for the two-phase flow; Copilot source version is 0.18.0 and `http://127.0.0.1:8898/boss-copilot.user.js` serves that exact version.
+- Verification: userscript focused tests 66/66, full standalone runtime tests 348/348, syntax check and `git diff --check` pass.
+- Today's final three ledger-verified applications are `事业部负责人` / 小哥引擎 / `80-110K`, `AI商业化负责人` / SenseTime / `100-150K·20薪`, and `大数据及人工智能技术高级总监` / XTransfer / `50-80K·15薪`.
+- Readback: `/health` reports `todaySuccessfulApplies=7`, `dailyApplyCap=7`, and persistent pause reason `checkpoint_complete_7_of_7`. The installed browser/Tampermonkey copy was not silently claimed as updated; only the served 0.18.0 source is verified here.

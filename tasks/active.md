@@ -2,6 +2,46 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-08-24 BOSS userscript 批量收集后投递修正
+
+- Owner: Codex
+- Source: User requested correcting the live flow so the Tampermonkey userscript collects and fully screens a batch before applying, instead of relying on per-card Computer Use operation.
+- Status: completed
+
+### Cleanup Plan
+
+- [x] Trace the current scan, scroll, full-JD gate, and apply flow.
+- [x] Add a collect/review/apply queue inside the existing userscript without adding a second apply path.
+- [x] Revalidate the selected detail and full gate immediately before every click.
+- [x] Run focused/full tests, record evidence, and preserve unrelated runtime changes.
+
+### Review
+
+- Copilot 0.18.0 now collects and full-JD/LLM-reviews candidates first, then consumes the approved queue after 8 matches or 3 scroll rounds.
+- The click path always reopens the target detail and reruns full `/gate`, even when JD was cached during collection.
+- Focused userscript tests pass 66/66; the full standalone runtime suite passes 348/348; the localhost update server serves version 0.18.0.
+- Browser-loaded Tampermonkey version was not changed or claimed in this maintenance step; Gate is persistently paused at the verified 7/7 checkpoint.
+
+## 2026-08-24 BOSS 50K+ 今日第二检查点
+
+- Owner: Codex
+- Source: User explicitly requested starting today's remaining BOSS applications after the first 4/4 checkpoint.
+- Status: completed
+
+### Execution Plan
+
+- [x] Verify the visible logged-in BOSS page, today's ledger count, and absence of security blockers.
+- [x] Preserve the 50K/full-JD/LLM/duplicate gates and expand the daily checkpoint from 4 to 7.
+- [x] Resume the Gate and supervise up to 3 additional verified applications.
+- [x] Read back BOSS card state, Gate health, and ledger; pause at 7/7 or any blocker.
+- [x] Record evidence and commit only the Redbook task notes.
+
+### Review
+
+- Added three ledger-verified applications: `事业部负责人` / 小哥引擎 / `80-110K`; `AI商业化负责人` / SenseTime / `100-150K·20薪`; `大数据及人工智能技术高级总监` / XTransfer / `50-80K·15薪`.
+- The last role owns AI/data strategy, AI-model implementation, cross-department delivery, and commercialization of AI products; its full-JD LLM gate allowed it.
+- `/health` reads 7/7 and the Gate is persistently paused with `checkpoint_complete_7_of_7`.
+
 ## 2026-08-24 BOSS 50K+ 扩展范围受监督投递
 
 - Owner: Codex
