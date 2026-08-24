@@ -20,7 +20,7 @@
 - Copilot 0.18.0 now collects and full-JD/LLM-reviews candidates first, then consumes the approved queue after 8 matches or 3 scroll rounds.
 - The click path always reopens the target detail and reruns full `/gate`, even when JD was cached during collection.
 - Focused userscript tests pass 66/66; the full standalone runtime suite passes 348/348; the localhost update server serves version 0.18.0.
-- Browser-loaded Tampermonkey version was not changed or claimed in this maintenance step; Gate is persistently paused at the verified 7/7 checkpoint.
+- Tampermonkey and the refreshed BOSS page both show Copilot 0.18.0; Gate remains persistently paused at the verified 7/7 checkpoint.
 
 ## 2026-08-24 BOSS 50K+ 今日第二检查点
 

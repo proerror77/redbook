@@ -5633,4 +5633,4 @@
 - Updated the visible panel and README for the two-phase flow; Copilot source version is 0.18.0 and `http://127.0.0.1:8898/boss-copilot.user.js` serves that exact version.
 - Verification: userscript focused tests 66/66, full standalone runtime tests 348/348, syntax check and `git diff --check` pass.
 - Today's final three ledger-verified applications are `事业部负责人` / 小哥引擎 / `80-110K`, `AI商业化负责人` / SenseTime / `100-150K·20薪`, and `大数据及人工智能技术高级总监` / XTransfer / `50-80K·15薪`.
-- Readback: `/health` reports `todaySuccessfulApplies=7`, `dailyApplyCap=7`, and persistent pause reason `checkpoint_complete_7_of_7`. The installed browser/Tampermonkey copy was not silently claimed as updated; only the served 0.18.0 source is verified here.
+- Readback: `/health` reports `todaySuccessfulApplies=7`, `dailyApplyCap=7`, and persistent pause reason `checkpoint_complete_7_of_7`; Tampermonkey shows 0.18.0 enabled and the refreshed BOSS page shows Copilot 0.18.0 with the same paused 7/7 state.
