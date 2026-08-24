@@ -2,6 +2,26 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-08-24 BOSS 薪资门槛放宽为上限 30K
+
+- Owner: Codex
+- Source: User explicitly requested allowing `20-40K` roles and continuing live applications when the salary range reaches 30K.
+- Status: completed
+
+### Execution Plan
+
+- [x] Trace the shared salary decision and every live Gate caller.
+- [x] Change the shared rule from annualized lower-bound gating to annualized upper-bound gating and set both active thresholds to 30K.
+- [x] Run focused/full regressions, restart the Gate, and verify `20-40K` is no longer salary-blocked.
+- [x] Resume the existing Userscript flow and read back Gate/UI/ledger evidence.
+
+### Review
+
+- Shared salary gate now blocks only when the annualized range upper bound is below 30K; `20-40K` is allowed into full-JD review.
+- Active filters and apply override are both 30K; daily cap remains 150 and the Gate is healthy with no restriction.
+- Focused tests pass 40/40 and the full runtime suite passes 348/348.
+- After restart and page rescan, the ledger rose from 9 to 17/150. Newly applied `20-40K` examples include `AI 技术专家/资深开发（外企，全栈）`, `AI解决方案专家- SH`, and `AI Agent 解决方案架构师 / 业务架构师`.
+
 ## 2026-08-24 BOSS 日额度恢复为 150
 
 - Owner: Codex
