@@ -5634,3 +5634,10 @@
 - Verification: userscript focused tests 66/66, full standalone runtime tests 348/348, syntax check and `git diff --check` pass.
 - Today's final three ledger-verified applications are `事业部负责人` / 小哥引擎 / `80-110K`, `AI商业化负责人` / SenseTime / `100-150K·20薪`, and `大数据及人工智能技术高级总监` / XTransfer / `50-80K·15薪`.
 - Readback: `/health` reports `todaySuccessfulApplies=7`, `dailyApplyCap=7`, and persistent pause reason `checkpoint_complete_7_of_7`; Tampermonkey shows 0.18.0 enabled and the refreshed BOSS page shows Copilot 0.18.0 with the same paused 7/7 state.
+## [2026-08-24] BOSS 日额度恢复为 150
+
+- 历史日志确认 BOSS 曾提示“已沟通 120 位，还剩 30 次”，平台日额度为 150；Userscript 内部上限也一直是 150。
+- 根因是临时监督检查点 7/7 被错误写入 Gate 的 `dailySuccessfulAppliesTarget`，并持久化为 `checkpoint_complete_7_of_7`，不是平台额度耗尽。
+- 已将 Gate 配置恢复为 150、重启服务并清除错误暂停；浏览器面板读回 Copilot 0.18.0、`今日已投：8/150`、投递权限已开启。
+- 恢复后 Userscript 完成扫描、完整 JD/LLM 终审并成功投递 `AI经营产品负责人` / 钛动科技；Gate `/health` 为 allowed、无 restriction。
+- 最小回归测试通过 89/89；薪资、完整 JD、LLM、重复和真实风险门继续保留。

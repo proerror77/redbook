@@ -2,6 +2,25 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-08-24 BOSS 日额度恢复为 150
+
+- Owner: Codex
+- Source: User corrected the mistaken 7-application daily cap and asked why the userscript did not continue toward the documented 150 daily platform quota.
+- Status: in_progress
+
+### Execution Plan
+
+- [x] Reconcile historical quota evidence, userscript limit, Gate config, persisted pause, and current browser health.
+- [x] Restore the single Gate daily cap from the temporary 7-item checkpoint to 150.
+- [x] Restart and resume the Gate, then verify the browser userscript is collecting again without a security blocker.
+- [x] Record health/UI/ledger evidence and preserve the full-JD/LLM/salary/duplicate gates.
+
+### Current Evidence
+
+- Browser panel reads Copilot 0.18.0, `今日已投：8/150`, permission enabled, with no login/CAPTCHA/restriction text.
+- The resumed flow scanned, opened the full JD, received an LLM allow, and ledger-verified `AI经营产品负责人` / 钛动科技 as the eighth successful application.
+- Gate health remains allowed with no restriction; the userscript continues toward the platform quota and will still stop on a real quota or security signal.
+
 ## 2026-08-24 BOSS userscript 批量收集后投递修正
 
 - Owner: Codex
