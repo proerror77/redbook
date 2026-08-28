@@ -5653,3 +5653,11 @@
 - 根因是现有逻辑只拒绝出错候选，没有连续错误计数和全局熔断，也不会冻结已收集的 allow 队列。
 - 已持久暂停 Gate 为 `llm_error_streak`；`/health` 回读 live apply disabled、restriction 生效。
 - 飞书通知失败不影响暂停状态；恢复前需要增加 server-authoritative LLM error circuit breaker。
+# 2026-08-28 BOSS 完整 JD 语义门与每日任务
+
+- 修正共享 Gate：include/exclude 关键词不再在完整 JD 前判死刑；薪资、重复、公司黑名单、非技术角色与风控硬门保持。
+- 扩展完整 JD 规则到 AI 负责人、AI 研发、AI 应用工程、Agent/FDE/解决方案、AI 提效与产品化；垂直行业和工程师/全栈/产品标题不再单独触发拒绝。
+- 真实 LLM 复核 5 个历史误拒样本全部转为 allow（0.85-0.90）；聚焦测试 28/28、全套 350/350。
+- Gate 已重启，今日 ledger 0/150；旧 `risk_popup_403` 暂停仍保留，等待真实沟通前的当次用户确认。
+- 已创建并回读每天 08:00 的“BOSS 每日投递准备”任务；任务先收集/复核，真实投递前请求确认，遇 LLM/登录/验证码/403/平台限额即停。
+- 详细证据：`docs/reports/boss-jd-review-2026-08-28.md`。

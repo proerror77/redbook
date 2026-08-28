@@ -2,6 +2,20 @@
 
 > 当前任务面板。历史任务继续保留在 `tasks/todo.md`，本文件只放正在推进或需要用户决策的事项。
 
+## 2026-08-28 BOSS 完整 JD 语义门修正与每日投递
+
+- Owner: Codex
+- Source: User requested today's script-based applications, an 08:00 daily task toward the 150 cap, and review of false-negative AI application/FDE/AI efficiency roles.
+- Status: in_progress
+
+### Execution Plan
+
+- [x] Trace the Userscript pre-gate, full-JD LLM gate, cache, quota, and persisted risk state.
+- [x] Remove keyword-only false negatives and broaden the existing full-JD semantic policy without bypassing salary, duplicate, login, risk, or daily-cap controls.
+- [x] Recheck representative historical rejects and run focused/full regressions.
+- [x] Verify normal Chrome, Tampermonkey, Gate/LLM health, then prepare today's live run at the final confirmation boundary.
+- [x] Create and read back the daily 08:00 controlled task; record completion evidence.
+
 ## 2026-08-24 BOSS LLM 连续错误未熔断诊断
 
 - Owner: Codex
