@@ -15,6 +15,7 @@
 - [x] Recheck representative historical rejects and run focused/full regressions.
 - [x] Verify normal Chrome, Tampermonkey, Gate/LLM health, then prepare today's live run at the final confirmation boundary.
 - [x] Create and read back the daily 08:00 controlled task; record completion evidence.
+- [x] Add a Shanghai-only required-location gate that blocks missing and non-Shanghai locations before full-JD review or application.
 
 ## 2026-08-24 BOSS LLM 连续错误未熔断诊断
 
