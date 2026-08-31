@@ -5662,4 +5662,5 @@
 - 已创建并回读每天 08:00 的“BOSS 每日投递准备”任务；任务先收集/复核，真实投递前请求确认，遇 LLM/登录/验证码/403/平台限额即停。
 - 用户确认不使用浏览器 MCP 后，已将每日任务改为只启动/检查本地 Gate 与 Userscript 服务；页面接管、刷新、滚动和点击均不再由 Codex 执行。
 - 2026-08-30：新增 `filters.requiredLocations` 并将活动配置设为 `上海`；上海各区通过，外地和缺失地点在完整 JD 评审前以 `location_required_mismatch` 拦截。Gate 已重启并健康，聚焦与全套测试均通过（351/351）。
+- 2026-08-31：修复 Userscript 仅靠旧 CSS class 读取地点的问题；当卡片正文展示 `上海·徐汇区·漕河泾` 时会作为地点兜底，上海 Gate 不再误报 `location_required_mismatch`，没有放宽外地或缺失地点的 fail-closed 规则。验证：聚焦 91/91、`npm test` 通过、静态服务已回读新源码。
 - 详细证据：`docs/reports/boss-jd-review-2026-08-28.md`。
