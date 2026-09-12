@@ -1,3 +1,5 @@
+> **ARCHIVED 2026-09-12** — 执行入口已迁 Grok Bot。见 [ARCHIVED.md](./ARCHIVED.md)。勿再当日常生产仓。
+
 <!-- BEGIN COMPOUND CODEX TOOL MAP -->
 ## Compound Codex Tool Mapping (Claude Compatibility)
 
